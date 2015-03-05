@@ -37,6 +37,8 @@ AC_CHECK_LIB([pjsua], pjsua_init)
 AC_CHECK_HEADERS([json-c/json.h])
 AC_CHECK_LIB([json-c], json_tokener_parse)
 
-AC_CONFIG_FILES([Makefile src/callblockerd/Makefile])
+AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([etc/callblocker/Makefile])
+AC_CONFIG_FILES([src/callblockerd/Makefile])
 AC_OUTPUT
 
