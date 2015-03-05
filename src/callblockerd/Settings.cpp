@@ -29,8 +29,8 @@
 #include "Logger.h"
 
 
-Settings::Settings() : Notify(SYSCONFDIR "/settings.json", IN_CLOSE_WRITE) {
-  m_filename = SYSCONFDIR "/settings.json";
+Settings::Settings() : Notify(SYSCONFDIR "/" PACKAGE_NAME "/settings.json", IN_CLOSE_WRITE) {
+  m_filename = SYSCONFDIR "/" PACKAGE_NAME "/settings.json";
   load();
 }
 

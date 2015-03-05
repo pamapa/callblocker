@@ -48,8 +48,8 @@ public:
     Logger::start();
     m_settings = new Settings();
 
-    m_whitelists = new Lists(SYSCONFDIR "/whitelists");
-    m_blacklists = new Lists(SYSCONFDIR "/blacklists");
+    m_whitelists = new Lists(SYSCONFDIR "/" PACKAGE_NAME "/whitelists");
+    m_blacklists = new Lists(SYSCONFDIR "/" PACKAGE_NAME "/blacklists");
 
     m_sipPhone = new SipPhone(m_whitelists, m_blacklists);
     m_sipPhone->init();

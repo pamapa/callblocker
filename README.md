@@ -14,7 +14,7 @@ blocking unwanted calls from your home phone
 1. aclocal
 1. automake --add-missing --foreign
 1. autoconf
-1. ./configure --prefix=/
+1. ./configure --prefix=
 1. make all
 1. sudo make install
 
