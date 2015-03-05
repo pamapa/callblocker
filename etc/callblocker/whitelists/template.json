@@ -1,0 +1,16 @@
+{ 
+  "name" : "whitelist",
+  "parsed_by" : "manual",
+  "num_entries" : 2,
+  "last_update" : "Tue, 03 Mar 2015 13:23:34 +0000",
+  "entries" : [ 
+      { 
+        "comment" : "Telemarketing Company X",
+        "number" : "1235678901234567890"
+      },
+      { 
+        "comment" : "Call Center of Company Y",
+        "number" : "09876543210987654321"
+      }
+    ]
+}

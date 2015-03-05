@@ -1,0 +1,13 @@
+{ 
+  "log_level" : "debug",
+  "pjsip_log_level" : 0,
+  "sipaccounts" : [
+      { 
+        "mode" : "disabled",
+        "fromdomain" : "<yourdomain.net>",
+        "fromusername" : "<yourusername>",
+        "frompassword" : "<yourpassword>"
+      }
+  ]
+}
+
