@@ -50,6 +50,7 @@ private:
   bool load();
   bool getObject(struct json_object* objbase, const char* objname, std::string* res);
   bool getObject(struct json_object* objbase, const char* objname, int* res);
+  bool getObject(struct json_object* objbase, const char* objname, bool* res);
 };
 
 #endif

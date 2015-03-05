@@ -74,43 +74,42 @@ bool Settings::load() {
     Logger::setLogLevel(log_level);
   }
 
-  int pjsip_log_level;
-  if (getObject(root, "pjsip_log_level", &pjsip_log_level)) {
-    pj_log_set_level(pjsip_log_level);
-  }
+  struct json_object* sip;
+  if (json_object_object_get_ex(root, "sip", &sip)) {
 
-  struct json_object* sipaccounts;
-  if (json_object_object_get_ex(root, "sipaccounts", &sipaccounts)) {
-    for (size_t i = 0; i < json_object_array_length(sipaccounts); i++) {
-      struct json_object* entry = json_object_array_get_idx(sipaccounts, i);
+    int pjsip_log_level;
+    if (getObject(sip, "pjsip_log_level", &pjsip_log_level)) {
+      pj_log_set_level(pjsip_log_level);
+    }
 
-      std::string mode;
-      if (!getObject(entry, "mode", &mode)) {
-        continue;
+    struct json_object* accounts;
+    if (json_object_object_get_ex(sip, "accounts", &accounts)) {
+      for (size_t i = 0; i < json_object_array_length(accounts); i++) {
+        struct json_object* entry = json_object_array_get_idx(accounts, i);
+        bool enabled;
+        if (!getObject(entry, "enabled", &enabled) || !enabled) {
+          continue;
+        }
+        std::string fromdomain;
+        if (!getObject(entry, "fromdomain", &fromdomain)) {
+          continue;
+        }
+        std::string fromusername;
+        if (!getObject(entry, "fromusername", &fromusername)) {
+          continue;
+        }
+        std::string frompassword;
+        if (!getObject(entry, "frompassword", &frompassword)) {
+          continue;
+        }
+        struct SettingSipAccount acc = {fromdomain, fromusername, frompassword};
+        m_sipAccounts.push_back(acc);
       }
-      if (mode != "phone") {
-        continue;
-      }
-
-      std::string fromdomain;
-      if (!getObject(entry, "fromdomain", &fromdomain)) {
-        continue;
-      }
-      std::string fromusername;
-      if (!getObject(entry, "fromusername", &fromusername)) {
-        continue;
-      }
-      std::string frompassword;
-      if (!getObject(entry, "frompassword", &frompassword)) {
-        continue;
-      }
-
-      struct SettingSipAccount acc = {fromdomain, fromusername, frompassword};
-      m_sipAccounts.push_back(acc);
-
+    } else {
+      Logger::debug("no accounts section found in settings file %s", m_filename.c_str());
     }
   } else {
-      Logger::debug("no sipaccounts section found in settings file %s", m_filename.c_str());
+    Logger::debug("no sip section found in settings file %s", m_filename.c_str());
   }
 
   json_object_put(root); // free
@@ -144,6 +143,21 @@ bool Settings::getObject(struct json_object* objbase, const char* objname, int* 
     return false;
   }
   *res = json_object_get_int(n);
+  return true;
+}
+
+bool Settings::getObject(struct json_object* objbase, const char* objname, bool* res) {
+  struct json_object* n;
+  
+  if (!json_object_object_get_ex(objbase, objname, &n)) {
+    Logger::warn("%s not found in settings file %s", objname, m_filename.c_str());
+    return false;
+  }
+  if (json_object_get_type(n) != json_type_boolean) {
+    Logger::warn("string type expected for %s in settings file %s", objname, m_filename.c_str());
+    return false;
+  }
+  *res = (bool)json_object_get_boolean(n);
   return true;
 }
 
