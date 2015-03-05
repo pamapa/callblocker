@@ -47,69 +47,69 @@ SipPhone::SipPhone(Lists* whitelists, Lists* blacklists) : Phone(whitelists, bla
 
 SipPhone::~SipPhone() {
   Logger::debug("~SipPhone...");
-	// hangup open calls and stop pjsua
-	pjsua_call_hangup_all();
-	pjsua_destroy();
+  // hangup open calls and stop pjsua
+  pjsua_call_hangup_all();
+  pjsua_destroy();
 }
 
 bool SipPhone::init() {
-	Logger::debug("SipPhone::init...");
+  Logger::debug("SipPhone::init...");
 
-	// create pjsua  
-	pj_status_t status = pjsua_create();
-	if (status != PJ_SUCCESS) {
+  // create pjsua  
+  pj_status_t status = pjsua_create();
+  if (status != PJ_SUCCESS) {
     Logger::error("pjsua_create() failed (%s)", getStatusAsString(status).c_str());
     return false;
-	}
+  }
 
-	// configure pjsua	
-	pjsua_config ua_cfg;
-	pjsua_config_default(&ua_cfg);
-	// enable just 1 simultaneous call 
-	//ua_cfg.max_calls = 1;
-	// callback configuration
-	ua_cfg.cb.on_incoming_call = &SipAccount::onIncomingCallCB;
+  // configure pjsua
+  pjsua_config ua_cfg;
+  pjsua_config_default(&ua_cfg);
+  // enable just 1 simultaneous call 
+  //ua_cfg.max_calls = 1;
+  // callback configuration
+  ua_cfg.cb.on_incoming_call = &SipAccount::onIncomingCallCB;
 
-	// logging configuration
-	pjsua_logging_config log_cfg;		
-	pjsua_logging_config_default(&log_cfg);
+  // logging configuration
+  pjsua_logging_config log_cfg;    
+  pjsua_logging_config_default(&log_cfg);
   log_cfg.level = pj_log_get_level();
-	
-	// media configuration
-	pjsua_media_config media_cfg;
-	pjsua_media_config_default(&media_cfg);
+  
+  // media configuration
+  pjsua_media_config media_cfg;
+  pjsua_media_config_default(&media_cfg);
 
-	// initialize pjsua 
-	status = pjsua_init(&ua_cfg, &log_cfg, &media_cfg);
+  // initialize pjsua 
+  status = pjsua_init(&ua_cfg, &log_cfg, &media_cfg);
   if (status != PJ_SUCCESS) {
     Logger::error("pjsua_init() failed (%s)", getStatusAsString(status).c_str());
     return false;
-	}
-	
-	// add udp transport
-	pjsua_transport_config udpcfg;
-	pjsua_transport_config_default(&udpcfg);
-	//udpcfg.port = 5060;
+  }
+  
+  // add udp transport
+  pjsua_transport_config udpcfg;
+  pjsua_transport_config_default(&udpcfg);
+  //udpcfg.port = 5060;
 
-	status = pjsua_transport_create(PJSIP_TRANSPORT_UDP, &udpcfg, NULL);
-	if (status != PJ_SUCCESS) {
+  status = pjsua_transport_create(PJSIP_TRANSPORT_UDP, &udpcfg, NULL);
+  if (status != PJ_SUCCESS) {
     Logger::error("pjsua_transport_create() failed (%s)", getStatusAsString(status).c_str());
     return false;
-	}
+  }
 
-	// disable sound - use null sound device
-	status = pjsua_set_null_snd_dev();
-	if (status != PJ_SUCCESS) {
+  // disable sound - use null sound device
+  status = pjsua_set_null_snd_dev();
+  if (status != PJ_SUCCESS) {
     Logger::error("pjsua_set_null_snd_dev() failed (%s)", getStatusAsString(status).c_str());
     return false;
-	}
+  }
 
-	// initialization is done, start pjsua
-	status = pjsua_start();
-	if (status != PJ_SUCCESS) {
+  // initialization is done, start pjsua
+  status = pjsua_start();
+  if (status != PJ_SUCCESS) {
     Logger::error("pjsua_start() failed (%s)", getStatusAsString(status).c_str());
     return false;
-	}
+  }
 
   return true;
 }
