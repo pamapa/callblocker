@@ -1,5 +1,22 @@
-# TODO: copyrigh
+# callblocker - blocking unwanted calls from your home phone
+# Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 3
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+#
 
+import os
 import sys
 import argparse
 import re
@@ -102,7 +119,7 @@ def parse_pages(content):
   #print last_page
   
   ret.extend(parse_page(soup))
-  #return ret
+  return ret
   for p in range(1,last_page+1):
     content = fetch_page(p)
     soup = BeautifulSoup(content)
@@ -139,10 +156,11 @@ def main(argv):
   result = cleanup_entries(result)
   if len(result) != 0:
     data = OrderedDict((
-      ("name","blacklist by K-Tipp"),
-      ("parsed_by","CallBlocker (www.todo.com)"),
+      ("name","blacklist provided by K-Tipp"),
+      ("origin", "https://www.ktipp.ch/service/warnlisten/detail/?warnliste_id=7"),
+      ("parsed_by","callblocker script: "+os.path.basename(__file__)),
       ("num_entries",len(result)),
-      ("last_update",datetime.datetime.now().strftime("%a, %d %b %Y %X +0000")),
+      ("last_update",datetime.datetime.now().strftime("%F %T")),
       ("entries",result)
     ))
     demjson.encode_to_file(args.output, data, overwrite=True, compactly=False, sort_keys=demjson.SORT_PRESERVE)
