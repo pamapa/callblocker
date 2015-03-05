@@ -9,7 +9,6 @@ blocking unwanted calls from your home phone
 
 ## Installing on a Raspberry Pi (running raspbian jessie)
 1. sudo apt-get install git automake g++ libpjproject-dev libjson-c-dev
-1. Apply patch from here: https://bugzilla.redhat.com/show_bug.cgi?id=1153786
 1. git clone https://github.com/pamapa/callblocker.git
 1. cd callblocker
 1. aclocal

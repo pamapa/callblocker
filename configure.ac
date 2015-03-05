@@ -25,6 +25,9 @@ AM_INIT_AUTOMAKE()
 dnl Checks for programs.
 AC_PROG_CXX
 
+dnl Compiler defines
+CPPFLAGS="$CPPFLAGS -DPJ_AUTOCONF=1"
+
 dnl Check for Libraries.
 AC_CHECK_HEADERS([pjlib.h])
 AC_CHECK_HEADERS([pjsua-lib/pjsua.h])
