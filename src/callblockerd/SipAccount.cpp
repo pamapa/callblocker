@@ -63,15 +63,17 @@ bool SipAccount::add(struct SettingSipAccount* acc) {
   pjsua_acc_config cfg;
   pjsua_acc_config_default(&cfg);
   
-  std::ostringstream user_url;
-  user_url << "sip:" << acc->fromusername << "@" << acc->fromdomain;
+  std::ostringstream user_url_ss;
+  user_url_ss << "sip:" << acc->fromusername << "@" << acc->fromdomain;
+  std::string user_url = user_url_ss.str();
   
-  std::ostringstream provider_url;
-  provider_url << "sip:" << acc->fromdomain;
+  std::ostringstream provider_url_ss;
+  provider_url_ss << "sip:" << acc->fromdomain;
+  std::string provider_url = provider_url_ss.str();
 
   // create and define account
-  cfg.id = pj_str((char*)user_url.str().c_str());
-  cfg.reg_uri = pj_str((char*)provider_url.str().c_str());
+  cfg.id = pj_str((char*)user_url.c_str());
+  cfg.reg_uri = pj_str((char*)provider_url.c_str());
   cfg.cred_count = 1;
   cfg.cred_info[0].realm = pj_str((char*)acc->fromdomain.c_str());
   cfg.cred_info[0].scheme = pj_str((char*)"digest");
