@@ -28,7 +28,7 @@
 #include "Logger.h"
 
 
-Lists::Lists(std::string dirname) : Notify(dirname, IN_CLOSE_WRITE | IN_DELETE) {
+Lists::Lists(const std::string& dirname) : Notify(dirname, IN_CLOSE_WRITE | IN_DELETE) {
   m_dirname = dirname;
   load();
 }
@@ -48,7 +48,7 @@ void Lists::watch() {
 }
 
 // TODO: mutex....
-bool Lists::isListed(const char* number) {
+bool Lists::isListed(const std::string& number) {
   bool ret = false;
   for(size_t i = 0; i < m_lists.size(); i++) {
     if (m_lists[i]->hasNumber(number)) {

@@ -57,29 +57,30 @@ SipAccount::~SipAccount() {
 }
 
 bool SipAccount::add(struct SettingSipAccount* acc) {
-  Logger::debug("SipAccount::add(%s %s %s)...", acc->fromdomain.c_str(), acc->fromusername.c_str(), acc->frompassword.c_str());
-  
+  Logger::debug("SipAccount::add(%s)...", acc->toString().c_str());
+  m_settings = *acc; // strcut copy
+
   // prepare account configuration
   pjsua_acc_config cfg;
   pjsua_acc_config_default(&cfg);
   
   std::ostringstream user_url_ss;
-  user_url_ss << "sip:" << acc->fromusername << "@" << acc->fromdomain;
+  user_url_ss << "sip:" << acc->fromUsername << "@" << acc->fromDomain;
   std::string user_url = user_url_ss.str();
   
   std::ostringstream provider_url_ss;
-  provider_url_ss << "sip:" << acc->fromdomain;
+  provider_url_ss << "sip:" << acc->fromDomain;
   std::string provider_url = provider_url_ss.str();
 
   // create and define account
   cfg.id = pj_str((char*)user_url.c_str());
   cfg.reg_uri = pj_str((char*)provider_url.c_str());
   cfg.cred_count = 1;
-  cfg.cred_info[0].realm = pj_str((char*)acc->fromdomain.c_str());
+  cfg.cred_info[0].realm = pj_str((char*)acc->fromDomain.c_str());
   cfg.cred_info[0].scheme = pj_str((char*)"digest");
-  cfg.cred_info[0].username = pj_str((char*)acc->fromusername.c_str());
+  cfg.cred_info[0].username = pj_str((char*)acc->fromUsername.c_str());
   cfg.cred_info[0].data_type = PJSIP_CRED_DATA_PLAIN_PASSWD;
-  cfg.cred_info[0].data = pj_str((char*)acc->frompassword.c_str());
+  cfg.cred_info[0].data = pj_str((char*)acc->fromPassword.c_str());
 
   // add account
   pj_status_t status = pjsua_acc_add(&cfg, PJ_TRUE, &m_accId);
@@ -116,23 +117,51 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata)
   Logger::debug("call_id %s", pj_strbuf(&ci.call_id));
 
   std::string display, user;
-  if (parseURI(&ci.remote_info, &display, &user)) {
-    Logger::debug("yes '%s' <%s>", display.c_str(), user.c_str());
+  if (!parseURI(&ci.remote_info, &display, &user)) {
+    Logger::warn("invalid URI received '%s'", pj_strbuf(&ci.remote_info));
+    return;
   }
 
+  std::string reason;
+  bool block = m_phone->isNumberBlocked(m_settings.blockMode, user, &reason);
 
-/*
-  std::string number = pj_strbuf(&ci.call_id);
-  bool blockCall = !m_phone->isWhitelisted(number.c_str()) && !m_phone->isBlacklisted(number.c_str());
-  Logger::debug("block %u", blockCall);
-*/
+  std::string msg;
+  msg += "Incoming call from ";
+  msg += user;
+  if (block) {
+    msg += " is blocked";
+  }
+  if (reason.length() > 0) {
+    msg += " (";
+    msg += reason;
+    msg += ")";
+  }
+  Logger::notice(msg.c_str());
 
-  // automatically answer incoming call with 200 status/OK 
-  // pjsua_call_answer(call_id, 200, NULL, NULL);
+  // TODO: 302 redirect ??
+#if 0
+  Use pjsua_call_hangup() and put the destination URL in the Contact
+  header of the pjsua_msg_data.
 
-  // codes: http://de.wikipedia.org/wiki/SIP-Status-Codes 603=Declined
-  //pj_status_t status = pjsua_call_hangup(call_id, 603, NULL, NULL);
-  //if (status != PJ_SUCCESS) error_exit("Error in pjsua_call_hangup()", status);
+  pj_pool_t* pool = pjsua_pool_create("", 512, 512);
+  pjsua_msg_data msgData;
+  pjsua_msg_data_init(&msgData);
+
+  pj_str_t tmp;
+  pjsip_generic_string_hdr* hdr =
+    pjsip_generic_string_hdr_create(pool, pj_cstr(&tmp, "Contact"), pj_cstr(&tmp, "URI ...TODO"));
+  pj_list_push_back(&msgData.hdr_list, hdr);
+  pjsua_call_hangup(call_id, 302, NULL, &msgData);
+  pj_pool_release(pool);
+#endif
+
+  if (block) {
+    // codes: http://de.wikipedia.org/wiki/SIP-Status-Codes 603=Declined
+    pj_status_t status = pjsua_call_hangup(call_id, 603, NULL, NULL);
+    if (status != PJ_SUCCESS) {
+      Logger::warn("pjsua_call_hangup() failed (%s)", getStatusAsString(status).c_str());
+    }
+  }
 }
 
 bool SipAccount::parseURI(pj_str_t* uri, std::string* display, std::string* user) {

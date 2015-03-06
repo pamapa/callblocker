@@ -32,9 +32,9 @@ public:
   List();
   virtual ~List();
 
-  bool load(std::string);
+  bool load(const std::string& filename);
   const char* getFilename();
-  bool hasNumber(const char* number);
+  bool hasNumber(const std::string& number);
   void dump();
 };
 

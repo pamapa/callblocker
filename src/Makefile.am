@@ -18,7 +18,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 bin_PROGRAMS = callblockerd
-callblockerd_SOURCES = Main.cpp Logger.cpp Lists.cpp List.cpp SipPhone.cpp SipAccount.cpp Notify.cpp Settings.cpp
+callblockerd_SOURCES = \
+  Main.cpp Logger.cpp Notify.cpp Lists.cpp List.cpp Settings.cpp \
+  Phone.cpp SipPhone.cpp SipAccount.cpp AnalogPhone.cpp
 
 AM_CPPFLAGS = -DSYSCONFDIR=\"${sysconfdir}\"
 

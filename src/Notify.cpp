@@ -35,7 +35,7 @@
 #define EVENT_BUF_LEN   (1024 * ( EVENT_SIZE + 16 ))
 
 
-Notify::Notify(std::string pathname, uint32_t mask) {
+Notify::Notify(const std::string& pathname, uint32_t mask) {
   m_FD = inotify_init();
   m_WD = inotify_add_watch(m_FD, pathname.c_str(), mask);
 }

@@ -17,27 +17,23 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef PHONE_H
-#define PHONE_H
+#include "AnalogPhone.h" // API
 
 #include <string>
 
-#include "Lists.h"
-#include "Settings.h"
+#include "Logger.h"
 
 
-class Phone {
-private:
-  Lists* m_whitelists;
-  Lists* m_blacklists;
+AnalogPhone::AnalogPhone(Lists* whitelists, Lists* blacklists) : Phone(whitelists, blacklists) {
+}
 
-public:
-  Phone(Lists* whitelists, Lists* blacklists);
-  virtual ~Phone();
-  virtual bool init() = 0;
+AnalogPhone::~AnalogPhone() {
+  Logger::debug("~AnalogPhone...");
+}
 
-  bool isNumberBlocked(enum SettingBlockMode blockMode, const std::string& number, std::string* reason);
-};
+bool AnalogPhone::init() {
+  Logger::debug("AnalogPhone::init...");
 
-#endif
+  return true;
+}
 

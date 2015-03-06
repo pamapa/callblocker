@@ -32,11 +32,11 @@ private:
   std::vector<List*> m_lists;
 
 public:
-  Lists(std::string subdirname);
+  Lists(const std::string& subdirname);
   virtual ~Lists();
   void watch();
 
-  bool isListed(const char* number);
+  bool isListed(const std::string& number);
 
   void dump();
 

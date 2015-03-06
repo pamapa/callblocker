@@ -12,13 +12,14 @@
   "sip" : {
     "pjsip_log_level" : 0,
     "accounts" : [
-        { 
-          "enabled" : false,
-          "name" : "SIP Home Phone",
-          "fromdomain" : "<yourdomain.net>",
-          "fromusername" : "<yourusername>",
-          "frompassword" : "<yourpassword>"
-        }
+      { 
+        "enabled" : false,
+        "block_mode" : "whitelists_and_blacklists",
+        "name" : "SIP Home Phone",
+        "fromdomain" : "<yourdomain.net>",
+        "fromusername" : "<yourusername>",
+        "frompassword" : "<yourpassword>"
+      }
     ]
   }
 }

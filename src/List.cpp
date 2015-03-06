@@ -37,7 +37,7 @@ List::~List() {
   m_entries.clear();
 }
 
-bool List::load(std::string filename) {
+bool List::load(const std::string& filename) {
   m_filename = filename;
 
   Logger::debug("loading file %s", getFilename());
@@ -83,11 +83,11 @@ const char* List::getFilename() {
   return m_filename.c_str();
 }
 
-bool List::hasNumber(const char* number) {
+bool List::hasNumber(const std::string& number) {
   for(size_t i = 0; i < m_entries.size(); i++) {
     const char* s = m_entries[i].c_str();
-    if (strncmp(s, number, strlen(s)) == 0) {
-      Logger::debug("found number %s in %s", number ,getFilename());
+    if (strncmp(s, number.c_str(), strlen(s)) == 0) {
+      Logger::debug("number '%s' matched with '%s' in file %s", number.c_str(), s, getFilename());
       return true;
     }
   }

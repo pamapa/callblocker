@@ -21,28 +21,50 @@
 #define SETTINGS_H
 
 #include <string>
+#include <sstream>
 #include <vector>
 
 #include "Notify.h"
 struct json_object;
 
 
+enum SettingBlockMode {
+  LOGGING_ONLY = 0,             // number is never blocked, only logging
+  WHITELISTS_ONLY,              // number has to be in a whitelists (blacklists not used)
+  WHITELISTS_AND_BLACKLISTS,    // number is blocked, when in a blacklists and NOT in a whitelists (default)
+  BLACKLISTS_ONLY               // number is blocked, when in a blacklists (whitelists not used)
+};
+
 struct SettingSipAccount {
-  std::string fromdomain;
-  std::string fromusername;
-  std::string frompassword;
+  enum SettingBlockMode blockMode;
+  std::string fromDomain;
+  std::string fromUsername;
+  std::string fromPassword;
+
+  std::string toString() {
+    std::ostringstream oss;
+    oss << blockMode << ", " << fromDomain << ", " << fromUsername << ", " << fromPassword;
+    return oss.str();
+  }
+};
+
+struct SettingAnalogDevice {
+  enum SettingBlockMode blockMode;
+  // TODO
 };
 
 class Settings : public Notify {
 private:
   std::string m_filename;
   std::vector<struct SettingSipAccount> m_sipAccounts;
+  std::vector<struct SettingAnalogDevice> m_analogDevices;
 
 public:
   Settings();
   virtual ~Settings();
   bool watch();
   std::vector<struct SettingSipAccount> getSipAccounts() { return m_sipAccounts; }
+  std::vector<struct SettingAnalogDevice> getAnalogDevices() { return m_analogDevices; }
   void dump();
 
 private:

@@ -23,12 +23,13 @@
 #include <pjsua-lib/pjsua.h>
 
 #include "SipPhone.h"
-struct SettingSipAccount;
+#include "Settings.h"
 
 
 class SipAccount {
 private:
   SipPhone* m_phone;
+  struct SettingSipAccount m_settings;
   pjsua_acc_id m_accId;
 
 public:

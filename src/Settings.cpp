@@ -29,8 +29,9 @@
 #include "Logger.h"
 
 
-Settings::Settings() : Notify(SYSCONFDIR "/" PACKAGE_NAME "/settings.json", IN_CLOSE_WRITE) {
-  m_filename = SYSCONFDIR "/" PACKAGE_NAME "/settings.json";
+Settings::Settings() : m_filename(SYSCONFDIR "/" PACKAGE_NAME "/settings.json"),
+                       Notify(SYSCONFDIR "/" PACKAGE_NAME "/settings.json", IN_CLOSE_WRITE) {
+  //m_filename = SYSCONFDIR "/" PACKAGE_NAME "/settings.json";
   load();
 }
 
@@ -90,6 +91,20 @@ bool Settings::load() {
         if (!getObject(entry, "enabled", &enabled) || !enabled) {
           continue;
         }
+
+        std::string tmp;
+        if (!getObject(entry, "block_mode", &tmp)) {
+          continue;
+        }
+        enum SettingBlockMode block_mode;
+        if (tmp == "logging_only") tmp = LOGGING_ONLY;
+        else if (tmp == "whitelists_only") tmp = WHITELISTS_ONLY;
+        else if (tmp == "whitelists_and_blacklists") tmp = WHITELISTS_AND_BLACKLISTS;
+        else if (tmp == "blacklists_only") tmp = BLACKLISTS_ONLY;
+        else {
+          Logger::warn("unknown block mode '%s' in settings file %s", tmp.c_str(), m_filename.c_str());
+          continue;
+        }
         std::string fromdomain;
         if (!getObject(entry, "fromdomain", &fromdomain)) {
           continue;
@@ -102,7 +117,7 @@ bool Settings::load() {
         if (!getObject(entry, "frompassword", &frompassword)) {
           continue;
         }
-        struct SettingSipAccount acc = {fromdomain, fromusername, frompassword};
+        struct SettingSipAccount acc = {block_mode, fromdomain, fromusername, frompassword};
         m_sipAccounts.push_back(acc);
       }
     } else {

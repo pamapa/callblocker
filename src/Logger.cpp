@@ -24,7 +24,7 @@
 #include <syslog.h>
 
 
-#define USE_SYSLOG                  0
+#define USE_SYSLOG                  1
 
 
 static unsigned int s_logLevel = LOG_INFO;
@@ -101,10 +101,11 @@ void Logger::message(int priority, const char* format, va_list ap) {
   std::string fmt;
   switch (priority) {
     default:
-    case LOG_ERR:     stream = stderr; fmt = "Error: "; break;
-    case LOG_WARNING: stream = stderr; fmt = "Warn: ";  break;
-    case LOG_INFO:    stream = stdout; fmt = "Info: ";  break;
-    case LOG_DEBUG:   stream = stdout; fmt = "Debug: "; break;
+    case LOG_ERR:     stream = stderr; fmt = "Error: ";  break;
+    case LOG_WARNING: stream = stderr; fmt = "Warn: ";   break;
+    case LOG_NOTICE:  stream = stdout; fmt = "Notice: "; break;
+    case LOG_INFO:    stream = stdout; fmt = "Info: ";   break;
+    case LOG_DEBUG:   stream = stdout; fmt = "Debug: ";  break;
   }
   fmt += format;
   fmt += "\n";

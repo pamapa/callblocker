@@ -17,26 +17,21 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef PHONE_H
-#define PHONE_H
+#ifndef ANALOGPHONE_H
+#define ANALOGPHONE_H
 
-#include <string>
+#include "string"
+#include <pjsua-lib/pjsua.h>
 
 #include "Lists.h"
-#include "Settings.h"
+#include "Phone.h"
 
 
-class Phone {
-private:
-  Lists* m_whitelists;
-  Lists* m_blacklists;
-
+class AnalogPhone : public Phone {
 public:
-  Phone(Lists* whitelists, Lists* blacklists);
-  virtual ~Phone();
-  virtual bool init() = 0;
-
-  bool isNumberBlocked(enum SettingBlockMode blockMode, const std::string& number, std::string* reason);
+  AnalogPhone(Lists* whitelists, Lists* blacklists);
+  virtual ~AnalogPhone();
+  virtual bool init();
 };
 
 #endif
