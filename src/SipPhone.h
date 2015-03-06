@@ -20,7 +20,7 @@
 #ifndef SIPPHONE_H
 #define SIPPHONE_H
 
-#include "string"
+#include <string>
 #include <pjsua-lib/pjsua.h>
 
 #include "Lists.h"
@@ -31,7 +31,7 @@ class SipPhone : public Phone {
 public:
   SipPhone(Lists* whitelists, Lists* blacklists);
   virtual ~SipPhone();
-  virtual bool init();
+  bool init();
 };
 
 #endif

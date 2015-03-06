@@ -20,18 +20,34 @@
 #ifndef ANALOGPHONE_H
 #define ANALOGPHONE_H
 
-#include "string"
-#include <pjsua-lib/pjsua.h>
+#include <string>
+#include <termios.h>
 
 #include "Lists.h"
 #include "Phone.h"
 
 
 class AnalogPhone : public Phone {
+private:
+  struct SettingAnalogPhone m_settings;
+
+  int m_FD;
+  struct termios m_origTermios;
+
+  time_t m_ringTime;
+  unsigned int m_numRings;
+  bool m_foundCID;
+
 public:
   AnalogPhone(Lists* whitelists, Lists* blacklists);
   virtual ~AnalogPhone();
-  virtual bool init();
+  bool init(struct SettingAnalogPhone* phone);
+  void run();
+
+private:
+  bool openDevice();
+  bool sendCommand(std::string cmd);
+  bool getData(std::string* data);
 };
 
 #endif

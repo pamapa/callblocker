@@ -48,23 +48,29 @@ struct SettingSipAccount {
   }
 };
 
-struct SettingAnalogDevice {
+struct SettingAnalogPhone {
   enum SettingBlockMode blockMode;
-  // TODO
+  std::string device;
+
+  std::string toString() {
+    std::ostringstream oss;
+    oss << blockMode << ", " << device;
+    return oss.str();
+  }
 };
 
 class Settings : public Notify {
 private:
   std::string m_filename;
   std::vector<struct SettingSipAccount> m_sipAccounts;
-  std::vector<struct SettingAnalogDevice> m_analogDevices;
+  std::vector<struct SettingAnalogPhone> m_analogPhones;
 
 public:
   Settings();
   virtual ~Settings();
   bool run();
   std::vector<struct SettingSipAccount> getSipAccounts() { return m_sipAccounts; }
-  std::vector<struct SettingAnalogDevice> getAnalogDevices() { return m_analogDevices; }
+  std::vector<struct SettingAnalogPhone> getAnalogPhones() { return m_analogPhones; }
   void dump();
 
 private:
@@ -73,6 +79,7 @@ private:
   bool getObject(struct json_object* objbase, const char* objname, std::string* res);
   bool getObject(struct json_object* objbase, const char* objname, int* res);
   bool getObject(struct json_object* objbase, const char* objname, bool* res);
+  bool getBlockMode(struct json_object* objbase, enum SettingBlockMode* res);
 };
 
 #endif

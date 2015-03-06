@@ -1,11 +1,12 @@
 { 
-  "log_level" : "debug",
+  "log_level" : "info",
   "analog" : {
-    "devices" : [
+    "phones" : [
       {
         "enabled" : false,
+        "block_mode" : "logging_only",
         "name" : "Analog Home Phone",
-        "dev" : "/dev/tty0"
+        "device" : "/dev/ttyACM0"
       }
     ]
   },

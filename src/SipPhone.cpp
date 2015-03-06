@@ -68,6 +68,7 @@ bool SipPhone::init() {
   // enable just 1 simultaneous call 
   //ua_cfg.max_calls = 1;
   // callback configuration
+  ua_cfg.cb.on_call_state = &SipAccount::onCallStateCB;
   ua_cfg.cb.on_incoming_call = &SipAccount::onIncomingCallCB;
 
   // logging configuration

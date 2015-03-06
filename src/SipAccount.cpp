@@ -101,11 +101,14 @@ void SipAccount::onIncomingCallCB(pjsua_acc_id acc_id, pjsua_call_id call_id, pj
   p->onIncomingCall(call_id, rdata);
 }
 
-void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata)
-{
+void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
   Logger::debug("SipAccount::onIncomingCall...");
-
   PJ_UNUSED_ARG(rdata);
+
+  pj_status_t status = pjsua_call_set_user_data(call_id, this);
+  if (status != PJ_SUCCESS) {
+    Logger::error("pjsua_acc_set_user_data() failed (%s)", getStatusAsString(status).c_str());
+  }
 
   pjsua_call_info ci;
   pjsua_call_get_info(call_id, &ci);
@@ -122,20 +125,9 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata)
     return;
   }
 
-  std::string reason;
-  bool block = m_phone->isNumberBlocked(m_settings.blockMode, user, &reason);
-
+  // TODO: user empty
   std::string msg;
-  msg += "Incoming call from ";
-  msg += user;
-  if (block) {
-    msg += " is blocked";
-  }
-  if (reason.length() > 0) {
-    msg += " (";
-    msg += reason;
-    msg += ")";
-  }
+  bool block = m_phone->isNumberBlocked(m_settings.blockMode, user, &msg);
   Logger::notice(msg.c_str());
 
   // TODO: 302 redirect ??
@@ -162,6 +154,23 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata)
       Logger::warn("pjsua_call_hangup() failed (%s)", getStatusAsString(status).c_str());
     }
   }
+}
+
+void SipAccount::onCallStateCB(pjsua_call_id call_id, pjsip_event* e) {
+  SipAccount* p = (SipAccount*)pjsua_call_get_user_data(call_id);
+  p->onCallState(call_id, e);
+}
+
+void SipAccount::onCallState(pjsua_call_id call_id, pjsip_event* e) {
+  Logger::debug("SipAccount::onCallState...");
+  PJ_UNUSED_ARG(e);
+
+  pjsua_call_info ci;
+  pjsua_call_get_info(call_id, &ci);
+
+  std::string state = std::string(pj_strbuf(&ci.state_text), ci.state_text.slen);
+  Logger::notice("Incoming call state changed to %s", state.c_str());
+  // TODO
 }
 
 bool SipAccount::parseURI(pj_str_t* uri, std::string* display, std::string* user) {

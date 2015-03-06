@@ -24,7 +24,7 @@
 #include <syslog.h>
 
 
-#define USE_SYSLOG                  1
+#define USE_SYSLOG                  0
 
 
 static unsigned int s_logLevel = LOG_INFO;

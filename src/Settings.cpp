@@ -50,13 +50,14 @@ bool Settings::run() {
 }
 
 void Settings::clear() {
+  m_analogPhones.clear();
   m_sipAccounts.clear();
 }
 
 bool Settings::load() {
   Logger::debug("loading file %s", m_filename.c_str());
-  
-  m_sipAccounts.clear();
+
+  clear();
 
   std::ifstream in(m_filename.c_str());
   if (in.fail()) {
@@ -75,6 +76,36 @@ bool Settings::load() {
     Logger::setLogLevel(log_level);
   }
 
+  // Analog
+  struct json_object* analog;
+  if (json_object_object_get_ex(root, "analog", &analog)) {
+    struct json_object* phones;
+    if (json_object_object_get_ex(analog, "phones", &phones)) {
+      for (size_t i = 0; i < json_object_array_length(phones); i++) {
+        struct json_object* entry = json_object_array_get_idx(phones, i);
+        bool enabled;
+        if (!getObject(entry, "enabled", &enabled) || !enabled) {
+          continue;
+        }
+        enum SettingBlockMode block_mode;
+        if (!getBlockMode(entry, &block_mode)) {
+          continue;
+        }
+        std::string device;
+        if (!getObject(entry, "device", &device)) {
+          continue;
+        }
+        struct SettingAnalogPhone p = {block_mode, device};
+        m_analogPhones.push_back(p);
+      }
+    } else {
+      Logger::debug("no <phones> section found in settings file %s", m_filename.c_str());
+    }
+  } else {
+    Logger::debug("no <analog> section found in settings file %s", m_filename.c_str());
+  }
+
+  // SIP
   struct json_object* sip;
   if (json_object_object_get_ex(root, "sip", &sip)) {
 
@@ -91,18 +122,8 @@ bool Settings::load() {
         if (!getObject(entry, "enabled", &enabled) || !enabled) {
           continue;
         }
-
-        std::string tmp;
-        if (!getObject(entry, "block_mode", &tmp)) {
-          continue;
-        }
         enum SettingBlockMode block_mode;
-        if (tmp == "logging_only") tmp = LOGGING_ONLY;
-        else if (tmp == "whitelists_only") tmp = WHITELISTS_ONLY;
-        else if (tmp == "whitelists_and_blacklists") tmp = WHITELISTS_AND_BLACKLISTS;
-        else if (tmp == "blacklists_only") tmp = BLACKLISTS_ONLY;
-        else {
-          Logger::warn("unknown block mode '%s' in settings file %s", tmp.c_str(), m_filename.c_str());
+        if (!getBlockMode(entry, &block_mode)) {
           continue;
         }
         std::string fromdomain;
@@ -117,14 +138,14 @@ bool Settings::load() {
         if (!getObject(entry, "frompassword", &frompassword)) {
           continue;
         }
-        struct SettingSipAccount acc = {block_mode, fromdomain, fromusername, frompassword};
-        m_sipAccounts.push_back(acc);
+        struct SettingSipAccount a = {block_mode, fromdomain, fromusername, frompassword};
+        m_sipAccounts.push_back(a);
       }
     } else {
-      Logger::debug("no accounts section found in settings file %s", m_filename.c_str());
+      Logger::debug("no <accounts> section found in settings file %s", m_filename.c_str());
     }
   } else {
-    Logger::debug("no sip section found in settings file %s", m_filename.c_str());
+    Logger::debug("no <sip> section found in settings file %s", m_filename.c_str());
   }
 
   json_object_put(root); // free
@@ -173,6 +194,22 @@ bool Settings::getObject(struct json_object* objbase, const char* objname, bool*
     return false;
   }
   *res = (bool)json_object_get_boolean(n);
+  return true;
+}
+
+bool Settings::getBlockMode(struct json_object* objbase, enum SettingBlockMode* res) {
+  std::string str;
+  if (!getObject(objbase, "block_mode", &str)) {
+    return false;
+  }
+  if (str == "logging_only") *res = LOGGING_ONLY;
+  else if (str == "whitelists_only") *res = WHITELISTS_ONLY;
+  else if (str == "whitelists_and_blacklists") *res = WHITELISTS_AND_BLACKLISTS;
+  else if (str == "blacklists_only") *res = BLACKLISTS_ONLY;
+  else {
+    Logger::warn("unknown block mode '%s' in settings file %s", str.c_str(), m_filename.c_str());
+    return false;
+  }
   return true;
 }
 

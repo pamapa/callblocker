@@ -34,9 +34,7 @@ private:
 public:
   Phone(Lists* whitelists, Lists* blacklists);
   virtual ~Phone();
-  virtual bool init() = 0;
-
-  bool isNumberBlocked(enum SettingBlockMode blockMode, const std::string& number, std::string* reason);
+  bool isNumberBlocked(enum SettingBlockMode blockMode, const std::string& number, std::string* msg);
 };
 
 #endif

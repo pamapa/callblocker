@@ -39,9 +39,10 @@ public:
 
   // callback -> class method call conversion
   static void onIncomingCallCB(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata);
-
+  static void onCallStateCB(pjsua_call_id call_id, pjsip_event* e);
 private:
   void onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata);
+  void onCallState(pjsua_call_id call_id, pjsip_event* e);
   bool parseURI(pj_str_t* uri_str, std::string* display, std::string* user);
 };
 

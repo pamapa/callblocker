@@ -33,37 +33,58 @@ Phone::~Phone() {
   m_blacklists = NULL;
 }
 
-bool Phone::isNumberBlocked(enum SettingBlockMode blockMode, const std::string& number, std::string* reason) {
+bool Phone::isNumberBlocked(enum SettingBlockMode blockMode, const std::string& number, std::string* msg) {
+  std::string reason;
+  bool block;
   switch (blockMode) {
     default:
       Logger::warn("invalid block mode %d", blockMode);
     case LOGGING_ONLY:
-      *reason = "";
-      return false;
+      reason = "";
+      block = false;
+      break;
 
     case WHITELISTS_ONLY:
       if (m_whitelists->isListed(number)) {
-        *reason = "found in whitelist";
-        return false;
+        reason = "found in whitelist";
+        block = false;
+      } else {
+        reason = "";
+        block = true;
       }
-      *reason = "";
-      return true;
+      break;
 
     case WHITELISTS_AND_BLACKLISTS:
       if (m_whitelists->isListed(number)) {
-        *reason = "found in whitelist";
-        return false;
+        reason = "found in whitelist";
+        block = false;
+      } else {
+        reason = "found in blacklist";
+        block = m_blacklists->isListed(number); 
       }
-      *reason = "found in blacklist";
-      return m_blacklists->isListed(number); 
+      break;
 
     case BLACKLISTS_ONLY:
       if (m_blacklists->isListed(number)) {
-        *reason = "found in blacklist";
-        return true;
+        reason = "found in blacklist";
+        block = true;
+      } else {
+        reason = "";
+        block = false;
       }
-      *reason = "";
-      return false;
   }
+
+  std::string res = "Incoming call from ";
+  res += number;
+  if (block) {
+    res += " is blocked";
+  }
+  if (reason.length() > 0) {
+    res += " (";
+    res += reason;
+    res += ")";
+  }
+  *msg = res;
+  return block;
 }
 

@@ -26,16 +26,17 @@ dnl Checks for programs.
 AC_PROG_CXX
 
 dnl Compiler defines
-CPPFLAGS="$CPPFLAGS -DPJ_AUTOCONF=1"
+CPPFLAGS="$CPPFLAGS -std=c++11 -DPJ_AUTOCONF=1"
 
 dnl Check for Libraries.
 AC_CHECK_HEADERS([pjlib.h])
 AC_CHECK_HEADERS([pjsua-lib/pjsua.h])
-AC_CHECK_LIB([pj], pj_init)
-AC_CHECK_LIB([pjsip], pjsip_parse_uri)
-AC_CHECK_LIB([pjsua], pjsua_init)
+AC_CHECK_LIB([pj], pj_init, , [AC_MSG_ERROR("Linking against pj failed.")])
+AC_CHECK_LIB([pjsip], pjsip_parse_uri, , [AC_MSG_ERROR("Linking against pjsip failed.")])
+AC_CHECK_LIB([pjsua], pjsua_init, , [AC_MSG_ERROR("Linking against pjsua failed.")])
 AC_CHECK_HEADERS([json-c/json.h])
-AC_CHECK_LIB([json-c], json_tokener_parse)
+AC_CHECK_LIB([json-c], json_tokener_parse, , [AC_MSG_ERROR("Linking against json-c failed.")])
+AC_CHECK_LIB([boost_regex], main, , [AC_MSG_ERROR("Linking against boost_regex failed.")])
 
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([etc/callblocker/Makefile])

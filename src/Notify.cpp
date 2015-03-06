@@ -48,7 +48,7 @@ Notify::~Notify() {
 
 bool Notify::hasChanged() {
   bool res = false;
-  struct pollfd pfd = {m_FD, POLLIN, 0};
+  struct pollfd pfd = {m_FD, POLLIN | POLLPRI, 0};
   int ret = poll(&pfd, 1, 50);  // timeout of 50ms
   if (ret < 0) {
     // Logger::warn("poll failed with %s", strerror(errno));
@@ -57,12 +57,13 @@ bool Notify::hasChanged() {
   } else {
     // event to read
     char buffer[EVENT_BUF_LEN];
-    int length = read(m_FD, buffer, EVENT_BUF_LEN);
+    int length = read(m_FD, buffer, sizeof(buffer));
     int i = 0;
     while (i < length) {
       struct inotify_event *event = (struct inotify_event*)&buffer[i];
       if (event->len) {
         res = true;
+        break;
       }
       i += EVENT_SIZE + event->len;
     }
