@@ -39,8 +39,8 @@ Settings::~Settings() {
   clear();
 }
 
-bool Settings::watch() {
-  if (changed()) {
+bool Settings::run() {
+  if (hasChanged()) {
     Logger::info("reload %s", m_filename.c_str());
     clear();
     load();

@@ -34,7 +34,7 @@ private:
 public:
   Lists(const std::string& subdirname);
   virtual ~Lists();
-  void watch();
+  void run();
 
   bool isListed(const std::string& number);
 

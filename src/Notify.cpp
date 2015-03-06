@@ -46,7 +46,7 @@ Notify::~Notify() {
   m_FD = m_WD = -1;
 }
 
-bool Notify::changed() {
+bool Notify::hasChanged() {
   bool res = false;
   struct pollfd pfd = {m_FD, POLLIN, 0};
   int ret = poll(&pfd, 1, 50);  // timeout of 50ms

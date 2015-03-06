@@ -62,7 +62,7 @@ private:
 public:
   Settings();
   virtual ~Settings();
-  bool watch();
+  bool run();
   std::vector<struct SettingSipAccount> getSipAccounts() { return m_sipAccounts; }
   std::vector<struct SettingAnalogDevice> getAnalogDevices() { return m_analogDevices; }
   void dump();

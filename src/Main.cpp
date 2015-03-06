@@ -54,11 +54,11 @@ public:
     m_sipPhone = new SipPhone(m_whitelists, m_blacklists);
     m_sipPhone->init();
 
-    addSipAccounts();
+    add();
   }
 
   virtual ~Handler() {
-    removeSipAccounts();
+    remove();
     delete m_sipPhone;
     delete m_blacklists;
     delete m_whitelists;
@@ -68,26 +68,26 @@ public:
 
   void mainLoop() {
     while (s_appRunning) {
-      m_whitelists->watch();
-      m_blacklists->watch();
+      m_whitelists->run();
+      m_blacklists->run();
 
-      if (m_settings->changed()) {
+      if (m_settings->hasChanged()) {
         Logger::debug("reload SIP accounts");
-        removeSipAccounts();
-        addSipAccounts();
+        remove();
+        add();
       }
     }
   }
 
 private:
-  void removeSipAccounts() {
+  void remove() {
     for(size_t i = 0; i < m_sipAccounts.size(); i++) {
       delete m_sipAccounts[i];
     }
     m_sipAccounts.clear();
   }
 
-  void addSipAccounts() {
+  void add() {
     std::vector<struct SettingSipAccount> accounts = m_settings->getSipAccounts();
     for(size_t i = 0; i < accounts.size(); i++) {
       SipAccount* tmp = new SipAccount(m_sipPhone);
@@ -108,48 +108,6 @@ int main(int argc, char *argv[]) {
   h->mainLoop();
   delete h;
 
-/*
-  Logger::start();
-  Settings* s = new Settings();
-
-  Lists* whitelists = new Lists(SYSCONFDIR "/whitelists");
-  Lists* blacklists = new Lists(SYSCONFDIR "/blacklists");
-
-  SipPhone* sipPhone = new SipPhone(whitelists, blacklists);
-  sipPhone->init();
-
-  std::vector<SipAccount*> sipAccounts;
-
-  // sip add
-  std::vector<struct SettingSipAccount> accounts = s->getSipAccounts();
-  for(size_t i = 0; i < accounts.size(); i++) {
-    SipAccount* tmp = new SipAccount(sipPhone);
-    if (tmp->add(&accounts[i])) sipAccounts.push_back(tmp);
-    else delete tmp;
-  }
-
-  for (;;) {
-    whitelists->watch();
-    blacklists->watch();
-
-    if (s->changed()) {
-
-      // sip remove
-      for(size_t i = 0; i < sipAccounts.size(); i++) {
-        delete sipAccounts[i];
-      }
-      sipAccounts.clear();
-
-      // sip add
-      std::vector<struct SettingSipAccount> accounts = s->getSipAccounts();
-      for(size_t i = 0; i < accounts.size(); i++) {
-        SipAccount* tmp = new SipAccount(sipPhone);
-        if (tmp->add(&accounts[i])) sipAccounts.push_back(tmp);
-        else delete tmp;
-      }
-    }
-  }
-*/
   return 0;
 }
 

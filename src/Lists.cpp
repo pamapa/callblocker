@@ -37,8 +37,8 @@ Lists::~Lists() {
   clear();
 }
 
-void Lists::watch() {
-  if (changed()) {
+void Lists::run() {
+  if (hasChanged()) {
     Logger::info("reload %s", m_dirname.c_str());
 
     // TODO: mutex....
