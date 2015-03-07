@@ -30,11 +30,12 @@ def error(msg):
   print msg
   sys.exit(-1)
 
+def debug(msg):
+  #print msg
+  return
+
 def extract_number(data):
-  #print "ex0:"+data
   n = re.sub(r"[^0-9\+]","", data)
-  #print "ex1:"+n
-  n = re.sub(r"^00", "+", n)
   return n
 
 # 021 558 73 91/92/93/94/95
@@ -66,7 +67,7 @@ def extract_range_numbers(data):
 def extract_numbers(data):
   ret = []
   #print "data:" + data
-  arr = re.split("und|oder|sowie|,", data)
+  arr = re.split("und|oder|sowie|auch|,|;", data)
   for a in arr:
     if a.find("/") != -1:
       ret.extend(extract_slashed_numbers(a))
@@ -84,7 +85,7 @@ def extract_comment(data):
   s = s.replace("&amp", "&")
   s = s.replace("  ", " ")
   s = s.strip()
-  return s if len(s)<= 80 else s[0:80-3]+"..."
+  return s if len(s)<= 100 else s[0:100-3]+"..."
 
 def fetch_page(page_nr):
   print "fetch_page: " + str(page_nr)
@@ -119,7 +120,7 @@ def parse_pages(content):
   #print last_page
   
   ret.extend(parse_page(soup))
-  return ret
+  #return ret
   for p in range(1,last_page+1):
     content = fetch_page(p)
     soup = BeautifulSoup(content)
@@ -128,12 +129,32 @@ def parse_pages(content):
 
 # remove duplicates
 # remove too small numbers -> dangerous
+# make sure numbers are in international format (e.g. +41AAAABBBBBB)
 def cleanup_entries(arr):
   seen = set()
   uniq = []
   for r in arr:
     x = r["number"]
-    if len(x) < 4: continue
+
+    # make international format
+    if x.startswith("00"):  x = "+"+x[2:]
+    elif x.startswith("0"): x = "+41"+x[1:]
+    r["number"] = x
+
+    # filter
+    if len(x) < 4:
+      # too dangerous
+      debug("Skip too small number: " + str(r))
+      continue
+    if not x.startswith("+"):
+      # not in international format
+      debug("Skip unknown format number: " + str(r))
+      continue;
+    if len(x) > 16:
+      # see spec E.164 for international numbers: 15 (including country code) + 1 ("+")
+      debug("Skip too long number:" + str(r))
+      continue;
+
     if x not in seen:
       uniq.append(r)
       seen.add(x)
