@@ -23,13 +23,13 @@
 #include <string>
 #include <pjsua-lib/pjsua.h>
 
-#include "Lists.h"
+#include "FileLists.h"
 #include "Phone.h"
 
 
 class SipPhone : public Phone {
 public:
-  SipPhone(Lists* whitelists, Lists* blacklists);
+  SipPhone(FileLists* whitelists, FileLists* blacklists);
   virtual ~SipPhone();
   bool init();
 };

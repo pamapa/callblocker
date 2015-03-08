@@ -19,7 +19,7 @@
 
 bin_PROGRAMS = callblockerd
 callblockerd_SOURCES = \
-  Main.cpp Logger.cpp Notify.cpp Lists.cpp List.cpp Settings.cpp \
+  Main.cpp Logger.cpp Notify.cpp FileLists.cpp FileList.cpp Settings.cpp \
   Phone.cpp SipPhone.cpp SipAccount.cpp AnalogPhone.cpp
 
 AM_CPPFLAGS = -DSYSCONFDIR=\"${sysconfdir}\"

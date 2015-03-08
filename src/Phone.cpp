@@ -22,7 +22,7 @@
 #include "Logger.h"
 
 
-Phone::Phone(Lists* whitelists, Lists* blacklists) {
+Phone::Phone(FileLists* whitelists, FileLists* blacklists) {
   m_whitelists = whitelists;
   m_blacklists = blacklists;
 }
@@ -33,6 +33,12 @@ Phone::~Phone() {
   m_blacklists = NULL;
 }
 
+// move to better class Name
+// return enum:
+// whitelisted
+// blacklisted
+// answer_delayed
+// or always delay, in ove cases for a very very short time :-) YES
 bool Phone::isNumberBlocked(enum SettingBlockMode blockMode, const std::string& number, std::string* msg) {
   std::string reason;
   bool block;

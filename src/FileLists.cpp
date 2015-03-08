@@ -17,7 +17,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "Lists.h" // API
+#include "FileLists.h" // API
 
 #include <string>
 #include <dirent.h>
@@ -28,16 +28,17 @@
 #include "Logger.h"
 
 
-Lists::Lists(const std::string& dirname) : Notify(dirname, IN_CLOSE_WRITE | IN_DELETE) {
+FileLists::FileLists(const std::string& dirname) : Notify(dirname, IN_CLOSE_WRITE | IN_DELETE) {
   m_dirname = dirname;
   load();
 }
 
-Lists::~Lists() {
+FileLists::~FileLists() {
+  Logger::debug("~FileLists");
   clear();
 }
 
-void Lists::run() {
+void FileLists::run() {
   if (hasChanged()) {
     Logger::info("reload %s", m_dirname.c_str());
 
@@ -48,7 +49,7 @@ void Lists::run() {
 }
 
 // TODO: mutex....
-bool Lists::isListed(const std::string& number) {
+bool FileLists::isListed(const std::string& number) {
   bool ret = false;
   for(size_t i = 0; i < m_lists.size(); i++) {
     if (m_lists[i]->hasNumber(number)) {
@@ -59,7 +60,7 @@ bool Lists::isListed(const std::string& number) {
   return ret;
 }
 
-void Lists::load() {
+void FileLists::load() {
   DIR* dir = opendir(m_dirname.c_str());
   if (dir == NULL) {
     Logger::warn("open directory %s failed", m_dirname.c_str());
@@ -72,7 +73,7 @@ void Lists::load() {
     if ((entry->d_type & DT_DIR) == 0) {
       std::string filename = m_dirname + "/";
       filename += entry->d_name;
-      List* l = new List();
+      FileList* l = new FileList();
       if (l->load(filename)) {
         m_lists.push_back(l);
       } else {
@@ -84,16 +85,16 @@ void Lists::load() {
   closedir(dir);
 }
 
-void Lists::clear() {
+void FileLists::clear() {
   for(size_t i = 0; i < m_lists.size(); i++) {
     delete m_lists[i];
   }
   m_lists.clear();
 }
 
-void Lists::dump() {
+void FileLists::dump() {
   for(size_t i = 0; i < m_lists.size(); i++) {
-    List* l = m_lists[i];
+    FileList* l = m_lists[i];
     printf("Filename=%s\n", l->getFilename());
     l->dump();
   }

@@ -17,23 +17,23 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef LISTS_H
-#define LISTS_H
+#ifndef FILELISTS_H
+#define FILELISTS_H
 
 #include <vector>
 
-#include "List.h"
+#include "FileList.h"
 #include "Notify.h"
 
 
-class Lists : public Notify {
+class FileLists : public Notify {
 private:
   std::string m_dirname;
-  std::vector<List*> m_lists;
+  std::vector<FileList*> m_lists;
 
 public:
-  Lists(const std::string& subdirname);
-  virtual ~Lists();
+  FileLists(const std::string& subdirname);
+  virtual ~FileLists();
   void run();
 
   bool isListed(const std::string& number);

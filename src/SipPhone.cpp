@@ -42,7 +42,7 @@ static std::string getStatusAsString(pj_status_t status) {
   return ret;
 }
 
-SipPhone::SipPhone(Lists* whitelists, Lists* blacklists) : Phone(whitelists, blacklists) {
+SipPhone::SipPhone(FileLists* whitelists, FileLists* blacklists) : Phone(whitelists, blacklists) {
 }
 
 SipPhone::~SipPhone() {

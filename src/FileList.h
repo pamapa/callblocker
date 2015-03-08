@@ -17,20 +17,20 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef LIST_H
-#define LIST_H
+#ifndef FILELIST_H
+#define FILELIST_H
 
 #include <string>
 #include <vector>
 
-class List {
+class FileList {
 private:
   std::string m_filename;
   std::vector<std::string> m_entries;
 
 public:
-  List();
-  virtual ~List();
+  FileList();
+  virtual ~FileList();
 
   bool load(const std::string& filename);
   const char* getFilename();

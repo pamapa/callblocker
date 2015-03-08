@@ -130,8 +130,8 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
   bool block = m_phone->isNumberBlocked(m_settings.blockMode, user, &msg);
   Logger::notice(msg.c_str());
 
-  // TODO: 302 redirect ??
 #if 0
+  // 302 redirect
   Use pjsua_call_hangup() and put the destination URL in the Contact
   header of the pjsua_msg_data.
 
@@ -143,13 +143,16 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
   pjsip_generic_string_hdr* hdr =
     pjsip_generic_string_hdr_create(pool, pj_cstr(&tmp, "Contact"), pj_cstr(&tmp, "URI ...TODO"));
   pj_list_push_back(&msgData.hdr_list, hdr);
-  pjsua_call_hangup(call_id, 302, NULL, &msgData);
+  // codes: http://de.wikipedia.org/wiki/SIP-Status-Codes
+   // enum pjsip_status_code...
+  pjsua_call_hangup(call_id, PJSIP_SC_MOVED_TEMPORARILY, NULL, &msgData);
   pj_pool_release(pool);
 #endif
 
   if (block) {
-    // codes: http://de.wikipedia.org/wiki/SIP-Status-Codes 603=Declined
-    pj_status_t status = pjsua_call_hangup(call_id, 603, NULL, NULL);
+    Logger::debug("block...");
+    // code 0: pj takes care of hangup SIP status code
+    pj_status_t status = pjsua_call_hangup(call_id, 0, NULL, NULL);
     if (status != PJ_SUCCESS) {
       Logger::warn("pjsua_call_hangup() failed (%s)", getStatusAsString(status).c_str());
     }

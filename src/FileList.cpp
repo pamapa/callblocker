@@ -17,7 +17,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "List.h" // API
+#include "FileList.h" // API
 
 #include <fstream>
 #include <sstream>
@@ -29,15 +29,15 @@
 #include "Logger.h"
 
 
-List::List() {
+FileList::FileList() {
 }
 
-List::~List() {
-  Logger::debug("~List %s", getFilename());
+FileList::~FileList() {
+  Logger::debug("~FileList %s", getFilename());
   m_entries.clear();
 }
 
-bool List::load(const std::string& filename) {
+bool FileList::load(const std::string& filename) {
   m_filename = filename;
 
   Logger::debug("loading file %s", getFilename());
@@ -79,11 +79,11 @@ bool List::load(const std::string& filename) {
   return true;
 }
 
-const char* List::getFilename() {
+const char* FileList::getFilename() {
   return m_filename.c_str();
 }
 
-bool List::hasNumber(const std::string& number) {
+bool FileList::hasNumber(const std::string& number) {
   for(size_t i = 0; i < m_entries.size(); i++) {
     const char* s = m_entries[i].c_str();
     if (strncmp(s, number.c_str(), strlen(s)) == 0) {
@@ -94,7 +94,7 @@ bool List::hasNumber(const std::string& number) {
   return false;
 }
 
-void List::dump() {
+void FileList::dump() {
   for(size_t i = 0; i < m_entries.size(); i++) {
     printf("%s\n", m_entries[i].c_str());
   }

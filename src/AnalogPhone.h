@@ -23,7 +23,7 @@
 #include <string>
 #include <termios.h>
 
-#include "Lists.h"
+#include "FileLists.h"
 #include "Phone.h"
 
 
@@ -39,7 +39,7 @@ private:
   bool m_foundCID;
 
 public:
-  AnalogPhone(Lists* whitelists, Lists* blacklists);
+  AnalogPhone(FileLists* whitelists, FileLists* blacklists);
   virtual ~AnalogPhone();
   bool init(struct SettingAnalogPhone* phone);
   void run();

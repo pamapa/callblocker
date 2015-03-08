@@ -23,7 +23,7 @@
 
 #include "Logger.h"
 #include "Settings.h"
-#include "Lists.h"
+#include "FileLists.h"
 #include "SipPhone.h"
 #include "SipAccount.h"
 #include "AnalogPhone.h"
@@ -36,28 +36,28 @@ static void signal_handler(int signal) {
 }
 
 
-class Handler {
+class Main {
 private:
   Settings* m_settings;
-  Lists* m_whitelists;
-  Lists* m_blacklists;
+  FileLists* m_whitelists;
+  FileLists* m_blacklists;
   SipPhone* m_sipPhone;
   std::vector<SipAccount*> m_sipAccounts;
   std::vector<AnalogPhone*> m_analogPhones;
 
 public:
-  Handler() {
+  Main() {
     Logger::start();
     m_settings = new Settings();
 
-    m_whitelists = new Lists(SYSCONFDIR "/" PACKAGE_NAME "/whitelists");
-    m_blacklists = new Lists(SYSCONFDIR "/" PACKAGE_NAME "/blacklists");
+    m_whitelists = new FileLists(SYSCONFDIR "/" PACKAGE_NAME "/whitelists");
+    m_blacklists = new FileLists(SYSCONFDIR "/" PACKAGE_NAME "/blacklists");
 
     m_sipPhone = NULL;
     add();
   }
 
-  virtual ~Handler() {
+  virtual ~Main() {
     remove();
     delete m_blacklists;
     delete m_whitelists;
@@ -65,7 +65,7 @@ public:
     Logger::stop();
   }
 
-  void mainLoop() {
+  void loop() {
     Logger::debug("mainLoop...");
     while (s_appRunning) {
       m_whitelists->run();
@@ -132,9 +132,9 @@ int main(int argc, char *argv[]) {
 	signal(SIGINT, signal_handler);
 	signal(SIGKILL, signal_handler);
 
-  Handler* h = new Handler();
-  h->mainLoop();
-  delete h;
+  Main* m = new Main();
+  m->loop();
+  delete m;
 
   return 0;
 }

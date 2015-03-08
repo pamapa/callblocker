@@ -74,7 +74,7 @@ static time_t getMonotonicTime(void) {
 }
 
 
-AnalogPhone::AnalogPhone(Lists* whitelists, Lists* blacklists) : Phone(whitelists, blacklists) {
+AnalogPhone::AnalogPhone(FileLists* whitelists, FileLists* blacklists) : Phone(whitelists, blacklists) {
   m_FD = -1;
   m_numRings = m_ringTime = 0;
   m_foundCID = false;
@@ -108,6 +108,8 @@ bool AnalogPhone::init(struct SettingAnalogPhone* phone) {
   return true;
 }
 
+// load this into a seperate thread, needed for LiveAPI access, which may take some time...,
+// or offload LiveAPI access itself into a seperate thread? YES?
 void AnalogPhone::run() {
   std::string data;
   if (getData(&data)) {
@@ -152,7 +154,7 @@ void AnalogPhone::run() {
       Logger::debug("ringing stopped");
       m_numRings = m_ringTime = 0;
       m_foundCID = false;
-      // TODO notice?
+      // TODO notice? YES
     }
   }
 }
