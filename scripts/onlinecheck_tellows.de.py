@@ -16,6 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
+from __future__ import print_function
 import os
 import sys
 import argparse
@@ -23,12 +24,12 @@ import urllib2
 from BeautifulSoup import BeautifulSoup
 
 
-def error(msg):
-  print msg
+def error(*objs):
+  print("ERROR: ", *objs, file=sys.stderr)
   sys.exit(-1)
 
-def debug(msg):
-  #print msg
+def debug(*objs):
+  #print("DEBUG: ", *objs, file=sys.stdout)
   return
 
 def fetch_url(url):
@@ -54,18 +55,16 @@ def main(argv):
     error("invalid number %s" + args.number)
     sys.exit(1)
 
-  url = "http://www.tellows.de/basic/num/"+number+"?xml=1&partner="+args.username+"&apikey="+args.password;
-  print url  
-
+  url = "http://www.tellows.de/basic/num/"+number+"?xml=1&partner="+args.username+"&apikey="+args.password
   content = fetch_url(url)
-  #print content
+  debug(content)
   soup = BeautifulSoup(content)
-  #print soup
+  debug(soup)
   scorelist = soup.findAll("score")
   score = int(scorelist[0].contents[0])
   
   # result in json format
-  print '{"spam: %s", comment="tellows.de score %s"}' % ("false" if score < 7 else "true", score)
+  print('{"spam: %s", comment="tellows.de score %s"}' % ("false" if score < 7 else "true", score))
 
 
 if __name__ == "__main__":

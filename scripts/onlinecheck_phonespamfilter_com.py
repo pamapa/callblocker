@@ -16,18 +16,19 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
+from __future__ import print_function
 import os
 import sys
 import argparse
 import urllib2
 
 
-def error(msg):
-  print msg
+def error(*objs):
+  print("ERROR: ", *objs, file=sys.stderr)
   sys.exit(-1)
 
-def debug(msg):
-  #print msg
+def debug(*objs):
+  #print("DEBUG: ", *objs, file=sys.stdout)
   return
 
 def fetch_url(url):
@@ -57,15 +58,15 @@ def main(argv):
   elif args.number.startswith("+64"): # New Zealand
     url="http://www.phonespamfilter.co.nz/check.php?phone="+args.number[3:];
   else:
-    error("Number not supported %s" + args.number)
+    error("Number not supported: " + args.number)
     sys.exit(1)
 
   content = fetch_url(url)
-  #print content
+  debug(content)
   score = int(content)
 
   # result in json format
-  print '{"spam: %s", comment="phonespamfilter.com score %s"}' % ("false" if score < 50 else "true", score)
+  print('{"spam: %s", comment="phonespamfilter.com score %s"}' % ("false" if score < 50 else "true", score))
 
 
 if __name__ == "__main__":
