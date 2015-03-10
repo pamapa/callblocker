@@ -36,7 +36,7 @@ public:
   virtual ~FileLists();
   void run();
 
-  bool isListed(const std::string& number);
+  bool isListed(const std::string& number, std::string* pMsg);
 
   void dump();
 

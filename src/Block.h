@@ -38,8 +38,8 @@ public:
   bool isNumberBlocked(enum SettingBlockMode blockMode, const std::string& rNumber, std::string* pMsg);
 
 private:
-  bool isWhiteListed(const std::string& rNumber);
-  bool isBlacklisted(const std::string& rNumber);
+  bool isWhiteListed(const std::string& rNumber, std::string* pMsg);
+  bool isBlacklisted(const std::string& rNumber, std::string* pMsg);
 };
 
 #endif

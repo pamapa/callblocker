@@ -25,10 +25,10 @@
       }
     ]
   },
-  "online" : {
-    "xxx" : {
-      "username" : "<your username>",
-      "password" : "<your password>"
+  "credentials" : {
+    "tellows.de" : {
+      "username" : "<your partner name>",
+      "password" : "<your api key>"
     }
   }
 }
