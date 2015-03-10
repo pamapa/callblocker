@@ -22,75 +22,16 @@
 #include "Logger.h"
 
 
-Phone::Phone(FileLists* whitelists, FileLists* blacklists) {
-  m_whitelists = whitelists;
-  m_blacklists = blacklists;
+Phone::Phone(Block* block) {
+  m_block = block;
 }
 
 Phone::~Phone() {
   Logger::debug("~Phone...");
-  m_whitelists = NULL;
-  m_blacklists = NULL;
+  m_block = NULL;
 }
 
-// move to better class Name
-// return enum:
-// whitelisted
-// blacklisted
-// answer_delayed
-// or always delay, in ove cases for a very very short time :-) YES
-bool Phone::isNumberBlocked(enum SettingBlockMode blockMode, const std::string& number, std::string* msg) {
-  std::string reason;
-  bool block;
-  switch (blockMode) {
-    default:
-      Logger::warn("invalid block mode %d", blockMode);
-    case LOGGING_ONLY:
-      reason = "";
-      block = false;
-      break;
-
-    case WHITELISTS_ONLY:
-      if (m_whitelists->isListed(number)) {
-        reason = "found in whitelist";
-        block = false;
-      } else {
-        reason = "";
-        block = true;
-      }
-      break;
-
-    case WHITELISTS_AND_BLACKLISTS:
-      if (m_whitelists->isListed(number)) {
-        reason = "found in whitelist";
-        block = false;
-      } else {
-        reason = "found in blacklist";
-        block = m_blacklists->isListed(number); 
-      }
-      break;
-
-    case BLACKLISTS_ONLY:
-      if (m_blacklists->isListed(number)) {
-        reason = "found in blacklist";
-        block = true;
-      } else {
-        reason = "";
-        block = false;
-      }
-  }
-
-  std::string res = "Incoming call from ";
-  res += number;
-  if (block) {
-    res += " is blocked";
-  }
-  if (reason.length() > 0) {
-    res += " (";
-    res += reason;
-    res += ")";
-  }
-  *msg = res;
-  return block;
+bool Phone::isNumberBlocked(enum SettingBlockMode blockMode, const std::string& rNumber, std::string* pMsg) {
+  return m_block->isNumberBlocked(blockMode, rNumber, pMsg);
 }
 

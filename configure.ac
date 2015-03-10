@@ -33,6 +33,7 @@ AC_CHECK_HEADERS([pjlib.h])
 AC_CHECK_HEADERS([pjsua-lib/pjsua.h])
 AC_CHECK_LIB([pj], pj_init, , [AC_MSG_ERROR("Linking against pj failed.")])
 AC_CHECK_LIB([pjsip], pjsip_parse_uri, , [AC_MSG_ERROR("Linking against pjsip failed.")])
+AC_CHECK_LIB([pjmedia], pjmedia_null_port_create, , [AC_MSG_ERROR("Linking against pjmedia failed.")])
 AC_CHECK_LIB([pjsua], pjsua_init, , [AC_MSG_ERROR("Linking against pjsua failed.")])
 AC_CHECK_HEADERS([json-c/json.h])
 AC_CHECK_LIB([json-c], json_tokener_parse, , [AC_MSG_ERROR("Linking against json-c failed.")])
@@ -42,3 +43,4 @@ AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([etc/callblocker/Makefile])
 AC_CONFIG_FILES([src/Makefile])
 AC_OUTPUT
+

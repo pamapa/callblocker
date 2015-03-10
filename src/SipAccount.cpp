@@ -21,7 +21,9 @@
 
 #include <string>
 #include <sstream>
+#include <unistd.h>
 #include <pjsua-lib/pjsua.h>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "Logger.h"
 #include "Settings.h"
@@ -56,31 +58,31 @@ SipAccount::~SipAccount() {
   }
 }
 
-bool SipAccount::add(struct SettingSipAccount* acc) {
-  Logger::debug("SipAccount::add(%s)...", acc->toString().c_str());
-  m_settings = *acc; // strcut copy
+bool SipAccount::add(struct SettingSipAccount* pSettings) {
+  Logger::debug("SipAccount::add(%s)...", pSettings->toString().c_str());
+  m_settings = *pSettings; // strcut copy
 
   // prepare account configuration
   pjsua_acc_config cfg;
   pjsua_acc_config_default(&cfg);
   
   std::ostringstream user_url_ss;
-  user_url_ss << "sip:" << acc->fromUsername << "@" << acc->fromDomain;
+  user_url_ss << "sip:" << m_settings.fromUsername << "@" << m_settings.fromDomain;
   std::string user_url = user_url_ss.str();
   
   std::ostringstream provider_url_ss;
-  provider_url_ss << "sip:" << acc->fromDomain;
+  provider_url_ss << "sip:" << m_settings.fromDomain;
   std::string provider_url = provider_url_ss.str();
 
   // create and define account
   cfg.id = pj_str((char*)user_url.c_str());
   cfg.reg_uri = pj_str((char*)provider_url.c_str());
   cfg.cred_count = 1;
-  cfg.cred_info[0].realm = pj_str((char*)acc->fromDomain.c_str());
+  cfg.cred_info[0].realm = pj_str((char*)m_settings.fromDomain.c_str());
   cfg.cred_info[0].scheme = pj_str((char*)"digest");
-  cfg.cred_info[0].username = pj_str((char*)acc->fromUsername.c_str());
+  cfg.cred_info[0].username = pj_str((char*)m_settings.fromUsername.c_str());
   cfg.cred_info[0].data_type = PJSIP_CRED_DATA_PLAIN_PASSWD;
-  cfg.cred_info[0].data = pj_str((char*)acc->fromPassword.c_str());
+  cfg.cred_info[0].data = pj_str((char*)m_settings.fromPassword.c_str());
 
   // add account
   pj_status_t status = pjsua_acc_add(&cfg, PJ_TRUE, &m_accId);
@@ -98,6 +100,10 @@ bool SipAccount::add(struct SettingSipAccount* acc) {
 
 void SipAccount::onIncomingCallCB(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata) {
   SipAccount* p = (SipAccount*)pjsua_acc_get_user_data(acc_id);
+  if (p == NULL) {
+    Logger::warn("onIncomingCallCB failed");
+    return;
+  }
   p->onIncomingCall(call_id, rdata);
 }
 
@@ -119,15 +125,14 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
   Logger::debug("remote_contact %s", pj_strbuf(&ci.remote_contact));
   Logger::debug("call_id %s", pj_strbuf(&ci.call_id));
 
-  std::string display, user;
-  if (!parseURI(&ci.remote_info, &display, &user)) {
+  std::string display, number;
+  if (!getNumber(&ci.remote_info, &display, &number)) {
     Logger::warn("invalid URI received '%s'", pj_strbuf(&ci.remote_info));
     return;
   }
 
-  // TODO: user empty
   std::string msg;
-  bool block = m_phone->isNumberBlocked(m_settings.blockMode, user, &msg);
+  bool block = m_phone->isNumberBlocked(m_settings.blockMode, number, &msg);
   Logger::notice(msg.c_str());
 
 #if 0
@@ -150,17 +155,20 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
 #endif
 
   if (block) {
-    Logger::debug("block...");
-    // code 0: pj takes care of hangup SIP status code
-    pj_status_t status = pjsua_call_hangup(call_id, 0, NULL, NULL);
+    // answer incoming calls with 200/OK
+    pj_status_t status = pjsua_call_answer(call_id, 200, NULL, NULL);
     if (status != PJ_SUCCESS) {
-      Logger::warn("pjsua_call_hangup() failed (%s)", getStatusAsString(status).c_str());
+      Logger::warn("pjsua_call_answer() failed (%s)", getStatusAsString(status).c_str());
     }
   }
 }
 
 void SipAccount::onCallStateCB(pjsua_call_id call_id, pjsip_event* e) {
   SipAccount* p = (SipAccount*)pjsua_call_get_user_data(call_id);
+  if (p == NULL) {
+    Logger::warn("onCallMediaStateCB failed");
+    return;
+  }
   p->onCallState(call_id, e);
 }
 
@@ -171,12 +179,50 @@ void SipAccount::onCallState(pjsua_call_id call_id, pjsip_event* e) {
   pjsua_call_info ci;
   pjsua_call_get_info(call_id, &ci);
 
+  std::string display, number;
+  if (!getNumber(&ci.remote_info, &display, &number)) {
+    Logger::warn("invalid URI received '%s'", pj_strbuf(&ci.remote_info));
+    return;
+  }
+
   std::string state = std::string(pj_strbuf(&ci.state_text), ci.state_text.slen);
-  Logger::notice("Incoming call state changed to %s", state.c_str());
-  // TODO
+  Logger::notice("[%s] call state changed to %s", number.c_str(), state.c_str());
+
+  if (ci.state == PJSIP_INV_STATE_CONFIRMED) {
+    Logger::debug("hangup...");
+    // code 0: pj takes care of hangup SIP status code
+    pj_status_t status = pjsua_call_hangup(call_id, 0, NULL, NULL);
+    if (status != PJ_SUCCESS) {
+      Logger::warn("pjsua_call_hangup() failed (%s)", getStatusAsString(status).c_str());
+    }
+  }
+
 }
 
-bool SipAccount::parseURI(pj_str_t* uri, std::string* display, std::string* user) {
+#if 0
+void SipAccount::onCallMediaStateCB(pjsua_call_id call_id) {
+  SipAccount* p = (SipAccount*)pjsua_call_get_user_data(call_id);
+  if (p == NULL) {
+    Logger::warn("onCallMediaStateCB failed");
+    return;
+  }
+  p->onCallMediaState(call_id);
+}
+
+void SipAccount::onCallMediaState(pjsua_call_id call_id) {
+  Logger::debug("SipAccount::onCallMediaState...");
+
+  pjsua_call_info ci;
+  pjsua_call_get_info(call_id, &ci);
+
+  if (ci.media_status == PJSUA_CALL_MEDIA_ACTIVE) {
+    // connect active call to silence
+    //pjsua_conf_connect(m_phone->m_mediaConfSilenceId, ci.conf_slot);
+  }
+}
+#endif
+
+bool SipAccount::getNumber(pj_str_t* uri, std::string* pDisplay, std::string* pNumber) {
   pj_pool_t* pool = pjsua_pool_create("", 128, 10);
   pjsip_name_addr* n = (pjsip_name_addr*)pjsip_parse_uri(pool, uri->ptr, uri->slen, PJSIP_PARSE_URI_AS_NAMEADDR);
   if (n == NULL) {
@@ -190,10 +236,14 @@ bool SipAccount::parseURI(pj_str_t* uri, std::string* display, std::string* user
     return false;
   }
 
-  *display = std::string(n->display.ptr, n->display.slen);
+  *pDisplay = std::string(n->display.ptr, n->display.slen);
 
   pjsip_sip_uri *sip = (pjsip_sip_uri*)pjsip_uri_get_uri(n);
-  *user = std::string(sip->user.ptr, sip->user.slen);
+  std::string number = std::string(sip->user.ptr, sip->user.slen);
+  // make number international
+  if (boost::starts_with(number, "00")) number = "+" + number.substr(2);
+  else if (boost::starts_with(number, "0")) number = "+41" + number.substr(1); // TODO
+  *pNumber = number;
 
   pj_pool_release(pool);
   return true;

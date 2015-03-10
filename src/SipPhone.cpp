@@ -42,18 +42,31 @@ static std::string getStatusAsString(pj_status_t status) {
   return ret;
 }
 
-SipPhone::SipPhone(FileLists* whitelists, FileLists* blacklists) : Phone(whitelists, blacklists) {
+SipPhone::SipPhone(Block* block) : Phone(block) {
 }
 
 SipPhone::~SipPhone() {
   Logger::debug("~SipPhone...");
-  // hangup open calls and stop pjsua
+
   pjsua_call_hangup_all();
+
+  pjsua_conf_remove_port(m_mediaConfSilenceId);
+  pjmedia_port_destroy(m_mediaPortSilence);
+
+  pj_pool_release(m_Pool);
   pjsua_destroy();
 }
 
 bool SipPhone::init() {
   Logger::debug("SipPhone::init...");
+
+  if (!init_pjsua()) return false;
+
+  return init_pjmedia();
+}
+
+bool SipPhone::init_pjsua() {
+  Logger::debug("SipPhone::init_pjsua...");
 
   // create pjsua  
   pj_status_t status = pjsua_create();
@@ -66,10 +79,13 @@ bool SipPhone::init() {
   pjsua_config ua_cfg;
   pjsua_config_default(&ua_cfg);
   // enable just 1 simultaneous call 
-  //ua_cfg.max_calls = 1;
+  ua_cfg.max_calls = 1;
   // callback configuration
   ua_cfg.cb.on_call_state = &SipAccount::onCallStateCB;
   ua_cfg.cb.on_incoming_call = &SipAccount::onIncomingCallCB;
+#if 0
+  ua_cfg.cb.on_call_media_state = &SipAccount::onCallMediaStateCB;
+#endif
 
   // logging configuration
   pjsua_logging_config log_cfg;    
@@ -109,6 +125,30 @@ bool SipPhone::init() {
   status = pjsua_start();
   if (status != PJ_SUCCESS) {
     Logger::error("pjsua_start() failed (%s)", getStatusAsString(status).c_str());
+    return false;
+  }
+
+  m_Pool = pjsua_pool_create("SipPhone.cpp", 128, 128);
+  if (m_Pool == NULL) {
+    Logger::error("pjsua_pool_create() failed");
+    return false;
+  }
+
+  return true;
+}
+
+bool SipPhone::init_pjmedia() {
+#define CLOCK_RATE 16000
+#define SAMPLES_PER_FRAME (CLOCK_RATE/100)
+  pj_status_t status = pjmedia_null_port_create(m_Pool, CLOCK_RATE, 1, SAMPLES_PER_FRAME*2, 16, &m_mediaPortSilence);
+  if (status != PJ_SUCCESS) {
+    Logger::error("pjmedia_null_port_create() failed (%s)", getStatusAsString(status).c_str());
+    return false;
+  }
+
+  status = pjsua_conf_add_port(m_Pool, m_mediaPortSilence, &m_mediaConfSilenceId);
+  if (status != PJ_SUCCESS) {
+    Logger::error("pjsua_conf_add_port() failed (%s)", getStatusAsString(status).c_str());
     return false;
   }
 

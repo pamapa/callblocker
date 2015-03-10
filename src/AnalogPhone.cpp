@@ -74,7 +74,7 @@ static time_t getMonotonicTime(void) {
 }
 
 
-AnalogPhone::AnalogPhone(FileLists* whitelists, FileLists* blacklists) : Phone(whitelists, blacklists) {
+AnalogPhone::AnalogPhone(Block* block) : Phone(block) {
   m_FD = -1;
   m_numRings = m_ringTime = 0;
   m_foundCID = false;

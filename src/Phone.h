@@ -22,19 +22,18 @@
 
 #include <string>
 
-#include "FileLists.h"
+#include "Block.h"
 #include "Settings.h"
 
 
 class Phone {
 private:
-  FileLists* m_whitelists;
-  FileLists* m_blacklists;
+  Block* m_block;
 
 public:
-  Phone(FileLists* whitelists, FileLists* blacklists);
+  Phone(Block* block);
   virtual ~Phone();
-  bool isNumberBlocked(enum SettingBlockMode blockMode, const std::string& number, std::string* msg);
+  bool isNumberBlocked(enum SettingBlockMode blockMode, const std::string& rNumber, std::string* pMsg);
 };
 
 #endif

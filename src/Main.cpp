@@ -39,8 +39,7 @@ static void signal_handler(int signal) {
 class Main {
 private:
   Settings* m_settings;
-  FileLists* m_whitelists;
-  FileLists* m_blacklists;
+  Block* m_block;
   SipPhone* m_sipPhone;
   std::vector<SipAccount*> m_sipAccounts;
   std::vector<AnalogPhone*> m_analogPhones;
@@ -48,10 +47,9 @@ private:
 public:
   Main() {
     Logger::start();
-    m_settings = new Settings();
 
-    m_whitelists = new FileLists(SYSCONFDIR "/" PACKAGE_NAME "/whitelists");
-    m_blacklists = new FileLists(SYSCONFDIR "/" PACKAGE_NAME "/blacklists");
+    m_settings = new Settings();
+    m_block = new Block;
 
     m_sipPhone = NULL;
     add();
@@ -59,8 +57,7 @@ public:
 
   virtual ~Main() {
     remove();
-    delete m_blacklists;
-    delete m_whitelists;
+    delete m_block;
     delete m_settings;
     Logger::stop();
   }
@@ -68,8 +65,7 @@ public:
   void loop() {
     Logger::debug("mainLoop...");
     while (s_appRunning) {
-      m_whitelists->run();
-      m_blacklists->run();
+      m_block->run();
 
       if (m_settings->hasChanged()) {
         Logger::debug("mainLoop: reload");
@@ -106,7 +102,7 @@ private:
     // Analog
     std::vector<struct SettingAnalogPhone> analogPhones = m_settings->getAnalogPhones();
     for(size_t i = 0; i < analogPhones.size(); i++) {
-      AnalogPhone* tmp = new AnalogPhone(m_whitelists, m_blacklists);
+      AnalogPhone* tmp = new AnalogPhone(m_block);
       if (tmp->init(&analogPhones[i])) m_analogPhones.push_back(tmp);
       else delete tmp;
     }
@@ -115,7 +111,7 @@ private:
     std::vector<struct SettingSipAccount> accounts = m_settings->getSipAccounts();
     for(size_t i = 0; i < accounts.size(); i++) {
       if (m_sipPhone == NULL) {
-        m_sipPhone = new SipPhone(m_whitelists, m_blacklists);
+        m_sipPhone = new SipPhone(m_block);
         m_sipPhone->init();
       }
       SipAccount* tmp = new SipAccount(m_sipPhone);

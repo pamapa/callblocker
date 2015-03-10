@@ -23,15 +23,24 @@
 #include <string>
 #include <pjsua-lib/pjsua.h>
 
-#include "FileLists.h"
 #include "Phone.h"
 
 
 class SipPhone : public Phone {
+private:
+  pj_pool_t* m_Pool;
+  pjmedia_port* m_mediaPortSilence;
+  pjsua_conf_port_id m_mediaConfSilenceId;
+
 public:
-  SipPhone(FileLists* whitelists, FileLists* blacklists);
+  SipPhone(Block* block);
   virtual ~SipPhone();
   bool init();
+
+  pj_pool_t* getPool() { return m_Pool; };
+private:
+  bool init_pjsua();
+  bool init_pjmedia();
 };
 
 #endif
