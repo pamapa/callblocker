@@ -16,6 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
+from __future__ import print_function
 import os
 import sys
 import argparse
@@ -26,12 +27,13 @@ from collections import OrderedDict
 import datetime
 import demjson
 
-def error(msg):
-  print msg
+
+def error(*objs):
+  print("ERROR: ", *objs, file=sys.stderr)
   sys.exit(-1)
 
-def debug(msg):
-  #print msg
+def debug(*objs):
+  #print("DEBUG: ", *objs, file=sys.stdout)
   return
 
 def extract_number(data):
@@ -88,7 +90,7 @@ def extract_comment(data):
   return s if len(s)<= 100 else s[0:100-3]+"..."
 
 def fetch_page(page_nr):
-  print "fetch_page: " + str(page_nr)
+  print("fetch_page: " + str(page_nr))
   page = urllib2.urlopen("https://www.ktipp.ch/service/warnlisten/detail/?warnliste_id=7&ajax=ajax-search-form&page=" + str(page_nr))
   return page.read()
 
@@ -167,11 +169,10 @@ def main(argv):
   parser = argparse.ArgumentParser(description="Fetch K-Tipp blacklist")
   parser.add_argument("--output", help="output file", default="CH_blacklist_K-Tipp.json")
   args = parser.parse_args()
-  #print args.output
 
   content = fetch_page(0)
   #source_date = unicode(extract_str(content, "Letzte Aktualisierung:", "<", "Can't extract creation date"))
-  #print source_date
+  #debug(source_date)
 
   result = parse_pages(content)
   result = cleanup_entries(result)
