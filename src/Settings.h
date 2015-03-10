@@ -35,26 +35,37 @@ enum SettingBlockMode {
   BLACKLISTS_ONLY               // number is blocked, when in a blacklists (whitelists not used)
 };
 
-struct SettingSipAccount {
+struct SettingBase {
   enum SettingBlockMode blockMode;
+  std::string countryCode;
+
+  std::string toString() {
+    std::ostringstream oss;
+    oss << blockMode << ", " << countryCode;
+    return oss.str();
+  }
+};
+
+struct SettingSipAccount {
+  struct SettingBase base;
   std::string fromDomain;
   std::string fromUsername;
   std::string fromPassword;
 
   std::string toString() {
     std::ostringstream oss;
-    oss << blockMode << ", " << fromDomain << ", " << fromUsername << ", " << fromPassword;
+    oss << base.toString() << ", " << fromDomain << ", " << fromUsername << ", " << fromPassword;
     return oss.str();
   }
 };
 
 struct SettingAnalogPhone {
-  enum SettingBlockMode blockMode;
+  struct SettingBase base;
   std::string device;
 
   std::string toString() {
     std::ostringstream oss;
-    oss << blockMode << ", " << device;
+    oss << base.toString() << ", " << device;
     return oss.str();
   }
 };
@@ -80,6 +91,7 @@ private:
   bool getObject(struct json_object* objbase, const char* objname, int* res);
   bool getObject(struct json_object* objbase, const char* objname, bool* res);
   bool getBlockMode(struct json_object* objbase, enum SettingBlockMode* res);
+  bool getBase(struct json_object* objbase, struct SettingBase* res);
 };
 
 #endif

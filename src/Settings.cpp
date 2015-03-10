@@ -25,6 +25,7 @@
 #include <sys/inotify.h>
 #include <json-c/json.h>
 #include <pjsua-lib/pjsua.h>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "Logger.h"
 
@@ -87,16 +88,14 @@ bool Settings::load() {
         if (!getObject(entry, "enabled", &enabled) || !enabled) {
           continue;
         }
-        enum SettingBlockMode block_mode;
-        if (!getBlockMode(entry, &block_mode)) {
+        struct SettingAnalogPhone acc;
+        if (!getBase(entry, &acc.base)) {
           continue;
         }
-        std::string device;
-        if (!getObject(entry, "device", &device)) {
+        if (!getObject(entry, "device", &acc.device)) {
           continue;
         }
-        struct SettingAnalogPhone p = {block_mode, device};
-        m_analogPhones.push_back(p);
+        m_analogPhones.push_back(acc);
       }
     } else {
       Logger::debug("no <phones> section found in settings file %s", m_filename.c_str());
@@ -122,24 +121,20 @@ bool Settings::load() {
         if (!getObject(entry, "enabled", &enabled) || !enabled) {
           continue;
         }
-        enum SettingBlockMode block_mode;
-        if (!getBlockMode(entry, &block_mode)) {
+        struct SettingSipAccount acc;
+        if (!getBase(entry, &acc.base)) {
           continue;
         }
-        std::string fromdomain;
-        if (!getObject(entry, "fromdomain", &fromdomain)) {
+        if (!getObject(entry, "from_domain", &acc.fromDomain)) {
           continue;
         }
-        std::string fromusername;
-        if (!getObject(entry, "fromusername", &fromusername)) {
+        if (!getObject(entry, "from_username", &acc.fromUsername)) {
           continue;
         }
-        std::string frompassword;
-        if (!getObject(entry, "frompassword", &frompassword)) {
+        if (!getObject(entry, "from_password", &acc.fromPassword)) {
           continue;
         }
-        struct SettingSipAccount a = {block_mode, fromdomain, fromusername, frompassword};
-        m_sipAccounts.push_back(a);
+        m_sipAccounts.push_back(acc);
       }
     } else {
       Logger::debug("no <accounts> section found in settings file %s", m_filename.c_str());
@@ -210,6 +205,22 @@ bool Settings::getBlockMode(struct json_object* objbase, enum SettingBlockMode* 
     Logger::warn("unknown block mode '%s' in settings file %s", str.c_str(), m_filename.c_str());
     return false;
   }
+  return true;
+}
+
+bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
+  if (!getBlockMode(objbase, &res->blockMode)) {
+    return false;
+  }
+  std::string str;
+  if (!getObject(objbase, "country_code", &str)) {
+    return false;
+  }
+  if (!boost::starts_with(str, "+")) {
+    Logger::warn("invalid country code'%s' in settings file %s", str.c_str(), m_filename.c_str());
+    return false;
+  }
+  res->countryCode = str;
   return true;
 }
 

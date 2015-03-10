@@ -1,11 +1,12 @@
 { 
-  "log_level" : "info",
+  "log_level" : "debug",
   "analog" : {
     "phones" : [
       {
         "enabled" : false,
-        "block_mode" : "logging_only",
         "name" : "Analog Home Phone",
+        "block_mode" : "logging_only",
+        "country_code" : "+41",
         "device" : "/dev/ttyACM0"
       }
     ]
@@ -15,11 +16,12 @@
     "accounts" : [
       { 
         "enabled" : false,
-        "block_mode" : "whitelists_and_blacklists",
         "name" : "SIP Home Phone",
-        "fromdomain" : "<yourdomain.net>",
-        "fromusername" : "<yourusername>",
-        "frompassword" : "<yourpassword>"
+        "block_mode" : "whitelists_and_blacklists",
+        "country_code" : "+41",
+        "from_domain" : "<yourdomain.net>",
+        "from_username" : "<yourusername>",
+        "from_password" : "<yourpassword>"
       }
     ]
   }

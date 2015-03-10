@@ -137,7 +137,7 @@ void AnalogPhone::run() {
           if (key == "NMBR") {
             // TODO value empty?
             std::string msg;
-            bool block = isNumberBlocked(m_settings.blockMode, value, &msg);
+            bool block = isNumberBlocked(m_settings.base.blockMode, value, &msg);
             Logger::notice(msg.c_str());
             m_foundCID = true;
           }

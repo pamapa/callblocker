@@ -132,7 +132,7 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
   }
 
   std::string msg;
-  bool block = m_phone->isNumberBlocked(m_settings.blockMode, number, &msg);
+  bool block = m_phone->isNumberBlocked(m_settings.base.blockMode, number, &msg);
   Logger::notice(msg.c_str());
 
 #if 0
@@ -242,7 +242,7 @@ bool SipAccount::getNumber(pj_str_t* uri, std::string* pDisplay, std::string* pN
   std::string number = std::string(sip->user.ptr, sip->user.slen);
   // make number international
   if (boost::starts_with(number, "00")) number = "+" + number.substr(2);
-  else if (boost::starts_with(number, "0")) number = "+41" + number.substr(1); // TODO
+  else if (boost::starts_with(number, "0")) number = m_settings.base.countryCode + number.substr(1);
   *pNumber = number;
 
   pj_pool_release(pool);
