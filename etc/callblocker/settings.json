@@ -5,8 +5,9 @@
       {
         "enabled"      : false,
         "name"         : "Analog Home Phone",
-        "block_mode"   : "logging_only",
         "country_code" : "+41",
+        "block_mode"   : "logging_only",
+        "online_check" : "tellows.de",
         "device"       : "/dev/ttyACM0"
       }
     ]
@@ -17,8 +18,9 @@
       { 
         "enabled"       : false,
         "name"          : "SIP Home Phone",
-        "block_mode"    : "whitelists_and_blacklists",
         "country_code"  : "+41",
+        "block_mode"    : "whitelists_and_blacklists",
+        "online_check"  : "tellows.de",
         "from_domain"   : " <yourdomain.net>",
         "from_username" : "<your username>",
         "from_password" : "<your password>"
@@ -26,7 +28,7 @@
     ]
   },
   "credentials" : {
-    "tellows.de" : {
+    "atellows.de" : {
       "username" : "<your partner name>",
       "password" : "<your api key>"
     }
