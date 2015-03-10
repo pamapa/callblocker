@@ -28,12 +28,12 @@
 
 class SipAccount {
 private:
-  SipPhone* m_phone;
+  SipPhone* m_pPhone;
   struct SettingSipAccount m_settings;
   pjsua_acc_id m_accId;
 
 public:
-  SipAccount(SipPhone* phone);
+  SipAccount(SipPhone* pPhone);
   virtual ~SipAccount();
   bool add(struct SettingSipAccount* pSettings);
 

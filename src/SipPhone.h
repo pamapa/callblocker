@@ -33,7 +33,7 @@ private:
   pjsua_conf_port_id m_mediaConfSilenceId;
 
 public:
-  SipPhone(Block* block);
+  SipPhone(Block* pBlock);
   virtual ~SipPhone();
   bool init();
 

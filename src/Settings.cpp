@@ -198,6 +198,14 @@ bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
   if (!getObject(objbase, "name", &res->name)) {
     return false;
   }
+  // country code
+  if (!getObject(objbase, "country_code", &res->countryCode)) {
+    return false;
+  }
+  if (!boost::starts_with(res->countryCode, "+")) {
+    Logger::warn("invalid country_code '%s' in settings file %s", tmp.c_str(), m_filename.c_str());
+    return false;
+  }
   // block mode
   if (!getObject(objbase, "block_mode", &tmp)) {
     return false;
@@ -207,18 +215,13 @@ bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
   else if (tmp == "whitelists_and_blacklists") res->blockMode = WHITELISTS_AND_BLACKLISTS;
   else if (tmp == "blacklists_only") res->blockMode = BLACKLISTS_ONLY;
   else {
-    Logger::warn("unknown block mode '%s' in settings file %s", tmp.c_str(), m_filename.c_str());
+    Logger::warn("unknown block_mode '%s' in settings file %s", tmp.c_str(), m_filename.c_str());
     return false;
   }
-  // counry code
-  if (!getObject(objbase, "country_code", &tmp)) {
+  // online check
+  if (!getObject(objbase, "online_check", &res->onlineCheck)) {
     return false;
   }
-  if (!boost::starts_with(tmp, "+")) {
-    Logger::warn("invalid country code'%s' in settings file %s", tmp.c_str(), m_filename.c_str());
-    return false;
-  }
-  res->countryCode = tmp;
   return true;
 }
 

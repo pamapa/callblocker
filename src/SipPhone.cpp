@@ -42,7 +42,7 @@ static std::string getStatusAsString(pj_status_t status) {
   return ret;
 }
 
-SipPhone::SipPhone(Block* block) : Phone(block) {
+SipPhone::SipPhone(Block* pBlock) : Phone(pBlock) {
 }
 
 SipPhone::~SipPhone() {

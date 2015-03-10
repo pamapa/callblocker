@@ -38,9 +38,9 @@ private:
   bool m_foundCID;
 
 public:
-  AnalogPhone(Block* block);
+  AnalogPhone(Block* pBlock);
   virtual ~AnalogPhone();
-  bool init(struct SettingAnalogPhone* phone);
+  bool init(struct SettingAnalogPhone* pPhone);
   void run();
 
 private:

@@ -36,14 +36,14 @@ static std::string getStatusAsString(pj_status_t status) {
   return ret;
 }
 
-SipAccount::SipAccount(SipPhone* phone) {
-  m_phone = phone;
+SipAccount::SipAccount(SipPhone* pPhone) {
+  m_pPhone = pPhone;
   m_accId = -1;
 }
 
 SipAccount::~SipAccount() {
   Logger::debug("~SipAccount...");
-  m_phone = NULL;
+  m_pPhone = NULL;
 
   if (m_accId == -1) {
     return;
@@ -119,11 +119,13 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
   pjsua_call_info ci;
   pjsua_call_get_info(call_id, &ci);
 
+#if 0
   Logger::debug("local_info %s", pj_strbuf(&ci.local_info));
   Logger::debug("local_contact %s", pj_strbuf(&ci.local_contact));
   Logger::debug("remote_info %s", pj_strbuf(&ci.remote_info));
   Logger::debug("remote_contact %s", pj_strbuf(&ci.remote_contact));
   Logger::debug("call_id %s", pj_strbuf(&ci.call_id));
+#endif
 
   std::string display, number;
   if (!getNumber(&ci.remote_info, &display, &number)) {
@@ -132,7 +134,7 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
   }
 
   std::string msg;
-  bool block = m_phone->isNumberBlocked(m_settings.base.blockMode, number, &msg);
+  bool block = m_pPhone->isNumberBlocked(&m_settings.base, number, &msg);
   Logger::notice(msg.c_str());
 
 #if 0

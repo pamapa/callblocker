@@ -28,12 +28,12 @@
 
 class Phone {
 private:
-  Block* m_block;
+  Block* m_pBlock;
 
 public:
-  Phone(Block* block);
+  Phone(Block* pBlock);
   virtual ~Phone();
-  bool isNumberBlocked(enum SettingBlockMode blockMode, const std::string& rNumber, std::string* pMsg);
+  bool isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);
 };
 
 #endif

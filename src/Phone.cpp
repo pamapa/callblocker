@@ -22,16 +22,16 @@
 #include "Logger.h"
 
 
-Phone::Phone(Block* block) {
-  m_block = block;
+Phone::Phone(Block* pBlock) {
+  m_pBlock = pBlock;
 }
 
 Phone::~Phone() {
   Logger::debug("~Phone...");
-  m_block = NULL;
+  m_pBlock = NULL;
 }
 
-bool Phone::isNumberBlocked(enum SettingBlockMode blockMode, const std::string& rNumber, std::string* pMsg) {
-  return m_block->isNumberBlocked(blockMode, rNumber, pMsg);
+bool Phone::isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg) {
+  return m_pBlock->isNumberBlocked(pSettings, rNumber, pMsg);
 }
 

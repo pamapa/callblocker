@@ -74,7 +74,7 @@ static time_t getMonotonicTime(void) {
 }
 
 
-AnalogPhone::AnalogPhone(Block* block) : Phone(block) {
+AnalogPhone::AnalogPhone(Block* pBlock) : Phone(pBlock) {
   m_FD = -1;
   m_numRings = m_ringTime = 0;
   m_foundCID = false;
@@ -137,7 +137,7 @@ void AnalogPhone::run() {
           if (key == "NMBR") {
             // TODO value empty?
             std::string msg;
-            bool block = isNumberBlocked(m_settings.base.blockMode, value, &msg);
+            bool block = isNumberBlocked(&m_settings.base, value, &msg);
             Logger::notice(msg.c_str());
             m_foundCID = true;
           }

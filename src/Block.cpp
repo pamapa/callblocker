@@ -23,47 +23,46 @@
 
 
 Block::Block() {
-  m_whitelists = new FileLists(SYSCONFDIR "/" PACKAGE_NAME "/whitelists");
-  m_blacklists = new FileLists(SYSCONFDIR "/" PACKAGE_NAME "/blacklists");
+  m_pWhitelists = new FileLists(SYSCONFDIR "/" PACKAGE_NAME "/whitelists");
+  m_pBlacklists = new FileLists(SYSCONFDIR "/" PACKAGE_NAME "/blacklists");
 }
 
 Block::~Block() {
   Logger::debug("~Block...");
 
-  delete m_whitelists;
-  m_whitelists = NULL;
-
-  delete m_blacklists;
-  m_blacklists = NULL;
+  delete m_pWhitelists;
+  m_pWhitelists = NULL;
+  delete m_pBlacklists;
+  m_pBlacklists = NULL;
 }
 
 void Block::run() {
-  m_whitelists->run();
-  m_blacklists->run();
+  m_pWhitelists->run();
+  m_pBlacklists->run();
 }
 
-bool Block::isNumberBlocked(enum SettingBlockMode blockMode, const std::string& rNumber, std::string* pMsg) {
+bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg) {
   std::string reason;
   std::string msg;
   bool block;
-  switch (blockMode) {
+  switch (pSettings->blockMode) {
     default:
-      Logger::warn("invalid block mode %d", blockMode);
+      Logger::warn("invalid block mode %d", pSettings->blockMode);
     case LOGGING_ONLY:
       block = false;
-      if (isWhiteListed(rNumber, &msg)) {
-        reason = "found in whitelist ("+msg+"), but mode is logging only";
+      if (isWhiteListed(pSettings, rNumber, &msg)) {
+        reason = "would be in whitelist ("+msg+")";
         break;
       }
-      if (isBlacklisted(rNumber, &msg)) {
-        reason = "found in blacklist ("+msg+"), but mode is logging only";
+      if (isBlacklisted(pSettings, rNumber, &msg)) {
+        reason = "would be in blacklist ("+msg+")";
         break;
       }
       reason = "";
       break;
 
     case WHITELISTS_ONLY:
-      if (isWhiteListed(rNumber, &msg)) {
+      if (isWhiteListed(pSettings, rNumber, &msg)) {
         reason = "found in whitelist ("+msg+")";
         block = false;
       }
@@ -72,12 +71,12 @@ bool Block::isNumberBlocked(enum SettingBlockMode blockMode, const std::string& 
       break;
 
     case WHITELISTS_AND_BLACKLISTS:
-      if (isWhiteListed(rNumber, &msg)) {
+      if (isWhiteListed(pSettings, rNumber, &msg)) {
         reason = "found in whitelist ("+msg+")";
         block = false;
         break;
       }
-      if (isBlacklisted(rNumber, &msg)) {
+      if (isBlacklisted(pSettings, rNumber, &msg)) {
         reason = "found in blacklist ("+msg+")";
         block = true;
         break;
@@ -87,7 +86,7 @@ bool Block::isNumberBlocked(enum SettingBlockMode blockMode, const std::string& 
       break;
 
     case BLACKLISTS_ONLY:
-      if (isBlacklisted(rNumber, &msg)) {
+      if (isBlacklisted(pSettings, rNumber, &msg)) {
         reason = "found in blacklist ("+msg+")";
         block = true;
         break;
@@ -103,20 +102,33 @@ bool Block::isNumberBlocked(enum SettingBlockMode blockMode, const std::string& 
     res += " is blocked";
   }
   if (reason.length() > 0) {
-    res += " (";
+    res += " [";
     res += reason;
-    res += ")";
+    res += "]";
   }
   *pMsg = res;
 
   return block;
 }
 
-bool Block::isWhiteListed(const std::string& rNumber, std::string* pMsg) {
-  return m_whitelists->isListed(rNumber, pMsg);
+bool Block::isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg) {
+  return m_pWhitelists->isListed(rNumber, pMsg);
 }
 
-bool Block::isBlacklisted(const std::string& rNumber, std::string* pMsg) {
-  return m_blacklists->isListed(rNumber, pMsg);
+bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg) {
+  if (m_pBlacklists->isListed(rNumber, pMsg))
+  {
+    return true;
+  }
+
+  if (pSettings->onlineCheck.length() == 0) {
+    return false;
+  }
+
+  std::string script = "onlinecheck_" + pSettings->onlineCheck + ".py";
+  Logger::debug("script: %s", script.c_str());
+
+
+  return false;
 }
 

@@ -28,18 +28,18 @@
 
 class Block {
 private:
-  FileLists* m_whitelists;
-  FileLists* m_blacklists;
+  FileLists* m_pWhitelists;
+  FileLists* m_pBlacklists;
 
 public:
   Block();
   virtual ~Block();
   void run();
-  bool isNumberBlocked(enum SettingBlockMode blockMode, const std::string& rNumber, std::string* pMsg);
+  bool isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);
 
 private:
-  bool isWhiteListed(const std::string& rNumber, std::string* pMsg);
-  bool isBlacklisted(const std::string& rNumber, std::string* pMsg);
+  bool isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);
+  bool isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);
 };
 
 #endif
