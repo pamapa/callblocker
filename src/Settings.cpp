@@ -192,35 +192,33 @@ bool Settings::getObject(struct json_object* objbase, const char* objname, bool*
   return true;
 }
 
-bool Settings::getBlockMode(struct json_object* objbase, enum SettingBlockMode* res) {
-  std::string str;
-  if (!getObject(objbase, "block_mode", &str)) {
-    return false;
-  }
-  if (str == "logging_only") *res = LOGGING_ONLY;
-  else if (str == "whitelists_only") *res = WHITELISTS_ONLY;
-  else if (str == "whitelists_and_blacklists") *res = WHITELISTS_AND_BLACKLISTS;
-  else if (str == "blacklists_only") *res = BLACKLISTS_ONLY;
-  else {
-    Logger::warn("unknown block mode '%s' in settings file %s", str.c_str(), m_filename.c_str());
-    return false;
-  }
-  return true;
-}
-
 bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
-  if (!getBlockMode(objbase, &res->blockMode)) {
+  std::string tmp;
+  // name
+  if (!getObject(objbase, "name", &res->name)) {
     return false;
   }
-  std::string str;
-  if (!getObject(objbase, "country_code", &str)) {
+  // block mode
+  if (!getObject(objbase, "block_mode", &tmp)) {
     return false;
   }
-  if (!boost::starts_with(str, "+")) {
-    Logger::warn("invalid country code'%s' in settings file %s", str.c_str(), m_filename.c_str());
+  if (tmp == "logging_only") res->blockMode = LOGGING_ONLY;
+  else if (tmp == "whitelists_only") res->blockMode = WHITELISTS_ONLY;
+  else if (tmp == "whitelists_and_blacklists") res->blockMode = WHITELISTS_AND_BLACKLISTS;
+  else if (tmp == "blacklists_only") res->blockMode = BLACKLISTS_ONLY;
+  else {
+    Logger::warn("unknown block mode '%s' in settings file %s", tmp.c_str(), m_filename.c_str());
     return false;
   }
-  res->countryCode = str;
+  // counry code
+  if (!getObject(objbase, "country_code", &tmp)) {
+    return false;
+  }
+  if (!boost::starts_with(tmp, "+")) {
+    Logger::warn("invalid country code'%s' in settings file %s", tmp.c_str(), m_filename.c_str());
+    return false;
+  }
+  res->countryCode = tmp;
   return true;
 }
 

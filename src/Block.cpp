@@ -42,12 +42,6 @@ void Block::run() {
   m_blacklists->run();
 }
 
-// move to better class Name
-// return enum:
-// whitelisted
-// blacklisted
-// answer_delayed
-// or always delay, in ove cases for a very very short time :-) YES
 bool Block::isNumberBlocked(enum SettingBlockMode blockMode, const std::string& rNumber, std::string* pMsg) {
   std::string reason;
   bool block;

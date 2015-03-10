@@ -36,12 +36,13 @@ enum SettingBlockMode {
 };
 
 struct SettingBase {
+  std::string name;
   enum SettingBlockMode blockMode;
   std::string countryCode;
 
   std::string toString() {
     std::ostringstream oss;
-    oss << blockMode << ", " << countryCode;
+    oss << name << ", " << blockMode << ", " << countryCode;
     return oss.str();
   }
 };
