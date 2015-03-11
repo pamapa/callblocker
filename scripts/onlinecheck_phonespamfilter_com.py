@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # callblocker - blocking unwanted calls from your home phone
 # Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
 #
@@ -33,7 +35,7 @@ def debug(*objs):
 
 def fetch_url(url):
   debug("fetch_url: " + str(url))
-  data = urllib2.urlopen(url)
+  data = urllib2.urlopen(url, timeout=5)
   return data.read()
 
 

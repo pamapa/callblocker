@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # callblocker - blocking unwanted calls from your home phone
 # Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
 #
@@ -91,7 +93,7 @@ def extract_comment(data):
 
 def fetch_page(page_nr):
   print("fetch_page: " + str(page_nr))
-  page = urllib2.urlopen("https://www.ktipp.ch/service/warnlisten/detail/?warnliste_id=7&ajax=ajax-search-form&page=" + str(page_nr))
+  page = urllib2.urlopen("https://www.ktipp.ch/service/warnlisten/detail/?warnliste_id=7&ajax=ajax-search-form&page=" + str(page_nr), timeout=5)
   return page.read()
 
 def extract_str(data, start_str, end_str, error_msg):

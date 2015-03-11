@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # callblocker - blocking unwanted calls from your home phone
 # Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
 #
@@ -34,7 +36,7 @@ def debug(*objs):
 
 def fetch_url(url):
   debug("fetch_url: " + str(url))
-  data = urllib2.urlopen(url)
+  data = urllib2.urlopen(url, timeout = 5)
   return data.read()
 
 
@@ -44,18 +46,19 @@ def fetch_url(url):
 def main(argv):
   parser = argparse.ArgumentParser(description="Online check via tellows.de")
   parser.add_argument("--number", help="number to be checked", required=True)
-  parser.add_argument("--username", help="partner name", required=True)
-  parser.add_argument("--password", help="api key", required=True)
+  parser.add_argument("--partner", help="partner name", required=True)
+  parser.add_argument("--apikey", help="api key", required=True)
+  parser.add_argument("--spamscore", help="spam score limit", default=7)
   args = parser.parse_args()
 
   number = "";
   if args.number.startswith("+"):
     number = "00" + args.number[1:]
   else:
-    error("invalid number %s" + args.number)
+    error("invalid number: " + args.number)
     sys.exit(1)
 
-  url = "http://www.tellows.de/basic/num/"+number+"?xml=1&partner="+args.username+"&apikey="+args.password
+  url = "http://www.tellows.de/basic/num/"+number+"?xml=1&partner="+args.partner+"&apikey="+args.apikey
   content = fetch_url(url)
   debug(content)
   soup = BeautifulSoup(content)
@@ -64,7 +67,7 @@ def main(argv):
   score = int(scorelist[0].contents[0])
   
   # result in json format
-  print('{"spam: %s", comment="tellows.de score %s"}' % ("false" if score < 7 else "true", score))
+  print('{"spam": %s, "comment" : "tellows.de score %s"}' % ("false" if score < args.spamscore else "true", score))
 
 
 if __name__ == "__main__":
