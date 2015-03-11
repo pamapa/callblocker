@@ -169,7 +169,7 @@ def cleanup_entries(arr):
 #
 def main(argv):
   parser = argparse.ArgumentParser(description="Fetch K-Tipp blacklist")
-  parser.add_argument("--output", help="output file", default="CH_blacklist_K-Tipp.json")
+  parser.add_argument("--output", help="output file", default="blacklist_CH_K-Tipp.json")
   args = parser.parse_args()
 
   content = fetch_page(0)
