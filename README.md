@@ -20,6 +20,15 @@ blocking unwanted calls from your home phone
 - up to date blacklists available through the Internet
 - callblocker has been designed to run on a Raspberry Pi
 
+- Supported VoIP systems (tested):
+  - Fritzbox 7390
+- Supported analog modems (tested):
+  - USRobotics 5637
+- Supported online checks:
+  - phonespamfilter.com
+  - tellows.de
+
+
 ## Installing on a Raspberry Pi (running raspbian/jessie)
 1. sudo apt-get install git automake g++ libpjproject-dev libjson-c-dev
 1. git clone https://github.com/pamapa/callblocker.git
@@ -35,11 +44,6 @@ blocking unwanted calls from your home phone
 There are two ways to connect the callblock to your phone system, depending if your system is VoIP or analog. 
 The callblocker acts as an additional phone, when someone is calling the phone detects the
 number and checks it offline via white-and blacklists. There is also the ability to check the number online.
-
-- Supported VoIP systems (tested):
-  - Fritzbox 7390
-- Supported analog modems (tested):
-  - USRobotics 5637
 
 ### Setup via Fritzbox
 - Create in the Fritzbox a new IP-phone

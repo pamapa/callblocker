@@ -20,7 +20,7 @@
         "name"          : "SIP Home Phone",
         "country_code"  : "+41",
         "block_mode"    : "whitelists_and_blacklists",
-        "online_check"  : "tellows.de",
+        "online_check"  : "tellows_de",
         "from_domain"   : " <yourdomain.net>",
         "from_username" : "<your username>",
         "from_password" : "<your password>"
@@ -29,7 +29,7 @@
   },
   "online_credentials" : [
     {
-      "name"      : "tellows.de",
+      "name"      : "tellows_de",
       "partner"   : "<your partner name>",
       "apikey"    : "<your api key>",
       "spamscore" : "7"
