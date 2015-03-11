@@ -56,8 +56,6 @@ void Settings::clear() {
 }
 
 bool Settings::load() {
-  Logger::debug("loading file %s", m_filename.c_str());
-
   clear();
 
   std::ifstream in(m_filename.c_str());
@@ -76,6 +74,8 @@ bool Settings::load() {
   if (getObject(root, "log_level", &log_level)) {
     Logger::setLogLevel(log_level);
   }
+
+  Logger::debug("loading file %s", m_filename.c_str());
 
   // Analog
   struct json_object* analog;
@@ -141,6 +141,30 @@ bool Settings::load() {
     }
   } else {
     Logger::debug("no <sip> section found in settings file %s", m_filename.c_str());
+  }
+
+  // credentials
+  struct json_object* onlineCredentials;
+  if (json_object_object_get_ex(root, "online_credentials", &onlineCredentials)) {
+    for (size_t i = 0; i < json_object_array_length(onlineCredentials); i++) {
+      struct json_object* entry = json_object_array_get_idx(onlineCredentials, i);
+
+      struct SettingOnlineCredential cred;
+      if (!getObject(entry, "name", &cred.name)) {
+        continue;
+      }
+      json_object_object_foreach(entry, key, value) {
+        if (strcmp("name", key) == 0) continue;
+        std::string value_str;
+        if (!getObject(entry, key, &value_str)) {
+          continue;
+        }
+        cred.data[key] = value_str;
+      }
+      m_onlineCredentials.push_back(cred);
+    }
+  } else {
+    Logger::debug("no <online_credentials> section found in settings file %s", m_filename.c_str());
   }
 
   json_object_put(root); // free

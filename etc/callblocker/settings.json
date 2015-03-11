@@ -27,11 +27,12 @@
       }
     ]
   },
-  "credentials" : {
-    "atellows.de" : {
-      "username" : "<your partner name>",
-      "password" : "<your api key>"
+  "online_credentials" : [
+    {
+      "name"    : "tellows.de",
+      "partner" : "<your partner name>",
+      "apikey"  : "<your api key>"
     }
-  }
+  ]
 }
 

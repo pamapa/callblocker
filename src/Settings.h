@@ -23,6 +23,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <map>
 
 #include "Notify.h"
 struct json_object;
@@ -72,11 +73,17 @@ struct SettingAnalogPhone {
   }
 };
 
+struct SettingOnlineCredential {
+  std::string name;
+  std::map<std::string, std::string> data;
+};
+
 class Settings : public Notify {
 private:
   std::string m_filename;
   std::vector<struct SettingSipAccount> m_sipAccounts;
   std::vector<struct SettingAnalogPhone> m_analogPhones;
+  std::vector<struct SettingOnlineCredential> m_onlineCredentials;
 
 public:
   Settings();
@@ -84,6 +91,7 @@ public:
   bool run();
   std::vector<struct SettingSipAccount> getSipAccounts() { return m_sipAccounts; }
   std::vector<struct SettingAnalogPhone> getAnalogPhones() { return m_analogPhones; }
+  std::vector<struct SettingOnlineCredential> getOnlineCredentials() { return m_onlineCredentials; }
   void dump();
 
 private:

@@ -38,9 +38,9 @@ static void signal_handler(int signal) {
 
 class Main {
 private:
-  Settings* m_settings;
-  Block* m_block;
-  SipPhone* m_sipPhone;
+  Settings* m_pSettings;
+  Block* m_pBlock;
+  SipPhone* m_pSipPhone;
   std::vector<SipAccount*> m_sipAccounts;
   std::vector<AnalogPhone*> m_analogPhones;
 
@@ -48,26 +48,26 @@ public:
   Main() {
     Logger::start();
 
-    m_settings = new Settings();
-    m_block = new Block;
+    m_pSettings = new Settings();
+    m_pBlock = new Block(m_pSettings);
 
-    m_sipPhone = NULL;
+    m_pSipPhone = NULL;
     add();
   }
 
   virtual ~Main() {
     remove();
-    delete m_block;
-    delete m_settings;
+    delete m_pBlock;
+    delete m_pSettings;
     Logger::stop();
   }
 
   void loop() {
     Logger::debug("mainLoop...");
     while (s_appRunning) {
-      m_block->run();
+      m_pBlock->run();
 
-      if (m_settings->hasChanged()) {
+      if (m_pSettings->hasChanged()) {
         Logger::debug("mainLoop: reload");
         remove();
         add();
@@ -92,29 +92,29 @@ private:
       delete m_sipAccounts[i];
     }
     m_sipAccounts.clear();
-    if (m_sipPhone != NULL) {
-      delete m_sipPhone;
-      m_sipPhone = NULL;
+    if (m_pSipPhone != NULL) {
+      delete m_pSipPhone;
+      m_pSipPhone = NULL;
     }
   }
 
   void add() {
     // Analog
-    std::vector<struct SettingAnalogPhone> analogPhones = m_settings->getAnalogPhones();
+    std::vector<struct SettingAnalogPhone> analogPhones = m_pSettings->getAnalogPhones();
     for(size_t i = 0; i < analogPhones.size(); i++) {
-      AnalogPhone* tmp = new AnalogPhone(m_block);
+      AnalogPhone* tmp = new AnalogPhone(m_pBlock);
       if (tmp->init(&analogPhones[i])) m_analogPhones.push_back(tmp);
       else delete tmp;
     }
 
     // SIP
-    std::vector<struct SettingSipAccount> accounts = m_settings->getSipAccounts();
+    std::vector<struct SettingSipAccount> accounts = m_pSettings->getSipAccounts();
     for(size_t i = 0; i < accounts.size(); i++) {
-      if (m_sipPhone == NULL) {
-        m_sipPhone = new SipPhone(m_block);
-        m_sipPhone->init();
+      if (m_pSipPhone == NULL) {
+        m_pSipPhone = new SipPhone(m_pBlock);
+        m_pSipPhone->init();
       }
-      SipAccount* tmp = new SipAccount(m_sipPhone);
+      SipAccount* tmp = new SipAccount(m_pSipPhone);
       if (tmp->add(&accounts[i])) m_sipAccounts.push_back(tmp);
       else delete tmp;
     }

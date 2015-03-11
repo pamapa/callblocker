@@ -28,11 +28,12 @@
 
 class Block {
 private:
+  Settings* m_pSettings;
   FileLists* m_pWhitelists;
   FileLists* m_pBlacklists;
 
 public:
-  Block();
+  Block(Settings* pSettings);
   virtual ~Block();
   void run();
   bool isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);

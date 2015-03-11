@@ -19,10 +19,15 @@
 
 #include "Block.h" // API
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "Logger.h"
 
 
-Block::Block() {
+Block::Block(Settings* pSettings) {
+  Logger::debug("Block...");
+  m_pSettings = pSettings;
+
   m_pWhitelists = new FileLists(SYSCONFDIR "/" PACKAGE_NAME "/whitelists");
   m_pBlacklists = new FileLists(SYSCONFDIR "/" PACKAGE_NAME "/blacklists");
 }
@@ -42,7 +47,7 @@ void Block::run() {
 }
 
 bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg) {
-  std::string reason;
+  std::string reason = "";
   std::string msg;
   bool block;
   switch (pSettings->blockMode) {
@@ -58,7 +63,6 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
         reason = "would be in blacklist ("+msg+")";
         break;
       }
-      reason = "";
       break;
 
     case WHITELISTS_ONLY:
@@ -66,7 +70,6 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
         reason = "found in whitelist ("+msg+")";
         block = false;
       }
-      reason = "";
       block = true;
       break;
 
@@ -81,7 +84,6 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
         block = true;
         break;
       }
-      reason = "";
       block = false;
       break;
 
@@ -91,7 +93,6 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
         block = true;
         break;
       }
-      reason = "";
       block = false;
       break;
   }
@@ -116,10 +117,17 @@ bool Block::isWhiteListed(const struct SettingBase* pSettings, const std::string
 }
 
 bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg) {
-  if (m_pBlacklists->isListed(rNumber, pMsg))
-  {
+  if (m_pBlacklists->isListed(rNumber, pMsg)) {
     return true;
   }
+
+#if 0
+  if (boost::starts_with(rNumber, "**")) {
+    // it is an intern number, thus makes no sense to ask the world
+    *pMsg = "intern number";
+    return false;
+  }
+#endif
 
   if (pSettings->onlineCheck.length() == 0) {
     return false;
@@ -128,7 +136,70 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
   std::string script = "onlinecheck_" + pSettings->onlineCheck + ".py";
   Logger::debug("script: %s", script.c_str());
 
+  std::string parameters = "--number " + rNumber;
+  std::vector<struct SettingOnlineCredential> creds = m_pSettings->getOnlineCredentials();
+  for(size_t i = 0; i < creds.size(); i++) {
+    struct SettingOnlineCredential* cred = &creds[i];
+    if (cred->name == pSettings->onlineCheck) {
+      for (std::map<std::string,std::string>::iterator it = cred->data.begin(); it != cred->data.end(); ++it) {
+        parameters += " --" + it->first + " " + it->second;
+      }
+      break;
+    }
+  }
+  Logger::debug("parameters=%s", parameters.c_str());
 
   return false;
 }
+
+#if 0
+std::string exec(char* cmd) {
+    FILE* pipe = popen(cmd, "r");
+    if (!pipe) return "ERROR";
+    char buffer[128];
+    std::string result = "";
+    while(!feof(pipe)) {
+    	if(fgets(buffer, 128, pipe) != NULL)
+    		result += buffer;
+    }
+    pclose(pipe);
+    return result;
+}
+#endif
+
+#if 0
+// non blocking??
+bool Block::executeCommand(std::string command) {
+  int pipefd[2];
+  FILE* output;
+  char line[256];
+  int status;
+
+  // create pipe
+  pipe(pipefd);
+
+  pid_t pid = fork(); //span a child process
+  if (pid == 0) {
+  // Child. Let's redirect its standard output to our pipe and replace process with tail
+   close(pipefd[0]);
+   dup2(pipefd[1], STDOUT_FILENO);
+   dup2(pipefd[1], STDERR_FILENO);
+   execl("/usr/bin/tail", "/usr/bin/tail", "-f", "path/to/your/file", (char*) NULL);
+  }
+
+  //Only parent gets here. Listen to what the tail says
+  close(pipefd[1]);
+  output = fdopen(pipefd[0], "r");
+
+  while(fgets(line, sizeof(line), output)) //listen to what tail writes to its standard output
+  {
+  //if you need to kill the tail application, just kill it:
+    if(something_goes_wrong)
+      kill(pid, SIGKILL);
+  }
+
+  //or wait for the child process to terminate
+  waitpid(pid, &status, 0);
+}
+#endif
 
