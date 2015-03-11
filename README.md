@@ -1,5 +1,9 @@
 # callblocker
-blocking unwanted calls from your home phone
+blocking unwanted calls from your home phone, such as telemarketing, junk, spam, scam, etc. Its
+designed to run on small footprint such as a Raspberry Pi. For all those where jcblock or ncid
+does not fit or is not enough and Asterisk or FreePBX would be an overkill, as you already have
+running VoIP server. callblocker acts as an additional phone, when someone is calling the phone detects the
+number and checks it offline via white-and blacklists. There is also the ability to check the number online.
 
 ## TODO
 1. finish Analog phone support
@@ -44,8 +48,6 @@ blocking unwanted calls from your home phone
 
 ## Setup
 There are two ways to connect the callblock to your phone system, depending if your system is VoIP or analog. 
-The callblocker acts as an additional phone, when someone is calling the phone detects the
-number and checks it offline via white-and blacklists. There is also the ability to check the number online.
 
 ### Setup via Fritzbox
 - Create in the Fritzbox a new IP-phone
