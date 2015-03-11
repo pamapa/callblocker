@@ -41,6 +41,8 @@ AC_CHECK_LIB([boost_regex], main, , [AC_MSG_ERROR("Linking against boost_regex f
 
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([etc/callblocker/Makefile])
+AC_CONFIG_FILES([etc/callblocker/blacklists/Makefile])
+AC_CONFIG_FILES([etc/callblocker/whitelists/Makefile])
+AC_CONFIG_FILES([scripts/Makefile])
 AC_CONFIG_FILES([src/Makefile])
 AC_OUTPUT
-

@@ -18,11 +18,4 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 callblockerdir=$(sysconfdir)/callblocker
-callblocker_DATA = settings.json
-
-callblockerwhitelistsdir=$(callblockerdir)/whitelists
-callblockerwhitelists_DATA = whitelists/template.json
-
-callblockerblacklistsdir=$(callblockerdir)/blacklists
-callblockerblacklists_DATA = blacklists/template.json
-
+callblocker_DATA = tpl_settings.json

@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 callblockerdir=$(datadir)/callblocker
-callblocker_DATA = \
-  CH_blacklist_K-Tipp.py \
-  onlinecheck_tellows_de.py \
-  onlinecheck_phonespamfilter_com.py
+callblocker_SCRIPTS = \
+  blacklist_CH_K-Tipp.py \
+  onlinecheck_phonespamfilter_com.py \
+  onlinecheck_tellows_de.py
