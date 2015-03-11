@@ -4,7 +4,7 @@ blocking unwanted calls from your home phone
 ## TODO
 1. finish Analog phone support
 1. add webinterface
-1. support calls without caller ID
+1. support blocking calls without caller ID
 1. night silence
 1. shield support?
 1. polish
@@ -24,13 +24,12 @@ blocking unwanted calls from your home phone
   - Fritzbox 7390
 - Supported analog modems (tested):
   - USRobotics 5637
-- Supported online checks:
+- Supported online spam checking sites:
   - phonespamfilter.com
   - tellows.de
 
-
 ## Installing on a Raspberry Pi (running raspbian/jessie)
-1. sudo apt-get install git automake g++ libpjproject-dev libjson-c-dev
+1. sudo apt-get install git automake g++ libpjproject-dev libjson-c-dev libboost-dev libboost-regex-dev
 1. git clone https://github.com/pamapa/callblocker.git
 1. cd callblocker
 1. aclocal

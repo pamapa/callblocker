@@ -31,8 +31,7 @@
     {
       "name"      : "tellows_de",
       "partner"   : "<your partner name>",
-      "apikey"    : "<your api key>",
-      "spamscore" : "7"
+      "apikey"    : "<your api key>"
     }
   ]
 }

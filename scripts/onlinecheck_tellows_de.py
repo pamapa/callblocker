@@ -51,6 +51,7 @@ def main(argv):
   parser.add_argument("--spamscore", help="spam score limit", default=7)
   args = parser.parse_args()
 
+  # make correct format for number
   number = "";
   if args.number.startswith("+"):
     number = "00" + args.number[1:]
