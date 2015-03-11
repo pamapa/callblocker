@@ -28,6 +28,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "Logger.h"
+#include "Helper.h"
 
 
 Settings::Settings() : m_filename(SYSCONFDIR "/" PACKAGE_NAME "/settings.json"),
@@ -71,7 +72,7 @@ bool Settings::load() {
   struct json_object* root = json_tokener_parse(str.c_str());
 
   std::string log_level;
-  if (getObject(root, "log_level", &log_level)) {
+  if (Helper::getObject(root, "log_level", m_filename.c_str(), &log_level)) {
     Logger::setLogLevel(log_level);
   }
 
@@ -85,14 +86,14 @@ bool Settings::load() {
       for (size_t i = 0; i < json_object_array_length(phones); i++) {
         struct json_object* entry = json_object_array_get_idx(phones, i);
         bool enabled;
-        if (!getObject(entry, "enabled", &enabled) || !enabled) {
+        if (!Helper::getObject(entry, "enabled", m_filename.c_str(), &enabled) || !enabled) {
           continue;
         }
         struct SettingAnalogPhone acc;
         if (!getBase(entry, &acc.base)) {
           continue;
         }
-        if (!getObject(entry, "device", &acc.device)) {
+        if (!Helper::getObject(entry, "device", m_filename.c_str(), &acc.device)) {
           continue;
         }
         m_analogPhones.push_back(acc);
@@ -109,7 +110,7 @@ bool Settings::load() {
   if (json_object_object_get_ex(root, "sip", &sip)) {
 
     int pjsip_log_level;
-    if (getObject(sip, "pjsip_log_level", &pjsip_log_level)) {
+    if (Helper::getObject(sip, "pjsip_log_level", m_filename.c_str(), &pjsip_log_level)) {
       pj_log_set_level(pjsip_log_level);
     }
 
@@ -118,20 +119,20 @@ bool Settings::load() {
       for (size_t i = 0; i < json_object_array_length(accounts); i++) {
         struct json_object* entry = json_object_array_get_idx(accounts, i);
         bool enabled;
-        if (!getObject(entry, "enabled", &enabled) || !enabled) {
+        if (!Helper::getObject(entry, "enabled", m_filename.c_str(), &enabled) || !enabled) {
           continue;
         }
         struct SettingSipAccount acc;
         if (!getBase(entry, &acc.base)) {
           continue;
         }
-        if (!getObject(entry, "from_domain", &acc.fromDomain)) {
+        if (!Helper::getObject(entry, "from_domain", m_filename.c_str(), &acc.fromDomain)) {
           continue;
         }
-        if (!getObject(entry, "from_username", &acc.fromUsername)) {
+        if (!Helper::getObject(entry, "from_username", m_filename.c_str(), &acc.fromUsername)) {
           continue;
         }
-        if (!getObject(entry, "from_password", &acc.fromPassword)) {
+        if (!Helper::getObject(entry, "from_password", m_filename.c_str(), &acc.fromPassword)) {
           continue;
         }
         m_sipAccounts.push_back(acc);
@@ -150,13 +151,13 @@ bool Settings::load() {
       struct json_object* entry = json_object_array_get_idx(onlineCredentials, i);
 
       struct SettingOnlineCredential cred;
-      if (!getObject(entry, "name", &cred.name)) {
+      if (!Helper::getObject(entry, "name", m_filename.c_str(), &cred.name)) {
         continue;
       }
       json_object_object_foreach(entry, key, value) {
         if (strcmp("name", key) == 0) continue;
         std::string value_str;
-        if (!getObject(entry, key, &value_str)) {
+        if (!Helper::getObject(entry, key, m_filename.c_str(), &value_str)) {
           continue;
         }
         cred.data[key] = value_str;
@@ -171,59 +172,14 @@ bool Settings::load() {
   return true;
 }
 
-bool Settings::getObject(struct json_object* objbase, const char* objname, std::string* res) {
-  struct json_object* n;
-  
-  if (!json_object_object_get_ex(objbase, objname, &n)) {
-    Logger::warn("%s not found in settings file %s", objname, m_filename.c_str());
-    return false;
-  }
-  if (json_object_get_type(n) != json_type_string) {
-    Logger::warn("string type expected for %s in settings file %s", objname, m_filename.c_str());
-    return false;
-  }
-  *res = json_object_get_string(n);
-  return true;
-}
-
-bool Settings::getObject(struct json_object* objbase, const char* objname, int* res) {
-  struct json_object* n;
-  
-  if (!json_object_object_get_ex(objbase, objname, &n)) {
-    Logger::warn("%s not found in settings file %s", objname, m_filename.c_str());
-    return false;
-  }
-  if (json_object_get_type(n) != json_type_int) {
-    Logger::warn("string type expected for %s in settings file %s", objname, m_filename.c_str());
-    return false;
-  }
-  *res = json_object_get_int(n);
-  return true;
-}
-
-bool Settings::getObject(struct json_object* objbase, const char* objname, bool* res) {
-  struct json_object* n;
-  
-  if (!json_object_object_get_ex(objbase, objname, &n)) {
-    Logger::warn("%s not found in settings file %s", objname, m_filename.c_str());
-    return false;
-  }
-  if (json_object_get_type(n) != json_type_boolean) {
-    Logger::warn("string type expected for %s in settings file %s", objname, m_filename.c_str());
-    return false;
-  }
-  *res = (bool)json_object_get_boolean(n);
-  return true;
-}
-
 bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
   std::string tmp;
   // name
-  if (!getObject(objbase, "name", &res->name)) {
+  if (!Helper::getObject(objbase, "name", m_filename.c_str(), &res->name)) {
     return false;
   }
   // country code
-  if (!getObject(objbase, "country_code", &res->countryCode)) {
+  if (!Helper::getObject(objbase, "country_code", m_filename.c_str(), &res->countryCode)) {
     return false;
   }
   if (!boost::starts_with(res->countryCode, "+")) {
@@ -231,7 +187,7 @@ bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
     return false;
   }
   // block mode
-  if (!getObject(objbase, "block_mode", &tmp)) {
+  if (!Helper::getObject(objbase, "block_mode", m_filename.c_str(), &tmp)) {
     return false;
   }
   if (tmp == "logging_only") res->blockMode = LOGGING_ONLY;
@@ -243,7 +199,7 @@ bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
     return false;
   }
   // online check
-  if (!getObject(objbase, "online_check", &res->onlineCheck)) {
+  if (!Helper::getObject(objbase, "online_check", m_filename.c_str(), &res->onlineCheck)) {
     return false;
   }
   return true;

@@ -97,9 +97,6 @@ public:
 private:
   void clear();
   bool load();
-  bool getObject(struct json_object* objbase, const char* objname, std::string* res);
-  bool getObject(struct json_object* objbase, const char* objname, int* res);
-  bool getObject(struct json_object* objbase, const char* objname, bool* res);
   bool getBlockMode(struct json_object* objbase, enum SettingBlockMode* res);
   bool getBase(struct json_object* objbase, struct SettingBase* res);
 };

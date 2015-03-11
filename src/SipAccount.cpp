@@ -242,6 +242,7 @@ bool SipAccount::getNumber(pj_str_t* uri, std::string* pDisplay, std::string* pN
 
   pjsip_sip_uri *sip = (pjsip_sip_uri*)pjsip_uri_get_uri(n);
   std::string number = std::string(sip->user.ptr, sip->user.slen);
+  
   // make number international
   if (boost::starts_with(number, "00")) number = "+" + number.substr(2);
   else if (boost::starts_with(number, "0")) number = m_settings.base.countryCode + number.substr(1);

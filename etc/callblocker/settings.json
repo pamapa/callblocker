@@ -29,9 +29,10 @@
   },
   "online_credentials" : [
     {
-      "name"    : "tellows.de",
-      "partner" : "<your partner name>",
-      "apikey"  : "<your api key>"
+      "name"      : "tellows.de",
+      "partner"   : "<your partner name>",
+      "apikey"    : "<your api key>",
+      "spamscore" : "7"
     }
   ]
 }

@@ -19,9 +19,11 @@
 
 #include "Block.h" // API
 
+#include <json-c/json.h>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "Logger.h"
+#include "Helper.h"
 
 
 Block::Block(Settings* pSettings) {
@@ -63,19 +65,22 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
         reason = "would be in blacklist ("+msg+")";
         break;
       }
+      reason = "not found in white- and blacklists ("+msg+")";
       break;
 
     case WHITELISTS_ONLY:
       if (isWhiteListed(pSettings, rNumber, &msg)) {
         reason = "found in whitelist ("+msg+")";
         block = false;
+        break;
       }
+      reason = "not found in whitelists";
       block = true;
       break;
 
     case WHITELISTS_AND_BLACKLISTS:
       if (isWhiteListed(pSettings, rNumber, &msg)) {
-        reason = "found in whitelist ("+msg+")";
+        reason = "found in whitelist ("+msg+")}";
         block = false;
         break;
       }
@@ -84,6 +89,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
         block = true;
         break;
       }
+      reason = "not found in white- and blacklists ("+msg+")";
       block = false;
       break;
 
@@ -93,6 +99,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
         block = true;
         break;
       }
+      reason = "not found in blacklists ("+msg+")";
       block = false;
       break;
   }
@@ -121,7 +128,7 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
     return true;
   }
 
-#if 0
+#if 1
   if (boost::starts_with(rNumber, "**")) {
     // it is an intern number, thus makes no sense to ask the world
     *pMsg = "intern number";
@@ -134,7 +141,7 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
   }
 
   std::string script = "onlinecheck_" + pSettings->onlineCheck + ".py";
-  Logger::debug("script: %s", script.c_str());
+  script = "/usr/share/callblocker/" + script;
 
   std::string parameters = "--number " + rNumber;
   std::vector<struct SettingOnlineCredential> creds = m_pSettings->getOnlineCredentials();
@@ -147,59 +154,23 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
       break;
     }
   }
-  Logger::debug("parameters=%s", parameters.c_str());
 
-  return false;
-}
-
-#if 0
-std::string exec(char* cmd) {
-    FILE* pipe = popen(cmd, "r");
-    if (!pipe) return "ERROR";
-    char buffer[128];
-    std::string result = "";
-    while(!feof(pipe)) {
-    	if(fgets(buffer, 128, pipe) != NULL)
-    		result += buffer;
-    }
-    pclose(pipe);
-    return result;
-}
-#endif
-
-#if 0
-// non blocking??
-bool Block::executeCommand(std::string command) {
-  int pipefd[2];
-  FILE* output;
-  char line[256];
-  int status;
-
-  // create pipe
-  pipe(pipefd);
-
-  pid_t pid = fork(); //span a child process
-  if (pid == 0) {
-  // Child. Let's redirect its standard output to our pipe and replace process with tail
-   close(pipefd[0]);
-   dup2(pipefd[1], STDOUT_FILENO);
-   dup2(pipefd[1], STDERR_FILENO);
-   execl("/usr/bin/tail", "/usr/bin/tail", "-f", "path/to/your/file", (char*) NULL);
+  std::string cmd = script + " " + parameters + " 2>&1";
+  std::string res;
+  if (!Helper::executeCommand(cmd, &res)) {
+    *pMsg = res;
+    return false;
   }
 
-  //Only parent gets here. Listen to what the tail says
-  close(pipefd[1]);
-  output = fdopen(pipefd[0], "r");
-
-  while(fgets(line, sizeof(line), output)) //listen to what tail writes to its standard output
-  {
-  //if you need to kill the tail application, just kill it:
-    if(something_goes_wrong)
-      kill(pid, SIGKILL);
+  struct json_object* root = json_tokener_parse(res.c_str());
+  bool spam;
+  if (!Helper::getObject(root, "spam", "script result", &spam)) {
+    return false;
   }
-
-  //or wait for the child process to terminate
-  waitpid(pid, &status, 0);
+  std::string comment;
+  if (Helper::getObject(root, "comment", "script result", &comment)) {
+    *pMsg = comment;
+  }
+  return spam;
 }
-#endif
 
