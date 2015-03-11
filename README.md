@@ -35,9 +35,12 @@ blocking unwanted calls from your home phone
 1. aclocal
 1. automake --add-missing --foreign
 1. autoconf
-1. ./configure --prefix=
+1. ./configure --sysconfdir=/etc
 1. make all
 1. sudo make install
+1. cd /etc/callblocker
+1. mv tpl_settings.json settings.json
+1. adapt settings.json for your needs
 
 ## Setup
 There are two ways to connect the callblock to your phone system, depending if your system is VoIP or analog. 
