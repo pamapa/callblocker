@@ -35,7 +35,7 @@ blocking unwanted calls from your home phone
 1. aclocal
 1. automake --add-missing --foreign
 1. autoconf
-1. ./configure --sysconfdir=/etc
+1. ./configure --prefix=/usr --sysconfdir=/etc
 1. make all
 1. sudo make install
 1. cd /etc/callblocker
@@ -49,7 +49,7 @@ number and checks it offline via white-and blacklists. There is also the ability
 
 ### Setup via Fritzbox
 - Create in the Fritzbox a new IP-phone
-  - http://fritz.box
+  - Open a webbrowser and enter http://fritz.box
   - In the menu "Telefonie -> Telefoniegeräte" click on "Neues Gerät einrichten"
   - Choose "Telefon (mit und ohne Anrufbeantworter)" and click "Weiter"
   - Choose "LAN/WLAN (IP-Telefon)", for name use for example "callblocker" and click "Weiter"
