@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
 	signal(SIGINT, signal_handler);
 	signal(SIGKILL, signal_handler);
 
-  Logger::info("starting callblockerd v%s", PACKAGE_VERSION);
+  Logger::notice("starting callblockerd v%s", PACKAGE_VERSION);
 
   Main* m = new Main();
   m->loop();
