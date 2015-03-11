@@ -33,7 +33,7 @@ number and checks it offline via white-and blacklists. There is also the ability
   - tellows.de
 
 ## Installing on a Raspberry Pi (running raspbian/jessie)
-1. sudo apt-get install git automake g++ libpjproject-dev libjson-c-dev libboost-dev libboost-regex-dev
+1. sudo apt-get install git automake g++ libpjproject-dev libjson-c-dev libboost-dev libboost-regex-dev python python-beautifulsoup python-demjson
 1. git clone https://github.com/pamapa/callblocker.git
 1. cd callblocker
 1. aclocal
