@@ -60,11 +60,11 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
     case LOGGING_ONLY:
       block = false;
       if (isWhiteListed(pSettings, rNumber, &msg)) {
-        reason = "would be in whitelist ("+msg+")";
+        reason = "would be in whitelists ("+msg+")";
         break;
       }
       if (isBlacklisted(pSettings, rNumber, &msg)) {
-        reason = "would be in blacklist ("+msg+")";
+        reason = "would be in blacklists ("+msg+")";
         break;
       }
       reason = "would not be in white- and blacklists ("+msg+")";
@@ -72,7 +72,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
 
     case WHITELISTS_ONLY:
       if (isWhiteListed(pSettings, rNumber, &msg)) {
-        reason = "found in whitelist ("+msg+")";
+        reason = "found in whitelists ("+msg+")";
         block = false;
         break;
       }
@@ -82,12 +82,12 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
 
     case WHITELISTS_AND_BLACKLISTS:
       if (isWhiteListed(pSettings, rNumber, &msg)) {
-        reason = "found in whitelist ("+msg+")}";
+        reason = "found in whitelists ("+msg+")}";
         block = false;
         break;
       }
       if (isBlacklisted(pSettings, rNumber, &msg)) {
-        reason = "found in blacklist ("+msg+")";
+        reason = "found in blacklists ("+msg+")";
         block = true;
         break;
       }
@@ -97,7 +97,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
 
     case BLACKLISTS_ONLY:
       if (isBlacklisted(pSettings, rNumber, &msg)) {
-        reason = "found in blacklist ("+msg+")";
+        reason = "found in blacklists ("+msg+")";
         block = true;
         break;
       }

@@ -7,11 +7,12 @@
   "entries" : [ 
       { 
         "comment" : "Telemarketing Company X",
-        "number" : "1235678901234567890"
+        "number" : "+123567890123"
       },
       { 
         "comment" : "Call Center of Company Y",
-        "number" : "09876543210987654321"
+        "number" : "+491234567890123"
       }
     ]
 }
+
