@@ -98,18 +98,18 @@ Start with the provided template settings file (mv tpl_settings.json settings.js
   ]
 }
 ```
-Fields               | Comments
-------               | --------
-"log_level"          | possible values: "error", "warn", "info" or "debug"
-"country_code"       | needed to create international number
-"block_mode"         | possible values: "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only".                        "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists (whitelists not used)
-"online_check"       | the online check script base name (e.g. "tellows_de" leds to onlinecheck_tellows_de.py
-"device"             | your modem device (get it with dmesg)
-"pjsip_log_level"    | pjsip log level, for debugging proposes
-"from_domain"        | SIP host domain name
-"from_username"      | SIP username
-"from_password"      | SIP password
-"online_credentials" | in this section you must define credentials, which are needed by some scripts to get the online information
+Fields               | Values | Comment
+------               | ------ | -------
+"log_level"          | "error", "warn", "info" or "debug" |
+"country_code"       | +<XYZ> | needed to create international number
+"block_mode"         | "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only" | "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists (whitelists not used)
+"online_check"       | | the online check script base name (e.g. "tellows_de" leds to onlinecheck_tellows_de.py
+"device"             | | your modem device (get it with dmesg)
+"pjsip_log_level"    | 0-5 | pjsip log level, for debugging proposes
+"from_domain"        | | your SIP host domain name
+"from_username"      | | your SIP username
+"from_password"      | | your SIP password
+"online_credentials" | | in this section you can define credentials, which are needed by some scripts to get the online information
 
 ## Setup
 There are two ways to connect the callblock to your phone system, depending if your system is VoIP or analog. 
