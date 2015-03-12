@@ -80,7 +80,9 @@ AnalogPhone::AnalogPhone(Block* pBlock) : Phone(pBlock) {
 
 AnalogPhone::~AnalogPhone() {
   Logger::debug("~AnalogPhone...");
+
   if (m_FD != -1) {
+    (void)sendCommand("ATZ");
     (void)tcsetattr(m_FD, TCSANOW, &m_origTermios);
     close(m_FD);
     m_FD = -1;
@@ -180,14 +182,14 @@ void AnalogPhone::run() {
 bool AnalogPhone::openDevice() {
   m_FD = open(m_settings.device.c_str(), O_RDWR|O_NOCTTY);
   if (m_FD < 0) {
-    Logger::warn("failed to open device %s (%s)", m_settings.device.c_str(), strerror(errno));
+    Logger::warn("[%s] failed to open (%s)", m_settings.device.c_str(), strerror(errno));
     m_FD = -1;
     return false;
   }
 
   // get original options
   if (tcgetattr(m_FD, &m_origTermios) < 0) {
-    Logger::warn("tcgetattr failed on device %s (%s)", m_settings.device.c_str(), strerror(errno));
+    Logger::warn("[%s] tcgetattr failed (%s)", m_settings.device.c_str(), strerror(errno));
     return false;
   }
 
@@ -235,7 +237,7 @@ bool AnalogPhone::openDevice() {
 
   // apply options
   if (tcsetattr(m_FD, TCSANOW, &options) < 0) {
-    Logger::warn("tcgetattr failed on device %s (%s)", m_settings.device.c_str(), strerror(errno));
+    Logger::warn("[%s] tcgetattr failed (%s)", m_settings.device.c_str(), strerror(errno));
     return false;
   }
 
@@ -270,8 +272,7 @@ bool AnalogPhone::sendCommand(std::string cmd) {
         ret = true;
         break;
       }
-      if (strstr(buffer, "ERROR"))
-      {
+      if (strstr(buffer, "ERROR")) {
         Logger::warn("[%s] received 'ERROR' for command '%s'", m_settings.device.c_str(), cmd.c_str());
         ret = false;
         break;
