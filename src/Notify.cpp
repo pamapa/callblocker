@@ -37,7 +37,16 @@
 
 Notify::Notify(const std::string& pathname, uint32_t mask) {
   m_FD = inotify_init();
+  if (m_FD < 0) {
+    Logger::warn("inotify_init failed (%s)", strerror(errno));
+    return;
+  }
+
   m_WD = inotify_add_watch(m_FD, pathname.c_str(), mask);
+  if (m_WD < 0) {
+    Logger::warn("inotify_add_watch failed (%s)", strerror(errno));
+    return;
+  }
 }
 
 Notify::~Notify() {
