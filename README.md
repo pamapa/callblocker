@@ -133,7 +133,7 @@ There are two ways to connect the callblock to your phone system, depending if y
 
 ### Setup via Fritzbox
 - Create in the Fritzbox a new IP-phone
-  - Open a webbrowser and enter http://fritz.box
+  - Open your webbrowser and go to the URL http://fritz.box
   - In the menu "Telefonie -> Telefoniegeräte" click on "Neues Gerät einrichten"
   - Choose "Telefon (mit und ohne Anrufbeantworter)" and click "Weiter"
   - Choose "LAN/WLAN (IP-Telefon)", for name use for example "callblocker" and click "Weiter"
