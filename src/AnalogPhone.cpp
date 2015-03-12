@@ -31,6 +31,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "Logger.h"
 
@@ -44,7 +45,7 @@
 #define AT_PICKUP_STR   "ATH1"
 
 #define CHARWAIT_TIME_DSEC    1       /* deciseconds (1dsec = 0.1sec) */
-#define READWAIT_TIME_USEC    100000  /* microseconds */
+#define READWAIT_TIME_USEC    150000  /* microseconds */
 
 
 /*
@@ -57,10 +58,7 @@ OK
 
 RING
 
-DATE=0306
-TIME=1517
-NMBR=**610
-NAME=aasdasdd
+
 
 RING
 
@@ -117,13 +115,23 @@ void AnalogPhone::run() {
       m_numRings++;
       m_ringTime = getMonotonicTime();
 
+      if (m_numRings == 1) {
+        Logger::notice("State changed to RINGING");
+      }
+
       // handle no caller ID
       if (m_numRings == 2) {
         if (!m_foundCID) {
-          // TODO: no CID received -> notice
+          Logger::notice("Incoming call without CALLER ID");
+          // TODO: handle it...
         }
       }
     } else {
+      // between first and second RING:
+      // DATE=0306
+      // TIME=1517
+      // NMBR=0123456789
+      // NAME=aasdasdd
       std::vector<std::string> lines;
       boost::split(lines, data, boost::is_any_of("\n"));
       for (size_t i = 0; i < lines.size(); i++) {
@@ -132,14 +140,25 @@ void AnalogPhone::run() {
         if (boost::regex_match(lines[i], str_matches, nmbr_regex)) {
           std::string key = str_matches[1];
           std::string value = str_matches[2];
-          Logger::debug("found pair %s=%s", key.c_str(), value.c_str());
+          //Logger::debug("found pair %s=%s", key.c_str(), value.c_str());
 
           if (key == "NMBR") {
-            // TODO value empty?
+            // TODO value empty? is this possible?
+
+            // make number international
+            std::string number = value;
+            if (boost::starts_with(number, "00")) number = "+" + number.substr(2);
+            else if (boost::starts_with(number, "0")) number = m_settings.base.countryCode + number.substr(1);
+
             std::string msg;
-            bool block = isNumberBlocked(&m_settings.base, value, &msg);
+            bool block = isNumberBlocked(&m_settings.base, number, &msg);
             Logger::notice(msg.c_str());
             m_foundCID = true;
+            if (block) {
+              sendCommand("ATH0"); // pickup
+              sendCommand("ATH1"); // hangup
+              Logger::notice("State changed to HANGUP");
+            }
           }
         }
       }
@@ -151,10 +170,9 @@ void AnalogPhone::run() {
     // when is 7s are elapsed, when ringing each 5s a RING is expected
     time_t diff = getMonotonicTime() - m_ringTime;
     if (diff > 6) {
-      Logger::debug("ringing stopped");
+      Logger::notice("State changed to RINGING_STOPPED");
       m_numRings = m_ringTime = 0;
       m_foundCID = false;
-      // TODO notice? YES
     }
   }
 }
@@ -225,12 +243,12 @@ bool AnalogPhone::openDevice() {
 }
 
 bool AnalogPhone::sendCommand(std::string cmd) {
-  Logger::debug("send %s command...", cmd.c_str());
+  Logger::debug("[%s] send %s command...", m_settings.device.c_str(), cmd.c_str());
   std::string sendCmd = cmd + "\r\n"; // CRLF
 
   int len = write(m_FD, sendCmd.c_str(), strlen(sendCmd.c_str()));
   if (len != strlen(sendCmd.c_str())) {
-    Logger::warn("write command '%s' failed on device %s (%s)", cmd.c_str(), m_settings.device.c_str(), strerror(errno));
+    Logger::warn("[%s] write command '%s' failed (%s)", m_settings.device.c_str(), cmd.c_str(), strerror(errno));
     return false;
   }
 
@@ -254,7 +272,7 @@ bool AnalogPhone::sendCommand(std::string cmd) {
       }
       if (strstr(buffer, "ERROR"))
       {
-        Logger::warn("received 'ERROR' for command %s from device", cmd.c_str(), m_settings.device.c_str());
+        Logger::warn("[%s] received 'ERROR' for command '%s'", m_settings.device.c_str(), cmd.c_str());
         ret = false;
         break;
       }
@@ -264,8 +282,8 @@ bool AnalogPhone::sendCommand(std::string cmd) {
   
   std::string str = buffer;
   boost::algorithm::trim(str);
-  Logger::debug("received '%s' from device %s tries=%d ret=%d",
-    str.c_str(), m_settings.device.c_str(), tries, ret);
+  Logger::debug("[%s] received '%s' tries=%d ret=%d",
+    m_settings.device.c_str(), str.c_str(), tries, ret);
   return ret;
 }
 
@@ -286,7 +304,7 @@ bool AnalogPhone::getData(std::string* data) {
       std::string str = buffer;
       boost::algorithm::trim(str);
       *data = str;
-      Logger::debug("received data '%s' from device %s", data->c_str(), m_settings.device.c_str());
+      Logger::debug("[%s] received '%s'", m_settings.device.c_str(), data->c_str());
       res = true;
     }
   }
