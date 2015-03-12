@@ -71,7 +71,6 @@ def main(argv):
   # result in json format
   print('{"spam: %s", comment="phonespamfilter.com score %s"}' % ("false" if score < args.spamscore else "true", score))
 
-
 if __name__ == "__main__":
     main(sys.argv)
     sys.exit(0)
