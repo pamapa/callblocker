@@ -124,6 +124,7 @@ the K-Tipp blacklist:
 0 0 * * * /usr/share/callblocker/blacklist_CH_K-Tipp.py --output /etc/callblocker/blacklists/ >/dev/null
 ```
 Currently the following are supported:
+
 Name                            | Site
 ----                            | ----
 blacklist_US_toastedspam_com.py | http://www.toastedspam.com
