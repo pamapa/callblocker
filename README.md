@@ -6,31 +6,26 @@ running VoIP server. callblocker acts as an additional phone, when someone is ca
 number and checks it offline via white-and blacklists. There is also the ability to check the number online.
 
 ## TODO
-1. finish Analog phone support
-1. add webinterface
 1. support blocking calls without caller ID
-1. night silence
-1. shield support?
+1. add webinterface
 1. polish
+1. night silence?
+1. shield? a pin is needed to allow connecting...
 
 ## Features
 - automatically blocks unwanted incoming calls
 - logging of all incoming calls
-- different kind of block modes:
+- different kind of block modes.
   - logging only
   - number blocking using blacklists
   - avoid blocking, if number is in whitelist
   - number has to be in whitelist
-- up to date blacklists available through the Internet
-- callblocker has been designed to run on a Raspberry Pi
+- refresh blacklists through the Internet
 
 - Supported VoIP systems (tested):
   - Fritzbox 7390
 - Supported analog modems (tested):
   - USRobotics 5637
-- Supported online spam checking sites:
-  - phonespamfilter.com
-  - tellows.de
 
 ## Installing on a Raspberry Pi (running raspbian/jessie)
 1. sudo apt-get install git automake g++ libpjproject-dev libjson-c-dev libboost-dev libboost-regex-dev python python-beautifulsoup python-demjson
@@ -121,12 +116,12 @@ Name                  | Site                           | Credentials
 The online check script base name e.g. "tellows_de" leds to onlinecheck_tellows_de.py.
 
 ## Automatically download blacklists
-There is a possibility to daily download a whole blacklist. You will need to setup a cronjob for automation. The following cronjob will download each day
+There is a possibility to daily download a whole blacklist. You will need to setup a cronjob for this task. The following cronjob will download each day
 the K-Tipp blacklist:
 ```
 0 0 * * * /usr/share/callblocker/blacklist_CH_K-Tipp.py --output /etc/callblocker/blacklists/ >/dev/null
 ```
-Currently the following are supported:
+Currently the following blacklists are supported:
 
 Name                            | Site
 ----                            | ----
