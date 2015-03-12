@@ -64,7 +64,7 @@ def extract_comment(data):
 
 def fetch_page(url):
   debug("fetch_page: " + str(url))
-  page = urllib2.urlopen(url, timeout=5)
+  page = urllib2.urlopen(url, timeout=10)
   return page.read()
 
 def parse_page(content):
