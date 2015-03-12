@@ -6,6 +6,7 @@ running VoIP server. callblocker acts as an additional phone, when someone is ca
 number and checks it offline via white-and blacklists. There is also the ability to check the number online.
 
 ## TODO
+1. finish analog phone
 1. support blocking calls without caller ID
 1. add webinterface
 1. polish
@@ -147,6 +148,7 @@ There are two ways to connect the callblock to your phone system, depending if y
   - make sure the account is enabled and the other fields ok ok for you
 
 ### Setup using an Analog phone
+- implementation is NOT finished yet...
 - Attach USB mode to the Raspberry Pi
 - Setup the Analog phone in the callblocker configuration (/etc/callblocker/setting.json):
   - analog -> phones
