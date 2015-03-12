@@ -58,46 +58,58 @@ When installed on Linux, the following file layout is used
 ```
 
 ## Documentation settings.json
-Start with the provided template settings file (tpl_settings.json)
+Start with the provided template settings file (mv tpl_settings.json settings.json)
 ```json
 { 
-  "log_level" : "info",                         // possible values: "error", "warn", "info" or "debug"
-  "analog" : {                                  // in this section you can define your analog modems
+  "log_level" : "info",
+  "analog" : {
     "phones" : [
       {
         "enabled"      : false,
         "name"         : "Analog Home Phone",
-        "country_code" : "+41",                 // needed to create international number
-        "block_mode"   : "logging_only",        // possible modes: "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only"
-        "online_check" : "tellows_de",          // the online check script base name (e.g. "tellows_de" leds to onlinecheck_tellows_de.py
-        "device"       : "/dev/ttyACM0"         // your modem device (get it with dmesg)
+        "country_code" : "+41",
+        "block_mode"   : "logging_only",
+        "online_check" : "tellows_de",
+        "device"       : "/dev/ttyACM0"
       }
     ]
   },
-  "sip" : {                                     // in this section you can define your SIP account
-    "pjsip_log_level" : 0,                      // pjsip log level, for debugging proposes
+  "sip" : {
+    "pjsip_log_level" : 0,
     "accounts" : [
       { 
         "enabled"       : false,
         "name"          : "SIP Home Phone",
-        "country_code"  : "+41",                // needed to create international number
-        "block_mode"    : "logging_only",       // possible modes: "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only"
-        "online_check"  : "tellows_de",         // the online check script base name (e.g. "tellows_de" leds to /usr/share/callblocker/onlinecheck_tellows_de.py)
-        "from_domain"   : "<yourdomain.net>",   // SIP host domain name
-        "from_username" : "<your username>",    // SIP username
-        "from_password" : "<your password>"     // SIP password
+        "country_code"  : "+41",
+        "block_mode"    : "logging_only",
+        "online_check"  : "tellows_de",
+        "from_domain"   : "<yourdomain.net>",
+        "from_username" : "<your username>",
+        "from_password" : "<your password>"
       }
     ]
   },
-  "online_credentials" : [                      // in this section you must define credentials, which are needed by some scripts to get the online information
+  "online_credentials" : [
     {
-      "name"      : "tellows_de",               // credentials used by the onlinecheck_tellows_de.py script
+      "name"      : "tellows_de",
       "partner"   : "<your partner name>",
       "apikey"    : "<your api key>"
     }
   ]
 }
 ```
+Fields               | Comments
+------               | --------
+"log_level"          | possible values: "error", "warn", "info" or "debug"
+"country_code"       | needed to create international number
+"block_mode"         | possible values: "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only".                        "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists (whitelists not used)
+"online_check"       | the online check script base name (e.g. "tellows_de" leds to onlinecheck_tellows_de.py
+"device"             | your modem device (get it with dmesg)
+"pjsip_log_level"    | pjsip log level, for debugging proposes
+"from_domain"        | SIP host domain name
+"from_username"      | SIP username
+"from_password"      | SIP password
+"online_credentials" | in this section you must define credentials, which are needed by some scripts to get the online information
 
 ## Setup
 There are two ways to connect the callblock to your phone system, depending if your system is VoIP or analog. 
