@@ -67,7 +67,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
         reason = "would be in blacklist ("+msg+")";
         break;
       }
-      reason = "not found in white- and blacklists ("+msg+")";
+      reason = "would not be in white- and blacklists ("+msg+")";
       break;
 
     case WHITELISTS_ONLY:

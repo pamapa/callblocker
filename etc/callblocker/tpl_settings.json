@@ -7,7 +7,7 @@
         "name"         : "Analog Home Phone",
         "country_code" : "+41",
         "block_mode"   : "logging_only",
-        "online_check" : "tellows.de",
+        "online_check" : "tellows_de",
         "device"       : "/dev/ttyACM0"
       }
     ]

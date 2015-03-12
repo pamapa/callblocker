@@ -30,7 +30,7 @@ struct json_object;
 
 
 enum SettingBlockMode {
-  LOGGING_ONLY = 0,             // number is never blocked, only logging
+  LOGGING_ONLY = 0,             // number is never blocked, only logged what it would do
   WHITELISTS_ONLY,              // number has to be in a whitelists (blacklists not used)
   WHITELISTS_AND_BLACKLISTS,    // number is blocked, when in a blacklists and NOT in a whitelists (default)
   BLACKLISTS_ONLY               // number is blocked, when in a blacklists (whitelists not used)
@@ -44,7 +44,7 @@ struct SettingBase {
 
   std::string toString() const {
     std::ostringstream oss;
-    oss << name << ", " << countryCode << ", " << blockMode << ", " << onlineCheck ;
+    oss << name << ", " << countryCode << ", " << blockMode << ", " << onlineCheck;
     return oss.str();
   }
 };
