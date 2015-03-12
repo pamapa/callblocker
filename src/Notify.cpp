@@ -36,6 +36,8 @@
 
 
 Notify::Notify(const std::string& pathname, uint32_t mask) {
+  Logger::debug("Notify::Notify(%s, %d)", pathname.c_str(), mask);
+
   m_FD = inotify_init();
   if (m_FD < 0) {
     Logger::warn("inotify_init failed (%s)", strerror(errno));
@@ -50,6 +52,8 @@ Notify::Notify(const std::string& pathname, uint32_t mask) {
 }
 
 Notify::~Notify() {
+  Logger::debug("Notify::~Notify");
+
   if (m_WD > 0) {
     inotify_rm_watch(m_FD, m_WD);
   }
@@ -79,6 +83,7 @@ bool Notify::hasChanged() {
     int i = 0;
     while (i < length) {
       struct inotify_event *event = (struct inotify_event*)&buffer[i];
+      //Logger::debug("The file %s was touched", event->name);
       if (event->len) {
         res = true;
         break;

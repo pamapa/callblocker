@@ -28,7 +28,7 @@
 #include "Logger.h"
 
 
-FileLists::FileLists(const std::string& dirname) : Notify(dirname, IN_CLOSE_WRITE | IN_DELETE) {
+FileLists::FileLists(const std::string& dirname) : Notify(dirname, IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) {
   m_dirname = dirname;
   load();
 }
@@ -41,7 +41,6 @@ FileLists::~FileLists() {
 void FileLists::run() {
   if (hasChanged()) {
     Logger::info("reload %s", m_dirname.c_str());
-
     // TODO: mutex....
     clear();
     load();

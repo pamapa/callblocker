@@ -32,7 +32,7 @@ private:
 public:
   Notify(const std::string& pathname, uint32_t mask);
   virtual ~Notify();
-  bool hasChanged();
+  virtual bool hasChanged();
 };
 
 #endif

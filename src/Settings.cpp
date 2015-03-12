@@ -31,9 +31,8 @@
 #include "Helper.h"
 
 
-Settings::Settings() : m_filename(SYSCONFDIR "/" PACKAGE_NAME "/settings.json"),
-                       Notify(SYSCONFDIR "/" PACKAGE_NAME "/settings.json", IN_CLOSE_WRITE) {
-  //m_filename = SYSCONFDIR "/" PACKAGE_NAME "/settings.json";
+Settings::Settings() : Notify(SYSCONFDIR "/" PACKAGE_NAME, IN_CLOSE_WRITE) {
+  m_filename = SYSCONFDIR "/" PACKAGE_NAME "/settings.json";
   load();
 }
 
@@ -41,9 +40,9 @@ Settings::~Settings() {
   clear();
 }
 
-bool Settings::run() {
-  if (hasChanged()) {
-    Logger::info("reload %s", m_filename.c_str());
+bool Settings::hasChanged() {
+  if (Notify::hasChanged()) {
+    Logger::info("reload settings");
     clear();
     load();
     return true;

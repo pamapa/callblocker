@@ -88,7 +88,8 @@ private:
 public:
   Settings();
   virtual ~Settings();
-  bool run();
+  virtual bool hasChanged();
+
   std::vector<struct SettingSipAccount> getSipAccounts() { return m_sipAccounts; }
   std::vector<struct SettingAnalogPhone> getAnalogPhones() { return m_analogPhones; }
   std::vector<struct SettingOnlineCredential> getOnlineCredentials() { return m_onlineCredentials; }

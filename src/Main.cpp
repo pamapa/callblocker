@@ -68,7 +68,7 @@ public:
       m_pBlock->run();
 
       if (m_pSettings->hasChanged()) {
-        Logger::debug("mainLoop: reload");
+        Logger::info("reload phones");
         remove();
         add();
       }
