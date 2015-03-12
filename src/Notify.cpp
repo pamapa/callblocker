@@ -50,17 +50,26 @@ Notify::Notify(const std::string& pathname, uint32_t mask) {
 }
 
 Notify::~Notify() {
-  inotify_rm_watch(m_FD, m_WD);
-  close(m_FD);
+  if (m_WD > 0) {
+    inotify_rm_watch(m_FD, m_WD);
+  }
+  if (m_FD > 0) {
+    close(m_FD);
+  }
   m_FD = m_WD = -1;
 }
 
 bool Notify::hasChanged() {
+  if (m_WD < 0) {
+    return false;
+  }
+
   bool res = false;
   struct pollfd pfd = {m_FD, POLLIN | POLLPRI, 0};
   int ret = poll(&pfd, 1, 50);  // timeout of 50ms
   if (ret < 0) {
     // Logger::warn("poll failed with %s", strerror(errno));
+    // also happens when application is shutdown...
   } else if (ret == 0) {
     // no event to read
   } else {
