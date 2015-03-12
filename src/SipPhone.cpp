@@ -37,6 +37,10 @@
 
 
 SipPhone::SipPhone(Block* pBlock) : Phone(pBlock) {
+#if 0
+  m_mediaPortSilence = NULL;
+  m_mediaConfSilenceId = -1;
+#endif
 }
 
 SipPhone::~SipPhone() {
@@ -44,10 +48,13 @@ SipPhone::~SipPhone() {
 
   pjsua_call_hangup_all();
 
+#if 0
   pjsua_conf_remove_port(m_mediaConfSilenceId);
   pjmedia_port_destroy(m_mediaPortSilence);
 
   pj_pool_release(m_Pool);
+#endif
+
   pjsua_destroy();
 }
 
@@ -77,7 +84,7 @@ bool SipPhone::init_pjsua() {
   // callback configuration
   ua_cfg.cb.on_call_state = &SipAccount::onCallStateCB;
   ua_cfg.cb.on_incoming_call = &SipAccount::onIncomingCallCB;
-  ua_cfg.cb.on_call_media_state = &SipAccount::onCallMediaStateCB;
+  //ua_cfg.cb.on_call_media_state = &SipAccount::onCallMediaStateCB;
 
   // logging configuration
   pjsua_logging_config log_cfg;    
@@ -87,6 +94,7 @@ bool SipPhone::init_pjsua() {
   // media configuration
   pjsua_media_config media_cfg;
   pjsua_media_config_default(&media_cfg);
+  media_cfg.clock_rate = 8000; // TODO: default of 16000 seems not to work :-(
 
   // initialize pjsua 
   status = pjsua_init(&ua_cfg, &log_cfg, &media_cfg);
@@ -98,7 +106,6 @@ bool SipPhone::init_pjsua() {
   // add udp transport
   pjsua_transport_config udpcfg;
   pjsua_transport_config_default(&udpcfg);
-  //udpcfg.port = 5060;
 
   status = pjsua_transport_create(PJSIP_TRANSPORT_UDP, &udpcfg, NULL);
   if (status != PJ_SUCCESS) {
@@ -106,7 +113,7 @@ bool SipPhone::init_pjsua() {
     return false;
   }
 
-  // disable sound - use null sound device
+  // disable sound device - use null sound device
   status = pjsua_set_null_snd_dev();
   if (status != PJ_SUCCESS) {
     Logger::error("pjsua_set_null_snd_dev() failed (%s)", Helper::getPjStatusAsString(status).c_str());
@@ -120,21 +127,25 @@ bool SipPhone::init_pjsua() {
     return false;
   }
 
+#if 0
   m_Pool = pjsua_pool_create("SipPhone.cpp", 128, 128);
   if (m_Pool == NULL) {
     Logger::error("pjsua_pool_create() failed");
     return false;
   }
+#endif
 
   return true;
 }
 
 bool SipPhone::init_pjmedia() {
+#if 0
   Logger::debug("SipPhone::init_pjmedia...");
+#define CLOCK_RATE        8000
+#define CHANNEL_COUNT     1
+#define SAMPLES_PER_FRAME ((CLOCK_RATE * CHANNEL_COUNT * PJSUA_DEFAULT_AUDIO_FRAME_PTIME) / 1000)
 
-#define CLOCK_RATE 16000
-#define SAMPLES_PER_FRAME (CLOCK_RATE/100)
-  pj_status_t status = pjmedia_null_port_create(m_Pool, CLOCK_RATE, 1, SAMPLES_PER_FRAME*2, 16, &m_mediaPortSilence);
+  pj_status_t status = pjmedia_null_port_create(m_Pool, CLOCK_RATE, 1, SAMPLES_PER_FRAME, 16, &m_mediaPortSilence);
   if (status != PJ_SUCCESS) {
     Logger::error("pjmedia_null_port_create() failed (%s)", Helper::getPjStatusAsString(status).c_str());
     return false;
@@ -145,7 +156,7 @@ bool SipPhone::init_pjmedia() {
     Logger::error("pjsua_conf_add_port() failed (%s)", Helper::getPjStatusAsString(status).c_str());
     return false;
   }
-
+#endif
   return true;
 }
 

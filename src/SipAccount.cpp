@@ -95,14 +95,14 @@ bool SipAccount::add(struct SettingSipAccount* pSettings) {
 void SipAccount::onIncomingCallCB(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata) {
   SipAccount* p = (SipAccount*)pjsua_acc_get_user_data(acc_id);
   if (p == NULL) {
-    Logger::warn("onIncomingCallCB failed");
+    Logger::warn("onIncomingCallCB(acc_id=%d, call_id=%d) failed", acc_id, call_id);
     return;
   }
   p->onIncomingCall(call_id, rdata);
 }
 
 void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
-  Logger::debug("SipAccount::onIncomingCall(%d)...", call_id);
+  Logger::debug("SipAccount::onIncomingCall(call_id=%d)...", call_id);
   PJ_UNUSED_ARG(rdata);
 
   pj_status_t status = pjsua_call_set_user_data(call_id, this);
@@ -162,14 +162,14 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
 void SipAccount::onCallStateCB(pjsua_call_id call_id, pjsip_event* e) {
   SipAccount* p = (SipAccount*)pjsua_call_get_user_data(call_id);
   if (p == NULL) {
-    Logger::warn("onCallMediaStateCB(%d) failed", call_id);
+    Logger::warn("onCallMediaStateCB(call_id=%d) failed", call_id);
     return;
   }
   p->onCallState(call_id, e);
 }
 
 void SipAccount::onCallState(pjsua_call_id call_id, pjsip_event* e) {
-  Logger::debug("SipAccount::onCallState(%d)...", call_id);
+  Logger::debug("SipAccount::onCallState(call_id=%d)...", call_id);
   PJ_UNUSED_ARG(e);
 
   pjsua_call_info ci;
@@ -184,6 +184,7 @@ void SipAccount::onCallState(pjsua_call_id call_id, pjsip_event* e) {
   std::string state = std::string(pj_strbuf(&ci.state_text), ci.state_text.slen);
   Logger::notice("[%s] call state changed to %s", number.c_str(), state.c_str());
 
+#if 1
   if (ci.state == PJSIP_INV_STATE_CONFIRMED) {
     Logger::debug("hangup...");
     // code 0: pj takes care of hangup SIP status code
@@ -192,9 +193,10 @@ void SipAccount::onCallState(pjsua_call_id call_id, pjsip_event* e) {
       Logger::warn("pjsua_call_hangup() failed (%s)", Helper::getPjStatusAsString(status).c_str());
     }
   }
-
+#endif
 }
 
+#if 0
 void SipAccount::onCallMediaStateCB(pjsua_call_id call_id) {
   SipAccount* p = (SipAccount*)pjsua_call_get_user_data(call_id);
   if (p == NULL) {
@@ -205,7 +207,7 @@ void SipAccount::onCallMediaStateCB(pjsua_call_id call_id) {
 }
 
 void SipAccount::onCallMediaState(pjsua_call_id call_id) {
-  Logger::debug("SipAccount::onCallMediaState(%d)...", call_id);
+  Logger::debug("SipAccount::onCallMediaState(call_id=%d)...", call_id);
 
   pjsua_call_info ci;
   pjsua_call_get_info(call_id, &ci);
@@ -215,6 +217,7 @@ void SipAccount::onCallMediaState(pjsua_call_id call_id) {
     pjsua_conf_connect(m_pPhone->getMediaConfSilenceId(), ci.conf_slot);
   }
 }
+#endif
 
 bool SipAccount::getNumber(pj_str_t* uri, std::string* pDisplay, std::string* pNumber) {
   pj_pool_t* pool = pjsua_pool_create("", 128, 10);
