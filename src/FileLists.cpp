@@ -72,14 +72,18 @@ void FileLists::load() {
   struct dirent* entry = readdir(dir);
   while (entry != NULL) {
     if ((entry->d_type & DT_DIR) == 0) {
-      std::string filename = m_dirname + "/";
-      filename += entry->d_name;
-      FileList* l = new FileList();
-      if (l->load(filename)) {
-        m_lists.push_back(l);
-      } else {
-        delete l;
-      }        
+      size_t len = strlen(entry->d_name);
+      if (len >= 5 && strcmp(entry->d_name + len - 5, ".json") == 0) {
+        // only reading .json files      
+        std::string filename = m_dirname + "/";
+        filename += entry->d_name;
+        FileList* l = new FileList();
+        if (l->load(filename)) {
+          m_lists.push_back(l);
+        } else {
+          delete l;
+        }
+      }
     }
     entry = readdir(dir);
   }
