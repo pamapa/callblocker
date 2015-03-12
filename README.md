@@ -46,6 +46,59 @@ number and checks it offline via white-and blacklists. There is also the ability
 1. mv tpl_settings.json settings.json
 1. adapt settings.json for your needs
 
+## File Layout
+When installed on Linux, the following file layout is used
+```
+/etc/callblocker
+  settings.json (configuration)
+  blacklists (place your own blacklist here, multiple files are supported)
+  whitelists (place your own whitelist here, multiple files are supported)
+/usr/bin/callblocker (daemon)
+/usr/share/callblocker (scripts)
+```
+
+## Documentation settings.json
+Start with the provided template settings file (tpl_settings.json)
+```json
+{ 
+  "log_level" : "info",                         // possible values: "error", "warn", "info" or "debug"
+  "analog" : {                                  // in this section you can define your analog modems
+    "phones" : [
+      {
+        "enabled"      : false,
+        "name"         : "Analog Home Phone",
+        "country_code" : "+41",                 // needed to create international number
+        "block_mode"   : "logging_only",        // possible modes: "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only"
+        "online_check" : "tellows_de",          // the online check script base name (e.g. "tellows_de" leds to onlinecheck_tellows_de.py
+        "device"       : "/dev/ttyACM0"         // your modem device (get it with dmesg)
+      }
+    ]
+  },
+  "sip" : {                                     // in this section you can define your SIP account
+    "pjsip_log_level" : 0,                      // pjsip log level, for debugging proposes
+    "accounts" : [
+      { 
+        "enabled"       : false,
+        "name"          : "SIP Home Phone",
+        "country_code"  : "+41",                // needed to create international number
+        "block_mode"    : "logging_only",       // possible modes: "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only"
+        "online_check"  : "tellows_de",         // the online check script base name (e.g. "tellows_de" leds to /usr/share/callblocker/onlinecheck_tellows_de.py)
+        "from_domain"   : "<yourdomain.net>",   // SIP host domain name
+        "from_username" : "<your username>",    // SIP username
+        "from_password" : "<your password>"     // SIP password
+      }
+    ]
+  },
+  "online_credentials" : [                      // in this section you must define credentials, which are needed by some scripts to get the online information
+    {
+      "name"      : "tellows_de",               // credentials used by the onlinecheck_tellows_de.py script
+      "partner"   : "<your partner name>",
+      "apikey"    : "<your api key>"
+    }
+  ]
+}
+```
+
 ## Setup
 There are two ways to connect the callblock to your phone system, depending if your system is VoIP or analog. 
 
