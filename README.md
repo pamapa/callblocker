@@ -103,7 +103,7 @@ Fields               | Values | Description
 "log_level"          | "error", "warn", "info" or "debug" |
 "country_code"       | `+<X[YZ]>` | needed to create international number
 "block_mode"         | "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only" | "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists (whitelists not used)
-"online_check"       | [values](#onlineCheck)  | the online check script base name (e.g. "tellows_de" leds to onlinecheck_tellows_de.py
+"online_check"       | [values](#onlineCheck)  | the online check site, leave empty if not needed
 "device"             | | your modem device (get it with dmesg)
 "pjsip_log_level"    | 0-5 | pjsip log level, for debugging proposes
 "from_domain"        | | your SIP domain name (e.g. fritz.box)
@@ -112,10 +112,13 @@ Fields               | Values | Description
 "online_credentials" | | in this section you can define credentials, which are needed by some scripts to get the online information
 
 ## <a name="onlineCheck"></a> Online check
-Name                  | Site 
-----                  | ----
-"phonespamfilter_com" | http://www.phonespamfilter.com
-"tellows_de"          | http://tellows.de
+Name                  | Site                           | Credentials
+----                  | ----                           | -----------
+""                    | No online check is done        |
+"phonespamfilter_com" | http://www.phonespamfilter.com | free to use for non comercial
+"tellows_de"          | http://tellows.de              | needs credentials
+
+The online check script base name e.g. "tellows_de" leds to onlinecheck_tellows_de.py.
 
 ## Automatically download blacklists
 There is a possibility to daily download a whole blacklist. You will need to setup a cronjob for automation. The following cronjob will download each day
