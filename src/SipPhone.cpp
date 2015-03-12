@@ -24,6 +24,7 @@
 
 #include "Logger.h"
 #include "SipAccount.h"
+#include "Helper.h"
 
 
 // TODO
@@ -34,13 +35,6 @@
 //  213 ?        00:00:00 systemd-journal
 // journalctl <executable full path> --output=short --lines=100
 
-
-static std::string getStatusAsString(pj_status_t status) {
-  static char buf[100];
-  pj_str_t pjstr = pj_strerror(status, buf, sizeof(buf)); 
-  std::string ret = pj_strbuf(&pjstr);
-  return ret;
-}
 
 SipPhone::SipPhone(Block* pBlock) : Phone(pBlock) {
 }
@@ -71,7 +65,7 @@ bool SipPhone::init_pjsua() {
   // create pjsua  
   pj_status_t status = pjsua_create();
   if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_create() failed (%s)", getStatusAsString(status).c_str());
+    Logger::error("pjsua_create() failed (%s)", Helper::getPjStatusAsString(status).c_str());
     return false;
   }
 
@@ -79,13 +73,11 @@ bool SipPhone::init_pjsua() {
   pjsua_config ua_cfg;
   pjsua_config_default(&ua_cfg);
   // enable just 1 simultaneous call 
-  ua_cfg.max_calls = 1;
+  ua_cfg.max_calls = 1; // TODO
   // callback configuration
   ua_cfg.cb.on_call_state = &SipAccount::onCallStateCB;
   ua_cfg.cb.on_incoming_call = &SipAccount::onIncomingCallCB;
-#if 0
   ua_cfg.cb.on_call_media_state = &SipAccount::onCallMediaStateCB;
-#endif
 
   // logging configuration
   pjsua_logging_config log_cfg;    
@@ -99,7 +91,7 @@ bool SipPhone::init_pjsua() {
   // initialize pjsua 
   status = pjsua_init(&ua_cfg, &log_cfg, &media_cfg);
   if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_init() failed (%s)", getStatusAsString(status).c_str());
+    Logger::error("pjsua_init() failed (%s)", Helper::getPjStatusAsString(status).c_str());
     return false;
   }
   
@@ -110,21 +102,21 @@ bool SipPhone::init_pjsua() {
 
   status = pjsua_transport_create(PJSIP_TRANSPORT_UDP, &udpcfg, NULL);
   if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_transport_create() failed (%s)", getStatusAsString(status).c_str());
+    Logger::error("pjsua_transport_create() failed (%s)", Helper::getPjStatusAsString(status).c_str());
     return false;
   }
 
   // disable sound - use null sound device
   status = pjsua_set_null_snd_dev();
   if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_set_null_snd_dev() failed (%s)", getStatusAsString(status).c_str());
+    Logger::error("pjsua_set_null_snd_dev() failed (%s)", Helper::getPjStatusAsString(status).c_str());
     return false;
   }
 
   // initialization is done, start pjsua
   status = pjsua_start();
   if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_start() failed (%s)", getStatusAsString(status).c_str());
+    Logger::error("pjsua_start() failed (%s)", Helper::getPjStatusAsString(status).c_str());
     return false;
   }
 
@@ -138,17 +130,19 @@ bool SipPhone::init_pjsua() {
 }
 
 bool SipPhone::init_pjmedia() {
+  Logger::debug("SipPhone::init_pjmedia...");
+
 #define CLOCK_RATE 16000
 #define SAMPLES_PER_FRAME (CLOCK_RATE/100)
   pj_status_t status = pjmedia_null_port_create(m_Pool, CLOCK_RATE, 1, SAMPLES_PER_FRAME*2, 16, &m_mediaPortSilence);
   if (status != PJ_SUCCESS) {
-    Logger::error("pjmedia_null_port_create() failed (%s)", getStatusAsString(status).c_str());
+    Logger::error("pjmedia_null_port_create() failed (%s)", Helper::getPjStatusAsString(status).c_str());
     return false;
   }
 
   status = pjsua_conf_add_port(m_Pool, m_mediaPortSilence, &m_mediaConfSilenceId);
   if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_conf_add_port() failed (%s)", getStatusAsString(status).c_str());
+    Logger::error("pjsua_conf_add_port() failed (%s)", Helper::getPjStatusAsString(status).c_str());
     return false;
   }
 

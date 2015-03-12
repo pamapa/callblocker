@@ -96,3 +96,10 @@ bool Helper::executeCommand(const std::string cmd, std::string* pRes) {
   return true;
 }
 
+std::string Helper::getPjStatusAsString(pj_status_t status) {
+  static char buf[100];
+  pj_str_t pjstr = pj_strerror(status, buf, sizeof(buf)); 
+  std::string ret = pj_strbuf(&pjstr);
+  return ret;
+}
+

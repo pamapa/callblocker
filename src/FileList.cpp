@@ -87,7 +87,7 @@ bool FileList::hasNumber(const std::string& number) {
   for(size_t i = 0; i < m_entries.size(); i++) {
     const char* s = m_entries[i].c_str();
     if (strncmp(s, number.c_str(), strlen(s)) == 0) {
-      Logger::debug("number '%s' matched with '%s' in file %s", number.c_str(), s, getFilename());
+      Logger::debug("FileList::hasNumber: number '%s' matched with '%s' in file %s", number.c_str(), s, getFilename());
       return true;
     }
   }

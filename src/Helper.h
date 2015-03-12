@@ -19,6 +19,8 @@
 
 #include <string>
 #include <json-c/json.h>
+#include <pjsua-lib/pjsua.h>
+
 
 class Helper {
 public:
@@ -27,5 +29,7 @@ public:
   static bool getObject(struct json_object* objbase, const char* objname, const char* location, bool* res);
 
   static bool executeCommand(const std::string cmd, std::string* pRes);
+
+  static std::string getPjStatusAsString(pj_status_t status);
 };
 

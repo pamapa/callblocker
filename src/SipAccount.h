@@ -40,11 +40,11 @@ public:
   // callback -> class method call conversion
   static void onIncomingCallCB(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata);
   static void onCallStateCB(pjsua_call_id call_id, pjsip_event* e);
-  //static void onCallMediaStateCB(pjsua_call_id call_id);
+  static void onCallMediaStateCB(pjsua_call_id call_id);
 private:
   void onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata);
   void onCallState(pjsua_call_id call_id, pjsip_event* e);
-  //void onCallMediaState(pjsua_call_id call_id);
+  void onCallMediaState(pjsua_call_id call_id);
   bool getNumber(pj_str_t* uri_str, std::string* pDisplay, std::string* pNumber);
 };
 

@@ -37,7 +37,7 @@ public:
   virtual ~SipPhone();
   bool init();
 
-  pj_pool_t* getPool() { return m_Pool; };
+  pjsua_conf_port_id getMediaConfSilenceId() { return m_mediaConfSilenceId; }
 private:
   bool init_pjsua();
   bool init_pjmedia();
