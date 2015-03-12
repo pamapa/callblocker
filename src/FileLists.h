@@ -21,6 +21,7 @@
 #define FILELISTS_H
 
 #include <vector>
+#include <pthread.h>
 
 #include "FileList.h"
 #include "Notify.h"
@@ -28,6 +29,7 @@
 
 class FileLists : public Notify {
 private:
+  pthread_mutex_t m_mutexLock;
   std::string m_dirname;
   std::vector<FileList*> m_lists;
 

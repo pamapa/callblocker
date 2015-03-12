@@ -30,6 +30,11 @@
 
 FileLists::FileLists(const std::string& dirname) : Notify(dirname, IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) {
   m_dirname = dirname;
+
+  if (pthread_mutex_init(&m_mutexLock, NULL) != 0) {
+    Logger::warn("pthread_mutex_init failed");
+  }
+
   load();
 }
 
@@ -41,15 +46,17 @@ FileLists::~FileLists() {
 void FileLists::run() {
   if (hasChanged()) {
     Logger::info("reload %s", m_dirname.c_str());
-    // TODO: mutex....
+
+    pthread_mutex_lock(&m_mutexLock);
     clear();
     load();
+    pthread_mutex_unlock(&m_mutexLock);
   }
 }
 
-// TODO: mutex....
 bool FileLists::isListed(const std::string& number, std::string* pMsg) {
   bool ret = false;
+  pthread_mutex_lock(&m_mutexLock);
   for(size_t i = 0; i < m_lists.size(); i++) {
     if (m_lists[i]->hasNumber(number)) {
       *pMsg = m_lists[i]->getBaseFilename();
@@ -57,6 +64,7 @@ bool FileLists::isListed(const std::string& number, std::string* pMsg) {
       break;
     }
   }
+  pthread_mutex_unlock(&m_mutexLock);
   return ret;
 }
 
@@ -97,10 +105,12 @@ void FileLists::clear() {
 }
 
 void FileLists::dump() {
+  pthread_mutex_lock(&m_mutexLock);
   for(size_t i = 0; i < m_lists.size(); i++) {
     FileList* l = m_lists[i];
     printf("Filename=%s\n", l->getFilename());
     l->dump();
   }
+  pthread_mutex_unlock(&m_mutexLock);
 }
 
