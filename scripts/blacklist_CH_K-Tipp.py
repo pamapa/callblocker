@@ -70,7 +70,7 @@ def extract_range_numbers(data):
 
 def extract_numbers(data):
   ret = []
-  #print "data:" + data
+  #print("data:" + data)
   arr = re.split("und|oder|sowie|auch|,|;", data)
   for a in arr:
     if a.find("/") != -1:
@@ -93,7 +93,7 @@ def extract_comment(data):
 
 def fetch_page(page_nr):
   print("fetch_page: " + str(page_nr))
-  page = urllib2.urlopen("https://www.ktipp.ch/service/warnlisten/detail/?warnliste_id=7&ajax=ajax-search-form&page=" + str(page_nr), timeout=5)
+  page = urllib2.urlopen("https://www.ktipp.ch/service/warnlisten/detail/?warnliste_id=7&ajax=ajax-search-form&page=" + str(page_nr), timeout=10)
   return page.read()
 
 def extract_str(data, start_str, end_str, error_msg):
@@ -106,12 +106,14 @@ def extract_str(data, start_str, end_str, error_msg):
 
 def parse_page(soup):
   ret = []
+  debug("parse_page...")
   list = soup.findAll("section",{"class":"teaser cf"})
   for e in list:
     numbers = extract_numbers(e.strong.contents[0])
     comment = extract_comment(e.p)
     for n in numbers:
       ret.append({"number":n, "comment":comment})
+  debug("parse_page done")
   return ret
 
 def parse_pages(content):
@@ -127,7 +129,9 @@ def parse_pages(content):
   #return ret
   for p in range(1,last_page+1):
     content = fetch_page(p)
+    debug("fetch done, BeautifulSoup...")
     soup = BeautifulSoup(content)
+    debug("BeautifulSoup done")
     ret.extend(parse_page(soup))
   return ret
 
@@ -135,6 +139,7 @@ def parse_pages(content):
 # remove too small numbers -> dangerous
 # make sure numbers are in international format (e.g. +41AAAABBBBBB)
 def cleanup_entries(arr):
+  debug("cleanup_entries...")
   seen = set()
   uniq = []
   for r in arr:
@@ -162,6 +167,8 @@ def cleanup_entries(arr):
     if x not in seen:
       uniq.append(r)
       seen.add(x)
+
+  debug("cleanup_entries done")
   return uniq
 
 #
@@ -193,4 +200,3 @@ def main(argv):
 if __name__ == "__main__":
     main(sys.argv)
     sys.exit(0)
-
