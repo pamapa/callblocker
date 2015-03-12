@@ -101,7 +101,7 @@ Start with the provided template settings file (mv tpl_settings.json settings.js
 Fields               | Values | Comment
 ------               | ------ | -------
 "log_level"          | "error", "warn", "info" or "debug" |
-"country_code"       | +<XYZ> | needed to create international number
+"country_code"       | +`<X[YZ]>` | needed to create international number
 "block_mode"         | "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only" | "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists (whitelists not used)
 "online_check"       | | the online check script base name (e.g. "tellows_de" leds to onlinecheck_tellows_de.py
 "device"             | | your modem device (get it with dmesg)
