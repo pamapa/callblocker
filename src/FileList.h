@@ -34,6 +34,7 @@ public:
 
   bool load(const std::string& filename);
   const char* getFilename();
+  const char* getBaseFilename();
   bool hasNumber(const std::string& number);
   void dump();
 };

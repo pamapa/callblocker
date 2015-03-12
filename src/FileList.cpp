@@ -83,6 +83,10 @@ const char* FileList::getFilename() {
   return m_filename.c_str();
 }
 
+const char* FileList::getBaseFilename() {
+  return m_filename.substr(m_filename.find_last_of("/") + 1).c_str();
+}
+
 bool FileList::hasNumber(const std::string& number) {
   for(size_t i = 0; i < m_entries.size(); i++) {
     const char* s = m_entries[i].c_str();

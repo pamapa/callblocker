@@ -53,7 +53,7 @@ bool FileLists::isListed(const std::string& number, std::string* pMsg) {
   bool ret = false;
   for(size_t i = 0; i < m_lists.size(); i++) {
     if (m_lists[i]->hasNumber(number)) {
-      *pMsg = m_lists[i]->getFilename();
+      *pMsg = m_lists[i]->getBaseFilename();
       ret = true;
       break;
     }
