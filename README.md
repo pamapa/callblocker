@@ -83,7 +83,7 @@ Start with the provided template settings file (mv tpl_settings.json settings.js
         "country_code"  : "+41",
         "block_mode"    : "logging_only",
         "online_check"  : "tellows_de",
-        "from_domain"   : "<yourdomain.net>",
+        "from_domain"   : "<your domainname>",
         "from_username" : "<your username>",
         "from_password" : "<your password>"
       }
@@ -98,18 +98,36 @@ Start with the provided template settings file (mv tpl_settings.json settings.js
   ]
 }
 ```
-Fields               | Values | Comment
+Fields               | Values | Description
 ------               | ------ | -------
 "log_level"          | "error", "warn", "info" or "debug" |
 "country_code"       | `+<X[YZ]>` | needed to create international number
 "block_mode"         | "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only" | "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists (whitelists not used)
-"online_check"       | | the online check script base name (e.g. "tellows_de" leds to onlinecheck_tellows_de.py
+"online_check"       | [values](#onlineCheck)  | the online check script base name (e.g. "tellows_de" leds to onlinecheck_tellows_de.py
 "device"             | | your modem device (get it with dmesg)
 "pjsip_log_level"    | 0-5 | pjsip log level, for debugging proposes
-"from_domain"        | | your SIP host domain name
+"from_domain"        | | your SIP domain name (e.g. fritz.box)
 "from_username"      | | your SIP username
 "from_password"      | | your SIP password
 "online_credentials" | | in this section you can define credentials, which are needed by some scripts to get the online information
+
+## <a name="onlineCheck"></a> Online check
+Name                  | Site 
+----                  | ----
+"phonespamfilter_com" | http://www.phonespamfilter.com
+"tellows_de"          | http://tellows.de
+
+## Automatically download blacklists
+There is a possibility to daily download a whole blacklist. You will need to setup a cronjob for automation. The following cronjob will download each day
+the K-Tipp blacklist:
+```
+0 0 * * * /usr/share/callblocker/blacklist_CH_K-Tipp.py --output /etc/callblocker/blacklists/ >/dev/null
+```
+Currently the following are supported:
+Name                            | Site
+----                            | ----
+blacklist_US_toastedspam_com.py | http://www.toastedspam.com
+blacklist_CH_K-Tipp.py          | https://www.ktipp.ch
 
 ## Setup
 There are two ways to connect the callblock to your phone system, depending if your system is VoIP or analog. 
