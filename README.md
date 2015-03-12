@@ -131,21 +131,24 @@ blacklist_CH_K-Tipp.py          | https://www.ktipp.ch
 ## Setup
 There are two ways to connect the callblock to your phone system, depending if your system is VoIP or analog. 
 
-### Setup via Fritzbox
+### Setup using Fritzbox with a IP-phone
 - Create in the Fritzbox a new IP-phone
   - Open your webbrowser and go to the URL http://fritz.box
-  - In the menu "Telefonie -> Telefoniegeräte" click on "Neues Gerät einrichten"
+  - In the menu "Telefonie -> Telefoniegeraete" click on "Neues Geraet einrichten"
   - Choose "Telefon (mit und ohne Anrufbeantworter)" and click "Weiter"
   - Choose "LAN/WLAN (IP-Telefon)", for name use for example "callblocker" and click "Weiter"
   - Choose a password, remember the username and click "Weiter"
   - Choose "alle Anrufe annehmen" and click "Weiter"
-- Setup the Ip-phone in the callblocker configuration (/etc/callblocker/setting.json):
+- Setup the IP-phone in the callblocker configuration (/etc/callblocker/setting.json):
   - sip -> accounts
   - "from_domain"   : "fritz.box"
   - "from_username" : "your username"
   - "from_password" : "your password"
   - make sure the account is enabled and the other fields ok ok for you
 
-### Setup via Analog phone
-- Implementation is not yet finished...
+### Setup using an Analog phone
+- Attach USB mode to the Raspberry Pi
+- Setup the Analog phone in the callblocker configuration (/etc/callblocker/setting.json):
+  - analog -> phones
+  - "device" : use `dmesg` to find `/dev/<name>`. Usually /dev/ttyACM0
 
