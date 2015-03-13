@@ -20,4 +20,6 @@ callblockerdir=$(datadir)/callblocker
 callblocker_SCRIPTS = \
   blacklist_CH_K-Tipp.py \
   onlinecheck_phonespamfilter_com.py \
-  onlinecheck_tellows_de.py
+  onlinecheck_tellows_de.py \
+  whitelist_LDIF.py
+
