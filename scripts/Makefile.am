@@ -1,5 +1,4 @@
 # Process this file with automake to produce Makefile.in.
-# Makefile.am for callblocker/scripts.
 #
 # Copyright 1996, 1997, 2001, 2005, 2006, 2007, 2008 Free Software
 # Foundation, Inc.

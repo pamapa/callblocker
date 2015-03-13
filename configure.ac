@@ -40,9 +40,12 @@ AC_CHECK_LIB([json-c], json_tokener_parse, , [AC_MSG_ERROR("Linking against json
 AC_CHECK_LIB([boost_regex], main, , [AC_MSG_ERROR("Linking against boost_regex failed.")])
 
 AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([etc/Makefile])
 AC_CONFIG_FILES([etc/callblocker/Makefile])
 AC_CONFIG_FILES([etc/callblocker/blacklists/Makefile])
 AC_CONFIG_FILES([etc/callblocker/whitelists/Makefile])
+AC_CONFIG_FILES([etc/systemd/system/Makefile])
 AC_CONFIG_FILES([scripts/Makefile])
 AC_CONFIG_FILES([src/Makefile])
 AC_OUTPUT
+

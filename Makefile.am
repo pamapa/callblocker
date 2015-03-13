@@ -1,6 +1,4 @@
-# Process this file with automake to produce Makefile.in (in this,
-# and all subdirectories).
-# Makefile for the top-level directory of GNU hello.
+# Process this file with automake to produce Makefile.in.
 # 
 # Copyright 1997, 1998, 2005, 2006, 2007, 2008 Free Software
 # Foundation, Inc.
@@ -19,4 +17,5 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Subdirectories to descend into.
-SUBDIRS = src
+SUBDIRS = etc scripts src
+

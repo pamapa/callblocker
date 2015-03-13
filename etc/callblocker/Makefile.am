@@ -1,5 +1,4 @@
 # Process this file with automake to produce Makefile.in.
-# Makefile.am for hello/src.
 #
 # Copyright 1996, 1997, 2001, 2005, 2006, 2007, 2008 Free Software
 # Foundation, Inc.
@@ -17,5 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# Subdirectories to descend into.
+SUBDIRS = blacklists whitelists
+
 callblockerdir=$(sysconfdir)/callblocker
 callblocker_DATA = tpl_settings.json
+
