@@ -25,55 +25,55 @@
 #include "Logger.h"
 
 
-bool Helper::getObject(struct json_object* objbase, const char* objname, const char* location, std::string* res) {
+bool Helper::getObject(struct json_object* objbase, const char* objname, const std::string& rLocation, std::string* pRes) {
   struct json_object* n;
   
   if (!json_object_object_get_ex(objbase, objname, &n)) {
-    Logger::warn("%s not found in %s", objname, location);
+    Logger::warn("%s not found in %s", objname, rLocation.c_str());
     return false;
   }
   if (json_object_get_type(n) != json_type_string) {
-    Logger::warn("string type expected for %s in %s", objname, location);
+    Logger::warn("string type expected for %s in %s", objname, rLocation.c_str());
     return false;
   }
-  *res = json_object_get_string(n);
+  *pRes = json_object_get_string(n);
   return true;
 }
 
-bool Helper::getObject(struct json_object* objbase, const char* objname, const char* location, int* res) {
+bool Helper::getObject(struct json_object* objbase, const char* objname, const std::string& rLocation, int* pRes) {
   struct json_object* n;
   
   if (!json_object_object_get_ex(objbase, objname, &n)) {
-    Logger::warn("%s not found in %s", objname, location);
+    Logger::warn("%s not found in %s", objname, rLocation.c_str());
     return false;
   }
   if (json_object_get_type(n) != json_type_int) {
-    Logger::warn("string type expected for %s in %s", objname, location);
+    Logger::warn("string type expected for %s in %s", objname, rLocation.c_str());
     return false;
   }
-  *res = json_object_get_int(n);
+  *pRes = json_object_get_int(n);
   return true;
 }
 
-bool Helper::getObject(struct json_object* objbase, const char* objname, const char* location, bool* res) {
+bool Helper::getObject(struct json_object* objbase, const char* objname, const std::string& rLocation, bool* pRes) {
   struct json_object* n;
   
   if (!json_object_object_get_ex(objbase, objname, &n)) {
-    Logger::warn("%s not found in %s", objname, location);
+    Logger::warn("%s not found in %s", objname, rLocation.c_str());
     return false;
   }
   if (json_object_get_type(n) != json_type_boolean) {
-    Logger::warn("string type expected for %s in %s", objname, location);
+    Logger::warn("string type expected for %s in %s", objname, rLocation.c_str());
     return false;
   }
-  *res = (bool)json_object_get_boolean(n);
+  *pRes = (bool)json_object_get_boolean(n);
   return true;
 }
 
-bool Helper::executeCommand(const std::string cmd, std::string* pRes) {
-  Logger::debug("executing(%s)..", cmd.c_str());
+bool Helper::executeCommand(const std::string& rCmd, std::string* pRes) {
+  Logger::debug("executing(%s)..", rCmd.c_str());
 
-  FILE* fp = popen(cmd.c_str(), "r");
+  FILE* fp = popen(rCmd.c_str(), "r");
   if (fp == NULL) {
     Logger::warn("popen failed (%s)", strerror(errno));
     return false;
@@ -90,7 +90,7 @@ bool Helper::executeCommand(const std::string cmd, std::string* pRes) {
 
   int status = pclose(fp);
   if (status != 0) {
-    Logger::warn("%s failed (%i)", cmd.c_str(), status);
+    Logger::warn("%s failed (%i)", rCmd.c_str(), status);
     return false;
   }
   return true;
@@ -102,4 +102,11 @@ std::string Helper::getPjStatusAsString(pj_status_t status) {
   std::string ret = pj_strbuf(&pjstr);
   return ret;
 }
+
+std::string Helper::getBaseFilename(const std::string& rFilename) {
+  size_t last = rFilename.find_last_of("/");
+  if (last != std::string::npos) return rFilename.substr(last + 1);
+  else return rFilename;
+}
+
 

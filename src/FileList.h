@@ -23,19 +23,24 @@
 #include <string>
 #include <vector>
 
+
+struct FileListEntry {
+  std::string number;
+  std::string comment;
+};
+
 class FileList {
 private:
   std::string m_filename;
-  std::vector<std::string> m_entries;
+  std::vector<FileListEntry> m_entries;
 
 public:
   FileList();
   virtual ~FileList();
 
   bool load(const std::string& filename);
-  const char* getFilename();
-  const char* getBaseFilename();
-  bool hasNumber(const std::string& number);
+  std::string getFilename();
+  bool isListed(const std::string& number, std::string* pMsg);
   void dump();
 };
 

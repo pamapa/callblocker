@@ -27,24 +27,25 @@
 #include <json-c/json.h>
 
 #include "Logger.h"
+#include "Helper.h"
 
 
 FileList::FileList() {
 }
 
 FileList::~FileList() {
-  Logger::debug("~FileList %s", getFilename());
+  Logger::debug("~FileList %s", m_filename.c_str());
   m_entries.clear();
 }
 
 bool FileList::load(const std::string& filename) {
   m_filename = filename;
 
-  Logger::debug("loading file %s", getFilename());
+  Logger::debug("loading file %s", m_filename.c_str());
 
   std::ifstream in(getFilename());
   if (in.fail()) {
-    Logger::warn("loading file %s failed", getFilename());
+    Logger::warn("loading file %s failed", m_filename.c_str());
     return false;
   }
 
@@ -57,41 +58,36 @@ bool FileList::load(const std::string& filename) {
 
   struct json_object* entries;
   if (json_object_object_get_ex(root, "entries", &entries)) {
-    for (size_t i = 0; i < json_object_array_length(entries); i++) {
+    for (int i = 0; i < json_object_array_length(entries); i++) {
       struct json_object* entry = json_object_array_get_idx(entries, i);
-      struct json_object* n;
-      if (!json_object_object_get_ex(entry, "number", &n)) {
-        Logger::warn("invalid json file %s", getFilename());
+      
+      struct FileListEntry add;
+      if (!Helper::getObject(entry, "number", m_filename, &add.number)) {
         continue;
       }
-      if (json_object_get_type(n) != json_type_string) {
-        Logger::warn("invalid json file %s", getFilename());
+      if (!Helper::getObject(entry, "comment", m_filename, &add.comment)) {
         continue;
       }
-      const char* s = json_object_get_string(n);
-      std::string str = s;
-      m_entries.push_back(str);
+      m_entries.push_back(add);
     }
   } else {
-      Logger::debug("no entries section found in json file %s", getFilename());
+      Logger::debug("no entries section found in json file %s", m_filename.c_str());
   }
   json_object_put(root); // free
   return true;
 }
 
-const char* FileList::getFilename() {
-  return m_filename.c_str();
+std::string FileList::getFilename() {
+  return m_filename;
 }
 
-const char* FileList::getBaseFilename() {
-  return m_filename.substr(m_filename.find_last_of("/") + 1).c_str();
-}
-
-bool FileList::hasNumber(const std::string& number) {
+bool FileList::isListed(const std::string& number, std::string* pMsg) {
   for(size_t i = 0; i < m_entries.size(); i++) {
-    const char* s = m_entries[i].c_str();
+    struct FileListEntry* entry = &m_entries[i];
+    const char* s = entry->number.c_str();
     if (strncmp(s, number.c_str(), strlen(s)) == 0) {
-      Logger::debug("FileList::hasNumber: number '%s' matched with '%s' in file %s", number.c_str(), s, getFilename());
+      Logger::debug("FileList::hasNumber: number '%s' (%s) matched with '%s' in file %s", number.c_str(), s, entry->comment.c_str(), m_filename.c_str());
+      *pMsg = entry->comment;
       return true;
     }
   }
@@ -100,7 +96,7 @@ bool FileList::hasNumber(const std::string& number) {
 
 void FileList::dump() {
   for(size_t i = 0; i < m_entries.size(); i++) {
-    printf("%s\n", m_entries[i].c_str());
+    printf("%s\n", m_entries[i].number.c_str());
   }
 }
 

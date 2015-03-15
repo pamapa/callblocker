@@ -27,7 +27,7 @@
 #define USE_SYSLOG                  1
 
 
-static unsigned int s_logLevel = LOG_INFO;
+static int s_logLevel = LOG_INFO;
 
 
 void Logger::start() {

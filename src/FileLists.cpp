@@ -26,6 +26,7 @@
 #include <sys/inotify.h>
 
 #include "Logger.h"
+#include "Helper.h"
 
 
 FileLists::FileLists(const std::string& dirname) : Notify(dirname, IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) {
@@ -58,8 +59,9 @@ bool FileLists::isListed(const std::string& number, std::string* pMsg) {
   bool ret = false;
   pthread_mutex_lock(&m_mutexLock);
   for(size_t i = 0; i < m_lists.size(); i++) {
-    if (m_lists[i]->hasNumber(number)) {
-      *pMsg = m_lists[i]->getBaseFilename();
+    std::string msg;
+    if (m_lists[i]->isListed(number, &msg)) {
+      *pMsg = Helper::getBaseFilename(m_lists[i]->getFilename()) + "/" + msg;
       ret = true;
       break;
     }
@@ -108,7 +110,7 @@ void FileLists::dump() {
   pthread_mutex_lock(&m_mutexLock);
   for(size_t i = 0; i < m_lists.size(); i++) {
     FileList* l = m_lists[i];
-    printf("Filename=%s\n", l->getFilename());
+    printf("Filename=%s\n", l->getFilename().c_str());
     l->dump();
   }
   pthread_mutex_unlock(&m_mutexLock);

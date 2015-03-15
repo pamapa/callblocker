@@ -24,12 +24,14 @@
 
 class Helper {
 public:
-  static bool getObject(struct json_object* objbase, const char* objname, const char* location, std::string* res);
-  static bool getObject(struct json_object* objbase, const char* objname, const char* location, int* res);
-  static bool getObject(struct json_object* objbase, const char* objname, const char* location, bool* res);
+  static bool getObject(struct json_object* objbase, const char* objname, const std::string& rLocation, std::string* pRes);
+  static bool getObject(struct json_object* objbase, const char* objname, const std::string& rLocation, int* pRes);
+  static bool getObject(struct json_object* objbase, const char* objname, const std::string& rLocation, bool* pRes);
 
-  static bool executeCommand(const std::string cmd, std::string* pRes);
+  static bool executeCommand(const std::string& rCmd, std::string* pRes);
 
   static std::string getPjStatusAsString(pj_status_t status);
+
+  static std::string getBaseFilename(const std::string& rFilename);
 };
 

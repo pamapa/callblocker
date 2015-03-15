@@ -90,6 +90,8 @@ bool SipAccount::add(struct SettingSipAccount* pSettings) {
     Logger::error("pjsua_acc_set_user_data() failed (%s)", Helper::getPjStatusAsString(status).c_str());
     return false;
   }
+
+  return true;
 }
 
 void SipAccount::onIncomingCallCB(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata) {

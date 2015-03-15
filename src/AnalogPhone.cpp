@@ -249,7 +249,7 @@ bool AnalogPhone::sendCommand(std::string cmd) {
   std::string sendCmd = cmd + "\r\n"; // CRLF
 
   int len = write(m_FD, sendCmd.c_str(), strlen(sendCmd.c_str()));
-  if (len != strlen(sendCmd.c_str())) {
+  if (len != (int)strlen(sendCmd.c_str())) {
     Logger::warn("[%s] write command '%s' failed (%s)", m_settings.device.c_str(), cmd.c_str(), strerror(errno));
     return false;
   }

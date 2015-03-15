@@ -71,7 +71,7 @@ bool Settings::load() {
   struct json_object* root = json_tokener_parse(str.c_str());
 
   std::string log_level;
-  if (Helper::getObject(root, "log_level", m_filename.c_str(), &log_level)) {
+  if (Helper::getObject(root, "log_level", m_filename, &log_level)) {
     Logger::setLogLevel(log_level);
   }
 
@@ -82,17 +82,17 @@ bool Settings::load() {
   if (json_object_object_get_ex(root, "analog", &analog)) {
     struct json_object* phones;
     if (json_object_object_get_ex(analog, "phones", &phones)) {
-      for (size_t i = 0; i < json_object_array_length(phones); i++) {
+      for (int i = 0; i < json_object_array_length(phones); i++) {
         struct json_object* entry = json_object_array_get_idx(phones, i);
         bool enabled;
-        if (!Helper::getObject(entry, "enabled", m_filename.c_str(), &enabled) || !enabled) {
+        if (!Helper::getObject(entry, "enabled", m_filename, &enabled) || !enabled) {
           continue;
         }
         struct SettingAnalogPhone acc;
         if (!getBase(entry, &acc.base)) {
           continue;
         }
-        if (!Helper::getObject(entry, "device", m_filename.c_str(), &acc.device)) {
+        if (!Helper::getObject(entry, "device", m_filename, &acc.device)) {
           continue;
         }
         m_analogPhones.push_back(acc);
@@ -109,29 +109,29 @@ bool Settings::load() {
   if (json_object_object_get_ex(root, "sip", &sip)) {
 
     int pjsip_log_level;
-    if (Helper::getObject(sip, "pjsip_log_level", m_filename.c_str(), &pjsip_log_level)) {
+    if (Helper::getObject(sip, "pjsip_log_level", m_filename, &pjsip_log_level)) {
       pj_log_set_level(pjsip_log_level);
     }
 
     struct json_object* accounts;
     if (json_object_object_get_ex(sip, "accounts", &accounts)) {
-      for (size_t i = 0; i < json_object_array_length(accounts); i++) {
+      for (int i = 0; i < json_object_array_length(accounts); i++) {
         struct json_object* entry = json_object_array_get_idx(accounts, i);
         bool enabled;
-        if (!Helper::getObject(entry, "enabled", m_filename.c_str(), &enabled) || !enabled) {
+        if (!Helper::getObject(entry, "enabled", m_filename, &enabled) || !enabled) {
           continue;
         }
         struct SettingSipAccount acc;
         if (!getBase(entry, &acc.base)) {
           continue;
         }
-        if (!Helper::getObject(entry, "from_domain", m_filename.c_str(), &acc.fromDomain)) {
+        if (!Helper::getObject(entry, "from_domain", m_filename, &acc.fromDomain)) {
           continue;
         }
-        if (!Helper::getObject(entry, "from_username", m_filename.c_str(), &acc.fromUsername)) {
+        if (!Helper::getObject(entry, "from_username", m_filename, &acc.fromUsername)) {
           continue;
         }
-        if (!Helper::getObject(entry, "from_password", m_filename.c_str(), &acc.fromPassword)) {
+        if (!Helper::getObject(entry, "from_password", m_filename, &acc.fromPassword)) {
           continue;
         }
         m_sipAccounts.push_back(acc);
@@ -146,17 +146,18 @@ bool Settings::load() {
   // credentials
   struct json_object* onlineCredentials;
   if (json_object_object_get_ex(root, "online_credentials", &onlineCredentials)) {
-    for (size_t i = 0; i < json_object_array_length(onlineCredentials); i++) {
+    for (int i = 0; i < json_object_array_length(onlineCredentials); i++) {
       struct json_object* entry = json_object_array_get_idx(onlineCredentials, i);
 
       struct SettingOnlineCredential cred;
-      if (!Helper::getObject(entry, "name", m_filename.c_str(), &cred.name)) {
+      if (!Helper::getObject(entry, "name", m_filename, &cred.name)) {
         continue;
       }
       json_object_object_foreach(entry, key, value) {
+        (void)value; // not used here
         if (strcmp("name", key) == 0) continue;
         std::string value_str;
-        if (!Helper::getObject(entry, key, m_filename.c_str(), &value_str)) {
+        if (!Helper::getObject(entry, key, m_filename, &value_str)) {
           continue;
         }
         cred.data[key] = value_str;
@@ -174,11 +175,11 @@ bool Settings::load() {
 bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
   std::string tmp;
   // name
-  if (!Helper::getObject(objbase, "name", m_filename.c_str(), &res->name)) {
+  if (!Helper::getObject(objbase, "name", m_filename, &res->name)) {
     return false;
   }
   // country code
-  if (!Helper::getObject(objbase, "country_code", m_filename.c_str(), &res->countryCode)) {
+  if (!Helper::getObject(objbase, "country_code", m_filename, &res->countryCode)) {
     return false;
   }
   if (!boost::starts_with(res->countryCode, "+")) {
@@ -186,7 +187,7 @@ bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
     return false;
   }
   // block mode
-  if (!Helper::getObject(objbase, "block_mode", m_filename.c_str(), &tmp)) {
+  if (!Helper::getObject(objbase, "block_mode", m_filename, &tmp)) {
     return false;
   }
   if (tmp == "logging_only") res->blockMode = LOGGING_ONLY;
@@ -198,7 +199,7 @@ bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
     return false;
   }
   // online check
-  if (!Helper::getObject(objbase, "online_check", m_filename.c_str(), &res->onlineCheck)) {
+  if (!Helper::getObject(objbase, "online_check", m_filename, &res->onlineCheck)) {
     return false;
   }
   return true;
