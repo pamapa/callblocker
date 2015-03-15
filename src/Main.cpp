@@ -31,8 +31,8 @@
 static bool s_appRunning = true;
 
 static void signal_handler(int signal) {
-  s_appRunning = false;
   Logger::info("exiting (signal %i received)...", signal);
+  s_appRunning = false;
 }
 
 
