@@ -82,7 +82,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
 
     case WHITELISTS_AND_BLACKLISTS:
       if (isWhiteListed(pSettings, rNumber, &msg)) {
-        reason = "found in whitelist ("+msg+")}";
+        reason = "found in whitelist ("+msg+")";
         block = false;
         break;
       }
