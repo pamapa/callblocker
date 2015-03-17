@@ -17,5 +17,5 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Subdirectories to descend into.
-SUBDIRS = etc scripts src
+SUBDIRS = etc src usr/share/callblocker
 
