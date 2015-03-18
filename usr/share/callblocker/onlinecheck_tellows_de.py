@@ -44,7 +44,7 @@ def fetch_url(url):
 # main
 #
 def main(argv):
-  parser = argparse.ArgumentParser(description="Online check via tellows.de")
+  parser = argparse.ArgumentParser(description="Online spam check via tellows.de")
   parser.add_argument("--number", help="number to be checked", required=True)
   parser.add_argument("--partner", help="partner name", required=True)
   parser.add_argument("--apikey", help="api key", required=True)

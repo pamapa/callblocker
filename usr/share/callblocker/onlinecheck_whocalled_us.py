@@ -44,7 +44,7 @@ def fetch_url(url):
 # main
 #
 def main(argv):
-  parser = argparse.ArgumentParser(description="Online check via tellows.de")
+  parser = argparse.ArgumentParser(description="Online spam check via whocalled.us")
   parser.add_argument("--number", help="number to be checked", required=True)
   parser.add_argument("--username", help="username", required=True)
   parser.add_argument("--password", help="password", required=True)
@@ -56,7 +56,7 @@ def main(argv):
   debug(content)
 
   score = 0
-  matchObj = re.match(r".*score=([0-9]*)[^0-9]*", content)#, re.M|re.I)
+  matchObj = re.match(r".*score=([0-9]*)[^0-9]*", content)
   if matchObj:
     score = int(matchObj.group(1))
   

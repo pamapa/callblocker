@@ -43,7 +43,7 @@ def fetch_url(url):
 # main
 #
 def main(argv):
-  parser = argparse.ArgumentParser(description="Online check via phonespamfilter.com")
+  parser = argparse.ArgumentParser(description="Online spam check via phonespamfilter.com")
   parser.add_argument("--number", help="number to be checked", required=True)
   parser.add_argument("--spamscore", help="spam score limit", default=50)
   args = parser.parse_args()
