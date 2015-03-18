@@ -111,7 +111,7 @@ def cleanup_entries(arr):
 # main
 #
 def main(argv):
-  parser = argparse.ArgumentParser(description="Fetch toastedspam blacklist")
+  parser = argparse.ArgumentParser(description="Fetch blacklist provided by toastedspam.com")
   parser.add_argument("--output", help="output path", default=".")
   args = parser.parse_args()
 
@@ -128,7 +128,7 @@ def main(argv):
       ("last_update",datetime.datetime.now().strftime("%F %T")),
       ("entries",result)
     ))
-    demjson.encode_to_file(args.output+"/blacklist_US_toastedspam_com.json",
+    demjson.encode_to_file(args.output+"/blacklist_toastedspam_com.json",
                            data, overwrite=True, compactly=False, sort_keys=demjson.SORT_PRESERVE)
 
 if __name__ == "__main__":

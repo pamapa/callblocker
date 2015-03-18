@@ -27,19 +27,27 @@ number and checks it offline via white-and blacklists. There is also the ability
 - Supported analog modems (tested):
   - USRobotics 5637
 
-## Installing on a Raspberry Pi (running raspbian/jessie)
-1. sudo apt-get install git automake g++ libpjproject-dev libjson-c-dev libboost-dev libboost-regex-dev python python-beautifulsoup python-demjson
-1. git clone https://github.com/pamapa/callblocker.git
-1. cd callblocker
-1. aclocal
-1. automake --add-missing --foreign
-1. autoconf
-1. ./configure --prefix=/usr --sysconfdir=/etc
-1. make all
-1. sudo make install
-1. cd /etc/callblocker
-1. mv tpl_settings.json settings.json
-1. adapt settings.json for your needs
+## Install daemon on a Raspberry Pi (running raspbian/jessie)
+```bash
+sudo apt-get install git automake g++ libpjproject-dev libjson-c-dev libboost-dev libboost-regex-dev
+sudo apt-get install python python-beautifulsoup python-demjson
+git clone https://github.com/pamapa/callblocker.git
+cd callblocker
+aclocal
+automake --add-missing --foreign
+autoconf
+./configure --prefix=/usr --sysconfdir=/etc
+make all
+sudo make install
+cd /etc/callblocker
+mv tpl_settings.json settings.json
+adapt settings.json for your needs (see #settingsJson)
+sudo systemctl start callblocker.service
+```
+
+## Install WebUI on a Raspberry Pi (running raspbian/jessie)
+1. sudo apt-get install lighttpd php5-common php5-cgi php5
+1. TODO
 
 ## File Layout
 When installed on Linux, the following file layout is used
@@ -52,7 +60,7 @@ When installed on Linux, the following file layout is used
 /usr/share/callblocker (scripts)
 ```
 
-## Documentation settings.json
+## <a name="settingsJson"></a> Documentation settings.json
 Start with the provided template settings file (mv tpl_settings.json settings.json)
 ```json
 { 
@@ -60,12 +68,13 @@ Start with the provided template settings file (mv tpl_settings.json settings.js
   "analog" : {
     "phones" : [
       {
-        "enabled"      : false,
-        "name"         : "Analog Home Phone",
-        "country_code" : "+41",
-        "block_mode"   : "logging_only",
-        "online_check" : "tellows_de",
-        "device"       : "/dev/ttyACM0"
+        "enabled"       : false,
+        "name"          : "Analog Home Phone",
+        "country_code"  : "+41",
+        "block_mode"    : "logging_only",
+        "online_check"  : "tellows_de",
+        "online_lookup" : "tel_search_ch",
+        "device"        : "/dev/ttyACM0"
       }
     ]
   },
@@ -78,6 +87,7 @@ Start with the provided template settings file (mv tpl_settings.json settings.js
         "country_code"  : "+41",
         "block_mode"    : "logging_only",
         "online_check"  : "tellows_de",
+        "online_lookup" : "tel_search_ch",
         "from_domain"   : "<your domainname>",
         "from_username" : "<your username>",
         "from_password" : "<your password>"
@@ -98,7 +108,8 @@ Fields               | Values | Description
 "log_level"          | "error", "warn", "info" or "debug" |
 "country_code"       | `+<X[YZ]>` | needed to create international number
 "block_mode"         | "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only" | "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists (whitelists not used)
-"online_check"       | [values](#onlineCheck)  | the online check site, leave empty if not needed
+"online_check"       | [values](#onlineCheck)  | optional: online check site to verify if number is spam
+"online_lookup"      | [values](#onlineLookup)  | optional: online lookup site, to see who is calling
 "device"             | | your modem device (get it with dmesg)
 "pjsip_log_level"    | 0-5 | pjsip log level, for debugging proposes
 "from_domain"        | | your SIP domain name (e.g. fritz.box)
@@ -106,14 +117,22 @@ Fields               | Values | Description
 "from_password"      | | your SIP password
 "online_credentials" | | in this section you can define credentials, which are needed by some scripts to get the online information
 
-## <a name="onlineCheck"></a> Online check
-Name                  | Site                           | Credentials
+## <a name="onlineCheck"></a> Online check option
+Name                  | Site                           | Description
 ----                  | ----                           | -----------
 ""                    | No online check is done        |
-"phonespamfilter_com" | http://www.phonespamfilter.com | free to use for non comercial
+"phonespamfilter_com" | http://www.phonespamfilter.com | free for non comercial use
 "tellows_de"          | http://tellows.de              | needs credentials
 
 The online check script base name e.g. "tellows_de" leds to onlinecheck_tellows_de.py.
+
+## <a name="onlineLookup"></a> Online lookup option
+Name                  | Site                           | Description
+----                  | ----                           | -----------
+""                    | No online check is done        |
+"tel_search_ch"       | http://tel.search.ch           | Switzerland (+41). Free for non comercial use
+
+The online lookup script base name e.g. "tel_search_ch" leds to onlinelookup_tel_search_ch.py.
 
 ## Automatically download blacklists
 There is a possibility to daily download a whole blacklist. You will need to setup a cronjob for this task. The following cronjob will download each day
@@ -123,10 +142,10 @@ the K-Tipp blacklist:
 ```
 Currently the following blacklists are supported:
 
-Name                            | Site
-----                            | ----
-blacklist_US_toastedspam_com.py | http://www.toastedspam.com
-blacklist_CH_K-Tipp.py          | https://www.ktipp.ch
+Name                         | Site                       | Description
+----                         | ----                       | -----------
+blacklist_toastedspam_com.py | http://www.toastedspam.com | mostly USA and Canada (+1)
+blacklist_ktipp_ch.py        | https://www.ktipp.ch       | Switzerland (+41)
 
 ## Setup
 There are two ways to connect the callblock to your phone system, depending if your system is VoIP or analog. 

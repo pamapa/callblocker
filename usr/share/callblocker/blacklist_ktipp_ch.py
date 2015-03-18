@@ -175,7 +175,7 @@ def cleanup_entries(arr):
 # main
 #
 def main(argv):
-  parser = argparse.ArgumentParser(description="Fetch K-Tipp blacklist")
+  parser = argparse.ArgumentParser(description="Fetch blacklist provided by ktipp.ch")
   parser.add_argument("--output", help="output path", default=".")
   args = parser.parse_args()
 
@@ -187,14 +187,14 @@ def main(argv):
   result = cleanup_entries(result)
   if len(result) != 0:
     data = OrderedDict((
-      ("name","blacklist provided by K-Tipp"),
+      ("name","blacklist provided by ktipp.ch"),
       ("origin", "https://www.ktipp.ch/service/warnlisten/detail/?warnliste_id=7"),
       ("parsed_by","callblocker script: "+os.path.basename(__file__)),
       ("num_entries",len(result)),
       ("last_update",datetime.datetime.now().strftime("%F %T")),
       ("entries",result)
     ))
-    demjson.encode_to_file(args.output+"/blacklist_CH_K-Tipp.json",
+    demjson.encode_to_file(args.output+"/blacklist_ktipp_ch.json",
                            data, overwrite=True, compactly=False, sort_keys=demjson.SORT_PRESERVE)
 
 if __name__ == "__main__":
