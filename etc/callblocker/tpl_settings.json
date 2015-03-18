@@ -3,13 +3,13 @@
   "analog" : {
     "phones" : [
       {
-        "enabled"      : false,
-        "name"         : "Analog Home Phone",
-        "country_code" : "+41",
-        "block_mode"   : "logging_only",
-        "online_check" : "tellows_de",
+        "enabled"       : false,
+        "name"          : "Analog Home Phone",
+        "country_code"  : "+41",
+        "block_mode"    : "logging_only",
+        "online_check"  : "tellows_de",
         "online_lookup" : "local_ch",
-        "device"       : "/dev/ttyACM0"
+        "device"        : "/dev/ttyACM0"
       }
     ]
   },
