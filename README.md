@@ -5,12 +5,14 @@ does not fit or is not enough and Asterisk or FreePBX would be an overkill, as y
 running VoIP server. callblocker acts as an additional phone, when someone is calling the phone detects the
 number and checks it offline via white-and blacklists. There is also the ability to check the number online.
 
+
 ## TODO
 1. support blocking calls without caller ID
 1. add webinterface
 1. polish
 1. night silence?
 1. shield? a pin is needed to allow connecting...
+
 
 ## Features
 - automatically blocks unwanted incoming calls
@@ -26,8 +28,10 @@ number and checks it offline via white-and blacklists. There is also the ability
 
 Supported VoIP systems (tested):
 - Fritzbox 7390
+
 Supported analog modems (tested):
 - USRobotics 5637
+
 
 ## Install daemon on a Raspberry Pi (running raspbian/jessie)
 ```bash
@@ -47,9 +51,11 @@ sudo joe settings.json
 sudo systemctl start callblockerd.service
 ```
 
+
 ## Install WebUI on a Raspberry Pi (running raspbian/jessie)
 1. sudo apt-get install lighttpd php5-common php5-cgi php5
 1. TODO
+
 
 ## File Layout
 When installed on Linux, the following file layout is used
@@ -61,6 +67,7 @@ When installed on Linux, the following file layout is used
 /usr/bin/callblockerd (daemon)
 /usr/share/callblocker (scripts)
 ```
+
 
 ## <a name="settingsJson"></a> Documentation of settings.json
 Start with the provided template settings file (sudo mv tpl_settings.json settings.json)
@@ -119,6 +126,7 @@ Fields               | Values | Description
 "from_password"      | | your SIP password
 "online_credentials" | | In this section you can define credentials, which are needed by some scripts to get the online information.
 
+
 ## <a name="onlineCheck"></a> Online check option
 Name                  | Site                           | Description
 ----                  | ----                           | -----------
@@ -128,6 +136,7 @@ Name                  | Site                           | Description
 
 The online check script base name e.g. "tellows_de" leds to onlinecheck_tellows_de.py.
 
+
 ## <a name="onlineLookup"></a> Online lookup option
 Name                  | Site                           | Description
 ----                  | ----                           | -----------
@@ -135,6 +144,7 @@ Name                  | Site                           | Description
 "tel_search_ch"       | http://tel.search.ch           | Switzerland (+41). Free for non comercial use
 
 The online lookup script base name e.g. "tel_search_ch" leds to onlinelookup_tel_search_ch.py.
+
 
 ## Automatically download blacklists
 Currently the following blacklists are supported:
@@ -149,8 +159,10 @@ There is a possibility to daily download a whole blacklist. You will need to set
 0 0 * * * /usr/share/callblocker/blacklist_ktipp_ch.py --output /etc/callblocker/blacklists/ >/dev/null
 ```
 
+
 ## Setup
 There are two ways to connect the callblock to your phone system, depending if your system is VoIP or analog. 
+
 
 ### Setup using Fritzbox with a IP-phone
 - Create in the Fritzbox a new IP-phone
@@ -166,6 +178,7 @@ There are two ways to connect the callblock to your phone system, depending if y
   - "from_username" : "your username"
   - "from_password" : "your password"
   - Make sure the account is enabled and the other fields ok ok for you
+
 
 ### Setup using an Analog phone
 - Attach the USB modem to the Raspberry Pi
