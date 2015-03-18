@@ -52,7 +52,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
   Logger::debug("Block::isNumberBlocked(settings=%s, number=%s)", pSettings->toString().c_str(), rNumber.c_str());
 
   std::string reason = "";
-  std::string msg;
+  std::string msg = "";
   bool block;
   switch (pSettings->blockMode) {
     default:
@@ -138,41 +138,54 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
   }
 #endif
 
-  if (pSettings->onlineCheck.length() == 0) {
-    return false;
-  }
-
-  std::string script = "onlinecheck_" + pSettings->onlineCheck + ".py";
-  script = "/usr/share/callblocker/" + script;
-
-  std::string parameters = "--number " + rNumber;
-  std::vector<struct SettingOnlineCredential> creds = m_pSettings->getOnlineCredentials();
-  for(size_t i = 0; i < creds.size(); i++) {
-    struct SettingOnlineCredential* cred = &creds[i];
-    if (cred->name == pSettings->onlineCheck) {
-      for (std::map<std::string,std::string>::iterator it = cred->data.begin(); it != cred->data.end(); ++it) {
-        parameters += " --" + it->first + " " + it->second;
+  // online check if spam
+  if (pSettings->onlineCheck.length() != 0) {
+    struct json_object* root;
+    if (checkOnline("onlinecheck_", pSettings->onlineCheck, rNumber, &root)) {
+      bool spam;
+      if (!Helper::getObject(root, "spam", true, "script result", &spam)) {
+        return false;
       }
-      break;
+      if (spam) {
+        (void)Helper::getObject(root, "comment", false, "script result", pMsg);
+        return true;
+      }
     }
   }
 
-  std::string cmd = script + " " + parameters + " 2>&1";
-  std::string res;
-  if (!Helper::executeCommand(cmd, &res)) {
-    *pMsg = res;
-    return false;
+  // online lookup caller name
+  if (pSettings->onlineLookup.length() != 0) {
+    struct json_object* root;
+    if (checkOnline("onlinelookup_", pSettings->onlineLookup, rNumber, &root)) {
+      (void)Helper::getObject(root, "name", false, "script result", pMsg);
+    }
   }
 
-  struct json_object* root = json_tokener_parse(res.c_str());
-  bool spam;
-  if (!Helper::getObject(root, "spam", "script result", &spam)) {
-    return false;
-  }
-  std::string comment;
-  if (Helper::getObject(root, "comment", "script result", &comment)) {
-    *pMsg = comment;
-  }
-  return spam;
+  // no spam
+  return false;
+}
+
+bool Block::checkOnline(std::string prefix, std::string name, const std::string& rNumber, struct json_object** root) {
+    std::string script = "/usr/share/callblocker/" + prefix + name + ".py";
+
+    std::string parameters = "--number " + rNumber;
+    std::vector<struct SettingOnlineCredential> creds = m_pSettings->getOnlineCredentials();
+    for(size_t i = 0; i < creds.size(); i++) {
+      struct SettingOnlineCredential* cred = &creds[i];
+      if (cred->name == name) {
+        for (std::map<std::string,std::string>::iterator it = cred->data.begin(); it != cred->data.end(); ++it) {
+          parameters += " --" + it->first + " " + it->second;
+        }
+        break;
+      }
+    }
+
+    std::string res;
+    if (!Helper::executeCommand(script + " " + parameters + " 2>&1", &res)) {
+      return false;
+    }
+
+    *root = json_tokener_parse(res.c_str());
+    return true;
 }
 

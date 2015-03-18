@@ -41,10 +41,11 @@ struct SettingBase {
   std::string countryCode;
   enum SettingBlockMode blockMode;
   std::string onlineCheck;
+  std::string onlineLookup;
 
   std::string toString() const {
     std::ostringstream oss;
-    oss << name << ", " << countryCode << ", " << blockMode << ", " << onlineCheck;
+    oss << "n=" << name << ",cc=" << countryCode << ",bm=" << blockMode << ",on=" << onlineCheck << ",ol=" << onlineLookup;
     return oss.str();
   }
 };
@@ -57,7 +58,7 @@ struct SettingSipAccount {
 
   std::string toString() const {
     std::ostringstream oss;
-    oss << base.toString() << ", " << fromDomain << ", " << fromUsername << ", " << fromPassword;
+    oss << base.toString() << ",fd=" << fromDomain << ",fu=" << fromUsername << ",fp=" << fromPassword;
     return oss.str();
   }
 };
@@ -68,7 +69,7 @@ struct SettingAnalogPhone {
 
   std::string toString() const {
     std::ostringstream oss;
-    oss << base.toString() << ", " << device;
+    oss << base.toString() << ",d=" << device;
     return oss.str();
   }
 };

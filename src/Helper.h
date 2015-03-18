@@ -24,9 +24,9 @@
 
 class Helper {
 public:
-  static bool getObject(struct json_object* objbase, const char* objname, const std::string& rLocation, std::string* pRes);
-  static bool getObject(struct json_object* objbase, const char* objname, const std::string& rLocation, int* pRes);
-  static bool getObject(struct json_object* objbase, const char* objname, const std::string& rLocation, bool* pRes);
+  static bool getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, std::string* pRes);
+  static bool getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, int* pRes);
+  static bool getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, bool* pRes);
 
   static bool executeCommand(const std::string& rCmd, std::string* pRes);
 

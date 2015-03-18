@@ -25,45 +25,45 @@
 #include "Logger.h"
 
 
-bool Helper::getObject(struct json_object* objbase, const char* objname, const std::string& rLocation, std::string* pRes) {
+bool Helper::getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, std::string* pRes) {
   struct json_object* n;
-  
+  *pRes = "";
   if (!json_object_object_get_ex(objbase, objname, &n)) {
-    Logger::warn("%s not found in %s", objname, rLocation.c_str());
+    if (logError) Logger::warn("%s not found in %s", objname, rLocation.c_str());
     return false;
   }
   if (json_object_get_type(n) != json_type_string) {
-    Logger::warn("string type expected for %s in %s", objname, rLocation.c_str());
+    if (logError) Logger::warn("string type expected for %s in %s", objname, rLocation.c_str());
     return false;
   }
   *pRes = json_object_get_string(n);
   return true;
 }
 
-bool Helper::getObject(struct json_object* objbase, const char* objname, const std::string& rLocation, int* pRes) {
+bool Helper::getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, int* pRes) {
   struct json_object* n;
-  
+   *pRes = 0;
   if (!json_object_object_get_ex(objbase, objname, &n)) {
-    Logger::warn("%s not found in %s", objname, rLocation.c_str());
+    if (logError) Logger::warn("%s not found in %s", objname, rLocation.c_str());
     return false;
   }
   if (json_object_get_type(n) != json_type_int) {
-    Logger::warn("string type expected for %s in %s", objname, rLocation.c_str());
+    if (logError) Logger::warn("string type expected for %s in %s", objname, rLocation.c_str());
     return false;
   }
   *pRes = json_object_get_int(n);
   return true;
 }
 
-bool Helper::getObject(struct json_object* objbase, const char* objname, const std::string& rLocation, bool* pRes) {
+bool Helper::getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, bool* pRes) {
   struct json_object* n;
-  
+  *pRes = false;
   if (!json_object_object_get_ex(objbase, objname, &n)) {
-    Logger::warn("%s not found in %s", objname, rLocation.c_str());
+    if (logError) Logger::warn("%s not found in %s", objname, rLocation.c_str());
     return false;
   }
   if (json_object_get_type(n) != json_type_boolean) {
-    Logger::warn("string type expected for %s in %s", objname, rLocation.c_str());
+    if (logError) Logger::warn("string type expected for %s in %s", objname, rLocation.c_str());
     return false;
   }
   *pRes = (bool)json_object_get_boolean(n);

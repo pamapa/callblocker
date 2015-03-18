@@ -62,10 +62,10 @@ bool FileList::load(const std::string& filename) {
       struct json_object* entry = json_object_array_get_idx(entries, i);
       
       struct FileListEntry add;
-      if (!Helper::getObject(entry, "number", m_filename, &add.number)) {
+      if (!Helper::getObject(entry, "number", true, m_filename, &add.number)) {
         continue;
       }
-      if (!Helper::getObject(entry, "comment", m_filename, &add.comment)) {
+      if (!Helper::getObject(entry, "comment", true, m_filename, &add.comment)) {
         continue;
       }
       m_entries.push_back(add);

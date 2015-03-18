@@ -21,6 +21,7 @@
 #define BLOCK_H
 
 #include <string>
+#include <json-c/json.h>
 
 #include "FileLists.h"
 #include "Settings.h"
@@ -41,6 +42,7 @@ public:
 private:
   bool isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);
   bool isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);
+  bool checkOnline(std::string prefix, std::string name, const std::string& rNumber, struct json_object** root);
 };
 
 #endif
