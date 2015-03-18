@@ -8,7 +8,7 @@
         "country_code"  : "+41",
         "block_mode"    : "logging_only",
         "online_check"  : "tellows_de",
-        "online_lookup" : "local_ch",
+        "online_lookup" : "tel_search_ch",
         "device"        : "/dev/ttyACM0"
       }
     ]
@@ -22,7 +22,7 @@
         "country_code"  : "+41",
         "block_mode"    : "whitelists_and_blacklists",
         "online_check"  : "tellows_de",
-        "online_lookup" : "local_ch",
+        "online_lookup" : "tel_search_ch",
         "from_domain"   : "<yourdomain.net>",
         "from_username" : "<your username>",
         "from_password" : "<your password>"

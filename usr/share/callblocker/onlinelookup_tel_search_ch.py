@@ -43,7 +43,7 @@ def fetch_url(url):
 # main
 #
 def main(argv):
-  parser = argparse.ArgumentParser(description="Online lookup via local.ch")
+  parser = argparse.ArgumentParser(description="Online lookup via tel.search.ch")
   parser.add_argument("--number", help="number to be checked", required=True)
   args = parser.parse_args()
 
@@ -83,7 +83,7 @@ def main(argv):
   debug(caller_name)
 
   # result in json format
-  print('{"name": "%s", "comment" : "local.ch"}' % (caller_name))
+  print('{"name": "%s", "comment" : "tel.search.ch"}' % (caller_name))
 
 if __name__ == "__main__":
     main(sys.argv)
