@@ -24,10 +24,10 @@ number and checks it offline via white-and blacklists. There is also the ability
 - support of online spam check sites (see #onlineCheck), for spam verification
 - support of online lookup sites, to find out who is calling
 
-- Supported VoIP systems (tested):
-  - Fritzbox 7390
-- Supported analog modems (tested):
-  - USRobotics 5637
+Supported VoIP systems (tested):
+- Fritzbox 7390
+Supported analog modems (tested):
+- USRobotics 5637
 
 ## Install daemon on a Raspberry Pi (running raspbian/jessie)
 ```bash
