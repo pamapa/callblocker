@@ -23,6 +23,6 @@ callblocker_SCRIPTS = \
   onlinecheck_phonespamfilter_com.py \
   onlinecheck_tellows_de.py \
   onlinecheck_whocalled_us.py \
-  onlinelookup_local_ch.py \
+  onlinelookup_tel_search_ch.py \
   whitelist_LDIF.py
 
