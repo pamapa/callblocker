@@ -20,7 +20,9 @@ number and checks it offline via white-and blacklists. There is also the ability
   - number blocking using blacklists
   - avoid blocking, if number is in whitelist
   - number has to be in whitelist
-- refresh blacklists through the Internet
+- daily refresh blacklists through the Internet
+- support of online spam check sites (see #onlineCheck), for spam verification
+- support of online lookup sites, to find out who is calling
 
 - Supported VoIP systems (tested):
   - Fritzbox 7390
@@ -40,9 +42,9 @@ autoconf
 make all
 sudo make install
 cd /etc/callblocker
-mv tpl_settings.json settings.json
-adapt settings.json for your needs (see #settingsJson)
-sudo systemctl start callblocker.service
+sudo mv tpl_settings.json settings.json
+sudo joe settings.json
+sudo systemctl start callblockerd.service
 ```
 
 ## Install WebUI on a Raspberry Pi (running raspbian/jessie)
@@ -54,14 +56,14 @@ When installed on Linux, the following file layout is used
 ```
 /etc/callblocker
   settings.json (configuration)
-  blacklists (place your own blacklist here, multiple files are supported)
-  whitelists (place your own whitelist here, multiple files are supported)
-/usr/bin/callblocker (daemon)
+  blacklists (place your own blacklists here)
+  whitelists (place your own whitelists here)
+/usr/bin/callblockerd (daemon)
 /usr/share/callblocker (scripts)
 ```
 
-## <a name="settingsJson"></a> Documentation settings.json
-Start with the provided template settings file (mv tpl_settings.json settings.json)
+## <a name="settingsJson"></a> Documentation of settings.json
+Start with the provided template settings file (sudo mv tpl_settings.json settings.json)
 ```json
 { 
   "log_level" : "info",
@@ -105,9 +107,9 @@ Start with the provided template settings file (mv tpl_settings.json settings.js
 ```
 Fields               | Values | Description
 ------               | ------ | -------
-"log_level"          | "error", "warn", "info" or "debug" |
-"country_code"       | `+<X[YZ]>` | needed to create international number
-"block_mode"         | "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only" | "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists (whitelists not used)
+"log_level"          | "error", "warn", "info" or "debug" | Default is "info".
+"country_code"       | `+<X[Y][Z]>` | your international country code (e.g. +33 for France)
+"block_mode"         | "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only" | "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists. (whitelists not used)
 "online_check"       | [values](#onlineCheck)  | optional: online check site to verify if number is spam
 "online_lookup"      | [values](#onlineLookup)  | optional: online lookup site, to see who is calling
 "device"             | | your modem device (get it with dmesg)
@@ -115,37 +117,37 @@ Fields               | Values | Description
 "from_domain"        | | your SIP domain name (e.g. fritz.box)
 "from_username"      | | your SIP username
 "from_password"      | | your SIP password
-"online_credentials" | | in this section you can define credentials, which are needed by some scripts to get the online information
+"online_credentials" | | In this section you can define credentials, which are needed by some scripts to get the online information.
 
 ## <a name="onlineCheck"></a> Online check option
 Name                  | Site                           | Description
 ----                  | ----                           | -----------
 ""                    | No online check is done        |
 "phonespamfilter_com" | http://www.phonespamfilter.com | free for non comercial use
-"tellows_de"          | http://tellows.de              | needs credentials
+"tellows_de"          | http://tellows.de              | not free
 
 The online check script base name e.g. "tellows_de" leds to onlinecheck_tellows_de.py.
 
 ## <a name="onlineLookup"></a> Online lookup option
 Name                  | Site                           | Description
 ----                  | ----                           | -----------
-""                    | No online check is done        |
+""                    | No online lookup is done       |
 "tel_search_ch"       | http://tel.search.ch           | Switzerland (+41). Free for non comercial use
 
 The online lookup script base name e.g. "tel_search_ch" leds to onlinelookup_tel_search_ch.py.
 
 ## Automatically download blacklists
-There is a possibility to daily download a whole blacklist. You will need to setup a cronjob for this task. The following cronjob will download each day
-the K-Tipp blacklist:
-```
-0 0 * * * /usr/share/callblocker/blacklist_CH_K-Tipp.py --output /etc/callblocker/blacklists/ >/dev/null
-```
 Currently the following blacklists are supported:
 
 Name                         | Site                       | Description
 ----                         | ----                       | -----------
 blacklist_toastedspam_com.py | http://www.toastedspam.com | mostly USA and Canada (+1)
 blacklist_ktipp_ch.py        | https://www.ktipp.ch       | Switzerland (+41)
+
+There is a possibility to daily download a whole blacklist. You will need to setup a cronjob for this task. The following cronjob will download each day the blacklist provided by ktipp_ch:
+```
+0 0 * * * /usr/share/callblocker/blacklist_ktipp_ch.py --output /etc/callblocker/blacklists/ >/dev/null
+```
 
 ## Setup
 There are two ways to connect the callblock to your phone system, depending if your system is VoIP or analog. 
@@ -163,11 +165,12 @@ There are two ways to connect the callblock to your phone system, depending if y
   - "from_domain"   : "fritz.box"
   - "from_username" : "your username"
   - "from_password" : "your password"
-  - make sure the account is enabled and the other fields ok ok for you
+  - Make sure the account is enabled and the other fields ok ok for you
 
 ### Setup using an Analog phone
-- Attach USB mode to the Raspberry Pi
+- Attach the USB modem to the Raspberry Pi
 - Setup the Analog phone in the callblocker configuration (/etc/callblocker/setting.json):
   - analog -> phones
-  - "device" : use `dmesg` to find `/dev/<name>`. Usually /dev/ttyACM0
+  - "device" : use `dmesg` to find `/dev/<name>`. Usually its "/dev/ttyACM0"
+  - Make sure the account is enabled and the other fields ok ok for you
 
