@@ -153,7 +153,7 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
 #endif
 
   if (block) {
-    // answer incoming calls with 200/OK
+    // answer incoming calls with 200/OK, then we hangup in onCallState...
     pj_status_t status = pjsua_call_answer(call_id, 200, NULL, NULL);
     if (status != PJ_SUCCESS) {
       Logger::warn("pjsua_call_answer() failed (%s)", Helper::getPjStatusAsString(status).c_str());
@@ -184,7 +184,7 @@ void SipAccount::onCallState(pjsua_call_id call_id, pjsip_event* e) {
   }
 
   std::string state = std::string(pj_strbuf(&ci.state_text), ci.state_text.slen);
-  Logger::notice("[%s] call state changed to %s", number.c_str(), state.c_str());
+  Logger::debug("[%s] call state changed to %s", number.c_str(), state.c_str());
 
 #if 1
   if (ci.state == PJSIP_INV_STATE_CONFIRMED) {
