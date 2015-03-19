@@ -198,6 +198,8 @@ bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
     Logger::warn("unknown block_mode '%s' in settings file %s", tmp.c_str(), m_filename.c_str());
     return false;
   }
+  // block unknown cid
+  (void)Helper::getObject(objbase, "block_unknown_cid", false, m_filename, &res->blockUnknownCID);
   // online check
   (void)Helper::getObject(objbase, "online_check", false, m_filename, &res->onlineCheck);
   // online check

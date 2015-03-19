@@ -3,13 +3,14 @@
   "analog" : {
     "phones" : [
       {
-        "enabled"       : false,
-        "name"          : "Analog Home Phone",
-        "country_code"  : "+41",
-        "block_mode"    : "logging_only",
-        "online_check"  : "tellows_de",
-        "online_lookup" : "tel_search_ch",
-        "device"        : "/dev/ttyACM0"
+        "enabled"           : false,
+        "name"              : "Analog Home Phone",
+        "country_code"      : "+41",
+        "block_mode"        : "logging_only",
+        "block_unknown_cid" : false,
+        "online_check"      : "tellows_de",
+        "online_lookup"     : "tel_search_ch",
+        "device"            : "/dev/ttyACM0"
       }
     ]
   },
@@ -17,15 +18,16 @@
     "pjsip_log_level" : 0,
     "accounts" : [
       { 
-        "enabled"       : false,
-        "name"          : "SIP Home Phone",
-        "country_code"  : "+41",
-        "block_mode"    : "whitelists_and_blacklists",
-        "online_check"  : "tellows_de",
-        "online_lookup" : "tel_search_ch",
-        "from_domain"   : "<yourdomain.net>",
-        "from_username" : "<your username>",
-        "from_password" : "<your password>"
+        "enabled"           : false,
+        "name"              : "SIP Home Phone",
+        "country_code"      : "+41",
+        "block_mode"        : "whitelists_and_blacklists",
+        "block_unknown_cid" : false,
+        "online_check"      : "tellows_de",
+        "online_lookup"     : "tel_search_ch",
+        "from_domain"       : "<yourdomain.net>",
+        "from_username"     : "<your username>",
+        "from_password"     : "<your password>"
       }
     ]
   },

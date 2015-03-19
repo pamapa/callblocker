@@ -95,8 +95,7 @@ void AnalogPhone::run() {
       // handle no caller ID
       if (m_numRings == 2) {
         if (!m_foundCID) {
-          Logger::notice("Incoming call without CALLER ID");
-          // TODO: handle it...
+          Logger::warn("Not expecting second RING without caller ID");
         }
       }
     } else {
@@ -105,6 +104,8 @@ void AnalogPhone::run() {
       // TIME=1517
       // NMBR=0123456789
       // NAME=aasdasdd
+
+      bool block = false;
       std::vector<std::string> lines;
       boost::split(lines, data, boost::is_any_of("\n"));
       for (size_t i = 0; i < lines.size(); i++) {
@@ -116,24 +117,33 @@ void AnalogPhone::run() {
           //Logger::debug("found pair %s=%s", key.c_str(), value.c_str());
 
           if (key == "NMBR") {
-            // TODO value empty? is this possible?
+            m_foundCID = true;
+            std::string number = value;
+
+            if (number == "PRIVATE") {
+              // Caller ID information has been blocked by the user at the other end
+              // see http://ads.usr.com/support/3453c/3453c-ug/dial_answer.html#IDfunctions
+              block = m_settings.base.blockUnknownCID;
+              Logger::notice("Incoming call from from 'UNKNOWN'%s", block?" is blocked":"");
+              break;
+            }
 
             // make number international
-            std::string number = value;
             if (boost::starts_with(number, "00")) number = "+" + number.substr(2);
             else if (boost::starts_with(number, "0")) number = m_settings.base.countryCode + number.substr(1);
 
             std::string msg;
-            bool block = isNumberBlocked(&m_settings.base, number, &msg);
+            block = isNumberBlocked(&m_settings.base, number, &msg);
             Logger::notice(msg.c_str());
-            m_foundCID = true;
-            if (block) {
-              m_modem.sendCommand("ATH0"); // pickup
-              m_modem.sendCommand("ATH1"); // hangup
-              Logger::debug("State changed to HANGUP");
-            }
+            break;
           }
         }
+      } // for    
+
+      if (block) {
+        m_modem.sendCommand("ATH0"); // pickup
+        m_modem.sendCommand("ATH1"); // hangup
+        Logger::debug("State changed to HANGUP");
       }
     }
   }

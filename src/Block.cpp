@@ -106,17 +106,15 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
       break;
   }
 
-  std::string res = "Incoming call from ";
-  res += rNumber;
+  std::ostringstream oss;
+  oss << "Incoming call from '" << rNumber << "'";
   if (block) {
-    res += " is blocked";
+    oss << " is blocked";
   }
   if (reason.length() > 0) {
-    res += " [";
-    res += reason;
-    res += "]";
+    oss << " [" << reason << "]";
   }
-  *pMsg = res;
+  *pMsg = oss.str();
 
   return block;
 }

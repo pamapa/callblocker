@@ -35,8 +35,7 @@ Supported analog modems (tested):
 
 ## Install daemon on a Raspberry Pi (running raspbian/jessie)
 ```bash
-sudo apt-get install git automake g++ libpjproject-dev libjson-c-dev libboost-dev libboost-regex-dev
-sudo apt-get install python python-beautifulsoup python-demjson
+sudo apt-get install git automake g++ libpjproject-dev libjson-c-dev libboost-dev libboost-regex-dev python python-beautifulsoup python-demjson
 git clone https://github.com/pamapa/callblocker.git
 cd callblocker
 aclocal
@@ -53,8 +52,10 @@ sudo systemctl start callblockerd.service
 
 
 ## Install WebUI on a Raspberry Pi (running raspbian/jessie)
-1. sudo apt-get install lighttpd php5-common php5-cgi php5
-1. TODO
+```bash
+sudo apt-get install lighttpd php5-common php5-cgi php5
+TODO
+```
 
 
 ## File Layout
@@ -66,6 +67,7 @@ When installed on Linux, the following file layout is used
   whitelists (place your own whitelists here)
 /usr/bin/callblockerd (daemon)
 /usr/share/callblocker (scripts)
+/var/www/callblocker (web interface)
 ```
 
 
@@ -77,13 +79,14 @@ Start with the provided template settings file (sudo mv tpl_settings.json settin
   "analog" : {
     "phones" : [
       {
-        "enabled"       : false,
-        "name"          : "Analog Home Phone",
-        "country_code"  : "+41",
-        "block_mode"    : "logging_only",
-        "online_check"  : "tellows_de",
-        "online_lookup" : "tel_search_ch",
-        "device"        : "/dev/ttyACM0"
+        "enabled"           : false,
+        "name"              : "Analog Home Phone",
+        "country_code"      : "+41",
+        "block_mode"        : "logging_only",
+        "block_unknown_cid" : false,
+        "online_check"      : "tellows_de",
+        "online_lookup"     : "tel_search_ch",
+        "device"            : "/dev/ttyACM0"
       }
     ]
   },
@@ -91,15 +94,16 @@ Start with the provided template settings file (sudo mv tpl_settings.json settin
     "pjsip_log_level" : 0,
     "accounts" : [
       { 
-        "enabled"       : false,
-        "name"          : "SIP Home Phone",
-        "country_code"  : "+41",
-        "block_mode"    : "logging_only",
-        "online_check"  : "tellows_de",
-        "online_lookup" : "tel_search_ch",
-        "from_domain"   : "<your domainname>",
-        "from_username" : "<your username>",
-        "from_password" : "<your password>"
+        "enabled"           : false,
+        "name"              : "SIP Home Phone",
+        "country_code"      : "+41",
+        "block_mode"        : "logging_only",
+        "block_unknown_cid" : false,
+        "online_check"      : "tellows_de",
+        "online_lookup"     : "tel_search_ch",
+        "from_domain"       : "<your domainname>",
+        "from_username"     : "<your username>",
+        "from_password"     : "<your password>"
       }
     ]
   },
@@ -117,6 +121,7 @@ Fields               | Values | Description
 "log_level"          | "error", "warn", "info" or "debug" | Default is "info".
 "country_code"       | `+<X[Y][Z]>` | your international country code (e.g. +33 for France)
 "block_mode"         | "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only" | "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists. (whitelists not used)
+"block_unknown_cid"  | true, false | optional: You can decide to block all calls that come to your system with a blocked/unknown caller ID. Default is false.
 "online_check"       | [values](#onlineCheck)  | optional: online check site to verify if number is spam
 "online_lookup"      | [values](#onlineLookup)  | optional: online lookup site, to see who is calling
 "device"             | | your modem device (get it with dmesg)
