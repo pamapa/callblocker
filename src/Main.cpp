@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <unistd.h>
 
 #include "Logger.h"
 #include "Settings.h"
@@ -27,6 +28,10 @@
 #include "SipPhone.h"
 #include "SipAccount.h"
 #include "AnalogPhone.h"
+
+
+#define LOOP_WAIT_TIME_USEC    (50 * 1000)  // 50 miliseconds
+
 
 static bool s_appRunning = true;
 
@@ -76,6 +81,8 @@ public:
       for(size_t i = 0; i < m_analogPhones.size(); i++) {
         m_analogPhones[i]->run();
       }
+
+      (void)usleep(LOOP_WAIT_TIME_USEC);
     }
   }
 

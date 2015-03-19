@@ -70,7 +70,7 @@ bool Notify::hasChanged() {
 
   bool res = false;
   struct pollfd pfd = {m_FD, POLLIN | POLLPRI, 0};
-  int ret = poll(&pfd, 1, 50);  // timeout of 50ms
+  int ret = poll(&pfd, 1, 0);
   if (ret < 0) {
     // Logger::warn("poll failed with %s", strerror(errno));
     // also happens when application is shutdown...

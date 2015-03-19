@@ -49,7 +49,7 @@ void Block::run() {
 }
 
 bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg) {
-  Logger::debug("Block::isNumberBlocked(settings=%s, number=%s)", pSettings->toString().c_str(), rNumber.c_str());
+  Logger::debug("Block::isNumberBlocked(%s,number=%s)", pSettings->toString().c_str(), rNumber.c_str());
 
   std::string reason = "";
   std::string msg = "";

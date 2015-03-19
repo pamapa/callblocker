@@ -36,8 +36,8 @@
 #include "Logger.h"
 
 
-#define CHARWAIT_TIME_DSEC    1       /* deciseconds (1dsec = 0.1sec) */
-#define READWAIT_TIME_USEC    150000  /* microseconds */
+#define CHARWAIT_TIME_DSEC    1             // deciseconds (1dsec = 0.1sec)
+#define READWAIT_TIME_USEC    (150 * 1000)  // 150 miliseconds
 
 
 Modem::Modem() {
@@ -48,7 +48,7 @@ Modem::~Modem() {
   Logger::debug("~Modem...");
 
   if (m_FD != -1) {
-    (void)sendCommand("ATZ");
+    (void)sendCommand("ATZ"); // reset setting to defaults
     (void)tcsetattr(m_FD, TCSANOW, &m_origTermios);
     close(m_FD);
     m_FD = -1;
@@ -56,6 +56,8 @@ Modem::~Modem() {
 }
 
 bool Modem::open(std::string name) {
+  Logger::debug("Modem::open(%s)...", name.c_str());
+
   m_name = name;
   m_FD = ::open(name.c_str(), O_RDWR|O_NOCTTY);
   if (m_FD < 0) {
@@ -167,7 +169,7 @@ bool Modem::sendCommand(std::string cmd) {
 bool Modem::getData(std::string* data) {
   bool res = false;
   struct pollfd pfd = {m_FD, POLLIN | POLLPRI, 0};
-  int ret = poll(&pfd, 1, 50);  // timeout of 50ms
+  int ret = poll(&pfd, 1, 0);
   if (ret < 0) {
     // Logger::warn("poll failed with %s", strerror(errno));
   } else if (ret == 0) {
