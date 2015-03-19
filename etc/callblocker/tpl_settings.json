@@ -25,7 +25,7 @@
         "block_unknown_cid" : false,
         "online_check"      : "tellows_de",
         "online_lookup"     : "tel_search_ch",
-        "from_domain"       : "<yourdomain.net>",
+        "from_domain"       : "<your domain>",
         "from_username"     : "<your username>",
         "from_password"     : "<your password>"
       }

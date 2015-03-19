@@ -34,8 +34,14 @@
 
 
 static bool s_appRunning = true;
+static bool s_appReloadConfig = false;
 
 static void signal_handler(int signal) {
+  if (signal == SIGHUP) {
+    s_appReloadConfig = true;
+    return;
+  }
+
   Logger::info("exiting (signal %i received)...", signal);
   s_appRunning = false;
 }
@@ -72,10 +78,11 @@ public:
     while (s_appRunning) {
       m_pBlock->run();
 
-      if (m_pSettings->hasChanged()) {
+      if (s_appReloadConfig || m_pSettings->hasChanged()) {
         Logger::info("reload phones");
         remove();
         add();
+        s_appReloadConfig = false;
       }
 
       for(size_t i = 0; i < m_analogPhones.size(); i++) {
@@ -133,6 +140,11 @@ int main(int argc, char *argv[]) {
 	// register signal handler for break-in-keys (e.g. ctrl+c)
 	signal(SIGINT, signal_handler);
 	signal(SIGKILL, signal_handler);
+  // register signal handler for systemd shutdown request
+  signal(SIGTERM, signal_handler);
+  // register signal handler for systemd reload the configuration files request
+  signal(SIGHUP, signal_handler);
+
 
   Logger::notice("starting callblockerd %s", VERSION);
 
