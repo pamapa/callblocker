@@ -7,11 +7,10 @@ number and checks it offline via white-and blacklists. There is also the ability
 
 
 ## TODO
-1. support blocking calls without caller ID
+1. support blocking calls without caller ID in SIP mode
 1. add webinterface
-1. polish
+1. polish, bugfixing
 1. night silence?
-1. shield? a pin is needed to allow connecting...
 
 
 ## Features
@@ -23,7 +22,7 @@ number and checks it offline via white-and blacklists. There is also the ability
   - avoid blocking, if number is in whitelist
   - number has to be in whitelist
 - daily refresh blacklists through the Internet
-- support of online spam check sites (see #onlineCheck), for spam verification
+- support of online spam check sites, for spam verification
 - support of online lookup sites, to find out who is calling
 
 Supported VoIP systems (tested):
@@ -86,7 +85,7 @@ Start with the provided template settings file (sudo mv tpl_settings.json settin
         "block_unknown_cid" : false,
         "online_check"      : "tellows_de",
         "online_lookup"     : "tel_search_ch",
-        "device"            : "/dev/ttyACM0"
+        "device"            : "<your device name>"
       }
     ]
   },
@@ -118,17 +117,17 @@ Start with the provided template settings file (sudo mv tpl_settings.json settin
 ```
 Fields               | Values | Description
 ------               | ------ | -------
-"log_level"          | "error", "warn", "info" or "debug" | Default is "info".
-"country_code"       | `+<X[Y][Z]>` | your international country code (e.g. +33 for France)
+"log_level"          | "error", "warn", "info" or "debug" | Logging level. Default is "info".
+"country_code"       | `+<X[Y][Z]>` | Your international country code (e.g. +33 for France)
 "block_mode"         | "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only" | "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists. (whitelists not used)
 "block_unknown_cid"  | true, false | optional: You can decide to block all calls that come to your system with a blocked/unknown caller ID. Default is false.
 "online_check"       | [values](#onlineCheck)  | optional: online check site to verify if number is spam
 "online_lookup"      | [values](#onlineLookup)  | optional: online lookup site, to see who is calling
-"device"             | | your modem device (get it with dmesg)
-"pjsip_log_level"    | 0-5 | pjsip log level, for debugging proposes
-"from_domain"        | | your SIP domain name (e.g. fritz.box)
-"from_username"      | | your SIP username
-"from_password"      | | your SIP password
+"device"             | | Your device name (get it with dmesg). Usually its "/dev/ttyACM0".
+"pjsip_log_level"    | 0-5 | Logging level of the pjsip library, for debugging proposes. Default is 0.
+"from_domain"        | | Your SIP domain name
+"from_username"      | | Your SIP username
+"from_password"      | | Your SIP password
 "online_credentials" | | In this section you can define credentials, which are needed by some scripts to get the online information.
 
 
@@ -136,8 +135,8 @@ Fields               | Values | Description
 Name                  | Site                           | Description
 ----                  | ----                           | -----------
 ""                    | No online check is done        |
-"phonespamfilter_com" | http://www.phonespamfilter.com | free for non comercial use
-"tellows_de"          | http://tellows.de              | not free
+"phonespamfilter_com" | http://www.phonespamfilter.com | Free for non comercial use
+"tellows_de"          | http://tellows.de              | Not free
 
 The online check script base name e.g. "tellows_de" leds to onlinecheck_tellows_de.py.
 
@@ -156,7 +155,7 @@ Currently the following blacklists are supported:
 
 Name                         | Site                       | Description
 ----                         | ----                       | -----------
-blacklist_toastedspam_com.py | http://www.toastedspam.com | mostly USA and Canada (+1)
+blacklist_toastedspam_com.py | http://www.toastedspam.com | Mostly USA and Canada (+1)
 blacklist_ktipp_ch.py        | https://www.ktipp.ch       | Switzerland (+41)
 
 There is a possibility to daily download a whole blacklist. You will need to setup a cronjob for this task. The following cronjob will download each day the blacklist provided by ktipp_ch:
@@ -178,7 +177,7 @@ There are two ways to connect the callblock to your phone system, depending if y
   - Choose a password, remember the username and click "Weiter"
   - Choose "alle Anrufe annehmen" and click "Weiter"
 - Setup the IP-phone in the callblocker configuration (/etc/callblocker/setting.json):
-  - sip -> accounts
+  - Edit the section sip -> accounts
   - "from_domain"   : "fritz.box"
   - "from_username" : "your username"
   - "from_password" : "your password"
@@ -187,8 +186,9 @@ There are two ways to connect the callblock to your phone system, depending if y
 
 ### Setup using an Analog phone
 - Attach the USB modem to the Raspberry Pi
+- Use `dmesg` to find the device name `/dev/<name>`
 - Setup the Analog phone in the callblocker configuration (/etc/callblocker/setting.json):
-  - analog -> phones
-  - "device" : use `dmesg` to find `/dev/<name>`. Usually its "/dev/ttyACM0"
+  - Edit the section analog -> phones
+  - "device" : "your device name"
   - Make sure the account is enabled and the other fields ok ok for you
 
