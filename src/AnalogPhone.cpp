@@ -35,6 +35,7 @@
 
 #include "Logger.h"
 
+
 /*
   AT commands:
   http://support.usr.com/support/5637/5637-ug/ref_data.html
@@ -44,26 +45,6 @@
 #define AT_HANGUP_STR   "ATH0"
 #define AT_PICKUP_STR   "ATH1"
 
-#define CHARWAIT_TIME_DSEC    1       /* deciseconds (1dsec = 0.1sec) */
-#define READWAIT_TIME_USEC    150000  /* microseconds */
-
-
-/*
- // Tell the modem to return caller ID. Note: different
-
-ATZ
-OK
-AT+VCID=1
-OK
-
-RING
-
-
-
-RING
-
-
-*/
 
 static time_t getMonotonicTime(void) {
   struct timespec tp;
@@ -73,38 +54,28 @@ static time_t getMonotonicTime(void) {
 
 
 AnalogPhone::AnalogPhone(Block* pBlock) : Phone(pBlock) {
-  m_FD = -1;
   m_numRings = m_ringTime = 0;
   m_foundCID = false;
 }
 
 AnalogPhone::~AnalogPhone() {
   Logger::debug("~AnalogPhone...");
-
-  if (m_FD != -1) {
-    (void)sendCommand("ATZ");
-    (void)tcsetattr(m_FD, TCSANOW, &m_origTermios);
-    close(m_FD);
-    m_FD = -1;
-  }
 }
 
 bool AnalogPhone::init(struct SettingAnalogPhone* phone) {
   Logger::debug("AnalogPhone::init(%s)...", phone->toString().c_str());
   m_settings = *phone; // struct copy
 
-  if (!openDevice()) {
+  if (!m_modem.open(phone->device)) {
     return false;
   }
 
-  if (!sendCommand(AT_Z_STR)) {
+  if (!m_modem.sendCommand(AT_Z_STR)) {
     return false;
   }
-  if (!sendCommand(AT_CID_STR)) {
+  if (!m_modem.sendCommand(AT_CID_STR)) {
     return false;
   }
-
-
   return true;
 }
 
@@ -112,13 +83,13 @@ bool AnalogPhone::init(struct SettingAnalogPhone* phone) {
 // or offload LiveAPI access itself into a seperate thread? YES?
 void AnalogPhone::run() {
   std::string data;
-  if (getData(&data)) {
+  if (m_modem.getData(&data)) {
     if (data == "RING") {
       m_numRings++;
       m_ringTime = getMonotonicTime();
 
       if (m_numRings == 1) {
-        Logger::notice("State changed to RINGING");
+        Logger::debug("State changed to RINGING");
       }
 
       // handle no caller ID
@@ -157,9 +128,9 @@ void AnalogPhone::run() {
             Logger::notice(msg.c_str());
             m_foundCID = true;
             if (block) {
-              sendCommand("ATH0"); // pickup
-              sendCommand("ATH1"); // hangup
-              Logger::notice("State changed to HANGUP");
+              m_modem.sendCommand("ATH0"); // pickup
+              m_modem.sendCommand("ATH1"); // hangup
+              Logger::debug("State changed to HANGUP");
             }
           }
         }
@@ -172,143 +143,10 @@ void AnalogPhone::run() {
     // when is 7s are elapsed, when ringing each 5s a RING is expected
     time_t diff = getMonotonicTime() - m_ringTime;
     if (diff > 6) {
-      Logger::notice("State changed to RINGING_STOPPED");
+      Logger::debug("State changed to RINGING_STOPPED");
       m_numRings = m_ringTime = 0;
       m_foundCID = false;
     }
   }
-}
-
-bool AnalogPhone::openDevice() {
-  m_FD = open(m_settings.device.c_str(), O_RDWR|O_NOCTTY);
-  if (m_FD < 0) {
-    Logger::warn("[%s] failed to open (%s)", m_settings.device.c_str(), strerror(errno));
-    m_FD = -1;
-    return false;
-  }
-
-  // get original options
-  if (tcgetattr(m_FD, &m_origTermios) < 0) {
-    Logger::warn("[%s] tcgetattr failed (%s)", m_settings.device.c_str(), strerror(errno));
-    return false;
-  }
-
-#if 0
-  int flags = fcntl(m_FD, F_GETFL, 0);
-  if (flags < 0) {
-    Logger::warn("fcntl F_GETFL failed on device %s (%s)", m_settings.device.c_str(), strerror(errno));
-    return false;
-  }
-  flags = fcntl(m_FD, F_SETFL, flags | O_NONBLOCK);
-  if (flags < 0) {
-    Logger::warn("fcntl F_SETFL failed on device %s (%s)", m_settings.device.c_str(), strerror(errno));
-    return false;
-  }
-#endif
-
-  struct termios options = m_origTermios;
-
-  // No parity (8N1)
-  options.c_cflag &= ~PARENB;
-  options.c_cflag &= ~CSTOPB;
-  options.c_cflag &= ~CSIZE;
-  options.c_cflag |= CS8;
-
-  // hardware flow control
-  options.c_cflag |= CRTSCTS;
-
-  // ignore modem control lines and enable receiver
-  options.c_cflag |= (CLOCAL | CREAD);
-
-  // raw input
-  options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
-
-  // raw out put
-  options.c_oflag &= ~OPOST;
-
-  // A read returns immediately with up to the number of bytes
-  // requested. It returns the number read; zero if none available
-  options.c_cc[VMIN]  = 0;
-  options.c_cc[VTIME] = CHARWAIT_TIME_DSEC;
-
-  // baud rate (caller ID is sent at 1200 baud)
-  cfsetispeed(&options, B1200);
-  cfsetospeed(&options, B1200);
-
-  // apply options
-  if (tcsetattr(m_FD, TCSANOW, &options) < 0) {
-    Logger::warn("[%s] tcgetattr failed (%s)", m_settings.device.c_str(), strerror(errno));
-    return false;
-  }
-
-  return true;
-}
-
-bool AnalogPhone::sendCommand(std::string cmd) {
-  Logger::debug("[%s] send %s command...", m_settings.device.c_str(), cmd.c_str());
-  std::string sendCmd = cmd + "\r\n"; // CRLF
-
-  int len = write(m_FD, sendCmd.c_str(), strlen(sendCmd.c_str()));
-  if (len != (int)strlen(sendCmd.c_str())) {
-    Logger::warn("[%s] write command '%s' failed (%s)", m_settings.device.c_str(), cmd.c_str(), strerror(errno));
-    return false;
-  }
-
-  // read until OK or ERROR response detected or number of tries exceeded
-  char buffer[256];
-  int tries, size;
-  bool ret = false;
-  for (size = tries = 0; tries < 10; tries++) {
-    (void)usleep(READWAIT_TIME_USEC);
-
-    int num = read(m_FD, buffer + size, sizeof(buffer) - size - 1);
-    if (num < 0) continue;
-
-    size += num;
-    if (size != 0) {
-      // check response
-      buffer[size] = '\0';
-      if (strstr(buffer, "OK")) {
-        ret = true;
-        break;
-      }
-      if (strstr(buffer, "ERROR")) {
-        Logger::warn("[%s] received 'ERROR' for command '%s'", m_settings.device.c_str(), cmd.c_str());
-        ret = false;
-        break;
-      }
-    }
-  }
-  buffer[size] = '\0';
-  
-  std::string str = buffer;
-  boost::algorithm::trim(str);
-  Logger::debug("[%s] received '%s' tries=%d ret=%d",
-    m_settings.device.c_str(), str.c_str(), tries, ret);
-  return ret;
-}
-
-bool AnalogPhone::getData(std::string* data) {
-  bool res = false;
-  struct pollfd pfd = {m_FD, POLLIN | POLLPRI, 0};
-  int ret = poll(&pfd, 1, 50);  // timeout of 50ms
-  if (ret < 0) {
-    // Logger::warn("poll failed with %s", strerror(errno));
-  } else if (ret == 0) {
-    // no data to read
-  } else {
-    // data to read
-    char buffer[256];
-    int num = read(m_FD, buffer, sizeof(buffer));
-    if (num > 0) {
-      buffer[num] = '\0';
-      std::string str = buffer;
-      boost::algorithm::trim(str);
-      *data = str;
-      Logger::debug("[%s] received '%s'", m_settings.device.c_str(), data->c_str());
-      res = true;
-    }
-  }
-  return res;
 }
 

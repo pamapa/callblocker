@@ -17,30 +17,26 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef ANALOGPHONE_H
-#define ANALOGPHONE_H
+#ifndef MODEM_H
+#define MODEM_H
 
 #include <string>
 #include <termios.h>
 
-#include "Phone.h"
-#include "Modem.h"
 
-
-class AnalogPhone : public Phone {
+class Modem {
 private:
-  struct SettingAnalogPhone m_settings;
-
-  Modem m_modem;
-  time_t m_ringTime;
-  unsigned int m_numRings;
-  bool m_foundCID;
+  std::string m_name;
+  int m_FD;
+  struct termios m_origTermios;
 
 public:
-  AnalogPhone(Block* pBlock);
-  virtual ~AnalogPhone();
-  bool init(struct SettingAnalogPhone* pPhone);
-  void run();
+  Modem();
+  virtual ~Modem();
+
+  bool open(std::string name);
+  bool sendCommand(std::string cmd);
+  bool getData(std::string* data);
 };
 
 #endif
