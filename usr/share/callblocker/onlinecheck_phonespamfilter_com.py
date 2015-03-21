@@ -62,7 +62,6 @@ def main(argv):
     url="http://www.phonespamfilter.co.nz/check.php?phone="+args.number[3:];
   else:
     error("Number not supported: " + args.number)
-    sys.exit(1)
 
   content = fetch_url(url)
   debug(content)

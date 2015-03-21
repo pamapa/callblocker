@@ -56,8 +56,7 @@ def main(argv):
   if args.number.startswith("+"):
     number = "00" + args.number[1:]
   else:
-    error("invalid number: " + args.number)
-    sys.exit(1)
+    error("Invalid number: " + args.number)
 
   url = "http://www.tellows.de/basic/num/"+number+"?xml=1&partner="+args.username+"&apikey="+args.password
   content = fetch_url(url)

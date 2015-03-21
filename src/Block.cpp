@@ -179,7 +179,7 @@ bool Block::checkOnline(std::string prefix, std::string scriptBaseName, const st
     struct SettingOnlineCredential* cred = &creds[i];
     if (cred->name == scriptBaseName) {
       for (std::map<std::string,std::string>::iterator it = cred->data.begin(); it != cred->data.end(); ++it) {
-        parameters += " --" + it->first + " " + it->second;
+        parameters += " --" + it->first + "=" + it->second;
       }
       break;
     }

@@ -50,7 +50,6 @@ def main(argv):
   # map number to correct URL
   if not args.number.startswith("+41"):
     error("Not a valid Swiss number: " + args.number)
-    sys.exit(1)
 
   url = "http://tel.search.ch/index.en.html?was=" + args.number
   content = fetch_url(url)

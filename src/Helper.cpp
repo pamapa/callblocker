@@ -85,14 +85,14 @@ bool Helper::executeCommand(const std::string& rCmd, std::string* pRes) {
     res += buf;
   }
   boost::algorithm::trim(res);
-  *pRes = res;
-  Logger::debug("res=%s", res.c_str());
 
   int status = pclose(fp);
   if (status != 0) {
-    Logger::warn("%s failed (%i)", rCmd.c_str(), status);
+    Logger::warn("%s failed (%s)", rCmd.c_str(), res.c_str());
     return false;
   }
+
+  *pRes = res;
   return true;
 }
 

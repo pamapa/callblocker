@@ -108,9 +108,14 @@ Start with the provided template settings file (sudo mv tpl_settings.json settin
   },
   "online_credentials" : [
     {
-      "name"      : "tellows_de",
-      "partner"   : "<your partner name>",
-      "apikey"    : "<your api key>"
+      "name"     : "tellows_de",
+      "username" : "<your partner name>",
+      "password" : "<your api key>"
+    },
+    {
+      "name"     : "whocalled_us",
+      "username" : "<your name>",
+      "password" : "<your pass>"
     }
   ]
 }
