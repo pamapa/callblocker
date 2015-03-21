@@ -6,11 +6,11 @@
   "last_update" : "2015-03-05 09:38:06",
   "entries" : [ 
       { 
-        "comment" : "Telemarketing Company X",
+        "name" : "Telemarketing Company X",
         "number" : "+123567890123"
       },
       { 
-        "comment" : "Call Center of Company Y",
+        "name" : "Call Center of Company Y",
         "number" : "+491234567890123"
       }
     ]
