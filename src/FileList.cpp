@@ -65,7 +65,7 @@ bool FileList::load(const std::string& filename) {
       if (!Helper::getObject(entry, "number", true, m_filename, &add.number)) {
         continue;
       }
-      if (!Helper::getObject(entry, "comment", true, m_filename, &add.comment)) {
+      if (!Helper::getObject(entry, "name", true, m_filename, &add.name)) {
         continue;
       }
       m_entries.push_back(add);
@@ -81,13 +81,14 @@ std::string FileList::getFilename() {
   return m_filename;
 }
 
-bool FileList::isListed(const std::string& number, std::string* pMsg) {
+bool FileList::isListed(const std::string& number, std::string* pName) {
   for(size_t i = 0; i < m_entries.size(); i++) {
     struct FileListEntry* entry = &m_entries[i];
     const char* s = entry->number.c_str();
     if (strncmp(s, number.c_str(), strlen(s)) == 0) {
-      Logger::debug("FileList::hasNumber: number '%s' (%s) matched with '%s' in file %s", number.c_str(), s, entry->comment.c_str(), m_filename.c_str());
-      *pMsg = entry->comment;
+      Logger::debug("FileList::isListed(number='%s') matched with '%s'/'%s' in file %s",
+        number.c_str(), s, entry->name.c_str(), m_filename.c_str());
+      *pName = entry->name;
       return true;
     }
   }
@@ -96,7 +97,8 @@ bool FileList::isListed(const std::string& number, std::string* pMsg) {
 
 void FileList::dump() {
   for(size_t i = 0; i < m_entries.size(); i++) {
-    printf("%s\n", m_entries[i].number.c_str());
+    struct FileListEntry* entry = &m_entries[i];
+    printf("'%s'/'%s'\n", entry->number.c_str(), entry->name.c_str());
   }
 }
 

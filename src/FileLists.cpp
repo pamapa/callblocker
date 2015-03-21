@@ -29,8 +29,8 @@
 #include "Helper.h"
 
 
-FileLists::FileLists(const std::string& dirname) : Notify(dirname, IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) {
-  m_dirname = dirname;
+FileLists::FileLists(const std::string& rPathname) : Notify(rPathname, IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) {
+  m_pathname = rPathname;
 
   if (pthread_mutex_init(&m_mutexLock, NULL) != 0) {
     Logger::warn("pthread_mutex_init failed");
@@ -46,7 +46,7 @@ FileLists::~FileLists() {
 
 void FileLists::run() {
   if (hasChanged()) {
-    Logger::info("reload %s", m_dirname.c_str());
+    Logger::info("reload %s", m_pathname.c_str());
 
     pthread_mutex_lock(&m_mutexLock);
     clear();
@@ -55,13 +55,13 @@ void FileLists::run() {
   }
 }
 
-bool FileLists::isListed(const std::string& number, std::string* pMsg) {
+bool FileLists::isListed(const std::string& rNumber, std::string* pListName, std::string* pCallerName) {
   bool ret = false;
   pthread_mutex_lock(&m_mutexLock);
   for(size_t i = 0; i < m_lists.size(); i++) {
     std::string msg;
-    if (m_lists[i]->isListed(number, &msg)) {
-      *pMsg = Helper::getBaseFilename(m_lists[i]->getFilename()) + "/" + msg;
+    if (m_lists[i]->isListed(rNumber, pCallerName)) {
+      *pListName = Helper::getBaseFilename(m_lists[i]->getFilename());
       ret = true;
       break;
     }
@@ -71,20 +71,20 @@ bool FileLists::isListed(const std::string& number, std::string* pMsg) {
 }
 
 void FileLists::load() {
-  DIR* dir = opendir(m_dirname.c_str());
+  DIR* dir = opendir(m_pathname.c_str());
   if (dir == NULL) {
-    Logger::warn("open directory %s failed", m_dirname.c_str());
+    Logger::warn("open directory %s failed", m_pathname.c_str());
     return;
   }
 
-  Logger::debug("loading directory %s", m_dirname.c_str());
+  Logger::debug("loading directory %s", m_pathname.c_str());
   struct dirent* entry = readdir(dir);
   while (entry != NULL) {
     if ((entry->d_type & DT_DIR) == 0) {
       size_t len = strlen(entry->d_name);
       if (len >= 5 && strcmp(entry->d_name + len - 5, ".json") == 0) {
         // only reading .json files      
-        std::string filename = m_dirname + "/";
+        std::string filename = m_pathname + "/";
         filename += entry->d_name;
         FileList* l = new FileList();
         if (l->load(filename)) {

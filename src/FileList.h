@@ -26,7 +26,7 @@
 
 struct FileListEntry {
   std::string number;
-  std::string comment;
+  std::string name;
 };
 
 class FileList {
@@ -40,7 +40,7 @@ public:
 
   bool load(const std::string& filename);
   std::string getFilename();
-  bool isListed(const std::string& number, std::string* pMsg);
+  bool isListed(const std::string& number, std::string* pName);
   void dump();
 };
 

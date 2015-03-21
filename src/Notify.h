@@ -30,7 +30,7 @@ private:
   int m_WD;
 
 public:
-  Notify(const std::string& pathname, uint32_t mask);
+  Notify(const std::string& rPathname, uint32_t mask);
   virtual ~Notify();
   virtual bool hasChanged();
 };

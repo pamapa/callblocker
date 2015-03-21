@@ -51,90 +51,97 @@ void Block::run() {
 bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg) {
   Logger::debug("Block::isNumberBlocked(%s,number=%s)", pSettings->toString().c_str(), rNumber.c_str());
 
-  std::string reason = "";
-  std::string msg = "";
-  bool block;
+  std::string listName = "";
+  std::string callerName = "";
+  std::string score = "";
+  bool onWhitelist = false;
+  bool onBlacklist = false;
+  bool block = false;
+
   switch (pSettings->blockMode) {
     default:
       Logger::warn("invalid block mode %d", pSettings->blockMode);
     case LOGGING_ONLY:
-      block = false;
-      if (isWhiteListed(pSettings, rNumber, &msg)) {
-        reason = "would be in whitelist ("+msg+")";
+      if (isWhiteListed(pSettings, rNumber, &listName, &callerName)) {
+        onWhitelist = true;
         break;
       }
-      if (isBlacklisted(pSettings, rNumber, &msg)) {
-        reason = "would be in blacklist ("+msg+")";
+      if (isBlacklisted(pSettings, rNumber, &listName, &callerName, &score)) {
+        onBlacklist = true;
         break;
       }
-      reason = "would not be in white- and blacklists ("+msg+")";
       break;
 
     case WHITELISTS_ONLY:
-      if (isWhiteListed(pSettings, rNumber, &msg)) {
-        reason = "found in whitelist ("+msg+")";
-        block = false;
+      if (isWhiteListed(pSettings, rNumber, &listName, &callerName)) {
+        onWhitelist = true;
         break;
       }
-      reason = "not found in whitelists";
       block = true;
       break;
 
     case WHITELISTS_AND_BLACKLISTS:
-      if (isWhiteListed(pSettings, rNumber, &msg)) {
-        reason = "found in whitelist ("+msg+")";
-        block = false;
+      if (isWhiteListed(pSettings, rNumber, &listName, &callerName)) {
+        onWhitelist = true;
         break;
       }
-      if (isBlacklisted(pSettings, rNumber, &msg)) {
-        reason = "found in blacklist ("+msg+")";
+      if (isBlacklisted(pSettings, rNumber, &listName, &callerName, &score)) {
+        onBlacklist = true;
         block = true;
         break;
       }
-      reason = "not found in white- and blacklists ("+msg+")";
-      block = false;
       break;
 
     case BLACKLISTS_ONLY:
-      if (isBlacklisted(pSettings, rNumber, &msg)) {
-        reason = "found in blacklist ("+msg+")";
+      if (isBlacklisted(pSettings, rNumber, &listName, &callerName, &score)) {
+        onBlacklist = true;
         block = true;
         break;
       }
-      reason = "not found in blacklists ("+msg+")";
-      block = false;
       break;
   }
 
-  std::ostringstream oss;
-  oss << "Incoming call from '" << rNumber << "'";
-  if (block) {
-    oss << " is blocked";
+  if (!onWhitelist && !onBlacklist) {
+    // online lookup caller name
+    if (pSettings->onlineLookup.length() != 0) {
+      struct json_object* root;
+      if (checkOnline("onlinelookup_", pSettings->onlineLookup, rNumber, &root)) {
+        (void)Helper::getObject(root, "name", false, "script result", &callerName);
+      }
+    }
   }
-  if (reason.length() > 0) {
-    oss << " [" << reason << "]";
-  }
-  *pMsg = oss.str();
 
+  // Incoming call number='x' name='y' [blocked] [whitelist='w'] [blacklist='b'] [score=s]
+  std::ostringstream oss;
+  oss << "Incoming call number='" << rNumber << "'";
+  if (callerName.length() != 0) {
+    oss << " name='" << callerName << "'";
+  }
+  if (block) {
+    oss << " blocked";
+  }
+  if (onWhitelist) {
+    oss << " whitelist='" << listName << "'";
+  }
+  if (onBlacklist) {
+    oss << " blacklist='" << listName << "'";
+  }
+  if (score.length() != 0) {
+    oss << " score=" << score;
+  }
+
+  *pMsg = oss.str();
   return block;
 }
 
-bool Block::isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg) {
-  return m_pWhitelists->isListed(rNumber, pMsg);
+bool Block::isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pCallerName) {
+  return m_pWhitelists->isListed(rNumber, pListName, pCallerName);
 }
 
-bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg) {
-  if (m_pBlacklists->isListed(rNumber, pMsg)) {
+bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pCallerName, std::string* pScore) {
+  if (m_pBlacklists->isListed(rNumber, pListName, pCallerName)) {
     return true;
   }
-
-#if 1
-  if (boost::starts_with(rNumber, "**")) {
-    // it is an intern number, thus makes no sense to ask the world
-    *pMsg = "intern number";
-    return false;
-  }
-#endif
 
   // online check if spam
   if (pSettings->onlineCheck.length() != 0) {
@@ -145,17 +152,11 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
         return false;
       }
       if (spam) {
-        (void)Helper::getObject(root, "comment", false, "script result", pMsg);
+        *pListName = pSettings->onlineCheck;
+        (void)Helper::getObject(root, "name", false, "script result", pCallerName);
+        (void)Helper::getObject(root, "score", false, "script result", pScore);
         return true;
       }
-    }
-  }
-
-  // online lookup caller name
-  if (pSettings->onlineLookup.length() != 0) {
-    struct json_object* root;
-    if (checkOnline("onlinelookup_", pSettings->onlineLookup, rNumber, &root)) {
-      (void)Helper::getObject(root, "name", false, "script result", pMsg);
     }
   }
 
@@ -163,27 +164,33 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
   return false;
 }
 
-bool Block::checkOnline(std::string prefix, std::string name, const std::string& rNumber, struct json_object** root) {
-    std::string script = "/usr/share/callblocker/" + prefix + name + ".py";
+bool Block::checkOnline(std::string prefix, std::string scriptBaseName, const std::string& rNumber, struct json_object** root) {
+#if 1
+  if (boost::starts_with(rNumber, "**")) {
+    // it is an intern number, thus makes no sense to ask the world
+    return false;
+  }
+#endif
 
-    std::string parameters = "--number " + rNumber;
-    std::vector<struct SettingOnlineCredential> creds = m_pSettings->getOnlineCredentials();
-    for(size_t i = 0; i < creds.size(); i++) {
-      struct SettingOnlineCredential* cred = &creds[i];
-      if (cred->name == name) {
-        for (std::map<std::string,std::string>::iterator it = cred->data.begin(); it != cred->data.end(); ++it) {
-          parameters += " --" + it->first + " " + it->second;
-        }
-        break;
+  std::string script = "/usr/share/callblocker/" + prefix + scriptBaseName + ".py";
+  std::string parameters = "--number " + rNumber;
+  std::vector<struct SettingOnlineCredential> creds = m_pSettings->getOnlineCredentials();
+  for(size_t i = 0; i < creds.size(); i++) {
+    struct SettingOnlineCredential* cred = &creds[i];
+    if (cred->name == scriptBaseName) {
+      for (std::map<std::string,std::string>::iterator it = cred->data.begin(); it != cred->data.end(); ++it) {
+        parameters += " --" + it->first + " " + it->second;
       }
+      break;
     }
+  }
 
-    std::string res;
-    if (!Helper::executeCommand(script + " " + parameters + " 2>&1", &res)) {
-      return false;
-    }
+  std::string res;
+  if (!Helper::executeCommand(script + " " + parameters + " 2>&1", &res)) {
+    return false; // script failed, error already logged
+  }
 
-    *root = json_tokener_parse(res.c_str());
-    return true;
+  *root = json_tokener_parse(res.c_str());
+  return true; // script executed successful
 }
 

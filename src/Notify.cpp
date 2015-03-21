@@ -35,8 +35,8 @@
 #define EVENT_BUF_LEN   (1024 * ( EVENT_SIZE + 16 ))
 
 
-Notify::Notify(const std::string& pathname, uint32_t mask) {
-  Logger::debug("Notify::Notify(%s, %d)", pathname.c_str(), mask);
+Notify::Notify(const std::string& rPathname, uint32_t mask) {
+  Logger::debug("Notify::Notify(%s, %d)", rPathname.c_str(), mask);
 
   m_FD = inotify_init();
   if (m_FD < 0) {
@@ -44,7 +44,7 @@ Notify::Notify(const std::string& pathname, uint32_t mask) {
     return;
   }
 
-  m_WD = inotify_add_watch(m_FD, pathname.c_str(), mask);
+  m_WD = inotify_add_watch(m_FD, rPathname.c_str(), mask);
   if (m_WD < 0) {
     Logger::warn("inotify_add_watch failed (%s)", strerror(errno));
     return;

@@ -75,7 +75,7 @@ def parse_page(content):
     numbers = extract_numbers(e.contents[0])
     comment = extract_comment(e.nextSibling)
     for n in numbers:
-      ret.append({"number":n, "comment":comment})
+      ret.append({"number":n, "name":comment})
 
   return ret
 

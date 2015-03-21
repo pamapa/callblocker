@@ -30,7 +30,7 @@ def error(*objs):
   sys.exit(-1)
 
 def debug(*objs):
-  #print("DEBUG: ", *objs, file=sys.stdout)
+  print("DEBUG: ", *objs, file=sys.stdout)
   return
 
 def fetch_url(url):
@@ -45,7 +45,7 @@ def fetch_url(url):
 def main(argv):
   parser = argparse.ArgumentParser(description="Online spam check via phonespamfilter.com")
   parser.add_argument("--number", help="number to be checked", required=True)
-  parser.add_argument("--spamscore", help="spam score limit", default=50)
+  parser.add_argument("--spamscore", help="score limit to mark as spam [0..100]", default=50)
   args = parser.parse_args()
 
   # map number to correct URL
@@ -69,7 +69,8 @@ def main(argv):
   score = int(content)
 
   # result in json format
-  print('{"spam: %s", comment="phonespamfilter.com score %s"}' % ("false" if score < args.spamscore else "true", score))
+  # caller name is not available in received content
+  print('{"spam":%s, "score":%d}' % ("false" if score < args.spamscore else "true", score))
 
 if __name__ == "__main__":
     main(sys.argv)

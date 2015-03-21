@@ -56,7 +56,7 @@ def main(argv):
   content = fetch_url(url)
   #debug(content)
 
-  caller_name = "unknown"
+  callerName = "N/A"
 
   # Private
   x = content.find('class="tel-detail-avatar">')
@@ -65,7 +65,7 @@ def main(argv):
     if h1s != -1:
       h1s += 4
       h1e = content.find("</h1>", h1s + 1)
-      caller_name = content[h1s:h1e]
+      callerName = content[h1s:h1e]
 
   # Bussiness
   x = content.find('class="tel-commercial tel-paid">')
@@ -74,16 +74,16 @@ def main(argv):
     if h1s != -1:
       h1s += 4
       h1e = content.find("</h1>", h1s + 1)
-      caller_name = content[h1s:h1e]
+      callerName = content[h1s:h1e]
 
-  matchObj = re.match(r"<a.*>(.*)</a>", caller_name)
+  matchObj = re.match(r"<a.*>(.*)</a>", callerName)
   if matchObj:
-    caller_name = matchObj.group(1)
+    callerName = matchObj.group(1)
 
-  debug(caller_name)
+  debug(callerName)
 
   # result in json format
-  print('{"name": "%s", "comment" : "tel.search.ch"}' % (caller_name))
+  print('{"name": "%s"}' % (callerName))
 
 if __name__ == "__main__":
     main(sys.argv)

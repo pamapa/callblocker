@@ -48,12 +48,18 @@ def main(argv):
   parser.add_argument("--number", help="number to be checked", required=True)
   parser.add_argument("--username", help="username", required=True)
   parser.add_argument("--password", help="password", required=True)
-  parser.add_argument("--spamscore", help="spam score limit", default=5)
+  parser.add_argument("--spamscore", help="score limit to mark as spam [-1..?]", default=5)
   args = parser.parse_args()
 
   url = "http://whocalled.us/do?action=getScore&name="+args.username+"&pass="+args.password+"&phoneNumber="+args.number
   content = fetch_url(url)
   debug(content)
+
+  matchObj = re.match(r".*success=([0-9]*)[^0-9]*", content)
+  if not matchObj:
+    error("unexpected result: "+content)
+  if int(matchObj.group(1)) != 1:
+    error("not successful, result: "+content)
 
   score = 0
   matchObj = re.match(r".*score=([0-9]*)[^0-9]*", content)
@@ -61,7 +67,8 @@ def main(argv):
     score = int(matchObj.group(1))
   
   # result in json format
-  print('{"spam": %s, "comment" : "whocalled.us score %s"}' % ("false" if score < args.spamscore else "true", score))
+  # caller name is not available in received content
+  print('{"spam":%s, "score":%d}' % ("false" if score < args.spamscore else "true", score))
 
 if __name__ == "__main__":
     main(sys.argv)

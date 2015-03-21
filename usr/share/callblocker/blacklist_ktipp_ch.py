@@ -112,7 +112,7 @@ def parse_page(soup):
     numbers = extract_numbers(e.strong.contents[0])
     comment = extract_comment(e.p)
     for n in numbers:
-      ret.append({"number":n, "comment":comment})
+      ret.append({"number":n, "name":comment})
   debug("parse_page done")
   return ret
 

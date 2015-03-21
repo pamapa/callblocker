@@ -30,15 +30,15 @@
 class FileLists : public Notify {
 private:
   pthread_mutex_t m_mutexLock;
-  std::string m_dirname;
+  std::string m_pathname;
   std::vector<FileList*> m_lists;
 
 public:
-  FileLists(const std::string& subdirname);
+  FileLists(const std::string& rDirname);
   virtual ~FileLists();
   void run();
 
-  bool isListed(const std::string& number, std::string* pMsg);
+  bool isListed(const std::string& rNumber, std::string* pListName, std::string* pCallerName);
 
   void dump();
 

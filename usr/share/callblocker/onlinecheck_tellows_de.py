@@ -46,9 +46,9 @@ def fetch_url(url):
 def main(argv):
   parser = argparse.ArgumentParser(description="Online spam check via tellows.de")
   parser.add_argument("--number", help="number to be checked", required=True)
-  parser.add_argument("--partner", help="partner name", required=True)
-  parser.add_argument("--apikey", help="api key", required=True)
-  parser.add_argument("--spamscore", help="spam score limit", default=7)
+  parser.add_argument("--username", help="partner name", required=True)
+  parser.add_argument("--password", help="api key", required=True)
+  parser.add_argument("--spamscore", help="score limit to mark as spam [0..9]", default=7)
   args = parser.parse_args()
 
   # make correct format for number
@@ -59,16 +59,25 @@ def main(argv):
     error("invalid number: " + args.number)
     sys.exit(1)
 
-  url = "http://www.tellows.de/basic/num/"+number+"?xml=1&partner="+args.partner+"&apikey="+args.apikey
+  url = "http://www.tellows.de/basic/num/"+number+"?xml=1&partner="+args.username+"&apikey="+args.password
   content = fetch_url(url)
-  debug(content)
+  #debug(content)
   soup = BeautifulSoup(content)
   debug(soup)
+
   scorelist = soup.findAll("score")
   score = int(scorelist[0].contents[0])
+
+  callerName = ""
+  callerTypes = soup.findAll("callertypes")
+  if len(callerTypes) > 0 and len(callerTypes[0].caller.contents) > 0:
+    callerName = callerTypes[0].caller.contents[0].contents[0]
   
   # result in json format
-  print('{"spam": %s, "comment" : "tellows.de score %s"}' % ("false" if score < args.spamscore else "true", score))
+  if (len(callerName) > 0):
+    print('{"spam":%s, "score":%d, "name":"%s"}' % ("false" if score < args.spamscore else "true", score, callerName))
+  else:
+    print('{"spam":%s, "score":%d}' % ("false" if score < args.spamscore else "true", score))
 
 if __name__ == "__main__":
     main(sys.argv)

@@ -40,8 +40,9 @@ public:
   bool isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);
 
 private:
-  bool isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);
-  bool isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);
+  bool isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pName);
+  bool isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pName, std::string* pScore);
+
   bool checkOnline(std::string prefix, std::string name, const std::string& rNumber, struct json_object** root);
 };
 
