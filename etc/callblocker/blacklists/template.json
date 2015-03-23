@@ -1,7 +1,5 @@
 { 
-  "name" : "blacklist provided by <source>",
-  "origin" : "where does the data come from",
-  "parsed_by" : "script name",
+  "name" : "My blacklist template",
   "num_entries" : 2,
   "last_update" : "2015-03-05 09:38:06",
   "entries" : [ 

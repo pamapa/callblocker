@@ -1,7 +1,5 @@
 { 
-  "name" : "whitelist entered manually",
-  "origin" : "where does the data come from",
-  "parsed_by" : "manual",
+  "name" : "My whitelist template",
   "num_entries" : 2,
   "last_update" : "2015-03-05 09:38:06",
   "entries" : [ 
