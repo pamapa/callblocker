@@ -62,7 +62,7 @@
     //var_dump($obj);
 
     $tmp = array(
-      "DATE"=>gmdate("Y-m-d H:i:s", $obj->{"__REALTIME_TIMESTAMP"}/1000000), // usec -> s
+      "DATE"=>date("Y-m-d H:i:s", $obj->{"__REALTIME_TIMESTAMP"}/1000000), // usec -> s
       "PRIO_ID"=>intval($obj->{"PRIORITY"}),
       "PRIORITY"=>mapPriorityToName($obj->{"PRIORITY"}),
       "MESSAGE"=>$obj->{"MESSAGE"}
