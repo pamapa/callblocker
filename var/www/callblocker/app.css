@@ -1,0 +1,25 @@
+@import "javascript/dojo/resources/dojo.css";
+@import "javascript/dijit/themes/soria/soria.css";
+@import "javascript/dojox/grid/resources/soriaGrid.css";
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.whitelistRow .dojoxGridCell {
+    background-color: LightGreen;
+}
+.blockedRow .dojoxGridCell {
+    background-color: #FF6666;
+}
+.errorRow .dojoxGridCell {
+    background-color: red;
+}
+.warnRow .dojoxGridCell {
+    background-color: gold;
+}
+
