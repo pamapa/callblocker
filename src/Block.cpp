@@ -113,7 +113,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
 
   // Incoming call number='x' name='y' [blocked] [whitelist='w'] [blacklist='b'] [score=s]
   std::ostringstream oss;
-  oss << "Incoming call number='" << rNumber << "'";
+  oss << "Incoming call: number='" << rNumber << "'";
   if (callerName.length() != 0) {
     oss << " name='" << Helper::escapeSqString(callerName) << "'";
   }
@@ -139,7 +139,7 @@ bool Block::isUnknownNumberBlocked(const struct SettingBase* pSettings, std::str
 
   // Incoming call number='unknown' [blocked]
   std::ostringstream oss;
-  oss << "Incoming call number='unknown'";
+  oss << "Incoming call: number='unknown'";
   if (block) {
     oss << " blocked";
   }

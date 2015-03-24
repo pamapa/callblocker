@@ -40,7 +40,7 @@
     $obj = json_decode($entry);
 
     $re_sq = "'([^'\\\\]*(?:\\\\.[^'\\\\]*)*)'"; // support escaped quotes
-    if (preg_match("/^Incoming call (number=".$re_sq.")?\s?(name=".$re_sq.")?\s?(blocked)?\s?".
+    if (preg_match("/^Incoming call: (number=".$re_sq.")?\s?(name=".$re_sq.")?\s?(blocked)?\s?".
                    "(whitelist=".$re_sq.")?\s?(blacklist=".$re_sq.")?\s?(score=([0-9]*))?$/",
                    $obj->{"MESSAGE"}, $matches)) {
       //var_dump($matches);
