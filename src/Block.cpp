@@ -115,7 +115,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
   std::ostringstream oss;
   oss << "Incoming call number='" << rNumber << "'";
   if (callerName.length() != 0) {
-    oss << " name='" << callerName << "'";
+    oss << " name='" << Helper::escapeSqString(callerName) << "'";
   }
   if (block) {
     oss << " blocked";

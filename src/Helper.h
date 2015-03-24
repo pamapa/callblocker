@@ -33,5 +33,6 @@ public:
   static std::string getPjStatusAsString(pj_status_t status);
 
   static std::string getBaseFilename(const std::string& rFilename);
+  static std::string escapeSqString(const std::string& rStr);
 };
 

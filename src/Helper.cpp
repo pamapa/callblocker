@@ -109,4 +109,16 @@ std::string Helper::getBaseFilename(const std::string& rFilename) {
   else return rFilename;
 }
 
+std::string Helper::escapeSqString(const std::string& rStr) {
+  std::size_t n = rStr.length();
+  std::string escaped;
+  escaped.reserve(n * 2); // pessimistic preallocation
+  for (std::size_t i = 0; i < n; ++i) {
+    if (rStr[i] == '\\' || rStr[i] == '\'') {
+      escaped += '\\';
+    }
+    escaped += rStr[i];
+  }
+  return escaped;
+}
 
