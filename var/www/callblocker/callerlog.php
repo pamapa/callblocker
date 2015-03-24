@@ -70,7 +70,7 @@
       }
 
       $tmp = array(
-        "DATE"=>date("Y-m-d H:i:s", 1000000), // usec -> s
+        "DATE"=>date("Y-m-d H:i:s", $obj->{"__REALTIME_TIMESTAMP"}/1000000), // usec -> s
         "NUMBER"=>$number, "NAME"=>$name, "BLOCKED"=>$blocked,
         "WHITELIST"=>$whitelist, "BLACKLIST"=>$blacklist, "SCORE"=>$score
       );
