@@ -35,8 +35,8 @@ require(["dojo/data/ItemFileWriteStore",
       { name: "Number",    field: "NUMBER",    width:"120px"},
       { name: "Name",      field: "NAME",      width:"200px"},
       { name: "Blocked",   field: "BLOCKED",   width:"120px", hidden:true},
-      { name: "Whitelist", field: "WHITELIST", width:"120px"},
-      { name: "Blacklist", field: "BLACKLIST", width:"500px"},
+      { name: "Whitelist", field: "WHITELIST", width:"300px"},
+      { name: "Blacklist", field: "BLACKLIST", width:"300px"},
       { name: "Score",     field: "SCORE",     width:"50px"}
     ];
     var grid = new dojox.grid.DataGrid({
@@ -106,7 +106,7 @@ require(["dojo/data/ItemFileWriteStore",
         { id: "root", name:"Root", func:null,
           children:[/*{_reference:"todo"},*/ {_reference:"calllog"}, {_reference:"diag"}] 
         },
-        //{ id: "todo", name:"Setup TODO", func:null },
+        //{ id: "todo", name:"Setup", func:null },
         { id: "calllog", name:"Caller Log", func:createCallerLogGrid},
         { id: "diag", name:"Diagnostics", func:null,
           children:[{_reference:"diag_error_warn"}, {_reference:"diag_all"}] 
