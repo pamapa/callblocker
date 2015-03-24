@@ -16,9 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# Subdirectories to descend into.
-SUBDIRS = js
-
-callblockerwwwdir=$(prefix)/var/www/callblocker
-callblockerwww_DATA = index.html app.css journal.php callerlog.php
+callblockerwwwjsdir=$(prefix)/var/www/callblocker/js
+callblockerwwwjs_DATA = app.js
 
