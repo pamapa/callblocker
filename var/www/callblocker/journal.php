@@ -27,7 +27,7 @@
       case  3: return "Error";
       case  4: return "Warning";
       case  5: return "Notice";
-      case  6: return "Informational";
+      case  6: return "Information";
       case  7: return "Debug";
       default: return "Unknown";
     }

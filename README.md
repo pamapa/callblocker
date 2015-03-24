@@ -55,9 +55,11 @@ sudo systemctl start callblockerd.service
 sudo apt-get install lighttpd php5-common php5-cgi php5 libjs-dojo-core libjs-dojo-dijit libjs-dojo-dojox
 sudo usermod -a -G systemd-journal www-data
 sudo joe /etc/lighttpd/lighttpd.conf
-# In the upper section of this file you can find den section 'server.modules='. Please add this line: '"mod_fastcgi",'.
-# At the end of file, add: 'fastcgi.server = (".php"=>(("bin-path"=>"/usr/bin/php-cgi", "socket"=>"/tmp/php.sock")))'.
-# Change server.document-root to "/usr/var/www/callblocker"
+```
+1. In the upper section of this file you can find den section 'server.modules='. Please add this line: '"mod_fastcgi",'.
+2. At the end of file, add: 'fastcgi.server = (".php"=>(("bin-path"=>"/usr/bin/php-cgi", "socket"=>"/tmp/php.sock")))'.
+3. Make server.document-root point to "/usr/var/www/callblocker"
+```bash
 sudo reboot
 ```
 
