@@ -123,8 +123,9 @@ void AnalogPhone::run() {
             if (number == "PRIVATE") {
               // Caller ID information has been blocked by the user at the other end
               // see http://ads.usr.com/support/3453c/3453c-ug/dial_answer.html#IDfunctions
-              block = m_settings.base.blockUnknownCID;
-              Logger::notice("Incoming call number='UNKNOWN'%s", block?" blocked":"");
+              std::string msg;
+              block = isUnknownNumberBlocked(&m_settings.base, &msg);
+              Logger::notice(msg.c_str());
               break;
             }
 

@@ -134,6 +134,20 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
   return block;
 }
 
+bool Block::isUnknownNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg) {
+  bool block = pSettings->blockUnknownCID;
+
+  // Incoming call number='unknown' [blocked]
+  std::ostringstream oss;
+  oss << "Incoming call number='unknown'";
+  if (block) {
+    oss << " blocked";
+  }
+
+  *pMsg = oss.str();
+  return block;
+}
+
 bool Block::isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pCallerName) {
   return m_pWhitelists->isListed(rNumber, pListName, pCallerName);
 }
