@@ -19,8 +19,7 @@
 */
   header("Content-Type", "text/json");
 
-  //$lines = shell_exec("journalctl _SYSTEMD_UNIT=callblockerd.service --since=-1w --priority=5");
-  $data = shell_exec("journalctl --lines=1000 --output json");
+  $data = shell_exec("journalctl _SYSTEMD_UNIT=callblockerd.service --priority=5 --lines=1000 --output json");
   $all = explode("\n", trim($data));
   $all_count = count($all);
 
@@ -35,28 +34,15 @@
     $count = $_REQUEST["count"];
   }
 
-  header(sprintf("Content-Range: items %d-%d/%d", $start, $start+$count, $all_count));
-
-  // test
-  // http://www.phpliveregex.com/
-  $all = array();
-  array_push($all, "Incoming call number='+1'");
-  array_push($all, "Incoming call number='+2' name='y'");
-  array_push($all, "Incoming call number='+3' name='ydssdsdsd\'33333' blocked");
-  array_push($all, "Incoming call number='+41333333333' name='123456789012345678901234567890' blocked blacklist='12345678901234567890'");
-  array_push($all, "Incoming call number='+5' name='y bs=\\ww' blocked blacklist='b' score=10");
-  array_push($all, "Incoming call number='+6' name='y \"' whitelist='12345678901234567890'");
-  $all_count = count($all);
-  //var_dump($all);
-
   $ret = array();
-  for ($i = 0; $i < count($all); $i++) {
-    $msg = $all[$i];
-    //echo $msg . "\n";
+  for ($i = $start; $i < $start+$count && $i < $all_count; $i++) {
+    $entry = $all[$all_count - $i - 1]; // newest first
+    $obj = json_decode($entry);
+
     $re_sq = "'([^'\\\\]*(?:\\\\.[^'\\\\]*)*)'"; // support escaped quotes
     if (preg_match("/^Incoming call (number=".$re_sq.")?\s?(name=".$re_sq.")?\s?(blocked)?\s?".
                    "(whitelist=".$re_sq.")?\s?(blacklist=".$re_sq.")?\s?(score=([0-9]*))?$/",
-                   $msg, $matches)) {
+                   $obj->{"MESSAGE"}, $matches)) {
       //var_dump($matches);
       $matches_count = count($matches);
 
@@ -92,25 +78,7 @@
     }
   }
 
-
-/*
-  $ret = array();
-  for ($i = $start; $i < $start+$count && $i < $all_count; $i++) {
-    $entry = $all[$all_count - $i - 1]; // newest first
-    $obj = json_decode($entry);
-
-    // Incoming call number='x' name='y' [blocked] [whitelist='w'] [blacklist='b'] [score=s]
-    // split $obj->{"MESSAGE"} -> ....
-
-
-    $tmp = array(
-      "DATE"=>gmdate("Y-m-d H:i:s", $obj->{"__REALTIME_TIMESTAMP"}/1000000), // usec -> s
-      "MESSAGE"=>$obj->{"MESSAGE"}
-    );
-    array_push($ret, $tmp);
-  }
-*/
-
+  header(sprintf("Content-Range: items %d-%d/%d", $start, $start+$count, $all_count));
   print json_encode(array("numRows"=>$all_count, "items"=>$ret), JSON_PRETTY_PRINT);
 ?>
 

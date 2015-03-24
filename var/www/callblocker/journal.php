@@ -35,14 +35,11 @@
 
   $data = "";
   if (array_key_exists("all", $_REQUEST)) {
-    //$lines = shell_exec("journalctl _SYSTEMD_UNIT=callblockerd.service --since=-1w --priority=5");
-    $data = shell_exec("journalctl --lines=1000 --output json");
+    $data = shell_exec("journalctl _SYSTEMD_UNIT=callblockerd.service --lines=1000 --output json");
   } else {
-    $data = shell_exec("journalctl --priority=0..4 --lines=1000 --output json");
+    $data = shell_exec("journalctl _SYSTEMD_UNIT=callblockerd.service --priority=0..4 --lines=1000 --output json");
   }
-
   $all = explode("\n", trim($data));
-  // Incoming call number='x' name='y' [blocked] [whitelist='w'] [blacklist='b'] [score=s]
   $all_count = count($all);
 
   $start = 0;
