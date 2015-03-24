@@ -20,7 +20,7 @@
   header("Content-Type", "text/json");
 
   $data = shell_exec("journalctl _SYSTEMD_UNIT=callblockerd.service --priority=5..5 --lines=1000 --output json");
-  $all = explode("\n", trim($data));
+  $all = array_filter(explode("\n", trim($data)));
   $all_count = count($all);
 
   $start = 0;

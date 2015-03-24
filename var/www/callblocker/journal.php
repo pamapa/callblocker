@@ -39,7 +39,7 @@
   } else {
     $data = shell_exec("journalctl _SYSTEMD_UNIT=callblockerd.service --priority=0..4 --lines=1000 --output json");
   }
-  $all = explode("\n", trim($data));
+  $all = array_filter(explode("\n", trim($data)));
   $all_count = count($all);
 
   $start = 0;
