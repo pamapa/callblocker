@@ -19,6 +19,6 @@
 # Subdirectories to descend into.
 SUBDIRS = js
 
-callblockerwwwdir=$(prefix)/var/www/callblocker
+callblockerwwwdir=$(localstatedir)/www/callblocker
 callblockerwww_DATA = index.html app.css journal.php callerlog.php
 

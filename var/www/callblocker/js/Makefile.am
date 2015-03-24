@@ -16,6 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-callblockerwwwjsdir=$(prefix)/var/www/callblocker/js
+callblockerwwwjsdir=$(localstatedir)/www/callblocker/js
 callblockerwwwjs_DATA = app.js
 
