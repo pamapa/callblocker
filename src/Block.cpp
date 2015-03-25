@@ -148,11 +148,13 @@ bool Block::isUnknownNumberBlocked(const struct SettingBase* pSettings, std::str
   return block;
 }
 
-bool Block::isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pCallerName) {
+bool Block::isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber,
+                          std::string* pListName, std::string* pCallerName) {
   return m_pWhitelists->isListed(rNumber, pListName, pCallerName);
 }
 
-bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pCallerName, std::string* pScore) {
+bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber,
+                          std::string* pListName, std::string* pCallerName, std::string* pScore) {
   if (m_pBlacklists->isListed(rNumber, pListName, pCallerName)) {
     return true;
   }
