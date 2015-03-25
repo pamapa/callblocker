@@ -55,7 +55,7 @@ def main(argv):
   content = fetch_url(url)
   #debug(content)
 
-  callerName = "N/A"
+  callerName = ""
 
   # Private
   x = content.find('class="tel-detail-avatar">')
@@ -67,7 +67,7 @@ def main(argv):
       callerName = content[h1s:h1e]
 
   # Bussiness
-  x = content.find('class="tel-commercial tel-paid">')
+  x = content.find('class="tel-commercial')
   if x != -1:
     h1s = content.find("<h1>", x + 1)
     if h1s != -1:
