@@ -17,7 +17,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-  header("Content-Type", "text/json");
 
   function mapPriorityToName($prio) {
     switch ($prio) {
@@ -53,23 +52,23 @@
     $count = $_REQUEST["count"];
   }
 
-  header(sprintf("Content-Range: items %d-%d/%d", $start, $start+$count, $all_count));
-
   $ret = array();
   for ($i = $start; $i < $start+$count && $i < $all_count; $i++) {
     $entry = $all[$all_count - $i - 1]; // newest first
-    $obj = json_decode($entry);
-    //var_dump($obj);
+    $json = json_decode($entry);
+    //var_dump($json);
 
     $tmp = array(
-      "DATE"=>date("Y-m-d H:i:s", $obj->{"__REALTIME_TIMESTAMP"}/1000000), // usec -> s
-      "PRIO_ID"=>intval($obj->{"PRIORITY"}),
-      "PRIORITY"=>mapPriorityToName($obj->{"PRIORITY"}),
-      "MESSAGE"=>$obj->{"MESSAGE"}
+      "TIMESTAMP"=>$json->{"__REALTIME_TIMESTAMP"}/1000, // usec -> ms
+      "PRIO_ID"=>intval($json->{"PRIORITY"}),
+      "PRIORITY"=>mapPriorityToName($json->{"PRIORITY"}),
+      "MESSAGE"=>$json->{"MESSAGE"}
     );
     array_push($ret, $tmp);
   }
 
+  header("Content-Type", "text/json");
+  header(sprintf("Content-Range: items %d-%d/%d", $start, $start+$count, $all_count));
   print json_encode(array("numRows"=>$all_count, "items"=>$ret), JSON_PRETTY_PRINT);
 ?>
 

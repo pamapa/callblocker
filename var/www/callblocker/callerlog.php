@@ -17,7 +17,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-  header("Content-Type", "text/json");
 
   $data = shell_exec("journalctl _SYSTEMD_UNIT=callblockerd.service --priority=5..5 --lines=1000 --output json");
   $all = array_filter(explode("\n", trim($data)));
@@ -37,12 +36,12 @@
   $ret = array();
   for ($i = $start; $i < $start+$count && $i < $all_count; $i++) {
     $entry = $all[$all_count - $i - 1]; // newest first
-    $obj = json_decode($entry);
+    $json = json_decode($entry);
 
     $re_sq = "'([^'\\\\]*(?:\\\\.[^'\\\\]*)*)'"; // support escaped quotes
     if (preg_match("/^Incoming call: (number=".$re_sq.")?\s?(name=".$re_sq.")?\s?(blocked)?\s?".
                    "(whitelist=".$re_sq.")?\s?(blacklist=".$re_sq.")?\s?(score=([0-9]*))?$/",
-                   $obj->{"MESSAGE"}, $matches)) {
+                   $json->{"MESSAGE"}, $matches)) {
       //var_dump($matches);
       $matches_count = count($matches);
 
@@ -70,7 +69,7 @@
       }
 
       $tmp = array(
-        "DATE"=>date("Y-m-d H:i:s", $obj->{"__REALTIME_TIMESTAMP"}/1000000), // usec -> s
+        "TIMESTAMP"=>$json->{"__REALTIME_TIMESTAMP"}/1000, // usec -> ms
         "NUMBER"=>$number, "NAME"=>$name, "BLOCKED"=>$blocked,
         "WHITELIST"=>$whitelist, "BLACKLIST"=>$blacklist, "SCORE"=>$score
       );
@@ -78,6 +77,7 @@
     }
   }
 
+  header("Content-Type", "text/json");
   header(sprintf("Content-Range: items %d-%d/%d", $start, $start+$count, $all_count));
   print json_encode(array("numRows"=>$all_count, "items"=>$ret), JSON_PRETTY_PRINT);
 ?>

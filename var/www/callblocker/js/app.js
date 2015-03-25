@@ -18,20 +18,27 @@
 */
 
 require(["dojo/data/ItemFileWriteStore",
-         "dijit/tree/TreeStoreModel",
-         "dijit/Tree",
+         "dojo/date/locale",
          "dojox/data/QueryReadStore",
          "dojox/grid/DataGrid",
+         "dijit/Tree",
+         "dijit/tree/TreeStoreModel",
+         "dijit/form/Select",
          "dijit/layout/ContentPane",
          "dijit/layout/BorderContainer",
         ], function() {
+
+  function formatDate(timestamp_ms) {
+    var date = new Date(timestamp_ms);
+    return dojo.date.locale.format(date, {formatLength: "long"});
+  }
 
   function createCallerLogGrid() {
     var store = new dojox.data.QueryReadStore({
       url: "callerlog.php"
     });
     var structure = [
-      { name: "Date",      field: "DATE",      width:"120px"},
+      { name: "Date",      field: "TIMESTAMP", width:"150px", formatter: formatDate},
       { name: "Number",    field: "NUMBER",    width:"120px"},
       { name: "Name",      field: "NAME",      width:"200px"},
       { name: "Blocked",   field: "BLOCKED",   width:"120px", hidden:true},
@@ -64,10 +71,10 @@ require(["dojo/data/ItemFileWriteStore",
       url: url
     });
     var structure = [
-      { name: "Date",     field: "DATE",     width:"120px"},
-      { name: "PrioId",   field: "PRIO_ID",  width:"120px", hidden:true},
-      { name: "Priority", field: "PRIORITY", width:"120px"},
-      { name: "Message",  field: "MESSAGE",  width:"100%"}
+      { name: "Date",     field: "TIMESTAMP", width:"150px", formatter: formatDate},
+      { name: "PrioId",   field: "PRIO_ID",   width:"50px", hidden:true},
+      { name: "Priority", field: "PRIORITY",  width:"70px"},
+      { name: "Message",  field: "MESSAGE",   width:"100%"}
     ];
     var grid = new dojox.grid.DataGrid({
       //id: "grid",
@@ -98,16 +105,54 @@ require(["dojo/data/ItemFileWriteStore",
     return createJournalGrid("journal.php?all=1");
   }
 
+  function createBlacklistsX() {
+/*
+    var store = new dojox.data.QueryReadStore({
+      url: "lists.php?blacklists_info=1"
+    });
+
+    var select = new dijit.form.Select({
+      store: store
+    });
+
+    select.on("change", function(){
+      console.log("my value: ", this.get("value"))
+    })
+
+    return select;
+*/
+/*
+    var store = new dojox.data.QueryReadStore({
+      url: "lists.php?blacklist_id=0"
+    });
+    var structure = [
+      { name: "Date",      field: "date",      width:"120px"},
+      { name: "Number",    field: "number",    width:"120px", editable: true},
+      { name: "Name",      field: "name",      width:"200px", editable: true}
+    ];
+    var grid = new dojox.grid.DataGrid({
+      store: store,
+      structure: structure,
+      style:"height:100%; width:100%;",
+      canSort:function(){return false} // disable sorting, its not implemented on backend
+    });
+    return grid;
+*/
+  }
+
   function createMenu() {  
     var menuData = {
       identifier: "id",
       label: "name",
       items: [
         { id: "root", name:"Root", func:null,
-          children:[/*{_reference:"todo"},*/ {_reference:"calllog"}, {_reference:"diag"}] 
+          children:[{_reference:"calllog"}, {_reference:"config"}, {_reference:"diag"}] 
         },
-        //{ id: "todo", name:"Setup", func:null },
         { id: "calllog", name:"Caller Log", func:createCallerLogGrid},
+        { id: "config", name:"Configuration", func:null,
+          children:[{_reference:"config_blacklists"}] 
+        },
+        { id: "config_blacklists", name:"Blacklists", func:createBlacklistsX},
         { id: "diag", name:"Diagnostics", func:null,
           children:[{_reference:"diag_error_warn"}, {_reference:"diag_all"}] 
         },
