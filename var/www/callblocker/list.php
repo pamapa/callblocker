@@ -50,7 +50,8 @@
     $dirname = $_REQUEST["dirname"];
   }
   $file = CALLBLOCKER_SYSCONFDIR."/".$dirname."/main.json";
-
+  //print $file;
+  
   if (array_key_exists("data", $_POST)) {
     //error_log("POST data:".$_POST["data"]);
     $json = json_decode($_POST["data"]);

@@ -63,10 +63,51 @@ require(["dijit/ConfirmDialog",
       { name: "Blacklist", field: "BLACKLIST", width:"300px"},
       { name: "Score",     field: "SCORE",     width:"50px"}
     ];
-    var grid = new dojox.grid.DataGrid({
+
+    var menu = new dijit.Menu();
+    var addToWhitelistMenuItem = new dijit.MenuItem({
+      label: "Add to whitelist",
+      onClick: function(){
+        var items = grid.selection.getSelected();
+        if (items.length) {
+          var listStore = createListStore("list.php?dirname=whitelists");
+          dojo.forEach(items, function(si){
+            if (si !== null) {
+              var newItem = { timestamp: Date.now(),
+                              number: grid.store.getValue(si, "NUMBER"), name: grid.store.getValue(si, "NAME")};
+              listStore.newItem(newItem);
+            }
+          });
+          listStore.save();
+        } 
+      }
+    });
+    var addToBlacklistMenuItem = new dijit.MenuItem({
+      label: "Add to blacklist",
+      onClick: function(){
+        var items = grid.selection.getSelected();
+        if (items.length) {
+          var listStore = createListStore("list.php?dirname=blacklists");
+          dojo.forEach(items, function(si){
+            if (si !== null) {
+              var newItem = { timestamp: Date.now(),
+                              number: grid.store.getValue(si, "NUMBER"), name: grid.store.getValue(si, "NAME")};
+              listStore.newItem(newItem);
+            }
+          });
+          listStore.save();
+        } 
+      }
+    });
+    menu.addChild(addToWhitelistMenuItem);
+    menu.addChild(addToBlacklistMenuItem);
+
+    var grid = new dojox.grid.EnhancedGrid({
       store: store,
       structure: structure,
       canSort:function(){return false}, // disable sorting, its not implemented on backend
+      selectable: true,
+      plugins : {menus: menusObject = {rowMenu: menu}},
       style:"height:100%; width:100%;"
     });
     // setup colors
@@ -93,11 +134,12 @@ require(["dijit/ConfirmDialog",
       { name: "Priority", field: "PRIORITY",  width:"70px"},
       { name: "Message",  field: "MESSAGE",   width:"100%"}
     ];
-    var grid = new dojox.grid.DataGrid({
+    var grid = new dojox.grid.EnhancedGrid({
       //id: "grid",
       store: store,
       structure: structure,
       canSort:function(){return false}, // disable sorting, its not implemented on backend
+      selectable: true,
       style:"height:100%; width:100%;"
     });
     // setup colors
@@ -122,6 +164,21 @@ require(["dijit/ConfirmDialog",
     return createJournalGrid("journal.php?all=1");
   }
 
+  function createListStore(url) {
+    var store = new dojo.data.ItemFileWriteStore({
+      url: url
+    });
+    store._saveEverything = function(saveCompleteCallback, saveFailedCallback, newFileContentString) {
+      dojo.xhrPost({
+        url: store.url,
+        content: {data: newFileContentString},
+        load: saveCompleteCallback,
+        error: saveFailedCallback
+      });
+    }
+    return store;
+  }
+
   function createListX(url) {
     var numberTextBox = new dijit.form.ValidationTextBox({
       placeHolder: "Number",
@@ -133,17 +190,7 @@ require(["dijit/ConfirmDialog",
       placeHolder: "Name"
     });
 
-    var listStore = new dojo.data.ItemFileWriteStore({
-      url: url
-    });
-    listStore._saveEverything = function(saveCompleteCallback, saveFailedCallback, newFileContentString) {
-      dojo.xhrPost({
-        url: listStore.url,
-        content: {data: newFileContentString},
-        load: saveCompleteCallback,
-        error: saveFailedCallback
-      });
-    }
+    var listStore = createListStore(url);
     var structure = [
       { name: "Date",      field: "timestamp", width:"150px", formatter: formatDate},
       { name: "Number",    field: "number",    width:"120px"},
@@ -156,9 +203,9 @@ require(["dijit/ConfirmDialog",
       onClick: function(){
         var items = grid.selection.getSelected();
         if (items.length) {
-          dojo.forEach(items, function(selectedItem){
-            if (selectedItem !== null){
-              grid.store.deleteItem(selectedItem);
+          dojo.forEach(items, function(si){
+            if (si !== null) {
+              grid.store.deleteItem(si);
             }
           });
           grid.store.save();
@@ -171,20 +218,21 @@ require(["dijit/ConfirmDialog",
       onClick: function(){
         var items = grid.selection.getSelected();
         if (items.length) {
+          var si = items[0];
           var myDialog = new ConfirmDialog({
             title: "Edit entry",
             content: [numberTextBox.domNode, nameTextBox.domNode],
             onExecute:function() {
               if (numberTextBox.isValid() && nameTextBox.isValid()) {
-                grid.store.setValue(items[0], "timestamp", Date.now());
-                grid.store.setValue(items[0], "number", numberTextBox.get("value"));
-                grid.store.setValue(items[0], "name", nameTextBox.get("value"));
+                grid.store.setValue(si, "timestamp", Date.now());
+                grid.store.setValue(si, "number", numberTextBox.get("value"));
+                grid.store.setValue(si, "name", nameTextBox.get("value"));
                 grid.store.save();
               }
             }
           });
-          numberTextBox.set("value", grid.store.getValue(items[0], "number"));
-          nameTextBox.set("value", grid.store.getValue(items[0], "name"));
+          numberTextBox.set("value", grid.store.getValue(si, "number"));
+          nameTextBox.set("value", grid.store.getValue(si, "name"));
           myDialog.show();
         }
       },
