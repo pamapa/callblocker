@@ -45,9 +45,10 @@ AC_CONFIG_FILES([etc/callblocker/Makefile])
 AC_CONFIG_FILES([etc/callblocker/blacklists/Makefile])
 AC_CONFIG_FILES([etc/callblocker/whitelists/Makefile])
 AC_CONFIG_FILES([etc/systemd/system/Makefile])
-AC_CONFIG_FILES([usr/share/callblocker/Makefile])
 AC_CONFIG_FILES([src/Makefile])
-AC_CONFIG_FILES([var/www/callblocker/Makefile])
-AC_CONFIG_FILES([var/www/callblocker/js/Makefile])
+AC_CONFIG_FILES([usr/Makefile])
+AC_CONFIG_FILES([usr/share/callblocker/Makefile])
+AC_CONFIG_FILES([usr/var/www/callblocker/Makefile])
+AC_CONFIG_FILES([usr/var/www/callblocker/js/Makefile])
 AC_OUTPUT
 
