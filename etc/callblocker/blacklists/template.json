@@ -1,7 +1,5 @@
 { 
   "name" : "My blacklist template",
-  "num_entries" : 2,
-  "last_update" : "2015-03-05 09:38:06",
   "entries" : [ 
       { 
         "name" : "Telemarketing Company X",
@@ -13,4 +11,3 @@
       }
     ]
 }
-

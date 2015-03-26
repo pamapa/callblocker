@@ -17,20 +17,37 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-require(["dojo/data/ItemFileWriteStore",
+// Useful links:
+// http://amagard.x10.mx/dojo_icon_classes.html
+
+require(["dijit/ConfirmDialog",
+         "dojo/keys",
+         "dojo/data/ItemFileWriteStore",
          "dojo/date/locale",
+         "dojo/data/ItemFileWriteStore",
          "dojox/data/QueryReadStore",
          "dojox/grid/DataGrid",
+         "dojox/grid/EnhancedGrid",
+         "dojox/grid/enhanced/plugins/Menu",
          "dijit/Tree",
+         "dijit/Menu",
+         "dijit/MenuItem",
          "dijit/tree/TreeStoreModel",
+         "dijit/form/Form",
+         "dijit/form/Button",
          "dijit/form/Select",
+         "dijit/form/ValidationTextBox",
          "dijit/layout/ContentPane",
+         "dijit/layout/LayoutContainer",
          "dijit/layout/BorderContainer",
-        ], function() {
+        ], function(ConfirmDialog) { // workaround
 
-  function formatDate(timestamp_ms) {
-    var date = new Date(timestamp_ms);
-    return dojo.date.locale.format(date, {formatLength: "long"});
+  function formatDate(timestamp) {
+    if (timestamp) {
+      var date = new Date(timestamp);
+      return dojo.date.locale.format(date, {formatLength: "long"});
+    }
+    return "";
   }
 
   function createCallerLogGrid() {
@@ -49,8 +66,8 @@ require(["dojo/data/ItemFileWriteStore",
     var grid = new dojox.grid.DataGrid({
       store: store,
       structure: structure,
-      style:"height:100%; width:100%;",
-      canSort:function(){return false} // disable sorting, its not implemented on backend
+      canSort:function(){return false}, // disable sorting, its not implemented on backend
+      style:"height:100%; width:100%;"
     });
     // setup colors
     dojo.connect(grid, 'onStyleRow', this, function (row) {
@@ -80,8 +97,8 @@ require(["dojo/data/ItemFileWriteStore",
       //id: "grid",
       store: store,
       structure: structure,
-      style:"height:100%; width:100%;",
-      canSort:function(){return false} // disable sorting, its not implemented on backend
+      canSort:function(){return false}, // disable sorting, its not implemented on backend
+      style:"height:100%; width:100%;"
     });
     // setup colors
     dojo.connect(grid, 'onStyleRow', this, function (row) {
@@ -105,43 +122,126 @@ require(["dojo/data/ItemFileWriteStore",
     return createJournalGrid("journal.php?all=1");
   }
 
-  function createBlacklistsX() {
-/*
-    var store = new dojox.data.QueryReadStore({
-      url: "lists.php?blacklists_info=1"
+  function createListX(url) {
+    var numberTextBox = new dijit.form.ValidationTextBox({
+      placeHolder: "Number",
+      pattern: "\\+[0-9]{4,15}",
+      required: true,
+      invalidMessage: "Not a valid international number (+...)"
+    });
+    var nameTextBox = new dijit.form.ValidationTextBox({
+      placeHolder: "Name"
     });
 
-    var select = new dijit.form.Select({
-      store: store
+    var listStore = new dojo.data.ItemFileWriteStore({
+      url: url
     });
-
-    select.on("change", function(){
-      console.log("my value: ", this.get("value"))
-    })
-
-    return select;
-*/
-/*
-    var store = new dojox.data.QueryReadStore({
-      url: "lists.php?blacklist_id=0"
-    });
+    listStore._saveEverything = function(saveCompleteCallback, saveFailedCallback, newFileContentString) {
+      dojo.xhrPost({
+        url: listStore.url,
+        content: {data: newFileContentString},
+        load: saveCompleteCallback,
+        error: saveFailedCallback
+      });
+    }
     var structure = [
-      { name: "Date",      field: "date",      width:"120px"},
-      { name: "Number",    field: "number",    width:"120px", editable: true},
-      { name: "Name",      field: "name",      width:"200px", editable: true}
+      { name: "Date",      field: "timestamp", width:"150px", formatter: formatDate},
+      { name: "Number",    field: "number",    width:"120px"},
+      { name: "Name",      field: "name",      width:"200px"}
     ];
-    var grid = new dojox.grid.DataGrid({
-      store: store,
-      structure: structure,
-      style:"height:100%; width:100%;",
-      canSort:function(){return false} // disable sorting, its not implemented on backend
+
+    var menu = new dijit.Menu();
+    var deleteMenuItem = new dijit.MenuItem({
+      label: "Delete",
+      onClick: function(){
+        var items = grid.selection.getSelected();
+        if (items.length) {
+          dojo.forEach(items, function(selectedItem){
+            if (selectedItem !== null){
+              grid.store.deleteItem(selectedItem);
+            }
+          });
+          grid.store.save();
+        } 
+      },
+      iconClass: "dijitEditorIcon dijitEditorIconDelete"
     });
-    return grid;
-*/
+    var editMenuItem = new dijit.MenuItem({
+      label: "Edit",
+      onClick: function(){
+        var items = grid.selection.getSelected();
+        if (items.length) {
+          var myDialog = new ConfirmDialog({
+            title: "Edit entry",
+            content: [numberTextBox.domNode, nameTextBox.domNode],
+            onExecute:function() {
+              if (numberTextBox.isValid() && nameTextBox.isValid()) {
+                grid.store.setValue(items[0], "timestamp", Date.now());
+                grid.store.setValue(items[0], "number", numberTextBox.get("value"));
+                grid.store.setValue(items[0], "name", nameTextBox.get("value"));
+                grid.store.save();
+              }
+            }
+          });
+          numberTextBox.set("value", grid.store.getValue(items[0], "number"));
+          nameTextBox.set("value", grid.store.getValue(items[0], "name"));
+          myDialog.show();
+        }
+      },
+      //iconClass: "dijitEditorIcon dijitEditorIconDelete"
+    });
+    menu.addChild(deleteMenuItem);
+    menu.addChild(editMenuItem);
+
+    var grid = new dojox.grid.EnhancedGrid({
+      store: listStore,
+      structure: structure,
+      canSort:function(){return false}, // disable sorting, its not implemented on backend
+      selectable: true,
+      plugins : {menus: menusObject = {rowMenu: menu}},
+      style:"height:100%; width:100%;",
+      region: "center",
+    });
+    /*dojo.connect(grid, "onKeyPress", function(evt) {
+      if(evt.keyCode === dojo.keys.DELETE) { 
+        console.log('delete!'); 
+      }
+    });*/
+    var addNewEntry = new dijit.form.Button({
+      label: "Add new entry",
+      onClick: function() {
+        var myDialog = new ConfirmDialog({
+          title: "Add new entry",
+          content: [numberTextBox.domNode, nameTextBox.domNode],
+          onExecute:function() {
+            if (numberTextBox.isValid() && nameTextBox.isValid()) {
+              var newItem = {timestamp: Date.now(), number: numberTextBox.get("value"), name: nameTextBox.get("value")};
+              grid.store.newItem(newItem);
+              grid.store.save();
+            }
+          }
+        });
+        myDialog.show();
+      },
+      region: "top",
+    });
+
+    var listLayout = new dijit.layout.LayoutContainer();
+    listLayout.addChild(addNewEntry);
+    listLayout.addChild(grid);
+    return listLayout;
   }
 
-  function createMenu() {  
-    var menuData = {
+  function createWhitelist() {
+    return createListX("list.php?dirname=whitelists");
+  }
+
+  function createBlacklist() {
+    return createListX("list.php?dirname=blacklists");
+  }
+
+  function createTree() {  
+    var treeData = {
       identifier: "id",
       label: "name",
       items: [
@@ -150,9 +250,10 @@ require(["dojo/data/ItemFileWriteStore",
         },
         { id: "calllog", name:"Caller Log", func:createCallerLogGrid},
         { id: "config", name:"Configuration", func:null,
-          children:[{_reference:"config_blacklists"}] 
+          children:[{_reference:"config_whitelists"}, {_reference:"config_blacklists"}] 
         },
-        { id: "config_blacklists", name:"Blacklists", func:createBlacklistsX},
+        { id: "config_whitelists", name:"Whitelist", func:createWhitelist},
+        { id: "config_blacklists", name:"Blacklist", func:createBlacklist},
         { id: "diag", name:"Diagnostics", func:null,
           children:[{_reference:"diag_error_warn"}, {_reference:"diag_all"}] 
         },
@@ -161,17 +262,17 @@ require(["dojo/data/ItemFileWriteStore",
       ]
     };
 
-    var menuStore = new dojo.data.ItemFileWriteStore({
-      data:menuData
+    var treeStore = new dojo.data.ItemFileWriteStore({
+      data:treeData
     });
-    var menuModel = new dijit.tree.TreeStoreModel({
+    var treeModel = new dijit.tree.TreeStoreModel({
       id:"model",
-      store:menuStore,
+      store:treeStore,
       childrenAttrs:["children"],
       query:{id:"root"}
     });
-    var menu = new dijit.Tree({
-      model:menuModel,
+    var tree = new dijit.Tree({
+      model:treeModel,
       persist:false,
       showRoot:false,
       onClick: function(item) {
@@ -180,7 +281,7 @@ require(["dojo/data/ItemFileWriteStore",
         }
       }
     });
-    return menu;
+    return tree;
   }
 
 
@@ -203,7 +304,7 @@ require(["dojo/data/ItemFileWriteStore",
     region: "left",
     style: "width: 150px",
     splitter:true,
-    content: createMenu()
+    content: createTree()
   });
   appLayout.addChild(menuPane);
   var mainPane = new dijit.layout.ContentPane({
