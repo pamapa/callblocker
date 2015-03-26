@@ -58,7 +58,7 @@ def main(argv):
   callerName = ""
 
   # Private
-  x = content.find('class="tel-detail-avatar">')
+  x = content.find('class="tel-person')
   if x != -1:
     h1s = content.find("<h1>", x + 1)
     if h1s != -1:
