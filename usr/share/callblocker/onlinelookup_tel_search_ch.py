@@ -38,6 +38,12 @@ def fetch_url(url):
   data = urllib2.urlopen(url, timeout = 5)
   return data.read()
 
+def extract_callerName(name):
+  matchObj = re.match(r"<a.*>(.*)</a>", name)
+  if matchObj: name = matchObj.group(1)
+  matchObj = re.match(r"(.*)<span.*>(.*)</span>", name)
+  if matchObj: name = matchObj.group(1) + matchObj.group(2)
+  return name
 
 #
 # main
@@ -57,28 +63,45 @@ def main(argv):
 
   callerName = ""
 
-  # Private
-  x = content.find('class="tel-person')
-  if x != -1:
-    h1s = content.find("<h1>", x + 1)
-    if h1s != -1:
+  # private (single entry)
+  if len(callerName) == 0:
+    x = content.find('class="tel-detail-avatar')
+    if x != -1:
+      debug('found class="tel-detail-avatar')
+      h1s = content.find("<h1>", x + 1)
+      if h1s != -1:
+        h1s += 4
+        h1e = content.find("</h1>", h1s + 1)
+        callerName = extract_callerName(content[h1s:h1e])
+
+  # private (multiple entries)
+  if len(callerName) == 0:
+    x = 0
+    while True:
+      x = content.find('class="tel-person', x)
+      if x == -1: break;
+      debug('found class="tel-person')
+      x += 1
+      h1s = content.find("<h1>", x)
+      if h1s == -1: continue
       h1s += 4
       h1e = content.find("</h1>", h1s + 1)
-      callerName = content[h1s:h1e]
+      if h1e == -1: continue
+      debug("found: "+content[h1s:h1e])
+      callerName += extract_callerName(content[h1s:h1e])+"; ";
+    callerName = callerName[:-2] # remove last "; "
 
-  # Bussiness
-  x = content.find('class="tel-commercial')
-  if x != -1:
-    h1s = content.find("<h1>", x + 1)
-    if h1s != -1:
-      h1s += 4
-      h1e = content.find("</h1>", h1s + 1)
-      callerName = content[h1s:h1e]
-
-  matchObj = re.match(r"<a.*>(.*)</a>", callerName)
-  if matchObj:
-    callerName = matchObj.group(1)
-
+  # bussiness
+  if len(callerName) == 0:
+    x = content.find('class="tel-commercial')
+    if x != -1:
+      debug('found class="tel-commercial')
+      h1s = content.find("<h1>", x + 1)
+      if h1s != -1:
+        h1s += 4
+        h1e = content.find("</h1>", h1s + 1)
+        callerName = extract_callerName(content[h1s:h1e])
+  
   debug(callerName)
 
   # result in json format
