@@ -63,7 +63,7 @@ def main(argv):
 
   callerName = ""
 
-  # private (single entry)
+  # private and bussiness (single entry)
   if len(callerName) == 0:
     x = content.find('class="tel-detail-avatar')
     if x != -1:
