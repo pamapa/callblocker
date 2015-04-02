@@ -483,7 +483,7 @@ require(["dijit/ConfirmDialog",
 
   var statusbarPane = new dijit.layout.ContentPane({
     region: "bottom",
-    content: "Callblocker v0.0.1"
+    content: "Callblocker 0.0.2"
   });
   appLayout.addChild(statusbarPane);
   appLayout.placeAt(document.body);
