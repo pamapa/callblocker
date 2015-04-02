@@ -17,4 +17,4 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 callblockerblacklistsdir=$(sysconfdir)/callblocker/blacklists
-callblockerblacklists_DATA = template.json
+callblockerblacklists_DATA = tpl_main.json
