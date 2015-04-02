@@ -19,6 +19,7 @@
 
 // Useful links:
 // http://amagard.x10.mx/dojo_icon_classes.html
+// http://kennethfranqueiro.com/2010/06/custom-save-logic-itemfilewritestore/
 
 require(["dijit/ConfirmDialog",
          "dojo/keys",
@@ -64,6 +65,7 @@ require(["dijit/ConfirmDialog",
       { name: "Score",     field: "SCORE",     width:"50px"}
     ];
 
+    // TODO factor out common stuff
     var menu = new dijit.Menu();
     var addToWhitelistMenuItem = new dijit.MenuItem({
       label: "Add to whitelist",
@@ -135,7 +137,7 @@ require(["dijit/ConfirmDialog",
       { name: "Message",  field: "MESSAGE",   width:"100%"}
     ];
     var grid = new dojox.grid.EnhancedGrid({
-      //id: "grid",
+      //id: "myGridId",
       store: store,
       structure: structure,
       canSort:function(){return false}, // disable sorting, its not implemented on backend
@@ -177,6 +179,123 @@ require(["dijit/ConfirmDialog",
       });
     }
     return store;
+  }
+
+/*
+  function createPhone() {
+    var select = new dijit.form.Select({
+      options: [
+        { label: "SIP Phone", value: "sip", selected: true },
+        { label: "Analog Phone", value: "analog" },
+      ]
+    });
+    var listLayout = new dijit.layout.LayoutContainer();
+    //listLayout.addChild(dojo.doc.createTextNode("Type: "));
+    listLayout.addChild(select);
+    return listLayout;
+  }
+*/
+
+  function createOnlineCredentials(url) {
+    var nameSelect = new dijit.form.Select({
+      options: [
+        { label: "tellows_de",   value: "tellows_de"},
+        { label: "whocalled_us", value: "whocalled_us" },
+      ]
+    });
+    var usernameTextBox = new dijit.form.ValidationTextBox({
+      placeHolder: "username",
+      required: true,
+    });
+    var passwordTextBox = new dijit.form.ValidationTextBox({
+      placeHolder: "password"
+    });
+
+    var listStore = createListStore("online_credentials.php");
+    var structure = [
+      { name: "Name",      field: "name",     width:"150px"},
+      { name: "Username",  field: "username", width:"120px"},
+      { name: "Password",  field: "password", width:"200px"}
+    ];
+
+    var menu = new dijit.Menu();
+    var deleteMenuItem = new dijit.MenuItem({
+      label: "Delete",
+      onClick: function(){
+        var items = grid.selection.getSelected();
+        if (items.length) {
+          dojo.forEach(items, function(si){
+            if (si !== null) {
+              grid.store.deleteItem(si);
+            }
+          });
+          grid.store.save();
+        } 
+      },
+      iconClass: "dijitEditorIcon dijitEditorIconDelete"
+    });
+    var editMenuItem = new dijit.MenuItem({
+      label: "Edit",
+      onClick: function(){
+        var items = grid.selection.getSelected();
+        if (items.length) {
+          var si = items[0];
+          var myDialog = new ConfirmDialog({
+            title: "Edit entry",
+            content: [nameSelect.domNode, usernameTextBox.domNode, passwordTextBox.domNode],
+            onExecute:function() {
+              if (usernameTextBox.isValid() && passwordTextBox.isValid()) {
+                grid.store.setValue(si, "name", nameSelect.get("value"));
+                grid.store.setValue(si, "username", usernameTextBox.get("value"));
+                grid.store.setValue(si, "password", passwordTextBox.get("value"));
+                grid.store.save();
+              }
+            }
+          });
+          nameSelect.set("value", grid.store.getValue(si, "name"));
+          usernameTextBox.set("value", grid.store.getValue(si, "username"));
+          passwordTextBox.set("value", grid.store.getValue(si, "password"));
+          myDialog.show();
+        }
+      },
+      //iconClass: "dijitEditorIcon dijitEditorIconDelete"
+    });
+    menu.addChild(deleteMenuItem);
+    menu.addChild(editMenuItem);
+
+    var grid = new dojox.grid.EnhancedGrid({
+      store: listStore,
+      structure: structure,
+      canSort:function(){return false}, // disable sorting, its not implemented on backend
+      selectable: true,
+      plugins : {menus: menusObject = {rowMenu: menu}},
+      style:"height:100%; width:100%;",
+      region: "center",
+    });
+
+    var addNewEntry = new dijit.form.Button({
+      label: "Add new entry",
+      onClick: function() {
+        var myDialog = new ConfirmDialog({
+          title: "Add new entry",
+          content: [nameSelect.domNode, usernameTextBox.domNode, passwordTextBox.domNode],
+          onExecute:function() {
+            if (usernameTextBox.isValid() && passwordTextBox.isValid()) {
+              var newItem = {name: nameSelect.get("value"), username: usernameTextBox.get("value"), password: passwordTextBox.get("value")};
+              grid.store.newItem(newItem);
+              grid.store.save();
+            }
+          }
+        });
+        myDialog.show();
+      },
+      region: "top",
+    });
+
+    var listLayout = new dijit.layout.LayoutContainer();
+    listLayout.addChild(addNewEntry);
+    listLayout.addChild(grid);
+    return listLayout;
   }
 
   function createListX(url) {
@@ -298,8 +417,9 @@ require(["dijit/ConfirmDialog",
         },
         { id: "calllog", name:"Caller Log", func:createCallerLogGrid},
         { id: "config", name:"Configuration", func:null,
-          children:[{_reference:"config_whitelists"}, {_reference:"config_blacklists"}] 
+          children:[{_reference:"config_onlinecreds"}, {_reference:"config_whitelists"}, {_reference:"config_blacklists"}] 
         },
+        { id: "config_onlinecreds", name:"Online Credentials", func:createOnlineCredentials},
         { id: "config_whitelists", name:"Whitelist", func:createWhitelist},
         { id: "config_blacklists", name:"Blacklist", func:createBlacklist},
         { id: "diag", name:"Diagnostics", func:null,
@@ -350,7 +470,7 @@ require(["dijit/ConfirmDialog",
 
   var menuPane = new dijit.layout.ContentPane({
     region: "left",
-    style: "width: 150px",
+    style: "width: 180px",
     splitter:true,
     content: createTree()
   });
