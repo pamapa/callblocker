@@ -32,7 +32,7 @@
     $json = json_decode(file_get_contents($file));
 
     $json->{"online_credentials"} = $json_creds->{"items"};
-    error_log("online_credentials:\n".json_encode($json, JSON_PRETTY_PRINT));
+    //error_log("online_credentials:\n".json_encode($json, JSON_PRETTY_PRINT));
     file_put_contents($file, json_encode($json, JSON_PRETTY_PRINT));
     return;
   }
