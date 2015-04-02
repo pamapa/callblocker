@@ -77,70 +77,51 @@ bool Settings::load() {
 
   Logger::debug("loading file %s", m_filename.c_str());
 
-  // Analog
-  struct json_object* analog;
-  if (json_object_object_get_ex(root, "analog", &analog)) {
-    struct json_object* phones;
-    if (json_object_object_get_ex(analog, "phones", &phones)) {
-      for (int i = 0; i < json_object_array_length(phones); i++) {
-        struct json_object* entry = json_object_array_get_idx(phones, i);
-        bool enabled;
-        if (!Helper::getObject(entry, "enabled", true, m_filename, &enabled) || !enabled) {
-          continue;
-        }
-        struct SettingAnalogPhone acc;
-        if (!getBase(entry, &acc.base)) {
-          continue;
-        }
-        if (!Helper::getObject(entry, "device", true, m_filename, &acc.device)) {
-          continue;
-        }
-        m_analogPhones.push_back(acc);
-      }
-    } else {
-      Logger::debug("no <phones> section found in settings file %s", m_filename.c_str());
-    }
-  } else {
-    Logger::debug("no <analog> section found in settings file %s", m_filename.c_str());
+  int pjsip_log_level;
+  if (Helper::getObject(root, "pjsip_log_level", false, m_filename, &pjsip_log_level)) {
+    pj_log_set_level(pjsip_log_level);
   }
 
-  // SIP
-  struct json_object* sip;
-  if (json_object_object_get_ex(root, "sip", &sip)) {
-
-    int pjsip_log_level;
-    if (Helper::getObject(sip, "pjsip_log_level", true, m_filename, &pjsip_log_level)) {
-      pj_log_set_level(pjsip_log_level);
-    }
-
-    struct json_object* accounts;
-    if (json_object_object_get_ex(sip, "accounts", &accounts)) {
-      for (int i = 0; i < json_object_array_length(accounts); i++) {
-        struct json_object* entry = json_object_array_get_idx(accounts, i);
-        bool enabled;
-        if (!Helper::getObject(entry, "enabled", true, m_filename, &enabled) || !enabled) {
-          continue;
-        }
-        struct SettingSipAccount acc;
-        if (!getBase(entry, &acc.base)) {
-          continue;
-        }
-        if (!Helper::getObject(entry, "from_domain", true, m_filename, &acc.fromDomain)) {
-          continue;
-        }
-        if (!Helper::getObject(entry, "from_username", true, m_filename, &acc.fromUsername)) {
-          continue;
-        }
-        if (!Helper::getObject(entry, "from_password", true, m_filename, &acc.fromPassword)) {
-          continue;
-        }
-        m_sipAccounts.push_back(acc);
+  // Phones
+  struct json_object* phones;
+  if (json_object_object_get_ex(root, "phones", &phones)) {
+    for (int i = 0; i < json_object_array_length(phones); i++) {
+      struct json_object* entry = json_object_array_get_idx(phones, i);
+      bool enabled;
+      if (!Helper::getObject(entry, "enabled", true, m_filename, &enabled) || !enabled) {
+        continue;
       }
-    } else {
-      Logger::debug("no <accounts> section found in settings file %s", m_filename.c_str());
+
+      if (json_object_object_get_ex(entry, "device", NULL)) {
+        // Analog
+        struct SettingAnalogPhone analog;
+        if (!getBase(entry, &analog.base)) {
+          continue;
+        }
+        if (!Helper::getObject(entry, "device", true, m_filename, &analog.device)) {
+          continue;
+        }
+        m_analogPhones.push_back(analog);
+      } else {
+        // SIP
+        struct SettingSipAccount sip;
+        if (!getBase(entry, &sip.base)) {
+          continue;
+        }
+        if (!Helper::getObject(entry, "from_domain", true, m_filename, &sip.fromDomain)) {
+          continue;
+        }
+        if (!Helper::getObject(entry, "from_username", true, m_filename, &sip.fromUsername)) {
+          continue;
+        }
+        if (!Helper::getObject(entry, "from_password", true, m_filename, &sip.fromPassword)) {
+          continue;
+        }
+        m_sipAccounts.push_back(sip);
+      }
     }
   } else {
-    Logger::debug("no <sip> section found in settings file %s", m_filename.c_str());
+    Logger::debug("no <phones> section found in settings file %s", m_filename.c_str());
   }
 
   // credentials
@@ -173,7 +154,6 @@ bool Settings::load() {
 }
 
 bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
-  std::string tmp;
   // name
   if (!Helper::getObject(objbase, "name", true, m_filename, &res->name)) {
     return false;
@@ -183,10 +163,11 @@ bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
     return false;
   }
   if (!boost::starts_with(res->countryCode, "+")) {
-    Logger::warn("invalid country_code '%s' in settings file %s", tmp.c_str(), m_filename.c_str());
+    Logger::warn("invalid country_code '%s' in settings file %s", res->countryCode.c_str(), m_filename.c_str());
     return false;
   }
   // block mode
+  std::string tmp;
   if (!Helper::getObject(objbase, "block_mode", true, m_filename, &tmp)) {
     return false;
   }
