@@ -53,6 +53,7 @@ sudo systemctl start callblockerd.service
 ## Install WebUI on a Raspberry Pi (running raspbian/jessie)
 ```bash
 sudo apt-get install lighttpd php5-common php5-cgi php5 libjs-dojo-core libjs-dojo-dijit libjs-dojo-dojox
+sudo chgrp -R www-data /etc/callblocker/
 sudo usermod -a -G systemd-journal www-data
 sudo joe /etc/lighttpd/lighttpd.conf
 ```

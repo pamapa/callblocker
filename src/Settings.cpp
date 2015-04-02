@@ -121,7 +121,7 @@ bool Settings::load() {
       }
     }
   } else {
-    Logger::debug("no <phones> section found in settings file %s", m_filename.c_str());
+    Logger::warn("no <phones> section found in settings file %s", m_filename.c_str());
   }
 
   // credentials
@@ -146,7 +146,7 @@ bool Settings::load() {
       m_onlineCredentials.push_back(cred);
     }
   } else {
-    Logger::debug("no <online_credentials> section found in settings file %s", m_filename.c_str());
+    Logger::warn("no <online_credentials> section found in settings file %s", m_filename.c_str());
   }
 
   json_object_put(root); // free
