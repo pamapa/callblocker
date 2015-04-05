@@ -134,12 +134,12 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
   return block;
 }
 
-bool Block::isUnknownNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg) {
+bool Block::isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg) {
   bool block = pSettings->blockUnknownCID;
 
-  // Incoming call number='unknown' [blocked]
+  // Incoming call number='anonymous' [blocked]
   std::ostringstream oss;
-  oss << "Incoming call: number='unknown'";
+  oss << "Incoming call: number='anonymous'";
   if (block) {
     oss << " blocked";
   }

@@ -124,7 +124,7 @@ void AnalogPhone::run() {
               // Caller ID information has been blocked by the user at the other end
               // see http://ads.usr.com/support/3453c/3453c-ug/dial_answer.html#IDfunctions
               std::string msg;
-              block = isUnknownNumberBlocked(&m_settings.base, &msg);
+              block = isAnonymousNumberBlocked(&m_settings.base, &msg);
               Logger::notice(msg.c_str());
               break;
             }

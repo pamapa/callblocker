@@ -35,7 +35,7 @@ bool Phone::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
   return m_pBlock->isNumberBlocked(pSettings, rNumber, pMsg);
 }
 
-bool Phone::isUnknownNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg) {
-  return m_pBlock->isUnknownNumberBlocked(pSettings, pMsg);
+bool Phone::isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg) {
+  return m_pBlock->isAnonymousNumberBlocked(pSettings, pMsg);
 }
 

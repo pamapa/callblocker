@@ -38,7 +38,7 @@ public:
   virtual ~Block();
   void run();
   bool isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);
-  bool isUnknownNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg);
+  bool isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg);
 
 private:
   bool isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pName);
