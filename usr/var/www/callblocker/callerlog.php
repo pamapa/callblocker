@@ -17,8 +17,9 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
+  include("settings.php");
 
-  $data = shell_exec("journalctl _SYSTEMD_UNIT=callblockerd.service --priority=5..5 --lines=1000 --output json");
+  $data = shell_exec(CALLBLOCKER_CALLLOGCMD);
   $all = array_filter(explode("\n", trim($data)));
   $all_count = count($all);
 

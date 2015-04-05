@@ -17,6 +17,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
+  include("settings.php");
 
   function mapPriorityToName($prio) {
     switch ($prio) {
@@ -34,9 +35,9 @@
 
   $data = "";
   if (array_key_exists("all", $_REQUEST)) {
-    $data = shell_exec("journalctl _SYSTEMD_UNIT=callblockerd.service --lines=1000 --output json");
+    $data = shell_exec(CALLBLOCKER_JOURNALALL);
   } else {
-    $data = shell_exec("journalctl _SYSTEMD_UNIT=callblockerd.service --priority=0..4 --lines=1000 --output json");
+    $data = shell_exec(CALLBLOCKER_JOURNALWARN);
   }
   $all = array_filter(explode("\n", trim($data)));
   $all_count = count($all);
