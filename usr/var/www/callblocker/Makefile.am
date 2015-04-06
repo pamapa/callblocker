@@ -20,5 +20,13 @@
 SUBDIRS = js
 
 callblockerwwwdir=$(localstatedir)/www/callblocker
-callblockerwww_DATA =  app.css callerlog.php index.html journal.php list.php online_credentials.php settings.php
+callblockerwww_DATA = \
+  app.css \
+  callerlog.php \
+  config.php \
+  index.html \
+  journal.php \
+  list.php \
+  online_credentials.php \
+  phones.php
 
