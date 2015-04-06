@@ -180,7 +180,7 @@ bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
     return false;
   }
   // block unknown cid
-  (void)Helper::getObject(objbase, "block_unknown_cid", false, m_filename, &res->blockUnknownCID);
+  (void)Helper::getObject(objbase, "block_anonymous_cid", false, m_filename, &res->blockAnonymousCID);
   // online check
   (void)Helper::getObject(objbase, "online_check", false, m_filename, &res->onlineCheck);
   // online check

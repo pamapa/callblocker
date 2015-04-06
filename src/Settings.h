@@ -40,13 +40,13 @@ struct SettingBase {
   std::string name;
   std::string countryCode;
   enum SettingBlockMode blockMode;
-  bool blockUnknownCID;
+  bool blockAnonymousCID;
   std::string onlineCheck;
   std::string onlineLookup;
 
   std::string toString() const {
     std::ostringstream oss;
-    oss << "n=" << name << ",cc=" << countryCode << ",bm=" << blockMode << ",bucid=" << blockUnknownCID << ",on=" << onlineCheck << ",ol=" << onlineLookup;
+    oss << "n=" << name << ",cc=" << countryCode << ",bm=" << blockMode << ",bucid=" << blockAnonymousCID << ",on=" << onlineCheck << ",ol=" << onlineLookup;
     return oss.str();
   }
 };
