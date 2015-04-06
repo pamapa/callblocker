@@ -17,7 +17,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-  include("settings.php");
+  include("config.php");
 
   $data = shell_exec(CALLBLOCKER_CALLLOGCMD);
   $all = array_filter(explode("\n", trim($data)));

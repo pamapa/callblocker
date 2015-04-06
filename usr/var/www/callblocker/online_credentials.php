@@ -17,7 +17,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-  include("settings.php");
+  include("config.php");
 
   # dojo json exchange format see:
   # http://dojotoolkit.org/reference-guide/1.10/dojo/data/ItemFileReadStore.html#input-data-format
@@ -31,7 +31,7 @@
     $json = json_decode(file_get_contents($file));
 
     $json->{"online_credentials"} = $json_creds->{"items"};
-    //error_log("online_credentials:\n".json_encode($json, JSON_PRETTY_PRINT));
+    //error_log("json:\n".json_encode($json, JSON_PRETTY_PRINT));
     file_put_contents($file, json_encode($json, JSON_PRETTY_PRINT));
     return;
   }

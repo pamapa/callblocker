@@ -22,6 +22,7 @@
 // http://kennethfranqueiro.com/2010/06/custom-save-logic-itemfilewritestore/
 
 require(["dijit/ConfirmDialog",
+         "dojo/dom-construct",
          "dojo/keys",
          "dojo/data/ItemFileWriteStore",
          "dojo/date/locale",
@@ -34,14 +35,15 @@ require(["dijit/ConfirmDialog",
          "dijit/Menu",
          "dijit/MenuItem",
          "dijit/tree/TreeStoreModel",
-         "dijit/form/Form",
+//         "dijit/form/Form",
+         "dijit/form/CheckBox",
          "dijit/form/Button",
          "dijit/form/Select",
          "dijit/form/ValidationTextBox",
          "dijit/layout/ContentPane",
          "dijit/layout/LayoutContainer",
          "dijit/layout/BorderContainer",
-        ], function(ConfirmDialog) { // workaround
+        ], function(ConfirmDialog, domConstruct) { // workaround
 
   function formatDate(timestamp) {
     if (timestamp) {
@@ -181,20 +183,177 @@ require(["dijit/ConfirmDialog",
     return store;
   }
 
-/*
   function createPhone() {
-    var select = new dijit.form.Select({
+    var typeSelect = new dijit.form.Select({
       options: [
         { label: "SIP Phone", value: "sip", selected: true },
-        { label: "Analog Phone", value: "analog" },
+        { label: "Analog Phone", value: "analog" }
       ]
     });
-    var listLayout = new dijit.layout.LayoutContainer();
-    //listLayout.addChild(dojo.doc.createTextNode("Type: "));
-    listLayout.addChild(select);
-    return listLayout;
-  }
+    function selectType(isSIP) {
+      deviceTextBox.set("disabled", isSIP);
+      fromDomainTextBox.set("disabled", !isSIP);
+      fromUsernameTextBox.set("disabled", !isSIP);
+      fromPasswordTextBox.set("disabled", !isSIP);
+    }
+    dojo.connect(typeSelect, "onChange", function(evt) {
+      selectType(evt == "sip");
+    });
+    var nameTextBox = new dijit.form.ValidationTextBox({
+      placeHolder: "name"
+    });
+    var countryCodeTextBox = new dijit.form.ValidationTextBox({
+      placeHolder: "country code",
+      required: true,
+      pattern: "\\+[0-9]{1,4}",
+      invalidMessage: "Not a valid counry code (+...)"
+    });
+    var blockModeSelect = new dijit.form.Select({
+      options: [
+        { label: "logging only", value: "logging_only", selected: true },
+        { label: "whitelists only", value: "whitelists_only" },
+        { label: "whitelists and blacklists", value: "whitelists_and_blacklists" },
+        { label: "blacklists only", value: "blacklists_only" }
+      ]
+    });
+    var blockAnonymousCIDCheckBox = new dijit.form.CheckBox({
+      checked: false,
+    });
+    var onlineCheckSelect = new dijit.form.Select({
+      options: [
+        { label: "none", value: "", selected: true },
+        { label: "phonespamfilter.com", value: "phonespamfilter_com" },
+        { label: "whocalled.us", value: "whocalled_us" },
+        { label: "tellows.de", value: "tellows_de" },
+      ]
+    });
+    var onlineLookupSelect = new dijit.form.Select({
+      options: [
+        { label: "none", value: "", selected: true },
+        { label: "tel.search.ch", value: "tel_search_ch" },
+      ]
+    });
+    var deviceTextBox = new dijit.form.ValidationTextBox({
+      placeHolder: "device",
+      pattern: "/dev/.*",
+      invalidMessage: "Not a valid device name (/dev/...)"
+    });
+    var fromDomainTextBox = new dijit.form.ValidationTextBox({
+      placeHolder: "from domain"
+    });
+    var fromUsernameTextBox = new dijit.form.ValidationTextBox({
+      placeHolder: "from username"
+    });
+    var fromPasswordTextBox = new dijit.form.ValidationTextBox({
+      placeHolder: "from password",
+      type: "password"
+    });
+
+    var phoneStore = createListStore("phones.php");
+    var structure = [
+      { name: "Name",      field: "name",     width:"100px"},
+      { name: "Country code",  field: "country_code", width:"50px"},
+      { name: "Block mode",  field: "block_mode", width:"120px"},
+      { name: "Block anonymous CID",  field: "block_anonymous_cid", width:"60px"},
+      { name: "Online check",  field: "online_check", width:"100px"},
+      { name: "Online lookup",  field: "online_lookup", width:"100px"},
+      { name: "Device",  field: "device", width:"100px"},
+      { name: "From domain",  field: "from_domain", width:"160px"},
+      { name: "From username",  field: "from_username", width:"160px"},
+      { name: "From password",  field: "from_password", width:"160px",
+        type:dojox.grid.cells._Widget, formatter:function(str){return new dijit.form.TextBox({value : str, type: "password"});}
+      },
+    ];
+
+    var menu = new dijit.Menu();
+    var editMenuItem = new dijit.MenuItem({
+      label: "Edit",
+      onClick: function(){
+        var items = grid.selection.getSelected();
+        if (items.length) {
+          var si = items[0];
+          var myDialog = new ConfirmDialog({
+            title: "Edit entry",
+            content: [
+              domConstruct.create("T", {innerHTML:"Type: "}), typeSelect.domNode, domConstruct.create("br"),
+              domConstruct.create("T", {innerHTML:"Name: "}), nameTextBox.domNode, domConstruct.create("br"),
+              domConstruct.create("T", {innerHTML:"Country code: "}), countryCodeTextBox.domNode, domConstruct.create("br"),
+              domConstruct.create("T", {innerHTML:"Block mode: "}), blockModeSelect.domNode, domConstruct.create("br"),
+              domConstruct.create("T", {innerHTML:"Block anonymous CID: "}), blockAnonymousCIDCheckBox.domNode, domConstruct.create("br"),
+              domConstruct.create("T", {innerHTML:"Online check: "}), onlineCheckSelect.domNode, domConstruct.create("br"),
+              domConstruct.create("T", {innerHTML:"Online lookup: "}), onlineLookupSelect.domNode, domConstruct.create("br"),
+              domConstruct.create("T", {innerHTML:"Device: "}), deviceTextBox.domNode, domConstruct.create("br"),
+              domConstruct.create("T", {innerHTML:"From domain: "}), fromDomainTextBox.domNode, domConstruct.create("br"),
+              domConstruct.create("T", {innerHTML:"From username: "}), fromUsernameTextBox.domNode, domConstruct.create("br"),
+              domConstruct.create("T", {innerHTML:"From password: "}), fromPasswordTextBox.domNode, domConstruct.create("br"),
+            ],
+            onExecute:function() {
+              if (!nameTextBox.isValid()) return;
+              if (typeSelect.get("value") == "analog") {
+                if (!deviceTextBox.isValid()) return;
+                grid.store.setValue(si, "device", deviceTextBox.get("value"));
+                grid.store.setValue(si, "from_domain", "");
+                grid.store.setValue(si, "from_username", "");
+                grid.store.setValue(si, "from_password", "");
+              } else {
+                if (!fromDomainTextBox.isValid()) return;
+                if (!fromUsernameTextBox.isValid()) return;
+                if (!fromPasswordTextBox.isValid()) return;
+                grid.store.setValue(si, "device", "");
+                grid.store.setValue(si, "from_domain", fromDomainTextBox.get("value"));
+                grid.store.setValue(si, "from_username", fromUsernameTextBox.get("value"));
+                grid.store.setValue(si, "from_password", fromPasswordTextBox.get("value"));
+              }
+              grid.store.setValue(si, "name", nameTextBox.get("value"));
+              grid.store.setValue(si, "country_code", countryCodeTextBox.get("value"));
+              grid.store.setValue(si, "block_mode", blockModeSelect.get("value"));
+              //console.log(blockAnonymousCIDCheckBox.checked);
+              //grid.store.setValue(si, "block_anonymous_CID", blockAnonymousCIDCheckBox.get("value")); TODO
+              grid.store.setValue(si, "online_check", onlineCheckSelect.get("value"));
+              grid.store.setValue(si, "online_lookup", onlineLookupSelect.get("value"));
+              grid.store.save();
+            }
+          });
+
+          if (grid.store.getValue(si, "device")) {
+            typeSelect.set("value", "analog");
+            deviceTextBox.set("value", grid.store.getValue(si, "device"));
+          } else {
+            typeSelect.set("value", "sip");
+            fromDomainTextBox.set("value", grid.store.getValue(si, "from_domain"));
+            fromUsernameTextBox.set("value", grid.store.getValue(si, "from_username"));
+            fromPasswordTextBox.set("value", grid.store.getValue(si, "from_password"));
+          }
+          selectType(typeSelect.get("value") == "sip");
+          nameTextBox.set("value", grid.store.getValue(si, "name"));
+          countryCodeTextBox.set("value", grid.store.getValue(si, "country_code"));
+          blockModeSelect.set("value", grid.store.getValue(si, "block_mode"));
+          blockAnonymousCIDCheckBox.set("value", grid.store.getValue(si, "block_anonymous_CID"));
+          onlineCheckSelect.set("value", grid.store.getValue(si, "online_check"));
+          onlineLookupSelect.set("value", grid.store.getValue(si, "online_lookup"));
+          myDialog.show();
+        }
+      },
+      //iconClass: "dijitEditorIcon dijitEditorIconDelete"
+    });
+    menu.addChild(editMenuItem);
+
+    var grid = new dojox.grid.EnhancedGrid({
+      store: phoneStore,
+      structure: structure,
+      canSort:function(){return false}, // disable sorting, its not implemented on backend
+      selectable: true,
+      plugins : {menus: menusObject = {rowMenu: menu}},
+      style:"height:100%; width:100%;",
+    });
+/*
+    // TODO
+    grid.layout.setColumnVisibility(7, false);
+    grid.layout.setColumnVisibility(8, false);
+    grid.layout.setColumnVisibility(9, false);
 */
+    return grid;
+  }
 
   function createOnlineCredentials(url) {
     var nameSelect = new dijit.form.Select({
@@ -301,8 +460,8 @@ require(["dijit/ConfirmDialog",
   function createListX(url) {
     var numberTextBox = new dijit.form.ValidationTextBox({
       placeHolder: "Number",
-      pattern: "\\+[0-9]{4,15}",
       required: true,
+      pattern: "\\+[0-9]{4,15}",
       invalidMessage: "Not a valid international number (+...)"
     });
     var nameTextBox = new dijit.form.ValidationTextBox({
@@ -417,8 +576,12 @@ require(["dijit/ConfirmDialog",
         },
         { id: "calllog", name:"Caller Log", func:createCallerLogGrid},
         { id: "config", name:"Configuration", func:null,
-          children:[{_reference:"config_onlinecreds"}, {_reference:"config_whitelists"}, {_reference:"config_blacklists"}] 
+          children:[
+            {_reference:"config_phone"}, {_reference:"config_onlinecreds"},
+            {_reference:"config_whitelists"}, {_reference:"config_blacklists"}
+          ] 
         },
+        { id: "config_phone", name:"Phone", func:createPhone},
         { id: "config_onlinecreds", name:"Online Credentials", func:createOnlineCredentials},
         { id: "config_whitelists", name:"Whitelist", func:createWhitelist},
         { id: "config_blacklists", name:"Blacklist", func:createBlacklist},
