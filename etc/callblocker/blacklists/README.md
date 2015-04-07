@@ -1,13 +1,14 @@
+## Documentation of main.json
+```json
 { 
-  "name" : "My blacklist template",
+  "name" : "main",
   "entries" : [ 
       { 
         "name" : "Telemarketing Company X",
-        "number" : "+123567890123"
-      },
-      { 
-        "name" : "Call Center of Company Y",
-        "number" : "+491234567890123"
+        "number" : "+123567890123",
+        "timestamp": 1428433912479
       }
     ]
 }
+```
+
