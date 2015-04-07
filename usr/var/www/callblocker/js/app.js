@@ -513,7 +513,7 @@ require(["dijit/ConfirmDialog",
     var structure = [
       { name: "Date",      field: "timestamp", width:"150px", formatter: formatDate},
       { name: "Number",    field: "number",    width:"120px"},
-      { name: "Name",      field: "name",      width:"200px"}
+      { name: "Name",      field: "name",      width:"400px"}
     ];
     var grid = new dojox.grid.EnhancedGrid({
       //store: listStore, added later
