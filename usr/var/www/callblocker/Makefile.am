@@ -27,6 +27,7 @@ callblockerwww_DATA = \
   index.html \
   journal.php \
   list.php \
+  lists.php \
   online_credentials.php \
   phones.php
 

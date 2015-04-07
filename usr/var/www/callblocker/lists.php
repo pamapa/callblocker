@@ -19,10 +19,6 @@
 */
   include("config.php");
 
-  # dojo json exchange format see:
-  # http://dojotoolkit.org/reference-guide/1.10/dojo/data/ItemFileReadStore.html#input-data-format
-
-/*
   function scanListFiles($dirName) {
     $files = scandir(CALLBLOCKER_SYSCONFDIR."/".$dirName);
     $ret = array();
@@ -34,40 +30,40 @@
     }
     return $ret;
   }
-  function getList($dirName, $id) {
+
+  /*function getListNames($dirName) {
     $files = scanListFiles($dirName);
-    if ($id >= count($files)) return array();
-    $json = json_decode(file_get_contents($files[$id]));
-    //var_dump($json);
-    return $json->{"entries"};
-  }
-  $all = getList("blacklists", 0);
-*/
+    $ret = array();
+    foreach($files as $f) {
+      $json = json_decode(file_get_contents($f));
+      //var_dump($json);
+      if (isset($json->{"name"})) {
+        array_push($ret, $json->{"name"});
+      }
+    }
+    return $ret;
+  }*/
 
   $dirname = "blacklists";
   if (array_key_exists("dirname", $_REQUEST)) {
     $dirname = $_REQUEST["dirname"];
   }
-  $filename = "main.json";
-  if (array_key_exists("filename", $_REQUEST)) {
-    $filename = $_REQUEST["filename"];
-  }
-  $file = CALLBLOCKER_SYSCONFDIR."/".$dirname."/".$filename;
-  //print $file;
-  
-  if (array_key_exists("data", $_POST)) {
-    error_log("POST data:".$_POST["data"]);
-    $json = json_decode($_POST["data"]);
-    $ret = array("name"=>$json->{"label"},
-                 "entries"=>$json->{"items"});
-    file_put_contents($file, json_encode($ret, JSON_PRETTY_PRINT));
-    return;
-  }
+  $files = scanListFiles($dirname);
 
-  $json = json_decode(file_get_contents($file));
-  #var_dump($json);
-  $all = $json->{"entries"};
-  #var_dump($all);
+  $main_found = False;
+  $all = array();
+  foreach($files as $f) {
+    $json = json_decode(file_get_contents($f));
+    if (strcmp(basename($f), "main.json") == 0) $main_found = True;
+    $tmp = array("name"=>$json->{"name"}, "file"=>basename($f));
+    array_push($all, $tmp);
+  }
+  // we need at least "main.json" entry to keep app.js simple
+  if (!$main_found) {
+    $tmp = array("name"=>"main", "file"=>"main.json");
+    array_push($all, $tmp);
+  }
+  //var_dump($all);
   $all_count = count($all);
 
   $start = 0;
@@ -89,13 +85,6 @@
 
   header("Content-Type", "text/json");
   header(sprintf("Content-Range: items %d-%d/%d", $start, $start+$count, $all_count));
-
-  // make sure we have a label/name
-  $label = basename($file, ".json");
-  if ($json->{"name"}) {
-    $label = $json->{"name"};
-  }
-
-  print json_encode(array("label"=>$label, "numRows"=>$all_count, "items"=>$ret), JSON_PRETTY_PRINT);
+  print json_encode(array("identifier"=>"file", "label"=>"name", "numRows"=>$all_count, "items"=>$ret), JSON_PRETTY_PRINT);
 ?>
 

@@ -329,7 +329,6 @@ require(["dijit/ConfirmDialog",
             fromUsernameTextBox.set("value", grid.store.getValue(si, "from_username"));
             fromPasswordTextBox.set("value", grid.store.getValue(si, "from_password"));
           }
-          selectType(typeSelect.get("value") == "sip");
           enabledCheckBox.set("value", grid.store.getValue(si, "enabled"));
           nameTextBox.set("value", grid.store.getValue(si, "name"));
           countryCodeTextBox.set("value", grid.store.getValue(si, "country_code"));
@@ -353,7 +352,6 @@ require(["dijit/ConfirmDialog",
       style:"height:100%; width:100%;",
     });
 /*
-    // TODO
     grid.layout.setColumnVisibility(7, false);
     grid.layout.setColumnVisibility(8, false);
     grid.layout.setColumnVisibility(9, false);
@@ -408,7 +406,7 @@ require(["dijit/ConfirmDialog",
           var myDialog = new ConfirmDialog({
             title: "Edit entry",
             content: [nameSelect.domNode, usernameTextBox.domNode, passwordTextBox.domNode],
-            onExecute:function() {
+            onExecute: function() {
               if (usernameTextBox.isValid() && passwordTextBox.isValid()) {
                 grid.store.setValue(si, "name", nameSelect.get("value"));
                 grid.store.setValue(si, "username", usernameTextBox.get("value"));
@@ -431,10 +429,10 @@ require(["dijit/ConfirmDialog",
     var grid = new dojox.grid.EnhancedGrid({
       store: listStore,
       structure: structure,
-      canSort:function(){return false}, // disable sorting, its not implemented on backend
+      canSort: function(){return false}, // disable sorting, its not implemented on backend
       selectable: true,
       plugins : {menus: menusObject = {rowMenu: menu}},
-      style:"height:100%; width:100%;",
+      style: "height:100%; width:100%;",
       region: "center",
     });
 
@@ -463,7 +461,7 @@ require(["dijit/ConfirmDialog",
     return listLayout;
   }
 
-  function createListX(url) {
+  function createListX(url_param) {
     var numberTextBox = new dijit.form.ValidationTextBox({
       placeHolder: "Number",
       required: true,
@@ -473,13 +471,6 @@ require(["dijit/ConfirmDialog",
     var nameTextBox = new dijit.form.ValidationTextBox({
       placeHolder: "Name"
     });
-
-    var listStore = createListStore(url);
-    var structure = [
-      { name: "Date",      field: "timestamp", width:"150px", formatter: formatDate},
-      { name: "Number",    field: "number",    width:"120px"},
-      { name: "Name",      field: "name",      width:"200px"}
-    ];
 
     var menu = new dijit.Menu();
     var deleteMenuItem = new dijit.MenuItem({
@@ -506,7 +497,7 @@ require(["dijit/ConfirmDialog",
           var myDialog = new ConfirmDialog({
             title: "Edit entry",
             content: [numberTextBox.domNode, nameTextBox.domNode],
-            onExecute:function() {
+            onExecute: function() {
               if (numberTextBox.isValid() && nameTextBox.isValid()) {
                 grid.store.setValue(si, "timestamp", Date.now());
                 grid.store.setValue(si, "number", numberTextBox.get("value"));
@@ -525,27 +516,45 @@ require(["dijit/ConfirmDialog",
     menu.addChild(deleteMenuItem);
     menu.addChild(editMenuItem);
 
+    var structure = [
+      { name: "Date",      field: "timestamp", width:"150px", formatter: formatDate},
+      { name: "Number",    field: "number",    width:"120px"},
+      { name: "Name",      field: "name",      width:"200px"}
+    ];
+
     var grid = new dojox.grid.EnhancedGrid({
-      store: listStore,
+      //store: listStore, added later
       structure: structure,
-      canSort:function(){return false}, // disable sorting, its not implemented on backend
+      canSort: function(){return false}, // disable sorting, its not implemented on backend
       selectable: true,
-      plugins : {menus: menusObject = {rowMenu: menu}},
-      style:"height:100%; width:100%;",
-      region: "center",
+      plugins: {menus: menusObject = {rowMenu: menu}},
+      style: "height:100%; width:100%;"
     });
     /*dojo.connect(grid, "onKeyPress", function(evt) {
       if(evt.keyCode === dojo.keys.DELETE) { 
         console.log('delete!'); 
       }
     });*/
+
+    var listsStore = createListStore("lists.php?".concat(url_param));
+    var listSelect = new dijit.form.Select({
+      store: listsStore,
+      placeHolder: "Select a list",
+      style: "width:150px",
+    });
+    dojo.connect(listSelect, "onChange", function(evt) {
+      grid.setStore(createListStore("list.php?".concat(url_param).concat("&filename=").concat(evt)));
+    });
+    // pre select main
+    listSelect.set("value", "main.json");
+
     var addNewEntry = new dijit.form.Button({
       label: "Add new entry",
       onClick: function() {
         var myDialog = new ConfirmDialog({
           title: "Add new entry",
           content: [numberTextBox.domNode, nameTextBox.domNode],
-          onExecute:function() {
+          onExecute: function() {
             if (numberTextBox.isValid() && nameTextBox.isValid()) {
               var newItem = {timestamp: Date.now(), number: numberTextBox.get("value"), name: nameTextBox.get("value")};
               grid.store.newItem(newItem);
@@ -554,22 +563,18 @@ require(["dijit/ConfirmDialog",
           }
         });
         myDialog.show();
-      },
-      region: "top",
+      }
     });
 
-    var listLayout = new dijit.layout.LayoutContainer();
-    listLayout.addChild(addNewEntry);
-    listLayout.addChild(grid);
-    return listLayout;
+    return [listSelect.domNode, addNewEntry.domNode, domConstruct.create("br"), grid.domNode]
   }
 
   function createWhitelist() {
-    return createListX("list.php?dirname=whitelists");
+    return createListX("dirname=whitelists");
   }
 
   function createBlacklist() {
-    return createListX("list.php?dirname=blacklists");
+    return createListX("dirname=blacklists");
   }
 
   function createTree() {  
@@ -589,8 +594,8 @@ require(["dijit/ConfirmDialog",
         },
         { id: "config_phone", name:"Phone", func:createPhone},
         { id: "config_onlinecreds", name:"Online Credentials", func:createOnlineCredentials},
-        { id: "config_whitelists", name:"Whitelist", func:createWhitelist},
-        { id: "config_blacklists", name:"Blacklist", func:createBlacklist},
+        { id: "config_whitelists", name:"Whitelists", func:createWhitelist},
+        { id: "config_blacklists", name:"Blacklists", func:createBlacklist},
         { id: "diag", name:"Diagnostics", func:null,
           children:[{_reference:"diag_error_warn"}, {_reference:"diag_all"}] 
         },
