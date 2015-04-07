@@ -67,41 +67,28 @@ require(["dijit/ConfirmDialog",
       { name: "Score",     field: "SCORE",     width:"50px"}
     ];
 
-    // TODO factor out common stuff
     var menu = new dijit.Menu();
+    function onClickAddToList(url) {
+      var items = grid.selection.getSelected();
+      if (items.length) {
+        var listStore = createListStore(url);
+        dojo.forEach(items, function(si) {
+          if (si !== null) {
+            var newItem = { timestamp: Date.now(),
+                            number: grid.store.getValue(si, "NUMBER"), name: grid.store.getValue(si, "NAME")};
+            listStore.newItem(newItem);
+          }
+        });
+        listStore.save();
+      } 
+    }
     var addToWhitelistMenuItem = new dijit.MenuItem({
       label: "Add to whitelist",
-      onClick: function(){
-        var items = grid.selection.getSelected();
-        if (items.length) {
-          var listStore = createListStore("list.php?dirname=whitelists");
-          dojo.forEach(items, function(si){
-            if (si !== null) {
-              var newItem = { timestamp: Date.now(),
-                              number: grid.store.getValue(si, "NUMBER"), name: grid.store.getValue(si, "NAME")};
-              listStore.newItem(newItem);
-            }
-          });
-          listStore.save();
-        } 
-      }
+      onClick: function() { onClickAddToList("list.php?dirname=whitelists"); }
     });
     var addToBlacklistMenuItem = new dijit.MenuItem({
       label: "Add to blacklist",
-      onClick: function(){
-        var items = grid.selection.getSelected();
-        if (items.length) {
-          var listStore = createListStore("list.php?dirname=blacklists");
-          dojo.forEach(items, function(si){
-            if (si !== null) {
-              var newItem = { timestamp: Date.now(),
-                              number: grid.store.getValue(si, "NUMBER"), name: grid.store.getValue(si, "NAME")};
-              listStore.newItem(newItem);
-            }
-          });
-          listStore.save();
-        } 
-      }
+      onClick: function() { onClickAddToList("list.php?dirname=blacklists"); }
     });
     menu.addChild(addToWhitelistMenuItem);
     menu.addChild(addToBlacklistMenuItem);
@@ -339,7 +326,7 @@ require(["dijit/ConfirmDialog",
           myDialog.show();
         }
       },
-      //iconClass: "dijitEditorIcon dijitEditorIconDelete"
+      iconClass: "iconClass dijitIconEdit"
     });
     menu.addChild(editMenuItem);
 
@@ -414,7 +401,7 @@ require(["dijit/ConfirmDialog",
           myDialog.show();
         }
       },
-      //iconClass: "dijitEditorIcon dijitEditorIconDelete"
+      iconClass: "iconClass dijitIconEdit"
     });
     menu.addChild(deleteMenuItem);
     menu.addChild(editMenuItem);
@@ -505,7 +492,7 @@ require(["dijit/ConfirmDialog",
           myDialog.show();
         }
       },
-      //iconClass: "dijitEditorIcon dijitEditorIconDelete"
+      iconClass: "iconClass dijitIconEdit"
     });
     menu.addChild(deleteMenuItem);
     menu.addChild(editMenuItem);
