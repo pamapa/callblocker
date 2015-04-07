@@ -2,19 +2,9 @@
   "log_level" : "info",
   "pjsip_log_level" : 0,
   "phones" : [
-    {
-      "enabled"             : false,
-      "name"                : "Analog Home Phone",
-      "country_code"        : "+41",
-      "block_mode"          : "logging_only",
-      "block_anonymous_cid" : false,
-      "online_check"        : "tellows_de",
-      "online_lookup"       : "tel_search_ch",
-      "device"              : "/dev/ttyACM0"
-    },
     { 
       "enabled"             : false,
-      "name"                : "SIP Home Phone",
+      "name"                : "My Home Phone",
       "country_code"        : "+41",
       "block_mode"          : "whitelists_and_blacklists",
       "block_anonymous_cid" : false,

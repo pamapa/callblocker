@@ -52,26 +52,35 @@
   if ($json->{"phones"} != null) {
     $all = $json->{"phones"};
   }
+  // we need at least one default entry to keep app.js simple
+  if (count($all) == 0) {
+    $entry = array(
+      "enabled"=>false, "name"=>"My Home Phone"
+    );
+    array_push($all, $entry);
+  }
   //var_dump($all);
   $all_count = count($all);
 
-  // TODO assign first enabled entry...
+  $start = 0;
+  $count = $all_count;
+
+  // Handle paging, if given.
+  if (array_key_exists("start", $_REQUEST)) {
+    $start = $_REQUEST["start"];
+  }
+  if (array_key_exists("count", $_REQUEST)) {
+    $count = $_REQUEST["count"];
+  }
+
   $ret = array();
-  for ($i = 0; $i < 1 && $i < $all_count; $i++) {
+  for ($i = $start; $i < $start+$count && $i < $all_count; $i++) {
     $entry = $all[$i];
     array_push($ret, $entry);
   }
 
-  // we need at least one default entry
-  if (count($ret) == 0) {
-    $entry = array(
-      "enabled"=>true, "name"=>"My Home Phone"
-    );
-    array_push($ret, $entry);
-  }
-
   header("Content-Type", "text/json");
-  header(sprintf("Content-Range: items %d-%d/%d", 0, 0, 1));
-  print json_encode(array("numRows"=>1, "items"=>$ret), JSON_PRETTY_PRINT);
+  header(sprintf("Content-Range: items %d-%d/%d", $start, $start+$count, $all_count));
+  print json_encode(array("numRows"=>$all_count, "items"=>$ret), JSON_PRETTY_PRINT);
 ?>
 

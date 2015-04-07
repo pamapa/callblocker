@@ -199,6 +199,9 @@ require(["dijit/ConfirmDialog",
     dojo.connect(typeSelect, "onChange", function(evt) {
       selectType(evt == "sip");
     });
+    var enabledCheckBox = new dijit.form.CheckBox({
+      checked: true,
+    });
     var nameTextBox = new dijit.form.ValidationTextBox({
       placeHolder: "name"
     });
@@ -251,16 +254,17 @@ require(["dijit/ConfirmDialog",
 
     var phoneStore = createListStore("phones.php");
     var structure = [
-      { name: "Name",      field: "name",     width:"100px"},
-      { name: "Country code",  field: "country_code", width:"50px"},
-      { name: "Block mode",  field: "block_mode", width:"120px"},
-      { name: "Block anonymous CID",  field: "block_anonymous_cid", width:"60px"},
-      { name: "Online check",  field: "online_check", width:"100px"},
-      { name: "Online lookup",  field: "online_lookup", width:"100px"},
-      { name: "Device",  field: "device", width:"100px"},
-      { name: "From domain",  field: "from_domain", width:"160px"},
-      { name: "From username",  field: "from_username", width:"160px"},
-      { name: "From password",  field: "from_password", width:"160px",
+      { name:"Enabled",             field:"enabled",             width:"50px"},
+      { name:"Name",                field:"name",                width:"100px"},
+      { name:"Country code",        field:"country_code",        width:"50px"},
+      { name:"Block mode",          field:"block_mode",          width:"120px"},
+      { name:"Block anonymous CID", field:"block_anonymous_cid", width:"60px"},
+      { name:"Online check",        field:"online_check",        width:"100px"},
+      { name:"Online lookup",       field:"online_lookup",       width:"100px"},
+      { name:"Device",              field:"device",              width:"100px"},
+      { name:"From domain",         field:"from_domain",         width:"160px"},
+      { name:"From username",       field:"from_username",       width:"160px"},
+      { name:"From password",       field:"from_password",       width:"160px",
         type:dojox.grid.cells._Widget, formatter:function(str){return new dijit.form.TextBox({value : str, type: "password"});}
       },
     ];
@@ -276,6 +280,7 @@ require(["dijit/ConfirmDialog",
             title: "Edit entry",
             content: [
               domConstruct.create("T", {innerHTML:"Type: "}), typeSelect.domNode, domConstruct.create("br"),
+              domConstruct.create("T", {innerHTML:"Enabled: "}), enabledCheckBox.domNode, domConstruct.create("br"),
               domConstruct.create("T", {innerHTML:"Name: "}), nameTextBox.domNode, domConstruct.create("br"),
               domConstruct.create("T", {innerHTML:"Country code: "}), countryCodeTextBox.domNode, domConstruct.create("br"),
               domConstruct.create("T", {innerHTML:"Block mode: "}), blockModeSelect.domNode, domConstruct.create("br"),
@@ -304,11 +309,11 @@ require(["dijit/ConfirmDialog",
                 grid.store.setValue(si, "from_username", fromUsernameTextBox.get("value"));
                 grid.store.setValue(si, "from_password", fromPasswordTextBox.get("value"));
               }
+              grid.store.setValue(si, "enabled", enabledCheckBox.get("checked"));
               grid.store.setValue(si, "name", nameTextBox.get("value"));
               grid.store.setValue(si, "country_code", countryCodeTextBox.get("value"));
               grid.store.setValue(si, "block_mode", blockModeSelect.get("value"));
-              //console.log(blockAnonymousCIDCheckBox.checked);
-              //grid.store.setValue(si, "block_anonymous_CID", blockAnonymousCIDCheckBox.get("value")); TODO
+              grid.store.setValue(si, "block_anonymous_cid", blockAnonymousCIDCheckBox.get("checked"));
               grid.store.setValue(si, "online_check", onlineCheckSelect.get("value"));
               grid.store.setValue(si, "online_lookup", onlineLookupSelect.get("value"));
               grid.store.save();
@@ -325,10 +330,11 @@ require(["dijit/ConfirmDialog",
             fromPasswordTextBox.set("value", grid.store.getValue(si, "from_password"));
           }
           selectType(typeSelect.get("value") == "sip");
+          enabledCheckBox.set("value", grid.store.getValue(si, "enabled"));
           nameTextBox.set("value", grid.store.getValue(si, "name"));
           countryCodeTextBox.set("value", grid.store.getValue(si, "country_code"));
           blockModeSelect.set("value", grid.store.getValue(si, "block_mode"));
-          blockAnonymousCIDCheckBox.set("value", grid.store.getValue(si, "block_anonymous_CID"));
+          blockAnonymousCIDCheckBox.set("value", grid.store.getValue(si, "block_anonymous_cid"));
           onlineCheckSelect.set("value", grid.store.getValue(si, "online_check"));
           onlineLookupSelect.set("value", grid.store.getValue(si, "online_lookup"));
           myDialog.show();
