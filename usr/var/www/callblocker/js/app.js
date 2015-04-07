@@ -374,13 +374,6 @@ require(["dijit/ConfirmDialog",
       placeHolder: "password"
     });
 
-    var listStore = createListStore("online_credentials.php");
-    var structure = [
-      { name: "Name",      field: "name",     width:"150px"},
-      { name: "Username",  field: "username", width:"120px"},
-      { name: "Password",  field: "password", width:"200px"}
-    ];
-
     var menu = new dijit.Menu();
     var deleteMenuItem = new dijit.MenuItem({
       label: "Delete",
@@ -426,17 +419,22 @@ require(["dijit/ConfirmDialog",
     menu.addChild(deleteMenuItem);
     menu.addChild(editMenuItem);
 
+    var listStore = createListStore("online_credentials.php");
+    var structure = [
+      { name: "Name",      field: "name",     width:"150px"},
+      { name: "Username",  field: "username", width:"120px"},
+      { name: "Password",  field: "password", width:"200px"}
+    ];
     var grid = new dojox.grid.EnhancedGrid({
       store: listStore,
       structure: structure,
       canSort: function(){return false}, // disable sorting, its not implemented on backend
       selectable: true,
       plugins : {menus: menusObject = {rowMenu: menu}},
-      style: "height:100%; width:100%;",
-      region: "center",
+      style: "height:100%; width:100%;"
     });
 
-    var addNewEntry = new dijit.form.Button({
+    var addNewEntryButton = new dijit.form.Button({
       label: "Add new entry",
       onClick: function() {
         var myDialog = new ConfirmDialog({
@@ -451,14 +449,10 @@ require(["dijit/ConfirmDialog",
           }
         });
         myDialog.show();
-      },
-      region: "top",
+      }
     });
 
-    var listLayout = new dijit.layout.LayoutContainer();
-    listLayout.addChild(addNewEntry);
-    listLayout.addChild(grid);
-    return listLayout;
+    return [addNewEntryButton.domNode, domConstruct.create("br"), grid.domNode]
   }
 
   function createListX(url_param) {
@@ -521,7 +515,6 @@ require(["dijit/ConfirmDialog",
       { name: "Number",    field: "number",    width:"120px"},
       { name: "Name",      field: "name",      width:"200px"}
     ];
-
     var grid = new dojox.grid.EnhancedGrid({
       //store: listStore, added later
       structure: structure,
@@ -544,11 +537,22 @@ require(["dijit/ConfirmDialog",
     });
     dojo.connect(listSelect, "onChange", function(evt) {
       grid.setStore(createListStore("list.php?".concat(url_param).concat("&filename=").concat(evt)));
+      if (evt == "main.json") {
+        // allow editing
+        deleteMenuItem.setDisabled(false);
+        editMenuItem.setDisabled(false);
+        addNewEntryButton.setDisabled(false);
+      } else {
+        // disallow editing
+        deleteMenuItem.setDisabled(true);
+        editMenuItem.setDisabled(true);
+        addNewEntryButton.setDisabled(true);
+      }
     });
     // pre select main
     listSelect.set("value", "main.json");
 
-    var addNewEntry = new dijit.form.Button({
+    var addNewEntryButton = new dijit.form.Button({
       label: "Add new entry",
       onClick: function() {
         var myDialog = new ConfirmDialog({
@@ -566,7 +570,7 @@ require(["dijit/ConfirmDialog",
       }
     });
 
-    return [listSelect.domNode, addNewEntry.domNode, domConstruct.create("br"), grid.domNode]
+    return [listSelect.domNode, addNewEntryButton.domNode, domConstruct.create("br"), grid.domNode]
   }
 
   function createWhitelist() {
