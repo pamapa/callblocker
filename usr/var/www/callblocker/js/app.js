@@ -358,7 +358,8 @@ require(["dijit/ConfirmDialog",
       required: true,
     });
     var passwordTextBox = new dijit.form.ValidationTextBox({
-      placeHolder: "password"
+      placeHolder: "password",
+      type: "password"
     });
 
     var menu = new dijit.Menu();
@@ -410,7 +411,9 @@ require(["dijit/ConfirmDialog",
     var structure = [
       { name: "Name",      field: "name",     width:"150px"},
       { name: "Username",  field: "username", width:"120px"},
-      { name: "Password",  field: "password", width:"200px"}
+      { name: "Password",  field: "password", width:"200px",
+        type:dojox.grid.cells._Widget, formatter:function(str){return new dijit.form.TextBox({value : str, type: "password"});}
+      }
     ];
     var grid = new dojox.grid.EnhancedGrid({
       store: listStore,
