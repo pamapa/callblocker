@@ -23,6 +23,7 @@ import os
 import sys
 import argparse
 import urllib2
+from BeautifulSoup import BeautifulSoup
 import re
 
 def error(*objs):
@@ -34,7 +35,7 @@ def debug(*objs):
   return
 
 def fetch_url(url):
-  debug("fetch_url: " + str(url))
+  debug("fetch_url: '" + str(url)+"'")
   data = urllib2.urlopen(url, timeout = 5)
   return data.read()
 
@@ -57,65 +58,18 @@ def main(argv):
   if not args.number.startswith("+41"):
     error("Not a valid Swiss number: " + args.number)
 
-  url = "http://tel.search.ch/index.en.html?was=" + args.number
+  url = "http://tel.search.ch/api/?was=" + args.number
   content = fetch_url(url)
   #debug(content)
+  soup = BeautifulSoup(content)
 
   callerName = ""
-
-  # private and bussiness (single entry)
-  if len(callerName) == 0:
-    x = content.find('class="tel-detail-avatar')
-    if x != -1:
-      debug('found class="tel-detail-avatar')
-      # <td><div>caller title</div>
-      # <h1>caller name</h1>
-      callerName = ""
-      divs = content.find("<td><div>", x + 1)
-      if divs != -1:
-        divs += 9
-        dive = content.find("</div>", divs)
-        # can be empty
-        if (divs != dive):
-          debug('found <td><div>title</div>')
-          callerName = content[divs:dive]
-      h1s = content.find("<h1>", x + 1)
-      if h1s != -1:
-        h1s += 4
-        h1e = content.find("</h1>", h1s)
-        h1_c = extract_callerName(content[h1s:h1e])
-        if len(callerName) == 0: callerName = h1_c
-        else: callerName += " / " + h1_c
-
-  # private (multiple entries)
-  if len(callerName) == 0:
-    x = 0
-    while True:
-      x = content.find('class="tel-person', x)
-      if x == -1: break;
-      debug('found class="tel-person')
-      x += 1
-      h1s = content.find("<h1>", x)
-      if h1s == -1: continue
-      h1s += 4
-      h1e = content.find("</h1>", h1s + 1)
-      if h1e == -1: continue
-      debug("found: "+content[h1s:h1e])
-      callerName += extract_callerName(content[h1s:h1e])+"; ";
-    callerName = callerName[:-2] # remove last "; "
-
-  # bussiness
-  if len(callerName) == 0:
-    x = content.find('class="tel-commercial')
-    if x != -1:
-      debug('found class="tel-commercial')
-      h1s = content.find("<h1>", x + 1)
-      if h1s != -1:
-        h1s += 4
-        h1e = content.find("</h1>", h1s + 1)
-        callerName = extract_callerName(content[h1s:h1e])
-  
-  debug(callerName)
+  entries = soup.findAll("entry")
+  for entry in entries:
+    if len(callerName) == 0:
+      callerName = entry.title.contents[0]
+    else:
+      callerName += "; " + entry.title.contents[0]
 
   # result in json format
   print('{"name": "%s"}' % (callerName))
