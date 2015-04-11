@@ -124,16 +124,16 @@ Fields               | Values | Description
 ------               | ------ | -------
 "log_level"          | "error", "warn", "info" or "debug" | Logging level. Default is "info".
 "pjsip_log_level"    | 0-5 | Logging level of the pjsip library, for debugging proposes. Default is 0.
-"country_code"       | +<X[Y][Z]> | Your international country code (e.g. +33 for France)
+"country_code"       | `+<X[Y][Z]>` | Your international country code (e.g. +33 for France)
 "block_mode"         | "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only" | "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists. (whitelists not used)
 "block_anonymous_cid"  | true, false | optional: block all calls that come to your system with a anonymous/unknown caller ID. Default is false.
-"online_check"       | <values> (see #onlineCheck)  | optional: online check site to verify if number is spam
-"online_lookup"      | <values> (see #onlineLookup)  | optional: online lookup site, to see who is calling
-"device"             | <string> | Your device name (get it with dmesg). Usually its "/dev/ttyACM0".
-"from_domain"        | <string> | Your SIP domain name
-"from_username"      | <string> | Your SIP username
-"from_password"      | <string> | Your SIP password
-"online_credentials" | | In this section you can define credentials, which are needed by some "online_check" (see #onlineCheck) and "online_lookup" (see #onlineLookup) scripts.
+"online_check"       | `<string>` [see](#onlineCheck)  | optional: online check site to verify if number is spam
+"online_lookup"      | `<string>` [see](#onlineLookup)  | optional: online lookup site, to see who is calling
+"device"             | `<string>` | Your device name (get it with dmesg). Usually its "/dev/ttyACM0".
+"from_domain"        | `<string>` | Your SIP domain name
+"from_username"      | `<string>` | Your SIP username
+"from_password"      | `<string>` | Your SIP password
+"online_credentials" | | In this section you can define credentials, which are needed by some "online_check" ([see](#onlineCheck)) and "online_lookup" ([see](#onlineLookup)) scripts.
 
 
 ## <a name="onlineCheck"></a> Online check option
