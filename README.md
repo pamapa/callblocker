@@ -1,13 +1,13 @@
 # callblocker
-blocking unwanted calls from your home phone, such as telemarketing, junk, spam, scam, etc. Its
-designed to run on small footprint such as a Raspberry Pi. For all those where jcblock or ncid
+blocking unwanted calls from your home phone, such as telemarketing, junk, spam, scam, etc.
+
+Its designed to run on small footprint such as a Raspberry Pi. For all those where jcblock or ncid
 does not fit or is not enough and Asterisk or FreePBX would be an overkill, as you already have
 running VoIP server. callblocker acts as an additional phone, when someone is calling the phone detects the
-number and checks it offline via white-and blacklists. There is also the ability to check the number online.
+number and checks it offline via white-and blacklists. There is also the possibility to check the number against a online blacklists.
 
 
 ## TODO
-1. finish webinterface
 1. polish, bugfixing
 
 
@@ -68,8 +68,8 @@ When installed on Linux, the following file layout is used
 ```
 /etc/callblocker
   settings.json (configuration)
-  blacklists (place your own blacklists here)
-  whitelists (place your own whitelists here)
+  blacklists (place additional blacklists here)
+  whitelists (place additional whitelists here)
 /usr/bin/callblockerd (daemon)
 /usr/share/callblocker (scripts)
 /usr/var/www/callblocker (web interface)
@@ -127,13 +127,13 @@ Fields               | Values | Description
 "country_code"       | `+<X[Y][Z]>` | Your international country code (e.g. +33 for France)
 "block_mode"         | "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only" | "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists. (whitelists not used)
 "block_anonymous_cid"  | true, false | optional: block all calls that come to your system with a anonymous/unknown caller ID. Default is false.
-"online_check"       | `<string>` [see](#onlineCheck)  | optional: online check site to verify if number is spam
-"online_lookup"      | `<string>` [see](#onlineLookup)  | optional: online lookup site, to see who is calling
+"online_check"       | [`<string>`](#onlineCheck)  | optional: online check site to verify if number is spam
+"online_lookup"      | [`<string>`](#onlineLookup)  | optional: online lookup site, to see who is calling
 "device"             | `<string>` | Your device name (get it with dmesg). Usually its "/dev/ttyACM0".
 "from_domain"        | `<string>` | Your SIP domain name
 "from_username"      | `<string>` | Your SIP username
 "from_password"      | `<string>` | Your SIP password
-"online_credentials" | | In this section you can define credentials, which are needed by some "online_check" ([see](#onlineCheck)) and "online_lookup" ([see](#onlineLookup)) scripts.
+"online_credentials" | | In this section you can define credentials, which are needed by some ["online_check"](#onlineCheck) and ["online_lookup"](#onlineLookup) scripts.
 
 
 ## <a name="onlineCheck"></a> Online check option
@@ -164,9 +164,9 @@ Name                         | Site                       | Description
 blacklist_toastedspam_com.py | http://www.toastedspam.com | Mostly USA and Canada (+1)
 blacklist_ktipp_ch.py        | https://www.ktipp.ch       | Switzerland (+41)
 
-There is a possibility to daily download a whole blacklist. You will need to setup a cronjob for this task. The following cronjob will download each day the blacklist provided by ktipp_ch:
+There is the possibility to daily download a whole blacklist. You will need to setup a cronjob for this task. The following cronjob will download each day the blacklist provided by ktipp_ch:
 ```
-0 0 * * * /usr/share/callblocker/blacklist_ktipp_ch.py --output /etc/callblocker/blacklists/ >/dev/null
+0 0 * * * /usr/share/callblocker/blacklist_ktipp_ch.py --output /etc/callblocker/blacklists/ >/dev/null 2>&1
 ```
 
 
