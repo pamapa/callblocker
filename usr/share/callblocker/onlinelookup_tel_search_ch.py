@@ -68,11 +68,24 @@ def main(argv):
     x = content.find('class="tel-detail-avatar')
     if x != -1:
       debug('found class="tel-detail-avatar')
+      # <td><div>caller title</div>
+      # <h1>caller name</h1>
+      callerName = ""
+      divs = content.find("<td><div>", x + 1)
+      if divs != -1:
+        divs += 9
+        dive = content.find("</div>", divs)
+        # can be empty
+        if (divs != dive):
+          debug('found <td><div>title</div>')
+          callerName = content[divs:dive]
       h1s = content.find("<h1>", x + 1)
       if h1s != -1:
         h1s += 4
-        h1e = content.find("</h1>", h1s + 1)
-        callerName = extract_callerName(content[h1s:h1e])
+        h1e = content.find("</h1>", h1s)
+        h1_c = extract_callerName(content[h1s:h1e])
+        if len(callerName) == 0: callerName = h1_c
+        else: callerName += " / " + h1_c
 
   # private (multiple entries)
   if len(callerName) == 0:
