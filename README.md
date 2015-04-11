@@ -124,16 +124,16 @@ Fields               | Values | Description
 ------               | ------ | -------
 "log_level"          | "error", "warn", "info" or "debug" | Logging level. Default is "info".
 "pjsip_log_level"    | 0-5 | Logging level of the pjsip library, for debugging proposes. Default is 0.
-"country_code"       | `+<X[Y][Z]>` | Your international country code (e.g. +33 for France)
+"country_code"       | +<X[Y][Z]> | Your international country code (e.g. +33 for France)
 "block_mode"         | "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only" | "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists. (whitelists not used)
-"block_unknown_cid"  | true, false | optional: You can decide to block all calls that come to your system with a blocked/unknown caller ID. Default is false.
-"online_check"       | [values](#onlineCheck)  | optional: online check site to verify if number is spam
-"online_lookup"      | [values](#onlineLookup)  | optional: online lookup site, to see who is calling
-"device"             | | Your device name (get it with dmesg). Usually its "/dev/ttyACM0".
-"from_domain"        | | Your SIP domain name
-"from_username"      | | Your SIP username
-"from_password"      | | Your SIP password
-"online_credentials" | | In this section you can define credentials, which are needed by some scripts to get the online information.
+"block_anonymous_cid"  | true, false | optional: block all calls that come to your system with a anonymous/unknown caller ID. Default is false.
+"online_check"       | <values> (see #onlineCheck)  | optional: online check site to verify if number is spam
+"online_lookup"      | <values> (see #onlineLookup)  | optional: online lookup site, to see who is calling
+"device"             | <string> | Your device name (get it with dmesg). Usually its "/dev/ttyACM0".
+"from_domain"        | <string> | Your SIP domain name
+"from_username"      | <string> | Your SIP username
+"from_password"      | <string> | Your SIP password
+"online_credentials" | | In this section you can define credentials, which are needed by some "online_check" (see #onlineCheck) and "online_lookup" (see #onlineLookup) scripts.
 
 
 ## <a name="onlineCheck"></a> Online check option
@@ -144,7 +144,7 @@ Name                  | Site                           | Description
 "whocalled_us"        | http://whocalled.us            | Mostly USA and Canada (+1). Free, but needs login
 "tellows_de"          | http://tellows.de              | Not free
 
-The online check script base name e.g. "tellows_de" leds to onlinecheck_tellows_de.py.
+Developer hint: The online check name e.g. "tellows_de" leds to the script name onlinecheck_tellows_de.py.
 
 
 ## <a name="onlineLookup"></a> Online lookup option
@@ -153,7 +153,7 @@ Name                  | Site                           | Description
 ""                    | No online lookup is done       |
 "tel_search_ch"       | http://tel.search.ch           | Switzerland (+41). Free for non comercial use
 
-Developer hint: The online lookup script base name e.g. "tel_search_ch" leds to onlinelookup_tel_search_ch.py.
+Developer hint: The online lookup name e.g. "tel_search_ch" leds to the script name onlinelookup_tel_search_ch.py.
 
 
 ## Automatically download blacklists
@@ -171,7 +171,7 @@ There is a possibility to daily download a whole blacklist. You will need to set
 
 
 ## Setup
-There are two ways to connect the callblock to your phone system, depending if your system is VoIP or analog. 
+There are two ways to connect the callblock application to your phone system, depending if your system is VoIP or analog. 
 
 
 ### Setup using Fritzbox with a IP-phone
