@@ -34,11 +34,6 @@ def debug(*objs):
   #print("DEBUG: ", *objs, file=sys.stdout)
   return
 
-def extract_number(data):
-  n = re.sub(r"[^0-9\+]","", data)
-  return n
-
-
 class UTF8Recoder:
     """
     Iterator that reads an encoded stream and reencodes the input to UTF-8
@@ -51,7 +46,6 @@ class UTF8Recoder:
 
     def next(self):
         return self.reader.next().encode("utf-8")
-
 
 class UnicodeDictReader:
     """
@@ -107,26 +101,54 @@ def find_encoding(filname):
   csv_file.close()
   return next_encoding
 
+def extract_number(data):
+  n = re.sub(r"[^0-9\+]","", data)
+  return n
+
+def getEntityPerson(fields):
+  name = ""
+  # title
+  for field_name in fields:
+    if field_name.lower().find("title") != -1:
+      name += " " + fields[field_name]
+      break
+  # first name
+  for field_name in fields:
+    if field_name.lower().find("first name") != -1:
+      name += " " + fields[field_name]
+      break
+  # middle name
+  for field_name in fields:
+    if field_name.lower().find("middle name") != -1:
+      name += " " + fields[field_name]
+      break
+  # last name
+  for field_name in fields:
+    if field_name.lower().find("last name") != -1:
+      name += " " + fields[field_name]
+      break
+  return name.strip()
+
 def parse_csv(filename, encoding):
   csv_file = open(filename, "rt")
   csv_reader = UnicodeDictReader(csv_file, delimiter=',', encoding=encoding)
 
   result = []
   for (line, fields) in enumerate(csv_reader):
-    for name in fields:
+    name = getEntityPerson(fields)
+    #debug(name)
+    for field_name in fields:
       number = ""
-
-      # supporting Outlook 2010
-      if name.lower().find("phone") != -1:
-        number = fields[name]
-      if name.lower().find("pager") != -1:
-        number = fields[name]
-      if name.lower().find("fax") != -1:
-        number = fields[name]
+      if field_name.lower().find("phone") != -1:
+        number = fields[field_name]
+      if field_name.lower().find("pager") != -1:
+        number = fields[field_name]
+      if field_name.lower().find("fax") != -1:
+        number = fields[field_name]
 
       number = extract_number(number)
       if len(number) != 0:
-        result.append({"number":number, "comment":name})
+        result.append({"number":number, "comment":name + " ("+field_name+")"})
 
   csv_file.close()
   return result  
