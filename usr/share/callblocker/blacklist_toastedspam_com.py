@@ -121,7 +121,7 @@ def main(argv):
   result = cleanup_entries(result)
   if len(result) != 0:
     data = OrderedDict((
-      ("name","blacklist provided by toastedspam.com"),
+      ("name","toastedspam.com blacklist"),
       ("origin", "http://www.toastedspam.com/phonelist.cgi"),
       ("parsed_by","callblocker script: "+os.path.basename(__file__)),
       ("num_entries",len(result)),

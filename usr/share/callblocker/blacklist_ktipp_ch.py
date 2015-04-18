@@ -187,7 +187,7 @@ def main(argv):
   result = cleanup_entries(result)
   if len(result) != 0:
     data = OrderedDict((
-      ("name","blacklist provided by ktipp.ch"),
+      ("name","ktipp.ch blacklist"),
       ("origin", "https://www.ktipp.ch/service/warnlisten/detail/?warnliste_id=7"),
       ("parsed_by","callblocker script: "+os.path.basename(__file__)),
       ("num_entries",len(result)),
