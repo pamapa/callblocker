@@ -131,12 +131,12 @@ def main(argv):
   result = cleanup_entries(result)
   if len(result) != 0:
     data = OrderedDict((
-      ("name","Converted LDIF file"),
+      ("name", os.path.splitext(args.input)[0]),
       ("origin", args.input),
-      ("parsed_by","callblocker script: "+os.path.basename(__file__)),
-      ("num_entries",len(result)),
-      ("last_update",datetime.datetime.now().strftime("%F %T")),
-      ("entries",result)
+      ("parsed_by", "callblocker script: "+os.path.basename(__file__)),
+      ("num_entries", len(result)),
+      ("last_update", datetime.datetime.now().strftime("%F %T")),
+      ("entries", result)
     ))
     demjson.encode_to_file(args.input+".json",
                            data, overwrite=True, compactly=False, sort_keys=demjson.SORT_PRESERVE)
