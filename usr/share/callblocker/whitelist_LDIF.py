@@ -19,18 +19,12 @@
 #
 
 from __future__ import print_function
-import os
-import sys
+import os, sys, argparse, re
 from ldif import LDIFParser
-import argparse
-import re
 from collections import OrderedDict
 import datetime
 import demjson
 
-
-country_code = ""
-result = []
 
 def error(*objs):
   print("ERROR: ", *objs, file=sys.stderr)
@@ -51,7 +45,6 @@ def getEntityPerson(entry):
   if "givenName" in entry: fname = entry["givenName"][0].decode(encoding='UTF-8',errors='strict')
   if "sn" in entry: sname = entry["sn"][0].decode(encoding='UTF-8',errors='strict')
   if "cn" in entry: cname = entry["cn"][0].decode(encoding='UTF-8',errors='strict')
-
   name = ""
   if sname == "":
     name = cname
@@ -61,6 +54,7 @@ def getEntityPerson(entry):
     name = fname + " " + sname
   return name
 
+result = []
 class MyLDIF(LDIFParser):
   def __init__(self, input, output):
     LDIFParser.__init__(self, input)
@@ -81,7 +75,7 @@ class MyLDIF(LDIFParser):
 # remove duplicates
 # remove too small numbers -> dangerous
 # make sure numbers are in international format (e.g. +41AAAABBBBBB)
-def cleanup_entries(arr):
+def cleanup_entries(arr, country_code):
   debug("cleanup_entries...")
   seen = set()
   uniq = []
@@ -118,17 +112,16 @@ def cleanup_entries(arr):
 # main
 #
 def main(argv):
-  global result, country_code
+  global result
   parser = argparse.ArgumentParser(description="Convert LDIF file to whitelist")
   parser.add_argument("--input", help="input file", required=True)
   parser.add_argument("--country_code", help="country code, e.g. +41", required=True)
   args = parser.parse_args()
-  country_code = args.country_code
 
   parser = MyLDIF(open(args.input, "r"), sys.stdout)
   parser.parse()
   
-  result = cleanup_entries(result)
+  result = cleanup_entries(result, args.country_code)
   if len(result) != 0:
     data = OrderedDict((
       ("name", os.path.splitext(args.input)[0]),
