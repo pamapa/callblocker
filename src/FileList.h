@@ -32,6 +32,7 @@ struct FileListEntry {
 class FileList {
 private:
   std::string m_filename;
+  std::string m_name;
   std::vector<FileListEntry> m_entries;
 
 public:
@@ -39,7 +40,7 @@ public:
   virtual ~FileList();
 
   bool load(const std::string& filename);
-  std::string getFilename();
+  std::string getName();
   bool isListed(const std::string& number, std::string* pName);
   void dump();
 };

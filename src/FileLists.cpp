@@ -61,7 +61,7 @@ bool FileLists::isListed(const std::string& rNumber, std::string* pListName, std
   for(size_t i = 0; i < m_lists.size(); i++) {
     std::string msg;
     if (m_lists[i]->isListed(rNumber, pCallerName)) {
-      *pListName = Helper::getBaseFilename(m_lists[i]->getFilename());
+      *pListName = m_lists[i]->getName();
       ret = true;
       break;
     }
@@ -110,7 +110,6 @@ void FileLists::dump() {
   pthread_mutex_lock(&m_mutexLock);
   for(size_t i = 0; i < m_lists.size(); i++) {
     FileList* l = m_lists[i];
-    printf("Filename=%s\n", l->getFilename().c_str());
     l->dump();
   }
   pthread_mutex_unlock(&m_mutexLock);

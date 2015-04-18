@@ -43,7 +43,7 @@ bool FileList::load(const std::string& filename) {
 
   Logger::debug("loading file %s", m_filename.c_str());
 
-  std::ifstream in(getFilename());
+  std::ifstream in(m_filename);
   if (in.fail()) {
     Logger::warn("loading file %s failed", m_filename.c_str());
     return false;
@@ -55,6 +55,10 @@ bool FileList::load(const std::string& filename) {
 
   m_entries.clear();
   struct json_object* root = json_tokener_parse(str.c_str());
+
+  if (!Helper::getObject(root, "name", true, m_filename, &m_name)) {
+    return false;
+  }
 
   struct json_object* entries;
   if (json_object_object_get_ex(root, "entries", &entries)) {
@@ -77,8 +81,8 @@ bool FileList::load(const std::string& filename) {
   return true;
 }
 
-std::string FileList::getFilename() {
-  return m_filename;
+std::string FileList::getName() {
+  return m_name;
 }
 
 bool FileList::isListed(const std::string& number, std::string* pName) {
@@ -96,6 +100,7 @@ bool FileList::isListed(const std::string& number, std::string* pName) {
 }
 
 void FileList::dump() {
+  printf("Name=%s:\n", m_name.c_str());
   for(size_t i = 0; i < m_entries.size(); i++) {
     struct FileListEntry* entry = &m_entries[i];
     printf("'%s'/'%s'\n", entry->number.c_str(), entry->name.c_str());
