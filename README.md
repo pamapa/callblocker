@@ -32,7 +32,7 @@ Supported analog modems (tested):
 
 ## Install daemon on a Raspberry Pi (running raspbian/jessie)
 ```bash
-sudo apt-get install git automake g++ libpjproject-dev libjson-c-dev libboost-dev libboost-regex-dev python python-beautifulsoup python-demjson
+sudo apt-get install git automake g++ libpjproject-dev libjson-c-dev libboost-dev libboost-regex-dev python python-beautifulsoup python-demjson python-ldap
 git clone https://github.com/pamapa/callblocker.git
 cd callblocker
 aclocal
