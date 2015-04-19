@@ -33,8 +33,10 @@
     // Analog vs. SIP: remove "device" or others
     foreach($json_phones->{"items"} as $phone) {
       if ($phone->{"device"} == "") {
+        // mark as SIP
         unset($phone->{"device"});
       } else {
+        // mark as Analog
         unset($phone->{"from_domain"});
         unset($phone->{"from_username"});
         unset($phone->{"from_password"});

@@ -22,35 +22,17 @@
   # dojo json exchange format see:
   # http://dojotoolkit.org/reference-guide/1.10/dojo/data/ItemFileReadStore.html#input-data-format
 
-/*
-  function scanListFiles($dirName) {
-    $files = scandir(CALLBLOCKER_SYSCONFDIR."/".$dirName);
-    $ret = array();
-    foreach($files as $f) {
-      $file = CALLBLOCKER_SYSCONFDIR."/".$dirName."/".$f;
-      if (pathinfo($file)["extension"] == "json") {
-        array_push($ret, $file);
-      }
-    }
-    return $ret;
-  }
-  function getList($dirName, $id) {
-    $files = scanListFiles($dirName);
-    if ($id >= count($files)) return array();
-    $json = json_decode(file_get_contents($files[$id]));
-    //var_dump($json);
-    return $json->{"entries"};
-  }
-  $all = getList("blacklists", 0);
-*/
-
   $dirname = "blacklists";
   if (array_key_exists("dirname", $_REQUEST)) {
     $dirname = $_REQUEST["dirname"];
+    if ($dirname != "blacklists" and $dirname != "whitelists") {
+      http_response_code(404);
+      return;
+    }
   }
   $filename = "main.json";
   if (array_key_exists("filename", $_REQUEST)) {
-    $filename = $_REQUEST["filename"];
+    $filename = basename($_REQUEST["filename"]);
   }
   $file = CALLBLOCKER_SYSCONFDIR."/".$dirname."/".$filename;
   //print $file;
