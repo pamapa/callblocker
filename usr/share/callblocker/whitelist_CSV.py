@@ -22,7 +22,7 @@ from __future__ import print_function
 import os, sys, argparse, re
 import codecs, csv
 from collections import OrderedDict
-import datetime
+from datetime import datetime
 import demjson
 
 
@@ -107,11 +107,6 @@ def extract_number(data):
 
 def getEntityPerson(fields):
   name = ""
-  # title
-  for field_name in fields:
-    if field_name.lower().find("title") != -1:
-      name += " " + fields[field_name]
-      break
   # first name
   for field_name in fields:
     if field_name.lower().find("first name") != -1:
@@ -133,6 +128,9 @@ def parse_csv(filename, encoding):
   csv_file = open(filename, "rt")
   csv_reader = UnicodeDictReader(csv_file, delimiter=',', encoding=encoding)
 
+  date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f +0000")
+  #debug(date)
+
   result = []
   for (line, fields) in enumerate(csv_reader):
     name = getEntityPerson(fields)
@@ -148,7 +146,7 @@ def parse_csv(filename, encoding):
 
       number = extract_number(number)
       if len(number) != 0:
-        result.append({"number":number, "comment":name + " ("+field_name+")"})
+        result.append({"number":number, "comment":name+" ("+field_name+")", "date_created":date, "date_modified":date})
 
   csv_file.close()
   return result  
@@ -208,7 +206,7 @@ def main(argv):
       ("origin", args.input),
       ("parsed_by", "callblocker script: "+os.path.basename(__file__)),
       ("num_entries", len(result)),
-      ("last_update", datetime.datetime.now().strftime("%F %T")),
+      ("last_update", datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f +0000")),
       ("entries", result)
     ))
     demjson.encode_to_file(args.input+".json",

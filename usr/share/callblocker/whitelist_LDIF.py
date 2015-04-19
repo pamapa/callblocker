@@ -22,7 +22,7 @@ from __future__ import print_function
 import os, sys, argparse, re
 from ldif import LDIFParser
 from collections import OrderedDict
-import datetime
+from datetime import datetime
 import demjson
 
 
@@ -58,19 +58,27 @@ result = []
 class MyLDIF(LDIFParser):
   def __init__(self, input, output):
     LDIFParser.__init__(self, input)
+    self.date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f +0000")
+    #debug(self.date)
     
   def handle(self, dn, entry):
     #debug(entry)
     name = getEntityPerson(entry)
+    number = ""
+    field_name = ""
     if "mobile" in entry:
       number = extract_number(entry["mobile"][0])
-      result.append({"number":number, "comment":name+" (mobile)"})
+      field_name = "Mobile Phone"
     if "homePhone" in entry:
       number = extract_number(entry["homePhone"][0])
-      result.append({"number":number, "comment":name+" (home)"})
+      field_name = "Home Phone"
     if "telephoneNumber" in entry:
       number = extract_number(entry["telephoneNumber"][0])
-      result.append({"number":number, "comment":name+" (work)"})
+      field_name = "Work Phone"
+
+    if len(number) != 0:    
+      result.append({"number":number, "comment":name+" ("+field_name+")", "date_created":self.date, "date_modified":self.date})
+
 
 # remove duplicates
 # remove too small numbers -> dangerous
@@ -128,7 +136,7 @@ def main(argv):
       ("origin", args.input),
       ("parsed_by", "callblocker script: "+os.path.basename(__file__)),
       ("num_entries", len(result)),
-      ("last_update", datetime.datetime.now().strftime("%F %T")),
+      ("last_update", datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f +0000")),
       ("entries", result)
     ))
     demjson.encode_to_file(args.input+".json",
