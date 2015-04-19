@@ -31,7 +31,7 @@ def error(*objs):
   sys.exit(-1)
 
 def debug(*objs):
-  #print("DEBUG: ", *objs, file=sys.stdout)
+  print("DEBUG: ", *objs, file=sys.stdout)
   return
 
 class UTF8Recoder:
@@ -124,14 +124,13 @@ def getEntityPerson(fields):
       break
   return name.strip()
 
-def parse_csv(filename, encoding):
+def parse_csv(filename, encoding, result):
   csv_file = open(filename, "rt")
   csv_reader = UnicodeDictReader(csv_file, delimiter=',', encoding=encoding)
 
   date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
   #debug(date)
 
-  result = []
   for (line, fields) in enumerate(csv_reader):
     name = getEntityPerson(fields)
     #debug(name)
@@ -146,7 +145,7 @@ def parse_csv(filename, encoding):
 
       number = extract_number(number)
       if len(number) != 0:
-        result.append({"number":number, "comment":name+" ("+field_name+")", "date_created":date, "date_modified":date})
+        result.append({"number":number, "name":name+" ("+field_name+")", "date_created":date, "date_modified":date})
 
   csv_file.close()
   return result  
@@ -191,25 +190,36 @@ def cleanup_entries(arr, country_code):
 # main
 #
 def main(argv):
-  global result, country_code
-  parser = argparse.ArgumentParser(description="Convert LDIF file to whitelist")
+  parser = argparse.ArgumentParser(description="Convert LDIF file to json")
   parser.add_argument("--input", help="input file", required=True)
   parser.add_argument("--country_code", help="country code, e.g. +41", required=True)
+  parser.add_argument("--merge", help="file to merge with", default="out.json")
   args = parser.parse_args()
 
+  name = os.path.splitext(os.path.basename(args.input))[0]
+  result = []
+
+  # merge
+  try:
+    data = open(args.merge, "r").read()
+    json = demjson.decode(data)
+    name = json["name"]
+    result = json["entries"]
+    debug(result)
+  except IOError:
+    pass
+
+  # convert
   encoding = find_encoding(args.input)
-  result = parse_csv(args.input, encoding)
+  result = parse_csv(args.input, encoding, result)
+
   result = cleanup_entries(result, args.country_code)
   if len(result) != 0:
     data = OrderedDict((
-      ("name", os.path.splitext(args.input)[0]),
-      ("origin", args.input),
-      ("parsed_by", "callblocker script: "+os.path.basename(__file__)),
-      ("num_entries", len(result)),
-      ("last_update", datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")),
+      ("name", name),
       ("entries", result)
     ))
-    demjson.encode_to_file(args.input+".json",
+    demjson.encode_to_file(args.merge,
                            data, overwrite=True, compactly=False, sort_keys=demjson.SORT_PRESERVE)
 
 if __name__ == "__main__":

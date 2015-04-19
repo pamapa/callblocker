@@ -77,7 +77,7 @@ class MyLDIF(LDIFParser):
       field_name = "Work Phone"
 
     if len(number) != 0:    
-      result.append({"number":number, "comment":name+" ("+field_name+")", "date_created":self.date, "date_modified":self.date})
+      result.append({"number":number, "name":name+" ("+field_name+")", "date_created":self.date, "date_modified":self.date})
 
 
 # remove duplicates
@@ -121,25 +121,36 @@ def cleanup_entries(arr, country_code):
 #
 def main(argv):
   global result
-  parser = argparse.ArgumentParser(description="Convert LDIF file to whitelist")
+  parser = argparse.ArgumentParser(description="Convert LDIF file to json")
   parser.add_argument("--input", help="input file", required=True)
   parser.add_argument("--country_code", help="country code, e.g. +41", required=True)
+  parser.add_argument("--merge", help="file to merge with", default="out.json")
   args = parser.parse_args()
 
+  name = os.path.splitext(os.path.basename(args.input))[0]
+  result = []
+
+  # merge
+  try:
+    data = open(args.merge, "r").read()
+    json = demjson.decode(data)
+    name = json["name"]
+    result = json["entries"]
+    debug(result)
+  except IOError:
+    pass
+
+  # convert
   parser = MyLDIF(open(args.input, "r"), sys.stdout)
   parser.parse()
   
   result = cleanup_entries(result, args.country_code)
   if len(result) != 0:
     data = OrderedDict((
-      ("name", os.path.splitext(args.input)[0]),
-      ("origin", args.input),
-      ("parsed_by", "callblocker script: "+os.path.basename(__file__)),
-      ("num_entries", len(result)),
-      ("last_update", datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")),
+      ("name", name),
       ("entries", result)
     ))
-    demjson.encode_to_file(args.input+".json",
+    demjson.encode_to_file(args.merge,
                            data, overwrite=True, compactly=False, sort_keys=demjson.SORT_PRESERVE)
 
 if __name__ == "__main__":
