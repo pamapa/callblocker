@@ -35,10 +35,10 @@ require(["dijit/ConfirmDialog",
          "dijit/Menu",
          "dijit/MenuItem",
          "dijit/tree/TreeStoreModel",
-//         "dijit/form/Form",
          "dijit/form/CheckBox",
          "dijit/form/Button",
          "dijit/form/Select",
+         "dojox/form/Uploader",
          "dijit/form/ValidationTextBox",
          "dijit/layout/ContentPane",
          "dijit/layout/LayoutContainer",
@@ -515,7 +515,7 @@ require(["dijit/ConfirmDialog",
       { name: "Name",      field: "name",      width:"400px"}
     ];
     var grid = new dojox.grid.EnhancedGrid({
-      //store: listStore, added later
+      //store: added later (see dojo.connect(listSelect...))
       structure: structure,
       canSort: function(){return false}, // disable sorting, its not implemented on backend
       selectable: true,
@@ -535,17 +535,22 @@ require(["dijit/ConfirmDialog",
       style: "width:150px",
     });
     dojo.connect(listSelect, "onChange", function(evt) {
-      grid.setStore(createListStore("list.php?".concat(url_param).concat("&filename=").concat(evt)));
+      //console.log("dojo.connect");
+      // force load
+      grid.setStore(createListStore("list.php?".concat(url_param, "&filename=", evt)));
+      // allow/disallow features
       if (evt == "main.json") {
         // allow editing
         deleteMenuItem.setDisabled(false);
         editMenuItem.setDisabled(false);
         addNewEntryButton.setDisabled(false);
+        importAddressbookUploader.setDisabled(false);
       } else {
         // disallow editing
         deleteMenuItem.setDisabled(true);
         editMenuItem.setDisabled(true);
         addNewEntryButton.setDisabled(true);
+        importAddressbookUploader.setDisabled(true);
       }
     });
     // pre select main
@@ -575,7 +580,29 @@ require(["dijit/ConfirmDialog",
       }
     });
 
-    return [listSelect.domNode, addNewEntryButton.domNode, domConstruct.create("br"), grid.domNode]
+    var importAddressbookUploader = new dojox.form.Uploader({
+      label:"Import Addressbook (merge)",
+      //url: added later (see dojo.connect(listSelect...))
+      multiple: false,
+      uploadOnSelect:true
+    });
+    dojo.connect(listSelect, "onChange", function(evt) {
+      //console.log("dojo.connect");
+      importAddressbookUploader.set("url", "lists.php?".concat(url_param, "&import=addressbook", "&merge=", evt));
+    });
+    dojo.connect(importAddressbookUploader, "onComplete", function(evt) {
+      //console.log("dojo.connect");
+      // force reload
+      grid.setStore(createListStore("list.php?".concat(url_param, "&filename=", listSelect.get("value"))));
+    });
+
+    return [
+      listSelect.domNode,
+      addNewEntryButton.domNode,
+      importAddressbookUploader.domNode,
+      domConstruct.create("br"),
+      grid.domNode
+    ]
   }
 
   function createWhitelist() {

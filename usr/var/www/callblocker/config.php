@@ -19,6 +19,7 @@
 */
 
   define("CALLBLOCKER_SYSCONFDIR",       "/etc/callblocker");
+  define("CALLBLOCKER_DATADIR",          "/usr/share/callblocker");
 
   // logging via journald
   define("CALLBLOCKER_CALLLOGCMD",       "journalctl _SYSTEMD_UNIT=callblockerd.service --priority=5..5 --lines=1000 --output json");

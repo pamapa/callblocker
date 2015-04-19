@@ -24,32 +24,88 @@
     $ret = array();
     foreach($files as $f) {
       $file = CALLBLOCKER_SYSCONFDIR."/".$dirName."/".$f;
-      if (pathinfo($file)["extension"] == "json") {
+      if (pathinfo($file, PATHINFO_EXTENSION) == "json") {
         array_push($ret, $file);
       }
     }
     return $ret;
   }
 
-  /*function getListNames($dirName) {
-    $files = scanListFiles($dirName);
-    $ret = array();
-    foreach($files as $f) {
-      $json = json_decode(file_get_contents($f));
-      //var_dump($json);
-      if (isset($json->{"name"})) {
-        array_push($ret, $json->{"name"});
-      }
-    }
-    return $ret;
-  }*/
+  function getContryCode() {
+    $file = CALLBLOCKER_SYSCONFDIR."/settings.json";
+    $json = json_decode(file_get_contents($file));
+    //var_dump($json);
+    $phones = $json->{"phones"};
+    return $phones[0]->{"country_code"};
+  }
 
   $dirname = "blacklists";
   if (array_key_exists("dirname", $_REQUEST)) {
     $dirname = $_REQUEST["dirname"];
+    if ($dirname != "blacklists" and $dirname != "whitelists") {
+      http_response_code(404);
+      return;
+    }
   }
-  $files = scanListFiles($dirname);
 
+/*
+  foreach ($_POST as $key => $value) {
+    error_log("POST ".$key.": ".$value);
+  }
+
+  foreach ($_REQUEST as $key => $value) {
+    error_log("REQUEST ".$key.": ".$value);
+  }
+
+  foreach ($_FILES as $key1 => $entry) {
+    if (is_array($entry)) {
+        foreach($entry as $key2 => $value) {
+           error_log("FILES ".$key1 . ": " .$key2 . ": " . $value);
+        }
+     } else {
+        error_log("FILES ".$key1 . ": " . $entry);
+     }
+  }
+*/
+
+  if (array_key_exists("name", $_POST)) {
+    $merge_name = basename($_REQUEST["merge"]);
+    $tmp_name = $_FILES["uploadedfile"]["tmp_name"];
+    
+    $cmd = "";
+    if (pathinfo($_POST["name"], PATHINFO_EXTENSION) == "csv") {
+      $cmd = "python ".CALLBLOCKER_DATADIR."/convert_CSV.py";
+    } else if (pathinfo($_POST["name"], PATHINFO_EXTENSION) == "ldif") {
+      $cmd = "python ".CALLBLOCKER_DATADIR."/convert_LDIF.py";
+    }
+
+    $exitCode = -1;
+    $output = [];
+    if ($cmd != "") {
+      $cmd .= " --input ".$tmp_name;
+      $cmd .= " --country_code " . getContryCode();
+      $cmd .= " --merge ".CALLBLOCKER_SYSCONFDIR."/".$dirname."/".$merge_name;
+      $cmd .= " 2>&1";
+      //error_log("execute: ". $cmd);
+      exec($cmd, $output, $exitCode);
+    }
+    
+    $htmldata = array();
+    if ($exitCode != 0) {
+      error_log($cmd." failed with ".$exitCode);
+      foreach($output as $o) {
+        error_log($o);
+      }
+      $htmldata = array("ERROR" => "Improper data sent - no files found");
+    } else {
+      $htmldata[0] = $_POST;
+    }
+    header("Content-Type", "text/json");
+    print json_encode($htmldata, JSON_PRETTY_PRINT);
+    return;
+  }
+
+  $files = scanListFiles($dirname);
   $main_found = False;
   $all = array();
   foreach($files as $f) {
