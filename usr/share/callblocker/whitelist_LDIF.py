@@ -58,7 +58,7 @@ result = []
 class MyLDIF(LDIFParser):
   def __init__(self, input, output):
     LDIFParser.__init__(self, input)
-    self.date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f +0000")
+    self.date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
     #debug(self.date)
     
   def handle(self, dn, entry):
@@ -136,7 +136,7 @@ def main(argv):
       ("origin", args.input),
       ("parsed_by", "callblocker script: "+os.path.basename(__file__)),
       ("num_entries", len(result)),
-      ("last_update", datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f +0000")),
+      ("last_update", datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")),
       ("entries", result)
     ))
     demjson.encode_to_file(args.input+".json",

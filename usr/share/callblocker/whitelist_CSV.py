@@ -128,7 +128,7 @@ def parse_csv(filename, encoding):
   csv_file = open(filename, "rt")
   csv_reader = UnicodeDictReader(csv_file, delimiter=',', encoding=encoding)
 
-  date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f +0000")
+  date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
   #debug(date)
 
   result = []
@@ -206,7 +206,7 @@ def main(argv):
       ("origin", args.input),
       ("parsed_by", "callblocker script: "+os.path.basename(__file__)),
       ("num_entries", len(result)),
-      ("last_update", datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f +0000")),
+      ("last_update", datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")),
       ("entries", result)
     ))
     demjson.encode_to_file(args.input+".json",

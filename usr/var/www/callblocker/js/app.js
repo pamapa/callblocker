@@ -45,13 +45,22 @@ require(["dijit/ConfirmDialog",
          "dijit/layout/BorderContainer",
         ], function(ConfirmDialog, domConstruct) { // workaround
 
-  function formatDate(timestamp) {
-    if (timestamp) {
-      var date = new Date(timestamp);
+  function formatDate(dateStr) {
+    if (dateStr) {
+      dateStr = dateStr.replace(/-/g, "/");
+      var date = new Date(dateStr); // RFC2822 or ISO 8601 date
       return dojo.date.locale.format(date, {formatLength: "long"});
     }
     return "";
   }
+
+  // convert to UTC: 2015-04-19 10:14:03.733 +0000
+  function date2UTCString(date) {
+    var str =
+      date.getUTCFullYear()+"-"+(date.getUTCMonth()+1)+"-"+date.getUTCDate()+" "+
+      date.getUTCHours()+":"+date.getUTCMinutes()+":"+date.getUTCSeconds()+" +0000";
+    return str;
+  };
 
   function createCallerLogGrid() {
     var store = new dojox.data.QueryReadStore({
@@ -483,7 +492,7 @@ require(["dijit/ConfirmDialog",
             content: [numberTextBox.domNode, nameTextBox.domNode],
             onExecute: function() {
               if (numberTextBox.isValid() && nameTextBox.isValid()) {
-                grid.store.setValue(si, "timestamp", Date.now());
+                grid.store.setValue(si, "date_modified", date2UTCString(new Date()));
                 grid.store.setValue(si, "number", numberTextBox.get("value"));
                 grid.store.setValue(si, "name", nameTextBox.get("value"));
                 grid.store.save();
@@ -501,7 +510,7 @@ require(["dijit/ConfirmDialog",
     menu.addChild(editMenuItem);
 
     var structure = [
-      { name: "Date",      field: "timestamp", width:"150px", formatter: formatDate},
+      { name: "Date (modified)",      field: "date_modified", width:"150px", formatter: formatDate},
       { name: "Number",    field: "number",    width:"120px"},
       { name: "Name",      field: "name",      width:"400px"}
     ];
@@ -550,7 +559,13 @@ require(["dijit/ConfirmDialog",
           content: [numberTextBox.domNode, nameTextBox.domNode],
           onExecute: function() {
             if (numberTextBox.isValid() && nameTextBox.isValid()) {
-              var newItem = {timestamp: Date.now(), number: numberTextBox.get("value"), name: nameTextBox.get("value")};
+              var dateStr = date2UTCString(new Date());
+              var newItem = {
+                date_created: dateStr,
+                date_modified: dateStr,
+                number: numberTextBox.get("value"),
+                name: nameTextBox.get("value")
+              };
               grid.store.newItem(newItem);
               grid.store.save();
             }
