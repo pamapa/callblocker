@@ -520,7 +520,7 @@ require(["dijit/ConfirmDialog",
       canSort: function(){return false}, // disable sorting, its not implemented on backend
       selectable: true,
       plugins: {menus: menusObject = {rowMenu: menu}},
-      style: "height:95%; width:100%;"
+      style: "height:97%; width:100%;"
     });
     /*dojo.connect(grid, "onKeyPress", function(evt) {
       if(evt.keyCode === dojo.keys.DELETE) { 
