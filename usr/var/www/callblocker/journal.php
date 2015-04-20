@@ -59,8 +59,10 @@
     $json = json_decode($entry);
     //var_dump($json);
 
+    date_default_timezone_set("UTC");
     $tmp = array(
-      "TIMESTAMP"=>$json->{"__REALTIME_TIMESTAMP"}/1000, // usec -> ms
+      // -6: usec -> sec => UTC time (substr because timestamp is too big for int)
+      "TIMESTAMP"=>date("Y-m-d h:i:s +0000", substr($json->{"__REALTIME_TIMESTAMP"}, 0, -6)),
       "PRIO_ID"=>intval($json->{"PRIORITY"}),
       "PRIORITY"=>mapPriorityToName($json->{"PRIORITY"}),
       "MESSAGE"=>$json->{"MESSAGE"}
