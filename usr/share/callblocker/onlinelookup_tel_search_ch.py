@@ -19,12 +19,10 @@
 #
 
 from __future__ import print_function
-import os
-import sys
-import argparse
+import os, sys, argparse, re
 import urllib2
 from BeautifulSoup import BeautifulSoup
-import re
+
 
 def error(*objs):
   print("ERROR: ", *objs, file=sys.stderr)
@@ -46,6 +44,22 @@ def extract_callerName(name):
   if matchObj: name = matchObj.group(1) + matchObj.group(2)
   return name
 
+def lookup_number(number):
+  url = "http://tel.search.ch/api/?was=" + number
+  content = fetch_url(url)
+  #debug(content)
+  soup = BeautifulSoup(content)
+
+  callerName = ""
+  entries = soup.findAll("entry")
+  for entry in entries:
+    name = entry.title.contents[0]
+    if len(callerName) == 0:
+      callerName = name
+    else:
+      callerName += "; " + name
+  return callerName
+
 #
 # main
 #
@@ -58,20 +72,9 @@ def main(argv):
   if not args.number.startswith("+41"):
     error("Not a valid Swiss number: " + args.number)
 
-  url = "http://tel.search.ch/api/?was=" + args.number
-  content = fetch_url(url)
-  #debug(content)
-  soup = BeautifulSoup(content)
+  callerName = lookup_number(args.number)
 
-  callerName = ""
-  entries = soup.findAll("entry")
-  for entry in entries:
-    if len(callerName) == 0:
-      callerName = entry.title.contents[0]
-    else:
-      callerName += "; " + entry.title.contents[0]
-
-  # result in json format
+  # result in json format, if not found empty field
   print('{"name": "%s"}' % (callerName))
 
 if __name__ == "__main__":
