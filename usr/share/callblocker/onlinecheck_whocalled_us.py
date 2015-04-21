@@ -19,11 +19,8 @@
 #
 
 from __future__ import print_function
-import os
-import sys
-import argparse
+import os, sys, argparse, re
 import urllib2
-import re
 
 
 def error(*objs):

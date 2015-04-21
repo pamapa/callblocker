@@ -19,9 +19,7 @@
 #
 
 from __future__ import print_function
-import os
-import sys
-import argparse
+import os, sys, argparse
 import urllib2
 
 
