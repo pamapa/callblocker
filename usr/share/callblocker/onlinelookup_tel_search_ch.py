@@ -29,7 +29,7 @@ def error(*objs):
   sys.exit(-1)
 
 def debug(*objs):
-  print("DEBUG: ", *objs, file=sys.stdout)
+  #print("DEBUG: ", *objs, file=sys.stdout)
   return
 
 def fetch_url(url):

@@ -22,6 +22,7 @@ from __future__ import print_function
 import os, sys, argparse
 import onlinelookup_tel_search_ch
 import onlinelookup_dasschnelle_at
+import onlinelookup_dasoertliche_de
 
 
 def error(*objs):
@@ -45,6 +46,8 @@ def main(argv):
     callerName = onlinelookup_tel_search_ch.lookup_number(args.number)
   elif args.number.startswith("+43"):
     callerName = onlinelookup_dasschnelle_at.lookup_number(args.number)
+  elif args.number.startswith("+49"):
+    callerName = onlinelookup_dasoertliche_de.lookup_number(args.number)
 
   # result in json format, if not found empty field
   print('{"name": "%s"}' % (callerName))
