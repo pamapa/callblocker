@@ -67,12 +67,12 @@ require(["dijit/ConfirmDialog",
       url: "callerlog.php"
     });
     var structure = [
-      { name: "Date",      field: "TIMESTAMP", width:"150px", formatter: formatDate},
+      { name: "Date",      field: "DATE",      width:"150px", formatter: formatDate},
       { name: "Number",    field: "NUMBER",    width:"120px"},
-      { name: "Name",      field: "NAME",      width:"200px"},
+      { name: "Name",      field: "NAME",      width:"400px"},
       { name: "Blocked",   field: "BLOCKED",   width:"120px", hidden:true},
-      { name: "Whitelist", field: "WHITELIST", width:"300px"},
-      { name: "Blacklist", field: "BLACKLIST", width:"300px"},
+      { name: "Whitelist", field: "WHITELIST", width:"200px"},
+      { name: "Blacklist", field: "BLACKLIST", width:"200px"},
       { name: "Score",     field: "SCORE",     width:"50px"}
     ];
 
@@ -129,7 +129,7 @@ require(["dijit/ConfirmDialog",
       url: url
     });
     var structure = [
-      { name: "Date",     field: "TIMESTAMP", width:"150px", formatter: formatDate},
+      { name: "Date",     field: "DATE",      width:"150px", formatter: formatDate},
       { name: "PrioId",   field: "PRIO_ID",   width:"50px", hidden:true},
       { name: "Priority", field: "PRIORITY",  width:"70px"},
       { name: "Message",  field: "MESSAGE",   width:"100%"}

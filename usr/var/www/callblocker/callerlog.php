@@ -71,8 +71,8 @@
 
       date_default_timezone_set("UTC");
       $tmp = array(
-        // -6: usec -> sec => UTC time (substr because timestamp is too big for int)
-        "TIMESTAMP"=>date("Y-m-d H:i:s +0000", substr($json->{"__REALTIME_TIMESTAMP"}, 0, -6)),
+        // -6: usec -> sec => UTC time (substr because timestamp is too big for integer under 32bit)
+        "DATE"=>date("Y-m-d H:i:s +0000", substr($json->{"__REALTIME_TIMESTAMP"}, 0, -6)),
         "NUMBER"=>$number, "NAME"=>$name, "BLOCKED"=>$blocked,
         "WHITELIST"=>$whitelist, "BLACKLIST"=>$blacklist, "SCORE"=>$score
       );
