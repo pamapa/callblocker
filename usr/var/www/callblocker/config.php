@@ -18,8 +18,8 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-  define("CALLBLOCKER_SYSCONFDIR",       "/etc/callblocker");
-  define("CALLBLOCKER_DATADIR",          "/usr/share/callblocker");
+  define("CALLBLOCKER_SYSCONFDIR",       "/home/pammann/development/CallBlocker/callblocker/etc/callblocker");
+  define("CALLBLOCKER_DATADIR",          "/home/pammann/development/CallBlocker/callblocker/usr/share/callblocker");
 
   // logging via journald
   define("CALLBLOCKER_CALLLOGCMD",       "journalctl _SYSTEMD_UNIT=callblockerd.service --priority=5..5 --lines=1000 --output json");

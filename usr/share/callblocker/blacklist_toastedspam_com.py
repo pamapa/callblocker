@@ -26,7 +26,7 @@ import re
 from BeautifulSoup import BeautifulSoup
 import urllib2
 from collections import OrderedDict
-import datetime
+from datetime import datetime
 import demjson
 
 
@@ -71,11 +71,14 @@ def parse_page(content):
   ret = []
   soup = BeautifulSoup(content)
   list = soup.findAll("b")
+
+  date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
+
   for e in list:
     numbers = extract_numbers(e.contents[0])
-    comment = extract_comment(e.nextSibling)
+    name = extract_comment(e.nextSibling)
     for n in numbers:
-      ret.append({"number":n, "name":comment})
+      ret.append({"number":n, "name":name}, "date_created":date, "date_modified":date)
 
   return ret
 
@@ -125,7 +128,6 @@ def main(argv):
       ("origin", "http://www.toastedspam.com/phonelist.cgi"),
       ("parsed_by","callblocker script: "+os.path.basename(__file__)),
       ("num_entries",len(result)),
-      ("last_update",datetime.datetime.now().strftime("%F %T")),
       ("entries",result)
     ))
     demjson.encode_to_file(args.output+"/blacklist_toastedspam_com.json",
