@@ -232,6 +232,7 @@ require(["dijit/ConfirmDialog",
         { label: "all", value: "all" },
         { label: "tel.search.ch", value: "tel_search_ch" },
         { label: "dasschnelle.at", value: "dasschnelle_at" },
+        { label: "dasoertliche.de", value: "dasoertliche_de" },
       ]
     });
     var deviceTextBox = new dijit.form.ValidationTextBox({
