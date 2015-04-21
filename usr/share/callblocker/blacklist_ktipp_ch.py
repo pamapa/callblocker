@@ -26,7 +26,7 @@ import re
 from BeautifulSoup import BeautifulSoup
 import urllib2
 from collections import OrderedDict
-import datetime
+from datetime import datetime
 import demjson
 
 
@@ -108,11 +108,14 @@ def parse_page(soup):
   ret = []
   debug("parse_page...")
   list = soup.findAll("section",{"class":"teaser cf"})
+
+  date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
+
   for e in list:
     numbers = extract_numbers(e.strong.contents[0])
-    comment = extract_comment(e.p)
+    name = extract_comment(e.p)
     for n in numbers:
-      ret.append({"number":n, "name":comment})
+      ret.append({"number":n, "name":name, "date_created":date, "date_modified":date})
   debug("parse_page done")
   return ret
 
@@ -191,7 +194,6 @@ def main(argv):
       ("origin", "https://www.ktipp.ch/service/warnlisten/detail/?warnliste_id=7"),
       ("parsed_by","callblocker script: "+os.path.basename(__file__)),
       ("num_entries",len(result)),
-      ("last_update",datetime.datetime.now().strftime("%F %T")),
       ("entries",result)
     ))
     demjson.encode_to_file(args.output+"/blacklist_ktipp_ch.json",
