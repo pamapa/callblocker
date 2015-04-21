@@ -229,7 +229,9 @@ require(["dijit/ConfirmDialog",
     var onlineLookupSelect = new dijit.form.Select({
       options: [
         { label: "none", value: "", selected: true },
+        { label: "all", value: "all" },
         { label: "tel.search.ch", value: "tel_search_ch" },
+        { label: "dasschnelle.at", value: "dasschnelle_at" },
       ]
     });
     var deviceTextBox = new dijit.form.ValidationTextBox({
