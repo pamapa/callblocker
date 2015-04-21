@@ -151,8 +151,9 @@ Developer hint: The online check name e.g. "tellows_de" leds to the script name 
 Name                  | Site                           | Description
 ----                  | ----                           | -----------
 ""                    | No online lookup is done       |
+"all"                 | All listed ones                | See other listed ones
 "tel_search_ch"       | http://tel.search.ch           | Switzerland (+41). Free for non comercial use
-
+"dasschnelle_at"      | http://www.dasschnelle.at      | Austria (+43). Free for non comercial use
 Developer hint: The online lookup name e.g. "tel_search_ch" leds to the script name onlinelookup_tel_search_ch.py.
 
 
