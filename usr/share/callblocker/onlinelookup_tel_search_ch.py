@@ -20,7 +20,7 @@
 
 from __future__ import print_function
 import os, sys, argparse, re
-import urllib2
+import urllib, urllib2
 from BeautifulSoup import BeautifulSoup
 
 
@@ -29,7 +29,7 @@ def error(*objs):
   sys.exit(-1)
 
 def debug(*objs):
-  #print("DEBUG: ", *objs, file=sys.stdout)
+  print("DEBUG: ", *objs, file=sys.stdout)
   return
 
 def fetch_url(url):
@@ -45,7 +45,7 @@ def extract_callerName(name):
   return name
 
 def lookup_number(number):
-  url = "http://tel.search.ch/api/?was=" + number
+  url = "http://tel.search.ch/api/?" + urllib.urlencode({"was":number})
   content = fetch_url(url)
   #debug(content)
   soup = BeautifulSoup(content)

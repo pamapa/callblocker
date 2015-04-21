@@ -20,7 +20,7 @@
 
 from __future__ import print_function
 import os, sys, argparse, re
-import urllib2
+import urllib, urllib2
 
 
 def error(*objs):
@@ -48,7 +48,7 @@ def main(argv):
   parser.add_argument("--spamscore", help="score limit to mark as spam [-1..?]", default=5)
   args = parser.parse_args()
 
-  url = "http://whocalled.us/do?action=getScore&name="+args.username+"&pass="+args.password+"&phoneNumber="+args.number
+  url = "http://whocalled.us/do?action=getScore&name="+args.username+"&pass="+args.password+"&"+urllib.urlencode({"phoneNumber":args.number})
   content = fetch_url(url)
   debug(content)
 
