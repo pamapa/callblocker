@@ -44,7 +44,7 @@ def extract_callerName(name):
   return name
 
 def lookup_number(number):
-  url = "http://www1.dasoertliche.de/?form_name=search_inv&"+urllib.urlencode({"ph":number})
+  url = "http://www.dasoertliche.de/?form_name=search_inv&"+urllib.urlencode({"ph":number})
   content = fetch_url(url)
   #debug(content)
 
