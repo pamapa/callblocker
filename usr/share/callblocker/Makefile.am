@@ -25,5 +25,8 @@ callblocker_SCRIPTS = \
   onlinecheck_phonespamfilter_com.py \
   onlinecheck_tellows_de.py \
   onlinecheck_whocalled_us.py \
+  onlinelookup_all.py \
+  onlinelookup_dasoertliche_de.py \
+  onlinelookup_dasschnelle_at.py \
   onlinelookup_tel_search_ch.py
 
