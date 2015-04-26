@@ -50,7 +50,15 @@
   #var_dump($json);
   $all = $json->{"entries"};
   #var_dump($all);
+  # sort entries by name
+  function entry_cmp($a, $b) {
+      return strcmp($a->name, $b->name);
+  }
+  usort($all, "entry_cmp");
+  #var_dump($all);
   $all_count = count($all);
+
+
 
   $start = 0;
   $count = $all_count;
