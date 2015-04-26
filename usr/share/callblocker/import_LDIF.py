@@ -69,15 +69,18 @@ class MyLDIF(LDIFParser):
     if "mobile" in entry:
       number = extract_number(entry["mobile"][0])
       field_name = "Mobile Phone"
+      if len(number) != 0:
+        result.append({"number":number, "name":name+" ("+field_name+")", "date_created":self.date, "date_modified":self.date})
     if "homePhone" in entry:
       number = extract_number(entry["homePhone"][0])
       field_name = "Home Phone"
+      if len(number) != 0:
+        result.append({"number":number, "name":name+" ("+field_name+")", "date_created":self.date, "date_modified":self.date})
     if "telephoneNumber" in entry:
       number = extract_number(entry["telephoneNumber"][0])
       field_name = "Work Phone"
-
-    if len(number) != 0:    
-      result.append({"number":number, "name":name+" ("+field_name+")", "date_created":self.date, "date_modified":self.date})
+      if len(number) != 0:
+        result.append({"number":number, "name":name+" ("+field_name+")", "date_created":self.date, "date_modified":self.date})
 
 
 # remove duplicates
@@ -136,7 +139,7 @@ def main(argv):
     json = demjson.decode(data)
     name = json["name"]
     result = json["entries"]
-    debug(result)
+    #debug(result)
   except IOError:
     pass
 
