@@ -264,7 +264,7 @@ require(["dijit/ConfirmDialog",
       { name:"From domain",         field:"from_domain",         width:"160px"},
       { name:"From username",       field:"from_username",       width:"160px"},
       { name:"From password",       field:"from_password",       width:"160px",
-        type:dojox.grid.cells._Widget, formatter:function(str){return new dijit.form.TextBox({value : str, type: "password"});}
+        type:dojox.grid.cells._Widget, formatter:function(str){return new dijit.form.TextBox({value: str, type: "password", readOnly: true});}
       },
     ];
 
@@ -424,7 +424,7 @@ require(["dijit/ConfirmDialog",
       { name: "Name",      field: "name",     width:"150px"},
       { name: "Username",  field: "username", width:"120px"},
       { name: "Password",  field: "password", width:"200px",
-        type:dojox.grid.cells._Widget, formatter:function(str){return new dijit.form.TextBox({value : str, type: "password"});}
+        type:dojox.grid.cells._Widget, formatter:function(str){return new dijit.form.TextBox({value: str, type: "password", readOnly: true});}
       }
     ];
     var grid = new dojox.grid.EnhancedGrid({
