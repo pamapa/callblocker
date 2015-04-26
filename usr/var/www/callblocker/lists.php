@@ -74,9 +74,11 @@
     
     $cmd = "";
     if (pathinfo($_POST["name"], PATHINFO_EXTENSION) == "csv") {
-      $cmd = "python ".CALLBLOCKER_DATADIR."/convert_CSV.py";
+      $cmd = "python ".CALLBLOCKER_DATADIR."/import_CSV.py";
     } else if (pathinfo($_POST["name"], PATHINFO_EXTENSION) == "ldif") {
-      $cmd = "python ".CALLBLOCKER_DATADIR."/convert_LDIF.py";
+      $cmd = "python ".CALLBLOCKER_DATADIR."/import_LDIF.py";
+    } else if (pathinfo($_POST["name"], PATHINFO_EXTENSION) == "vcf") {
+      $cmd = "python ".CALLBLOCKER_DATADIR."/import_VCARD.py";
     }
 
     $exitCode = -1;
