@@ -22,6 +22,7 @@ from __future__ import print_function
 import os, sys, argparse, re
 import urllib, urllib2
 from BeautifulSoup import BeautifulSoup
+import demjson
 
 
 def error(*objs):
@@ -29,7 +30,7 @@ def error(*objs):
   sys.exit(-1)
 
 def debug(*objs):
-  #print("DEBUG: ", *objs, file=sys.stdout)
+  print("DEBUG: ", *objs, file=sys.stdout)
   return
 
 def fetch_url(url):
@@ -49,6 +50,7 @@ def lookup_number(number):
   content = fetch_url(url)
   #debug(content)
   soup = BeautifulSoup(content)
+  #debug(soup)
 
   callerName = ""
   entries = soup.findAll("entry")
@@ -68,11 +70,6 @@ def main(argv):
   parser.add_argument("--number", help="number to be checked", required=True)
   args = parser.parse_args()
 
-  # make print unicode aware
-  UTF8Writer = codecs.getwriter('utf8')
-  sys.stdout = UTF8Writer(sys.stdout)
-  sys.stderr  = UTF8Writer(sys.stderr)
-
   # map number to correct URL
   if not args.number.startswith("+41"):
     error("Not a valid Swiss number: " + args.number)
@@ -80,7 +77,8 @@ def main(argv):
   callerName = lookup_number(args.number)
 
   # result in json format, if not found empty field
-  print(u'{"name": "%s"}' % (callerName))
+  json = demjson.encode({"name" : callerName}, escape_unicode=True)
+  sys.stdout.write(json+'\n')
 
 if __name__ == "__main__":
     main(sys.argv)

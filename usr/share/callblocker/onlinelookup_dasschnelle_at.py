@@ -86,11 +86,6 @@ def main(argv):
   parser.add_argument("--number", help="number to be checked", required=True)
   args = parser.parse_args()
 
-  # make print unicode aware
-  UTF8Writer = codecs.getwriter('utf8')
-  sys.stdout = UTF8Writer(sys.stdout)
-  sys.stderr  = UTF8Writer(sys.stderr)
-
   # map number to correct URL
   if not args.number.startswith("+43"):
     error("Not a valid Austria number: " + args.number)
@@ -98,7 +93,8 @@ def main(argv):
   callerName = lookup_number(args.number)
 
   # result in json format, if not found empty field
-  print(u'{"name": "%s"}' % (callerName))
+  json = demjson.encode({"name" : callerName}, escape_unicode=True)
+  sys.stdout.write(json+'\n')
 
 if __name__ == "__main__":
     main(sys.argv)

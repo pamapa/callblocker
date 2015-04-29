@@ -22,6 +22,7 @@ from __future__ import print_function
 import os, sys, argparse
 import urllib2
 from BeautifulSoup import BeautifulSoup
+import demjson
 
 
 def error(*objs):
@@ -71,10 +72,13 @@ def main(argv):
     callerName = callerTypes[0].caller.contents[0].contents[0]
   
   # result in json format
-  if (len(callerName) > 0):
-    print('{"spam":%s, "score":%d, "name":"%s"}' % ("false" if score < args.spamscore else "true", score, callerName))
-  else:
-    print('{"spam":%s, "score":%d}' % ("false" if score < args.spamscore else "true", score))
+  result = {
+    "spam"  : "%s" % "false" if score < args.spamscore else "true",
+    "score" : score,
+    "name"  : callerName
+  }
+  json = demjson.encode(result, escape_unicode=True)
+  sys.stdout.write(json+'\n')
 
 if __name__ == "__main__":
     main(sys.argv)
