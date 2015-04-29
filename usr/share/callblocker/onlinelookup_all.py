@@ -50,7 +50,7 @@ def main(argv):
     callerName = onlinelookup_dasoertliche_de.lookup_number(args.number)
 
   # result in json format, if not found empty field
-  print('{"name": "%s"}' % (callerName))
+  print(u'{"name": "%s"}' % (callerName))
 
 if __name__ == "__main__":
     main(sys.argv)
