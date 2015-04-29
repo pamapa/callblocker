@@ -19,7 +19,7 @@
 #
 
 from __future__ import print_function
-import os, sys, argparse
+import os, sys, argparse, codecs
 import onlinelookup_tel_search_ch
 import onlinelookup_dasschnelle_at
 import onlinelookup_dasoertliche_de
@@ -40,6 +40,11 @@ def main(argv):
   parser = argparse.ArgumentParser(description="Online lookup all")
   parser.add_argument("--number", help="number to be checked", required=True)
   args = parser.parse_args()
+
+  # make print unicode aware
+  UTF8Writer = codecs.getwriter('utf8')
+  sys.stdout = UTF8Writer(sys.stdout)
+  sys.stderr  = UTF8Writer(sys.stderr)
 
   callerName = ""
   if args.number.startswith("+41"):
