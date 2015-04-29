@@ -70,8 +70,9 @@ def main(argv):
     "spam"  : "%s" % "false" if score < args.spamscore else "true",
     "score" : score
   }
-  json = demjson.encode(result, escape_unicode=True)
-  sys.stdout.write(json+'\n')
+  json = demjson.encode(result, encoding="utf-8")
+  sys.stdout.write(json)
+  sys.stdout.write("\n") # must be seperate line, to avoid conversion of json into ascii
 
 if __name__ == "__main__":
     main(sys.argv)

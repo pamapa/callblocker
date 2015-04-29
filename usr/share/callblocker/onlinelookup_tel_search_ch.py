@@ -77,8 +77,9 @@ def main(argv):
   callerName = lookup_number(args.number)
 
   # result in json format, if not found empty field
-  json = demjson.encode({"name" : callerName}, escape_unicode=True)
-  sys.stdout.write(json+'\n')
+  json = demjson.encode({"name" : callerName}, encoding="utf-8")
+  sys.stdout.write(json)
+  sys.stdout.write("\n") # must be seperate line, to avoid conversion of json into ascii
 
 if __name__ == "__main__":
     main(sys.argv)
