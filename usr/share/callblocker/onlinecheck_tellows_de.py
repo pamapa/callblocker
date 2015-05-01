@@ -73,7 +73,7 @@ def main(argv):
   
   # result in json format
   result = {
-    "spam"  : "%s" % "false" if score < args.spamscore else "true",
+    "spam"  : False if score < args.spamscore else True,
     "score" : score,
     "name"  : callerName
   }

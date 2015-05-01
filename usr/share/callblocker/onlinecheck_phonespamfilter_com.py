@@ -69,7 +69,7 @@ def main(argv):
   # result in json format
   # caller name is not available in received content
   result = {
-    "spam"  : "%s" % "false" if score < args.spamscore else "true",
+    "spam"  : False if score < args.spamscore else True,
     "score" : score
   }
   json = demjson.encode(result, encoding="utf-8")
