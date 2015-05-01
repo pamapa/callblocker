@@ -48,6 +48,20 @@ void Block::run() {
   m_pBlacklists->run();
 }
 
+bool Block::isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg) {
+  bool block = pSettings->blockAnonymousCID;
+
+  // Incoming call number='anonymous' [blocked]
+  std::ostringstream oss;
+  oss << "Incoming call: number='anonymous'";
+  if (block) {
+    oss << " blocked";
+  }
+
+  *pMsg = oss.str();
+  return block;
+}
+
 bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg) {
   Logger::debug("Block::isNumberBlocked(%s,number=%s)", pSettings->toString().c_str(), rNumber.c_str());
 
@@ -128,20 +142,6 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
   }
   if (score.length() != 0) {
     oss << " score=" << score;
-  }
-
-  *pMsg = oss.str();
-  return block;
-}
-
-bool Block::isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg) {
-  bool block = pSettings->blockAnonymousCID;
-
-  // Incoming call number='anonymous' [blocked]
-  std::ostringstream oss;
-  oss << "Incoming call: number='anonymous'";
-  if (block) {
-    oss << " blocked";
   }
 
   *pMsg = oss.str();

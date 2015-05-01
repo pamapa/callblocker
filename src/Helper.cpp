@@ -48,7 +48,7 @@ bool Helper::getObject(struct json_object* objbase, const char* objname, bool lo
     return false;
   }
   if (json_object_get_type(n) != json_type_int) {
-    if (logError) Logger::warn("string type expected for %s in %s", objname, rLocation.c_str());
+    if (logError) Logger::warn("integer type expected for %s in %s", objname, rLocation.c_str());
     return false;
   }
   *pRes = json_object_get_int(n);
@@ -63,7 +63,7 @@ bool Helper::getObject(struct json_object* objbase, const char* objname, bool lo
     return false;
   }
   if (json_object_get_type(n) != json_type_boolean) {
-    if (logError) Logger::warn("string type expected for %s in %s", objname, rLocation.c_str());
+    if (logError) Logger::warn("boolean type expected for %s in %s", objname, rLocation.c_str());
     return false;
   }
   *pRes = (bool)json_object_get_boolean(n);
