@@ -253,11 +253,19 @@ require(["dijit/ConfirmDialog",
 
     var phoneStore = createListStore("phones.php");
     var structure = [
-      { name:"Enabled",             field:"enabled",             width:"50px"},
+      { name:"Enabled",             field:"enabled",             width:"40px",
+        type:dojox.grid.cells._Widget, formatter:function(on){
+          return new dijit.form.CheckBox({checked: on, readOnly: true});
+        }
+      },
       { name:"Name",                field:"name",                width:"100px"},
-      { name:"Country code",        field:"country_code",        width:"50px"},
+      { name:"Country code",        field:"country_code",        width:"40px"},
       { name:"Block mode",          field:"block_mode",          width:"120px"},
-      { name:"Block anonymous CID", field:"block_anonymous_cid", width:"60px"},
+      { name:"Block anonymous CID", field:"block_anonymous_cid", width:"60px",
+        type:dojox.grid.cells._Widget, formatter:function(on){
+          return new dijit.form.CheckBox({checked: on, readOnly: true});
+        }
+      },
       { name:"Online check",        field:"online_check",        width:"100px"},
       { name:"Online lookup",       field:"online_lookup",       width:"100px"},
       { name:"Device",              field:"device",              width:"100px"},
@@ -524,7 +532,8 @@ require(["dijit/ConfirmDialog",
     var grid = new dojox.grid.EnhancedGrid({
       //store: added later (see dojo.connect(listSelect...))
       structure: structure,
-      canSort: function(){return false}, // disable sorting, its not implemented on backend
+      // sorting done in forntend:
+      //canSort: function(){return false}, // disable sorting, its not implemented on backend
       selectable: true,
       plugins: {menus: menusObject = {rowMenu: menu}},
       style: "height:97%; width:100%;"
