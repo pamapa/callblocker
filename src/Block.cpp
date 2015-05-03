@@ -181,12 +181,10 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
 }
 
 bool Block::checkOnline(std::string prefix, std::string scriptBaseName, const std::string& rNumber, struct json_object** root) {
-#if 1
   if (boost::starts_with(rNumber, "**")) {
     // it is an intern number, thus makes no sense to ask the world
     return false;
   }
-#endif
 
   std::string script = "/usr/share/callblocker/" + prefix + scriptBaseName + ".py";
   std::string parameters = "--number " + rNumber;

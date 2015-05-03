@@ -34,27 +34,24 @@
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "Logger.h"
+#include "Helper.h"
 
 
 /*
   AT commands:
   http://support.usr.com/support/5637/5637-ug/ref_data.html
 */
-#define AT_Z_STR        "AT Z S0=0 E0 Q0 V1"
-#define AT_CID_STR      "AT+VCID=1"
-#define AT_HANGUP_STR   "ATH0"
-#define AT_PICKUP_STR   "ATH1"
+#define AT_Z_STR                  "AT Z S0=0 E0 Q0 V1"
+#define AT_CID_STR                "AT+VCID=1"
+#define AT_HANGUP_STR             "ATH0"
+#define AT_PICKUP_STR             "ATH1"
 
-
-static time_t getMonotonicTime(void) {
-  struct timespec tp;
-  (void)clock_gettime(CLOCK_MONOTONIC, &tp);
-  return tp.tv_sec;
-}
+#define RING_SILENCE_TIME_SEC     7   // when ringing each 5s a RING is expected -> 7s should be long enough
+#define PICKUP_HANGUP_TIME_SEC    2   // pickup and then hangup after 2s
 
 
 AnalogPhone::AnalogPhone(Block* pBlock) : Phone(pBlock) {
-  m_numRings = m_ringTime = 0;
+  m_numRings = 0;
   m_foundCID = false;
 }
 
@@ -85,8 +82,8 @@ void AnalogPhone::run() {
   std::string data;
   if (m_modem.getData(&data)) {
     if (data == "RING") {
+      m_ringTimer.restart(RING_SILENCE_TIME_SEC);
       m_numRings++;
-      m_ringTime = getMonotonicTime();
 
       if (m_numRings == 1) {
         Logger::debug("State changed to RINGING");
@@ -95,7 +92,7 @@ void AnalogPhone::run() {
       // handle no caller ID
       if (m_numRings == 2) {
         if (!m_foundCID) {
-          Logger::warn("Not expecting second RING without caller ID");
+          Logger::warn("Not expecting second RING without receiving caller ID");
         }
       }
     } else {
@@ -109,19 +106,19 @@ void AnalogPhone::run() {
       std::vector<std::string> lines;
       boost::split(lines, data, boost::is_any_of("\n"));
       for (size_t i = 0; i < lines.size(); i++) {
+        Logger::debug("CID: '%s'", lines[i].c_str());
         boost::smatch str_matches;
         static const boost::regex nmbr_regex("^(\\S+)\\s*=\\s*(\\S+)\\s*$");
         if (boost::regex_match(lines[i], str_matches, nmbr_regex)) {
           std::string key = str_matches[1];
           std::string value = str_matches[2];
-          //Logger::debug("found pair %s=%s", key.c_str(), value.c_str());
 
           if (key == "NMBR") {
             m_foundCID = true;
             std::string number = value;
 
             if (number == "PRIVATE") {
-              // Caller ID information has been blocked by the user at the other end
+              // Caller ID information has been blocked by the user of the other end
               // see http://ads.usr.com/support/3453c/3453c-ug/dial_answer.html#IDfunctions
               std::string msg;
               block = isAnonymousNumberBlocked(&m_settings.base, &msg);
@@ -130,8 +127,7 @@ void AnalogPhone::run() {
             }
 
             // make number international
-            if (boost::starts_with(number, "00")) number = "+" + number.substr(2);
-            else if (boost::starts_with(number, "0")) number = m_settings.base.countryCode + number.substr(1);
+            number = Helper::makeNumberInternational(&m_settings.base, number);
 
             std::string msg;
             block = isNumberBlocked(&m_settings.base, number, &msg);
@@ -142,22 +138,25 @@ void AnalogPhone::run() {
       } // for    
 
       if (block) {
-        m_modem.sendCommand("ATH0"); // pickup
-        m_modem.sendCommand("ATH1"); // hangup
-        Logger::debug("State changed to HANGUP");
+        m_modem.sendCommand(AT_PICKUP_STR); // pickup
+        m_hangupTimer.restart(PICKUP_HANGUP_TIME_SEC);
       }
     }
   }
 
-  // detect ringing stopped
-  if (m_numRings > 0) {
-    // when is 7s are elapsed, when ringing each 5s a RING is expected
-    time_t diff = getMonotonicTime() - m_ringTime;
-    if (diff > 6) {
-      Logger::debug("State changed to RINGING_STOPPED");
-      m_numRings = m_ringTime = 0;
-      m_foundCID = false;
-    }
+  // detect "ringing stopped"
+  if (m_ringTimer.isActive() && m_ringTimer.hasElapsed()) {
+    Logger::debug("State changed to RINGING_STOPPED");
+    m_ringTimer.stop();
+    m_numRings = 0;
+    m_foundCID = false;
+  }
+
+  // hangup
+  if (m_hangupTimer.isActive() && m_hangupTimer.hasElapsed()) {
+    m_hangupTimer.stop();
+    m_modem.sendCommand(AT_HANGUP_STR); // hangup
+    Logger::debug("State changed to HANGUP");
   }
 }
 

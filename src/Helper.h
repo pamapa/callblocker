@@ -21,6 +21,8 @@
 #include <json-c/json.h>
 #include <pjsua-lib/pjsua.h>
 
+#include "Settings.h"
+
 
 class Helper {
 public:
@@ -34,5 +36,7 @@ public:
 
   static std::string getBaseFilename(const std::string& rFilename);
   static std::string escapeSqString(const std::string& rStr);
+
+  static std::string makeNumberInternational(const struct SettingBase* pSettings, const std::string& rNumber);
 };
 

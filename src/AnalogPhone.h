@@ -22,9 +22,55 @@
 
 #include <string>
 #include <termios.h>
+#include <sys/time.h>
 
 #include "Phone.h"
 #include "Modem.h"
+
+
+class Timer {
+private:
+  bool m_active;
+  struct timeval elapseTime;
+
+public:
+  Timer() {
+    m_active = false;
+    timerclear(&elapseTime);
+  }
+
+  void restart(time_t elapseSec) {
+    struct timeval add;
+    timerclear(&add);
+    add.tv_sec = elapseSec;
+    getCurrent(&elapseTime);
+    timeradd(&elapseTime, &add, &elapseTime);
+    m_active = true;
+  }
+
+  void stop(void) {
+    m_active = false;
+    timerclear(&elapseTime);
+  }
+
+  bool isActive() {
+    return m_active;
+  }
+
+  bool hasElapsed() {
+    struct timeval now;
+    getCurrent(&now);
+    return timercmp(&elapseTime, &now, <=) ? true : false;
+  }
+
+private:
+  static void getCurrent(struct timeval* res) {
+    struct timespec tp;
+    (void)clock_gettime(CLOCK_MONOTONIC, &tp);
+    res->tv_sec = tp.tv_sec;
+    res->tv_usec = tp.tv_nsec / 1000;
+  }
+};
 
 
 class AnalogPhone : public Phone {
@@ -32,9 +78,12 @@ private:
   struct SettingAnalogPhone m_settings;
 
   Modem m_modem;
-  time_t m_ringTime;
+
+  Timer m_ringTimer;
   unsigned int m_numRings;
   bool m_foundCID;
+
+  Timer m_hangupTimer;
 
 public:
   AnalogPhone(Block* pBlock);

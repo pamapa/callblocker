@@ -122,3 +122,12 @@ std::string Helper::escapeSqString(const std::string& rStr) {
   return escaped;
 }
 
+
+std::string Helper::makeNumberInternational(const struct SettingBase* pSettings, const std::string& rNumber) {
+  std::string res;
+  if (boost::starts_with(rNumber, "00")) res = "+" + rNumber.substr(2);
+  else if (boost::starts_with(rNumber, "0")) res = pSettings->countryCode + rNumber.substr(1);
+  else res = rNumber;
+  return res;
+}
+
