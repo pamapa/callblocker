@@ -187,12 +187,14 @@ require(["dijit/ConfirmDialog",
       ]
     });
     function selectType(isSIP) {
+      //console.log("selectType: ", isSIP);
       deviceTextBox.set("disabled", isSIP);
       fromDomainTextBox.set("disabled", !isSIP);
       fromUsernameTextBox.set("disabled", !isSIP);
       fromPasswordTextBox.set("disabled", !isSIP);
     }
     dojo.connect(typeSelect, "onChange", function(evt) {
+      //console.log("typeSelect(onChange): ", evt);
       selectType(evt == "sip");
     });
     var enabledCheckBox = new dijit.form.CheckBox({
@@ -338,6 +340,7 @@ require(["dijit/ConfirmDialog",
             fromUsernameTextBox.set("value", grid.store.getValue(si, "from_username"));
             fromPasswordTextBox.set("value", grid.store.getValue(si, "from_password"));
           }
+          selectType(!grid.store.getValue(si, "device"));
           enabledCheckBox.set("value", grid.store.getValue(si, "enabled"));
           nameTextBox.set("value", grid.store.getValue(si, "name"));
           countryCodeTextBox.set("value", grid.store.getValue(si, "country_code"));
