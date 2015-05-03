@@ -27,6 +27,9 @@ from datetime import datetime
 import demjson
 
 
+NAME_MAX_LENGTH = 200
+
+
 def error(*objs):
   print("ERROR: ", *objs, file=sys.stderr)
   sys.exit(-1)
@@ -52,12 +55,12 @@ def extract_numbers(data):
 
   return ret
 
-def extract_comment(data):
+def extract_name(data):
   s = data
   if s.startswith("- "): s = s[2:]
   s = s.replace("  ", " ")
   s = s.strip()
-  return s if len(s)<= 100 else s[0:100-3]+"..."
+  return s if len(s)<= NAME_MAX_LENGTH else s[0:NAME_MAX_LENGTH-3]+"..."
 
 def fetch_page(url):
   debug("fetch_page: " + str(url))
@@ -73,7 +76,7 @@ def parse_page(content):
 
   for e in list:
     numbers = extract_numbers(e.contents[0])
-    name = extract_comment(e.nextSibling)
+    name = extract_name(e.nextSibling)
     for n in numbers:
       ret.append({"number":n, "name":name}, "date_created":date, "date_modified":date)
 
