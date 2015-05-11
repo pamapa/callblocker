@@ -1,14 +1,7 @@
 # callblocker
 blocking unwanted calls from your home phone, such as telemarketing, junk, spam, scam, etc.
 
-Its designed to run on small footprint such as a Raspberry Pi. For all those where jcblock or ncid
-does not fit or is not enough and Asterisk or FreePBX would be an overkill, as you already have
-running VoIP server. callblocker acts as an additional phone, when someone is calling the phone detects the
-number and checks it offline via white-and blacklists. There is also the possibility to check the number against a online blacklists.
-
-
-## TODO
-1. polish, bugfixing
+The callblock acts like a normal phone. No additional telephone switchboard (like FreePBX or Asterisk) is needed. When a telemarketer is calling, the callblock picks up the phone and afterwards it automatically hangs up and blocks like this the call. It's designed to run on small footprint such as a Raspberry Pi and has the ability to check against online and offline blacklists.
 
 
 ## Features
