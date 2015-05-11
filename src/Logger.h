@@ -17,6 +17,9 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#ifndef LOGGER_H
+#define LOGGER_H
+
 #include <stdarg.h>
 #include <string>
 
@@ -36,4 +39,6 @@ public:
 private:
   static void message(int priority, const char* format, va_list ap);
 };
+
+#endif
 
