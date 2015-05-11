@@ -182,10 +182,24 @@ def main(argv):
   parser = argparse.ArgumentParser(description="Fetch blacklist provided by ktipp.ch")
   parser.add_argument("--output", help="output path", default=".")
   args = parser.parse_args()
+  json_filename = args.output+"/blacklist_ktipp_ch.json"
+
+  last_update = ""
+  try:
+    data = open(json_filename, "r").read()
+    json = demjson.decode(data)
+    last_update = json["last_update"]
+    debug(last_update)
+  except IOError:
+    pass
 
   content = fetch_page(0)
-  #source_date = unicode(extract_str(content, "Letzte Aktualisierung:", "<", "Can't extract creation date"))
-  #debug(source_date)
+  source_date = unicode(extract_str(content, "Letzte Aktualisierung:", "<", "Can't extract creation date"))
+  debug(source_date)
+  if last_update == source_date:
+    # we already have this version
+    debug("We already have this version")
+    return
 
   result = parse_pages(content)
   result = cleanup_entries(result)
@@ -193,11 +207,12 @@ def main(argv):
     data = OrderedDict((
       ("name","ktipp.ch blacklist"),
       ("origin", "https://www.ktipp.ch/service/warnlisten/detail/?warnliste_id=7"),
+      ("last_update", source_date),
       ("parsed_by","callblocker script: "+os.path.basename(__file__)),
       ("num_entries",len(result)),
       ("entries",result)
     ))
-    demjson.encode_to_file(args.output+"/blacklist_ktipp_ch.json",
+    demjson.encode_to_file(json_filename,
                            data, overwrite=True, compactly=False, sort_keys=demjson.SORT_PRESERVE)
 
 if __name__ == "__main__":
