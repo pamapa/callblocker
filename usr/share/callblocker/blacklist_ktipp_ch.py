@@ -24,7 +24,7 @@ from BeautifulSoup import BeautifulSoup
 import urllib2
 from collections import OrderedDict
 from datetime import datetime
-import demjson
+import json
 
 
 NAME_MAX_LENGTH = 200
@@ -130,7 +130,7 @@ def parse_pages(content):
   #print last_page
   
   ret.extend(parse_page(soup))
-  #return ret
+  return ret
   for p in range(1,last_page+1):
     content = fetch_page(p)
     debug("fetch done, BeautifulSoup...")
@@ -191,8 +191,8 @@ def main(argv):
   last_update = ""
   try:
     data = open(json_filename, "r").read()
-    json = demjson.decode(data)
-    last_update = json["last_update"]
+    j = json.loads(data)
+    last_update = j["last_update"]
     debug(last_update)
   except (IOError, KeyError):
     pass
@@ -216,8 +216,8 @@ def main(argv):
       ("num_entries",len(result)),
       ("entries",result)
     ))
-    demjson.encode_to_file(json_filename,
-                           data, overwrite=True, compactly=False, sort_keys=demjson.SORT_PRESERVE)
+    with open(json_filename, 'w') as outfile:
+      json.dump(data, outfile, indent=2)
 
 if __name__ == "__main__":
     main(sys.argv)
