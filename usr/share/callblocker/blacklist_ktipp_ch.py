@@ -28,6 +28,7 @@ import demjson
 
 
 NAME_MAX_LENGTH = 200
+g_debug = False
 
 
 def error(*objs):
@@ -35,7 +36,7 @@ def error(*objs):
   sys.exit(-1)
 
 def debug(*objs):
-  #print("DEBUG: ", *objs, file=sys.stdout)
+  if g_debug: print("DEBUG: ", *objs, file=sys.stdout)
   return
 
 def extract_number(data):
@@ -179,9 +180,12 @@ def cleanup_entries(arr):
 # main
 #
 def main(argv):
+  global g_debug
   parser = argparse.ArgumentParser(description="Fetch blacklist provided by ktipp.ch")
   parser.add_argument("--output", help="output path", default=".")
+  parser.add_argument('--debug', action='store_true')
   args = parser.parse_args()
+  g_debug = args.debug
   json_filename = args.output+"/blacklist_ktipp_ch.json"
 
   last_update = ""
@@ -190,7 +194,7 @@ def main(argv):
     json = demjson.decode(data)
     last_update = json["last_update"]
     debug(last_update)
-  except IOError:
+  except (IOError, KeyError):
     pass
 
   content = fetch_page(0)

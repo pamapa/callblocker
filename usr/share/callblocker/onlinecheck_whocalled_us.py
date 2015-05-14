@@ -24,12 +24,15 @@ import urllib, urllib2
 import demjson
 
 
+g_debug = False
+
+
 def error(*objs):
   print("ERROR: ", *objs, file=sys.stderr)
   sys.exit(-1)
 
 def debug(*objs):
-  #print("DEBUG: ", *objs, file=sys.stdout)
+  if g_debug: print("DEBUG: ", *objs, file=sys.stdout)
   return
 
 def fetch_url(url):
@@ -42,12 +45,14 @@ def fetch_url(url):
 # main
 #
 def main(argv):
+  global g_debug
   parser = argparse.ArgumentParser(description="Online spam check via whocalled.us")
   parser.add_argument("--number", help="number to be checked", required=True)
   parser.add_argument("--username", help="username", required=True)
   parser.add_argument("--password", help="password", required=True)
   parser.add_argument("--spamscore", help="score limit to mark as spam [-1..?]", default=5)
   args = parser.parse_args()
+  g_debug = args.debug
 
   url = "http://whocalled.us/do?action=getScore&name="+args.username+"&pass="+args.password+"&"+urllib.urlencode({"phoneNumber":args.number})
   content = fetch_url(url)

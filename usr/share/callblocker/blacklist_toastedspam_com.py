@@ -28,6 +28,7 @@ import demjson
 
 
 NAME_MAX_LENGTH = 200
+g_debug = False
 
 
 def error(*objs):
@@ -35,7 +36,7 @@ def error(*objs):
   sys.exit(-1)
 
 def debug(*objs):
-  #print("DEBUG: ", *objs, file=sys.stdout)
+  if g_debug: print("DEBUG: ", *objs, file=sys.stdout)
   return
 
 def extract_number(data):
@@ -114,9 +115,11 @@ def cleanup_entries(arr):
 # main
 #
 def main(argv):
+  global g_debug
   parser = argparse.ArgumentParser(description="Fetch blacklist provided by toastedspam.com")
   parser.add_argument("--output", help="output path", default=".")
   args = parser.parse_args()
+  g_debug = args.debug
 
   content = fetch_page("http://www.toastedspam.com/phonelist.cgi")
   #debug(content)

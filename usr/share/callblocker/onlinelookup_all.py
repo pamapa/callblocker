@@ -27,21 +27,26 @@ import onlinelookup_dasschnelle_at
 import onlinelookup_dasoertliche_de
 
 
+g_debug = False
+
+
 def error(*objs):
   print("ERROR: ", *objs, file=sys.stderr)
   sys.exit(-1)
 
 def debug(*objs):
-  #print("DEBUG: ", *objs, file=sys.stdout)
+  if g_debug: print("DEBUG: ", *objs, file=sys.stdout)
   return
 
 #
 # main
 #
 def main(argv):
+  global g_debug
   parser = argparse.ArgumentParser(description="Online lookup all")
   parser.add_argument("--number", help="number to be checked", required=True)
   args = parser.parse_args()
+  g_debug = args.debug
 
   callerName = ""
   if args.number.startswith("+41"):

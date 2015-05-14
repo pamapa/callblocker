@@ -24,12 +24,15 @@ import urllib, urllib2
 import demjson
 
 
+g_debug = False
+
+
 def error(*objs):
   print("ERROR: ", *objs, file=sys.stderr)
   sys.exit(-1)
 
 def debug(*objs):
-  #print("DEBUG: ", *objs, file=sys.stdout)
+  if g_debug: print("DEBUG: ", *objs, file=sys.stdout)
   return
 
 def fetch_url(url, values):
@@ -82,9 +85,11 @@ def lookup_number(number):
 # main
 #
 def main(argv):
+  global g_debug
   parser = argparse.ArgumentParser(description="Online lookup via tel.search.ch")
   parser.add_argument("--number", help="number to be checked", required=True)
   args = parser.parse_args()
+  g_debug = args.debug
 
   # map number to correct URL
   if not args.number.startswith("+43"):

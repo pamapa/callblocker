@@ -25,12 +25,15 @@ from BeautifulSoup import BeautifulSoup
 import demjson
 
 
+g_debug = False
+
+
 def error(*objs):
   print("ERROR: ", *objs, file=sys.stderr)
   sys.exit(-1)
 
 def debug(*objs):
-  #print("DEBUG: ", *objs, file=sys.stdout)
+  if g_debug: print("DEBUG: ", *objs, file=sys.stdout)
   return
 
 def fetch_url(url):
@@ -43,12 +46,14 @@ def fetch_url(url):
 # main
 #
 def main(argv):
+  global g_debug
   parser = argparse.ArgumentParser(description="Online spam check via tellows.de")
   parser.add_argument("--number", help="number to be checked", required=True)
   parser.add_argument("--username", help="partner name", required=True)
   parser.add_argument("--password", help="api key", required=True)
   parser.add_argument("--spamscore", help="score limit to mark as spam [0..9]", default=7)
   args = parser.parse_args()
+  g_debug = args.debug
 
   # make correct format for number
   number = "";

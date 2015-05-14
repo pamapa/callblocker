@@ -26,12 +26,15 @@ from datetime import datetime
 import demjson
 
 
+g_debug = False
+
+
 def error(*objs):
   print("ERROR: ", *objs, file=sys.stderr)
   sys.exit(-1)
 
 def debug(*objs):
-  #print("DEBUG: ", *objs, file=sys.stdout)
+  if g_debug: print("DEBUG: ", *objs, file=sys.stdout)
   return
 
 def extract_number(data):
@@ -123,12 +126,13 @@ def cleanup_entries(arr, country_code):
 # main
 #
 def main(argv):
-  global result
+  global result, g_debug
   parser = argparse.ArgumentParser(description="Convert LDIF file to json")
   parser.add_argument("--input", help="input file", required=True)
   parser.add_argument("--country_code", help="country code, e.g. +41", required=True)
   parser.add_argument("--merge", help="file to merge with", default="out.json")
   args = parser.parse_args()
+  g_debug = args.debug
 
   name = os.path.splitext(os.path.basename(args.input))[0]
   result = []
