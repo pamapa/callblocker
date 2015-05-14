@@ -130,7 +130,7 @@ def parse_pages(content):
   #print last_page
   
   ret.extend(parse_page(soup))
-  return ret
+  #return ret
   for p in range(1,last_page+1):
     content = fetch_page(p)
     debug("fetch done, BeautifulSoup...")
