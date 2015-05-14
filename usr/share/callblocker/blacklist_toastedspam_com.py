@@ -24,7 +24,7 @@ from BeautifulSoup import BeautifulSoup
 import urllib2
 from collections import OrderedDict
 from datetime import datetime
-import demjson
+import json
 
 
 NAME_MAX_LENGTH = 200
@@ -118,8 +118,10 @@ def main(argv):
   global g_debug
   parser = argparse.ArgumentParser(description="Fetch blacklist provided by toastedspam.com")
   parser.add_argument("--output", help="output path", default=".")
+  parser.add_argument('--debug', action='store_true')
   args = parser.parse_args()
   g_debug = args.debug
+  json_filename = args.output+"/blacklist_toastedspam_com.json"
 
   content = fetch_page("http://www.toastedspam.com/phonelist.cgi")
   #debug(content)
@@ -133,8 +135,8 @@ def main(argv):
       ("num_entries",len(result)),
       ("entries",result)
     ))
-    demjson.encode_to_file(args.output+"/blacklist_toastedspam_com.json",
-                           data, overwrite=True, compactly=False, sort_keys=demjson.SORT_PRESERVE)
+    with open(json_filename, 'w') as outfile:
+      json.dump(data, outfile, indent=2)
 
 if __name__ == "__main__":
     main(sys.argv)

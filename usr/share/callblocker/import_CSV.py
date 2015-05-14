@@ -23,7 +23,7 @@ import os, sys, argparse, re
 import codecs, csv
 from collections import OrderedDict
 from datetime import datetime
-import demjson
+import json
 
 
 g_debug = False
@@ -198,6 +198,7 @@ def main(argv):
   parser.add_argument("--input", help="input file", required=True)
   parser.add_argument("--country_code", help="country code, e.g. +41", required=True)
   parser.add_argument("--merge", help="file to merge with", default="out.json")
+  parser.add_argument('--debug', action='store_true')
   args = parser.parse_args()
   g_debug = args.debug
 
@@ -207,9 +208,9 @@ def main(argv):
   # merge
   try:
     data = open(args.merge, "r").read()
-    json = demjson.decode(data)
-    name = json["name"]
-    result = json["entries"]
+    j = json.loads(data)
+    name = j["name"]
+    result = j["entries"]
     debug(result)
   except IOError:
     pass
@@ -224,8 +225,8 @@ def main(argv):
       ("name", name),
       ("entries", result)
     ))
-    demjson.encode_to_file(args.merge,
-                           data, overwrite=True, compactly=False, sort_keys=demjson.SORT_PRESERVE)
+    with open(args.merge, 'w') as outfile:
+      json.dump(data, outfile, indent=2)
 
 if __name__ == "__main__":
     main(sys.argv)

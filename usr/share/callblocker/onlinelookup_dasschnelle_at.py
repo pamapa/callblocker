@@ -21,7 +21,7 @@
 from __future__ import print_function
 import os, sys, argparse
 import urllib, urllib2
-import demjson
+import json, demjson
 
 
 g_debug = False
@@ -68,12 +68,13 @@ def lookup_number(number):
     "what" : number,
     "where" : ""
   }
-  content = fetch_url(url, values)
-  #debug(content)
+  data = fetch_url(url, values)
+  #debug(data)
 
   callerName = ""
-  json = demjson.decode(content)
-  for entry in json["entries"]:
+  #j = json.loads(data)
+  j = demjson.decode(data)
+  for entry in j["entries"]:
     name = entry["name"]
     if len(callerName) == 0:
       callerName = name
@@ -88,6 +89,7 @@ def main(argv):
   global g_debug
   parser = argparse.ArgumentParser(description="Online lookup via tel.search.ch")
   parser.add_argument("--number", help="number to be checked", required=True)
+  parser.add_argument('--debug', action='store_true')
   args = parser.parse_args()
   g_debug = args.debug
 
@@ -98,8 +100,11 @@ def main(argv):
   callerName = lookup_number(args.number)
 
   # result in json format, if not found empty field
-  json = demjson.encode({"name" : callerName}, encoding="utf-8")
-  sys.stdout.write(json)
+  result = {
+    "name"  : callerName
+  }
+  j = json.dumps(result, encoding="utf-8")
+  sys.stdout.write(j)
   sys.stdout.write("\n") # must be seperate line, to avoid conversion of json into ascii
 
 if __name__ == "__main__":

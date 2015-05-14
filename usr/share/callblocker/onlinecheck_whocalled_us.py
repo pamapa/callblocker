@@ -21,7 +21,7 @@
 from __future__ import print_function
 import os, sys, argparse, re
 import urllib, urllib2
-import demjson
+import json
 
 
 g_debug = False
@@ -51,6 +51,7 @@ def main(argv):
   parser.add_argument("--username", help="username", required=True)
   parser.add_argument("--password", help="password", required=True)
   parser.add_argument("--spamscore", help="score limit to mark as spam [-1..?]", default=5)
+  parser.add_argument('--debug', action='store_true')
   args = parser.parse_args()
   g_debug = args.debug
 
@@ -75,8 +76,8 @@ def main(argv):
     "spam"  : False if score < args.spamscore else True,
     "score" : score
   }
-  json = demjson.encode(result, encoding="utf-8")
-  sys.stdout.write(json)
+  j = json.dumps(result, encoding="utf-8")
+  sys.stdout.write(j)
   sys.stdout.write("\n") # must be seperate line, to avoid conversion of json into ascii
 
 if __name__ == "__main__":
