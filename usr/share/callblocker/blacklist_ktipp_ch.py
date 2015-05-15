@@ -175,6 +175,16 @@ def cleanup_entries(arr):
   debug("cleanup_entries done")
   return uniq
 
+def preserve_dates_created(result, older):
+  for i in range(0, len(result)):
+    n = result[i]["number"]
+    for o in older:
+      if n == o["number"]:
+        result[i]["date_created"] = o["date_created"]
+        #debug("found")
+        break
+  return result
+
 
 #
 # main
@@ -189,10 +199,11 @@ def main(argv):
   json_filename = args.output+"/blacklist_ktipp_ch.json"
 
   last_update = ""
+  json_data = None
   try:
     data = open(json_filename, "r").read()
-    j = json.loads(data)
-    last_update = j["last_update"]
+    json_data = json.loads(data)
+    last_update = json_data["last_update"]
     debug(last_update)
   except (IOError, KeyError):
     pass
@@ -207,14 +218,18 @@ def main(argv):
 
   result = parse_pages(content)
   result = cleanup_entries(result)
+
+  if json_data is not None and "entries" in json_data:
+    result = preserve_dates_created(result, json_data["entries"])
+
   if len(result) != 0:
     data = OrderedDict((
-      ("name","ktipp.ch blacklist"),
+      ("name", "ktipp.ch blacklist"),
       ("origin", "https://www.ktipp.ch/service/warnlisten/detail/?warnliste_id=7"),
       ("last_update", source_date),
-      ("parsed_by","callblocker script: "+os.path.basename(__file__)),
-      ("num_entries",len(result)),
-      ("entries",result)
+      ("parsed_by", "callblocker script: "+os.path.basename(__file__)),
+      ("num_entries", len(result)),
+      ("entries", result)
     ))
     with open(json_filename, 'w') as outfile:
       json.dump(data, outfile, indent=2)
