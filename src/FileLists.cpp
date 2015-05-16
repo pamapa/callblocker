@@ -30,6 +30,7 @@
 
 
 FileLists::FileLists(const std::string& rPathname) : Notify(rPathname, IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) {
+  Logger::debug("FileLists::FileLists()...");
   m_pathname = rPathname;
 
   if (pthread_mutex_init(&m_mutexLock, NULL) != 0) {
@@ -40,7 +41,7 @@ FileLists::FileLists(const std::string& rPathname) : Notify(rPathname, IN_CLOSE_
 }
 
 FileLists::~FileLists() {
-  Logger::debug("~FileLists");
+  Logger::debug("FileLists::~FileLists()...");
   clear();
 }
 

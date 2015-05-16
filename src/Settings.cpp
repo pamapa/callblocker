@@ -32,11 +32,13 @@
 
 
 Settings::Settings() : Notify(SYSCONFDIR "/" PACKAGE_NAME, IN_CLOSE_WRITE) {
+  Logger::debug("Settings::Settings()...");
   m_filename = SYSCONFDIR "/" PACKAGE_NAME "/settings.json";
   load();
 }
 
 Settings::~Settings() {
+  Logger::debug("Settings::~Settings()...");
   clear();
 }
 

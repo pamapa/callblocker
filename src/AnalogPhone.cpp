@@ -51,12 +51,13 @@
 
 
 AnalogPhone::AnalogPhone(Block* pBlock) : Phone(pBlock) {
+  Logger::debug("AnalogPhone::AnalogPhone()...");
   m_numRings = 0;
   m_foundCID = false;
 }
 
 AnalogPhone::~AnalogPhone() {
-  Logger::debug("~AnalogPhone...");
+  Logger::debug("AnalogPhone::~AnalogPhone()...");
 }
 
 bool AnalogPhone::init(struct SettingAnalogPhone* phone) {

@@ -37,6 +37,7 @@
 
 
 SipPhone::SipPhone(Block* pBlock) : Phone(pBlock) {
+  Logger::debug("SipPhone::SipPhone()...");
 #if 0
   m_mediaPortSilence = NULL;
   m_mediaConfSilenceId = -1;
@@ -44,7 +45,7 @@ SipPhone::SipPhone(Block* pBlock) : Phone(pBlock) {
 }
 
 SipPhone::~SipPhone() {
-  Logger::debug("~SipPhone...");
+  Logger::debug("SipPhone::~SipPhone()...");
 
   pjsua_call_hangup_all();
 

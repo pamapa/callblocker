@@ -41,11 +41,12 @@
 
 
 Modem::Modem() {
+  Logger::debug("Modem::Modem()...");
   m_FD = -1;
 }
 
 Modem::~Modem() {
-  Logger::debug("~Modem...");
+  Logger::debug("Modem::~Modem()...");
 
   if (m_FD != -1) {
     (void)sendCommand("ATZ"); // reset setting to defaults

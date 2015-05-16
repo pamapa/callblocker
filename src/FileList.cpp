@@ -31,10 +31,11 @@
 
 
 FileList::FileList() {
+  Logger::debug("FileList::FileList()...");
 }
 
 FileList::~FileList() {
-  Logger::debug("~FileList %s", m_filename.c_str());
+  Logger::debug("FileList::~FileList()... %s", m_filename.c_str());
   m_entries.clear();
 }
 

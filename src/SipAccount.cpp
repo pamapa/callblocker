@@ -31,12 +31,13 @@
 
 
 SipAccount::SipAccount(SipPhone* pPhone) {
+  Logger::debug("SipAccount::SipAccount()...");
   m_pPhone = pPhone;
   m_accId = -1;
 }
 
 SipAccount::~SipAccount() {
-  Logger::debug("~SipAccount...");
+  Logger::debug("SipAccount::~SipAccount()...");
   m_pPhone = NULL;
 
   if (m_accId == -1) {

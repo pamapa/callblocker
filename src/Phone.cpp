@@ -23,11 +23,12 @@
 
 
 Phone::Phone(Block* pBlock) {
+  Logger::debug("Phone::Phone()...");
   m_pBlock = pBlock;
 }
 
 Phone::~Phone() {
-  Logger::debug("~Phone...");
+  Logger::debug("Phone::~Phone()...");
   m_pBlock = NULL;
 }
 

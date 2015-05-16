@@ -27,7 +27,7 @@
 
 
 Block::Block(Settings* pSettings) {
-  Logger::debug("Block...");
+  Logger::debug("Block::Block()...");
   m_pSettings = pSettings;
 
   m_pWhitelists = new FileLists(SYSCONFDIR "/" PACKAGE_NAME "/whitelists");
@@ -35,7 +35,7 @@ Block::Block(Settings* pSettings) {
 }
 
 Block::~Block() {
-  Logger::debug("~Block...");
+  Logger::debug("Block::~Block()...");
 
   delete m_pWhitelists;
   m_pWhitelists = NULL;
