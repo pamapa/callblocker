@@ -74,7 +74,7 @@ public:
   }
 
   void loop() {
-    Logger::debug("mainLoop...");
+    Logger::debug("enter main loop...");
     while (s_appRunning) {
       m_pBlock->run();
 
