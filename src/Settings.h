@@ -31,9 +31,9 @@ struct json_object;
 
 enum SettingBlockMode {
   LOGGING_ONLY = 0,             // number is never blocked, only logged what it would do
-  WHITELISTS_ONLY,              // number has to be in a whitelists (blacklists not used)
-  WHITELISTS_AND_BLACKLISTS,    // number is blocked, when in a blacklists and NOT in a whitelists (default)
-  BLACKLISTS_ONLY               // number is blocked, when in a blacklists (whitelists not used)
+  WHITELISTS_ONLY,              // number is blocked, when NOT in a whitelists (blacklists not used at all)
+  WHITELISTS_AND_BLACKLISTS,    // number is blocked, when in a blacklists and NOT in a whitelists
+  BLACKLISTS_ONLY               // number is blocked, when in a blacklists (whitelists not used at all)
 };
 
 struct SettingBase {
@@ -59,7 +59,7 @@ struct SettingSipAccount {
 
   std::string toString() const {
     std::ostringstream oss;
-    oss << base.toString() << ",fd=" << fromDomain << ",fu=" << fromUsername << ",fp=" << fromPassword;
+    oss << base.toString() << ",fd=" << fromDomain << ",fu=" << fromUsername;// << ",fp=" << fromPassword;
     return oss.str();
   }
 };
