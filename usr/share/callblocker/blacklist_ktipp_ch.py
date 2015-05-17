@@ -175,12 +175,16 @@ def cleanup_entries(arr):
   debug("cleanup_entries done")
   return uniq
 
-def preserve_dates_created(result, older):
+def preserve_dates(result, older):
   for i in range(0, len(result)):
     n = result[i]["number"]
     for o in older:
       if n == o["number"]:
+        # was alraedy in the list
         result[i]["date_created"] = o["date_created"]
+        if result[i]["name"] == o["name"]:
+          # did not change at all
+          result[i]["date_modified"] = o["date_modified"]
         #debug("found")
         break
   return result
@@ -220,7 +224,7 @@ def main(argv):
   result = cleanup_entries(result)
 
   if json_data is not None and "entries" in json_data:
-    result = preserve_dates_created(result, json_data["entries"])
+    result = preserve_dates(result, json_data["entries"])
 
   if len(result) != 0:
     data = OrderedDict((
