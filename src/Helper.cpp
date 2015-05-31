@@ -71,7 +71,7 @@ bool Helper::getObject(struct json_object* objbase, const char* objname, bool lo
 }
 
 bool Helper::executeCommand(const std::string& rCmd, std::string* pRes) {
-  Logger::debug("executing(%s)..", rCmd.c_str());
+  Logger::debug("executing(%s)...", rCmd.c_str());
 
   FILE* fp = popen(rCmd.c_str(), "r");
   if (fp == NULL) {
@@ -92,6 +92,7 @@ bool Helper::executeCommand(const std::string& rCmd, std::string* pRes) {
     return false;
   }
 
+  Logger::debug("result: %s", res.c_str());
   *pRes = res;
   return true;
 }
@@ -121,7 +122,6 @@ std::string Helper::escapeSqString(const std::string& rStr) {
   }
   return escaped;
 }
-
 
 std::string Helper::makeNumberInternational(const struct SettingBase* pSettings, const std::string& rNumber) {
   std::string res;
