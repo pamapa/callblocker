@@ -17,9 +17,9 @@ html, body {
     background-color: #FF6666;
 }
 .errorRow .dojoxGridCell {
-    background-color: red;
+    background-color: #FF6666;
 }
 .warnRow .dojoxGridCell {
-    background-color: gold;
+    background-color: #FFFF66;
 }
 
