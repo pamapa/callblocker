@@ -564,6 +564,12 @@ require(["dijit/ConfirmDialog",
         editMenuItem.setDisabled(false);
         addNewEntryButton.setDisabled(false);
         importAddressbookUploader.setDisabled(false);
+      } else if (evt == "import.json") {
+        // only allow delete and import
+        deleteMenuItem.setDisabled(false);
+        editMenuItem.setDisabled(true);
+        addNewEntryButton.setDisabled(true);
+        importAddressbookUploader.setDisabled(false);
       } else {
         // disallow editing
         deleteMenuItem.setDisabled(true);
@@ -607,11 +613,13 @@ require(["dijit/ConfirmDialog",
     });
     dojo.connect(listSelect, "onChange", function(evt) {
       //console.log("dojo.connect");
-      importAddressbookUploader.set("url", "lists.php?".concat(url_param, "&import=addressbook", "&merge=", evt));
+      importAddressbookUploader.set("url", "lists.php?".concat(url_param, "&import=addressbook", "&merge=", "import.json"));
     });
     dojo.connect(importAddressbookUploader, "onComplete", function(evt) {
       //console.log("dojo.connect");
       // force reload
+      listSelect.setStore(createListStore("lists.php?".concat(url_param)));
+      listSelect.set("value", "import.json");
       grid.setStore(createListStore("list.php?".concat(url_param, "&filename=", listSelect.get("value"))));
     });
 
@@ -712,7 +720,7 @@ require(["dijit/ConfirmDialog",
 
   var statusbarPane = new dijit.layout.ContentPane({
     region: "bottom",
-    content: "Callblocker 0.0.5"
+    content: "Callblocker 0.0.6"
   });
   appLayout.addChild(statusbarPane);
   appLayout.placeAt(document.body);
