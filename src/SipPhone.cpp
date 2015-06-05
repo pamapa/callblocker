@@ -26,6 +26,11 @@
 #include "SipAccount.h"
 #include "Helper.h"
 
+// pjsua_init fails otherwise with the second time
+// transport_srtp  ..Failed to initialize libsrtp: unsupported parameter
+//  pjsua_media.c  ..Error initializing SRTP library: unsupported parameter [status=259801]
+static bool s_Initialized = false;
+
 
 // TODO
 // -reconnect on failure
@@ -56,15 +61,22 @@ SipPhone::~SipPhone() {
   pj_pool_release(m_Pool);
 #endif
 
+#if 0 // see s_Initialized
   pjsua_destroy();
+#endif
 }
 
 bool SipPhone::init() {
   Logger::debug("SipPhone::init...");
 
-  if (!init_pjsua()) return false;
+  if (!s_Initialized)
+  {
+    if (!init_pjsua()) return false;
+    if (!init_pjmedia()) return false;
+    s_Initialized = true;
+  }
 
-  return init_pjmedia();
+  return true;
 }
 
 bool SipPhone::init_pjsua() {
@@ -91,7 +103,7 @@ bool SipPhone::init_pjsua() {
   pjsua_logging_config log_cfg;    
   pjsua_logging_config_default(&log_cfg);
   log_cfg.level = pj_log_get_level();
-  
+
   // media configuration
   pjsua_media_config media_cfg;
   pjsua_media_config_default(&media_cfg);
@@ -103,7 +115,7 @@ bool SipPhone::init_pjsua() {
     Logger::error("pjsua_init() failed (%s)", Helper::getPjStatusAsString(status).c_str());
     return false;
   }
-  
+
   // add udp transport
   pjsua_transport_config udpcfg;
   pjsua_transport_config_default(&udpcfg);
