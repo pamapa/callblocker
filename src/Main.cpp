@@ -126,7 +126,9 @@ private:
     for(size_t i = 0; i < accounts.size(); i++) {
       if (m_pSipPhone == NULL) {
         m_pSipPhone = new SipPhone(m_pBlock);
-        m_pSipPhone->init();
+        if (!m_pSipPhone->init()) {
+          break;
+        }
       }
       SipAccount* tmp = new SipAccount(m_pSipPhone);
       if (tmp->add(&accounts[i])) m_sipAccounts.push_back(tmp);
