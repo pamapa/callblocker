@@ -135,7 +135,7 @@ def main(argv):
   args = parser.parse_args()
   g_debug = args.debug
 
-  name = os.path.splitext(os.path.basename(args.input))[0]
+  name = os.path.splitext(os.path.basename(args.merge))[0]
   result = []
 
   # merge
