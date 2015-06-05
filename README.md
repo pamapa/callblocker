@@ -1,7 +1,7 @@
 # callblocker
 blocking unwanted calls from your home phone, such as telemarketing, junk, spam, scam, etc.
 
-The callblock acts like a normal phone. No additional telephone switchboard (like FreePBX or Asterisk) is needed. When a telemarketer is calling, the callblock picks up the phone and afterwards it automatically hangs up and blocks like this the call. It's designed to run on small footprint such as a Raspberry Pi and has the ability to check against online and offline blacklists.
+The callblock acts like a normal phone. No additional telephone switchboard (like FreePBX or Asterisk) is needed. When a telemarketer is calling, the callblock picks up the phone and automatically hangs up after a few seconds. Like this the call is blocked. It's designed to run on small footprints such as a Raspberry Pi. It has the ability to check against online spam check sites and it also supports offline blacklists.
 
 
 ## Features
@@ -9,12 +9,14 @@ The callblock acts like a normal phone. No additional telephone switchboard (lik
 - logging of all incoming calls
 - different kind of block modes.
   - logging only
-  - number blocking using blacklists
-  - avoid blocking, if number is in whitelist
-  - number has to be in whitelist
+  - number blocking using blacklists only
+  - number blocking using blacklists and avoid blocking, if number is in whitelist
+  - number has to be in whitelist, all other numbers are blocked
 - daily refresh blacklists through the Internet
 - support of online spam check sites, for spam verification
 - support of online lookup sites, to find out who is calling
+- import your addressbook as whitelist or blacklist
+- has a nice web interface
 
 Supported VoIP systems (tested):
 - Fritzbox 7390
