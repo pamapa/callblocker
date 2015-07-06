@@ -83,8 +83,9 @@ require(["dijit/ConfirmDialog",
         var listStore = createListStore(url);
         dojo.forEach(items, function(si) {
           if (si !== null) {
-            var newItem = { timestamp: Date.now(),
-                            number: grid.store.getValue(si, "NUMBER"), name: grid.store.getValue(si, "NAME")};
+            var dateStr = date2UTCString(new Date());
+            var newItem = { number: grid.store.getValue(si, "NUMBER"), name: grid.store.getValue(si, "NAME"),
+                            date_created: dateStr, date_modified: dateStr };
             listStore.newItem(newItem);
           }
         });
@@ -590,12 +591,8 @@ require(["dijit/ConfirmDialog",
           onExecute: function() {
             if (numberTextBox.isValid() && nameTextBox.isValid()) {
               var dateStr = date2UTCString(new Date());
-              var newItem = {
-                date_created: dateStr,
-                date_modified: dateStr,
-                number: numberTextBox.get("value"),
-                name: nameTextBox.get("value")
-              };
+              var newItem = { number: numberTextBox.get("value"), name: nameTextBox.get("value"),
+                              date_created: dateStr, date_modified: dateStr };
               grid.store.newItem(newItem);
               grid.store.save();
             }
@@ -609,7 +606,7 @@ require(["dijit/ConfirmDialog",
       label:"Import Addressbook (merge)",
       //url: added later (see dojo.connect(listSelect...))
       multiple: false,
-      uploadOnSelect:true
+      uploadOnSelect: true
     });
     dojo.connect(listSelect, "onChange", function(evt) {
       //console.log("dojo.connect");
