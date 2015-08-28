@@ -76,7 +76,7 @@ def main(argv):
     "spam"  : False if score < args.spamscore else True,
     "score" : score
   }
-  j = json.dumps(result, encoding="utf-8")
+  j = json.dumps(result, encoding="utf-8", ensure_ascii=False)
   sys.stdout.write(j)
   sys.stdout.write("\n") # must be seperate line, to avoid conversion of json into ascii
 

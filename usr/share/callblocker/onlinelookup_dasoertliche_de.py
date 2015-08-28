@@ -83,7 +83,7 @@ def main(argv):
   result = {
     "name"  : callerName
   }
-  j = json.dumps(result, encoding="utf-8")
+  j = json.dumps(result, encoding="utf-8", ensure_ascii=False)
   sys.stdout.write(j)
   sys.stdout.write("\n") # must be seperate line, to avoid conversion of json into ascii
 

@@ -60,9 +60,9 @@ def lookup_number(number):
   for entry in entries:
     name = entry.title.contents[0]
     if len(callerName) == 0:
-      callerName = name
+      callerName = unicode(name)
     else:
-      callerName += "; " + name
+      callerName += "; " + unicode(name)
   return callerName
 
 #
@@ -86,7 +86,7 @@ def main(argv):
   result = {
     "name"  : callerName
   }
-  j = json.dumps(result, encoding="utf-8")
+  j = json.dumps(result, encoding="utf-8", ensure_ascii=False)
   sys.stdout.write(j)
   sys.stdout.write("\n") # must be seperate line, to avoid conversion of json into ascii
 
