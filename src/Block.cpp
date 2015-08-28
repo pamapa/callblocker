@@ -170,7 +170,10 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
       if (spam) {
         *pListName = pSettings->onlineCheck;
         (void)Helper::getObject(root, "name", false, "script result", pCallerName);
-        (void)Helper::getObject(root, "score", false, "script result", pScore);
+        int score;
+        if (Helper::getObject(root, "score", false, "script result", &score)) {
+          *pScore = std::to_string(score);
+        }
         return true;
       }
     }
