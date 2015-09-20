@@ -139,7 +139,7 @@ This option selects the online check site to verify the number from the incoming
 Name                  | Site                           | Description
 ----                  | ----                           | -----------
 ""                    | No online check is done        |
-"phonespamfilter_com" | http://www.phonespamfilter.com | Free for non comercial use
+"phonespamfilter_com" | http://www.phonespamfilter.com | Free for non commercial use
 "whocalled_us"        | http://whocalled.us            | Mostly USA and Canada (+1). Free, but needs login
 "tellows_de"          | http://tellows.de              | Not free
 
@@ -155,9 +155,9 @@ Name                  | Site                           | Description
 ----                  | ----                           | -----------
 ""                    | No online lookup is done       |
 "all"                 | All listed ones                | See other listed ones
-"tel_search_ch"       | http://tel.search.ch           | Switzerland (+41). Free for non comercial use
-"dasschnelle_at"      | http://www.dasschnelle.at      | Austria (+43). Free for non comercial use
-"dasoertliche_de"     | http://www.dasoertliche.de     | Germany (+49). Free for non comercial use
+"tel_search_ch"       | http://tel.search.ch           | Switzerland (+41). Free for non commercial use
+"dasschnelle_at"      | http://www.dasschnelle.at      | Austria (+43). Free for non commercial use
+"dasoertliche_de"     | http://www.dasoertliche.de     | Germany (+49). Free for non commercial use
 
 Developer hint: The online lookup name e.g. "tel_search_ch" leds to the python script name onlinelookup_tel_search_ch.py. This allows
 easily to add additional scripts.
