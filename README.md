@@ -12,11 +12,13 @@ The callblock acts like a normal phone. No additional telephone switchboard (lik
   - number blocking using blacklists only
   - number blocking using blacklists and avoid blocking, if number is in whitelist
   - number has to be in whitelist, all other numbers are blocked
-- daily refresh blacklists through the Internet
-- support of online spam check sites, for spam verification
+- different kind of ways to verify incoming calls
+  - support of online spam check sites, for spam verification
+  - self maintained offline blacklist
+  - extern maintained offline blacklists (downloaded from the Internet and stored offline)
 - support of online lookup sites, to find out who is calling
 - import your addressbook as whitelist or blacklist
-- has a nice web interface
+- nice web interface
 
 Supported VoIP systems (tested):
 - Fritzbox 7390
@@ -109,8 +111,8 @@ Start with the provided template settings file (sudo mv tpl_settings.json settin
     },
     {
       "name"     : "whocalled_us",
-      "username" : "<your name>",
-      "password" : "<your pass>"
+      "username" : "<your username>",
+      "password" : "<your password>"
     }
   ]
 }
@@ -132,6 +134,8 @@ Fields               | Values | Description
 
 
 ## <a name="onlineCheck"></a> Online check option
+This option selects the online check site to verify the number from the incoming call. If the number is listed as spam, the callblocker will block it.
+
 Name                  | Site                           | Description
 ----                  | ----                           | -----------
 ""                    | No online check is done        |
@@ -139,10 +143,14 @@ Name                  | Site                           | Description
 "whocalled_us"        | http://whocalled.us            | Mostly USA and Canada (+1). Free, but needs login
 "tellows_de"          | http://tellows.de              | Not free
 
-Developer hint: The online check name e.g. "tellows_de" leds to the script name onlinecheck_tellows_de.py.
+Developer hint: The online check name e.g. "tellows_de" leds to the python script name onlinecheck_tellows_de.py. This allows
+easily to add additional scripts.
 
 
 ## <a name="onlineLookup"></a> Online lookup option
+This option selects the online lookup site to find out who is calling. The all options decides depending on the region code which
+site to use, as all sites only support a certain region.
+
 Name                  | Site                           | Description
 ----                  | ----                           | -----------
 ""                    | No online lookup is done       |
@@ -150,25 +158,29 @@ Name                  | Site                           | Description
 "tel_search_ch"       | http://tel.search.ch           | Switzerland (+41). Free for non comercial use
 "dasschnelle_at"      | http://www.dasschnelle.at      | Austria (+43). Free for non comercial use
 "dasoertliche_de"     | http://www.dasoertliche.de     | Germany (+49). Free for non comercial use
-Developer hint: The online lookup name e.g. "tel_search_ch" leds to the script name onlinelookup_tel_search_ch.py.
+
+Developer hint: The online lookup name e.g. "tel_search_ch" leds to the python script name onlinelookup_tel_search_ch.py. This allows
+easily to add additional scripts.
 
 
-## Automatically download blacklists
+## Offline blacklists (automatically periodically downloading)
+Through the web interface you have the possibility to maintain your own blacklist. Additionally there is the possibility to daily
+download an extern maintained blacklist. You will need to setup a cronjob for this task.
+
 Currently the following blacklists are supported:
-
 Name                         | Site                       | Description
 ----                         | ----                       | -----------
 blacklist_toastedspam_com.py | http://www.toastedspam.com | Mostly USA and Canada (+1)
 blacklist_ktipp_ch.py        | https://www.ktipp.ch       | Switzerland (+41)
 
-There is the possibility to daily download a whole blacklist. You will need to setup a cronjob for this task. The following cronjob will download each day the blacklist provided by ktipp_ch:
+The following cronjob will download each day the blacklist provided by ktipp_ch:
 ```
 0 0 * * * /usr/share/callblocker/blacklist_ktipp_ch.py --output /etc/callblocker/blacklists/ >/dev/null 2>&1
 ```
 
 
 ## Setup
-There are two ways to connect the callblock application to your phone system, depending if your system is VoIP or analog. 
+There are two ways to connect the callblock application with your phone system, depending if it is VoIP or analog. 
 
 
 ### Setup using Fritzbox with a IP-phone
