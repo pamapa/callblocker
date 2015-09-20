@@ -168,6 +168,7 @@ Through the web interface you have the possibility to maintain your own blacklis
 download an extern maintained blacklist. You will need to setup a cronjob for this task.
 
 Currently the following blacklists are supported:
+
 Name                         | Site                       | Description
 ----                         | ----                       | -----------
 blacklist_toastedspam_com.py | http://www.toastedspam.com | Mostly USA and Canada (+1)
