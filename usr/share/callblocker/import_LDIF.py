@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env python
 
 # callblocker - blocking unwanted calls from your home phone
 # Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
@@ -59,7 +59,7 @@ def getEntityPerson(entry):
 
 result = []
 class MyLDIF(LDIFParser):
-  def __init__(self, input, output):
+  def __init__(self, input):
     LDIFParser.__init__(self, input)
     self.date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
     #debug(self.date)
@@ -149,7 +149,7 @@ def main(argv):
     pass
 
   # convert
-  parser = MyLDIF(open(args.input, "r"), sys.stdout)
+  parser = MyLDIF(open(args.input, "r"))
   parser.parse()
   
   result = cleanup_entries(result, args.country_code)

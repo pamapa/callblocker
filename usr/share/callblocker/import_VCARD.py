@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env python
 
 # callblocker - blocking unwanted calls from your home phone
 # Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
