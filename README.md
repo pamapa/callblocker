@@ -154,7 +154,7 @@ site to use, as all sites only support a certain region.
 Name                  | Site                           | Description
 ----                  | ----                           | -----------
 ""                    | No online lookup is done       |
-"all"                 | All listed ones                | See other listed ones
+"all"                 | Automatic select               | Depending on the country code, it will automatically select one of the below
 "tel_search_ch"       | http://tel.search.ch           | Switzerland (+41). Free for non commercial use
 "dasschnelle_at"      | http://www.dasschnelle.at      | Austria (+43). Free for non commercial use
 "dasoertliche_de"     | http://www.dasoertliche.de     | Germany (+49). Free for non commercial use
@@ -190,7 +190,7 @@ There are two ways to connect the callblock application with your phone system, 
   - In the menu "Telefonie -> Telefoniegeraete" click on "Neues Geraet einrichten"
   - Choose "Telefon (mit und ohne Anrufbeantworter)" and click "Weiter"
   - Choose "LAN/WLAN (IP-Telefon)", for name use for example "callblocker" and click "Weiter"
-  - Choose a password, remember the username and click "Weiter"
+  - Choose a password, remember it and click "Weiter"
   - Choose "alle Anrufe annehmen" and click "Weiter"
 - Setup the IP-phone in the callblocker configuration (/etc/callblocker/setting.json):
   - Edit the section sip -> accounts
