@@ -6,7 +6,8 @@
       { 
         "name" : "Telemarketing Company X",
         "number" : "+123567890123",
-        "timestamp": 1428433912479
+        "date_created": "2015-05-15 12:00:00 +0000",
+        "date_modified": "2015-05-15 12:00:00 +0000",
       }
     ]
 }
