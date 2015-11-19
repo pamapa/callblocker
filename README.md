@@ -81,38 +81,38 @@ Start with the provided template settings file (sudo mv tpl_settings.json settin
   "pjsip_log_level": 0,
   "phones": [
     {
-      "enabled"           : false,
-      "name"              : "Analog Home Phone",
-      "country_code"      : "+41",
-      "block_mode"        : "logging_only",
-      "block_unknown_cid" : false,
-      "online_check"      : "tellows_de",
-      "online_lookup"     : "tel_search_ch",
-      "device"            : "/dev/ttyACM0"
+      "enabled":           false,
+      "name":              "Analog Home Phone",
+      "country_code":      "+41",
+      "block_mode":        "logging_only",
+      "block_unknown_cid": false,
+      "online_check":      "tellows_de",
+      "online_lookup":     "tel_search_ch",
+      "device":            "/dev/ttyACM0"
     },
     { 
-      "enabled"           : false,
-      "name"              : "SIP Home Phone",
-      "country_code"      : "+41",
-      "block_mode"        : "whitelists_and_blacklists",
-      "block_unknown_cid" : false,
-      "online_check"      : "tellows_de",
-      "online_lookup"     : "tel_search_ch",
-      "from_domain"       : "<your domain>",
-      "from_username"     : "<your username>",
-      "from_password"     : "<your password>"
+      "enabled":           false,
+      "name":              "SIP Home Phone",
+      "country_code":      "+41",
+      "block_mode":        "whitelists_and_blacklists",
+      "block_unknown_cid": false,
+      "online_check":      "tellows_de",
+      "online_lookup":     "tel_search_ch",
+      "from_domain":       "<your domain>",
+      "from_username":     "<your username>",
+      "from_password":     "<your password>"
     }
   ],
   "online_credentials": [
     {
-      "name"     : "tellows_de",
-      "username" : "<your partner name>",
-      "password" : "<your api key>"
+      "name":     "tellows_de",
+      "username": "<your partner name>",
+      "password": "<your api key>"
     },
     {
-      "name"     : "whocalled_us",
-      "username" : "<your username>",
-      "password" : "<your password>"
+      "name":     "whocalled_us",
+      "username": "<your username>",
+      "password": "<your password>"
     }
   ]
 }
@@ -194,9 +194,9 @@ There are two ways to connect the callblock application with your phone system, 
   - Choose "alle Anrufe annehmen" and click "Weiter"
 - Setup the IP-phone in the callblocker configuration (/etc/callblocker/setting.json):
   - Edit the section sip -> accounts
-  - "from_domain"   : "fritz.box"
-  - "from_username" : "your username"
-  - "from_password" : "your password"
+  - "from_domain":   "fritz.box"
+  - "from_username": "your username"
+  - "from_password": "your password"
   - Make sure the account is enabled and the other fields ok ok for you
 
 
@@ -205,6 +205,6 @@ There are two ways to connect the callblock application with your phone system, 
 - Use `dmesg` to find the device name `/dev/<name>`
 - Setup the Analog phone in the callblocker configuration (/etc/callblocker/setting.json):
   - Edit the section analog -> phones
-  - "device" : "your device name"
+  - "device": "your device name"
   - Make sure the account is enabled and the other fields ok ok for you
 
