@@ -45,7 +45,7 @@ sudo systemctl start callblockerd.service
 ```
 
 
-## Install WebUI on a Raspberry Pi (running raspbian/jessie)
+## Optional: Install WebUI on a Raspberry Pi (running raspbian/jessie)
 ```bash
 sudo apt-get install lighttpd php5-common php5-cgi php5 libjs-dojo-core libjs-dojo-dijit libjs-dojo-dojox
 sudo chgrp -R www-data /etc/callblocker/
@@ -77,9 +77,9 @@ When installed on Linux, the following file layout is used
 Start with the provided template settings file (sudo mv tpl_settings.json settings.json)
 ```json
 { 
-  "log_level" : "info",
-  "pjsip_log_level" : 0,
-  "phones" : [
+  "log_level": "info",
+  "pjsip_log_level": 0,
+  "phones": [
     {
       "enabled"           : false,
       "name"              : "Analog Home Phone",
@@ -103,7 +103,7 @@ Start with the provided template settings file (sudo mv tpl_settings.json settin
       "from_password"     : "<your password>"
     }
   ],
-  "online_credentials" : [
+  "online_credentials": [
     {
       "name"     : "tellows_de",
       "username" : "<your partner name>",
