@@ -1,5 +1,10 @@
 # Documentation of settings.json
-Start with the provided template settings file (sudo mv tpl_settings.json settings.json)
+Start with the provided template settings file.
+```bash
+sudo mv tpl_settings.json settings.json
+```
+
+The settings file looks like this.
 ```json
 { 
   "log_level": "info",
