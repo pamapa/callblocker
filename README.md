@@ -40,17 +40,17 @@ make all
 sudo make install
 cd /etc/callblocker
 sudo mv tpl_settings.json settings.json
-sudo joe settings.json
+sudo vi settings.json
 sudo systemctl start callblockerd.service
 ```
 
 
-## Optional: Install WebUI on a Raspberry Pi (running raspbian/jessie)
+## Optional: Install web interface on a Raspberry Pi (running raspbian/jessie)
 ```bash
 sudo apt-get install lighttpd php5-common php5-cgi php5 libjs-dojo-core libjs-dojo-dijit libjs-dojo-dojox
 sudo chgrp -R www-data /etc/callblocker/
 sudo usermod -a -G systemd-journal www-data
-sudo joe /etc/lighttpd/lighttpd.conf
+sudo vi /etc/lighttpd/lighttpd.conf
 ```
 1. In the upper section of this file you can find den section 'server.modules='. Please add this line: '"mod_fastcgi",'.
 2. At the end of file, add: 'fastcgi.server = (".php"=>(("bin-path"=>"/usr/bin/php-cgi", "socket"=>"/tmp/php.sock")))'.
@@ -60,16 +60,16 @@ sudo reboot
 ```
 
 
-## File Layout
+## <a name="fileLayout"></a> File Layout
 When installed on Linux, the following file layout is used
 ```
-/etc/callblocker
-  settings.json (configuration)
-  blacklists (place additional blacklists here)
-  whitelists (place additional whitelists here)
-/usr/bin/callblockerd (daemon)
-/usr/share/callblocker (scripts)
-/usr/var/www/callblocker (web interface)
+drwxr-xr-x  www-data www-data  /etc/callblocker               # configuration
+-rw-r--r--  www-data www-data  /etc/callblocker/settings.json # configuration file
+drwxr-xr-x  www-data www-data  /etc/callblocker/blacklists    # place additional blacklists here
+drwxr-xr-x  www-data www-data  /etc/callblocker/whitelists    # place additional whitelists here
+-rwxr-xr-x  root     root      /usr/bin/callblockerd          # daemon
+drwxr-xr-x  root     root      /usr/share/callblocker         # python helper scripts
+drwxr-xr-x  root     root      /usr/var/www/callblocker       # web interface
 ```
 
 
@@ -130,7 +130,7 @@ Fields               | Values | Description
 "from_domain"        | `<string>` | Your SIP domain name
 "from_username"      | `<string>` | Your SIP username
 "from_password"      | `<string>` | Your SIP password
-"online_credentials" | | In this section you can define credentials, which are needed by some ["online_check"](#onlineCheck) and ["online_lookup"](#onlineLookup) scripts.
+"online_credentials" | | In this section you can define credentials, which are needed by some [online check](#onlineCheck) and [online lookup](#onlineLookup) scripts.
 
 
 ## <a name="onlineCheck"></a> Online check option
@@ -175,7 +175,7 @@ blacklist_toastedspam_com.py | http://www.toastedspam.com | Mostly USA and Canad
 blacklist_ktipp_ch.py        | https://www.ktipp.ch       | Switzerland (+41)
 
 The following cronjob will download each day the blacklist provided by ktipp_ch:
-```
+```bash
 0 0 * * * /usr/share/callblocker/blacklist_ktipp_ch.py --output /etc/callblocker/blacklists/ >/dev/null 2>&1
 ```
 
@@ -207,4 +207,44 @@ There are two ways to connect the callblock application with your phone system, 
   - Edit the section analog -> phones
   - "device": "your device name"
   - Make sure the account is enabled and the other fields ok ok for you
+
+
+## Troubleshooting
+
+### Symptom: It is unspecific not working.
+1. Double check all installed files, with its locations and permissions. See [File Layout](#fileLayout)
+2. Make sure lighttpd and callblockerd are running.
+   ```bash
+   sudo ps aux | grep -E 'lighttpd|callblockerd' | grep -v 'grep' # shows: 2 lines
+   ```
+3. Check for possible errors/warning.
+   ```bash
+   sudo journalctl _SYSTEMD_UNIT=callblockerd.service
+   ```
+
+### Symptom: Configuration done via web interface is not saved persistent.
+The web interface is running within lighttpd, this deamon is using "www-data" as user and group. Make
+sure that this process has access to the configuration file (see [File Layout](#fileLayout))
+```bash
+sudo chgrp -R www-data /etc/callblocker/
+```
+
+### Symptom: Caller log and diagnostics stay empty within the web interface.
+Make sure journal is active and working and the web interface has access to the journal.The web interface
+depends on functionality provided by systemd journal. 
+```bash
+# switch to systemd journal
+sudo apt-get purge rsyslog logrotate libestr0 liblogging-stdlog0 liblognorm1
+sudo vi /etc/systemd/journald.conf: #Storage=auto -> Storage=auto
+sudo rm -rf /var/log/* # optional, you will lose all existing log entries (old format)
+sudo mkdir /var/log/journal
+sudo reboot # required to finished the switch
+
+# give web interface access
+sudo usermod -a -G systemd-journal www-data
+sudo systemctl restart lighttpd.service
+
+# manual verify that journal is working
+sudo journalctl _SYSTEMD_UNIT=callblockerd.service
+```
 
