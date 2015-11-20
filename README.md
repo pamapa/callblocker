@@ -1,12 +1,12 @@
 # callblocker
-blocking unwanted calls from your home phone, such as telemarketing, junk, spam, scam, etc.
+Blocks unwanted calls from your home phone, such as telemarketing, junk, spam, scam, etc.
 
-The callblock acts like a normal phone. No additional telephone switchboard (like FreePBX or Asterisk) is needed. When a telemarketer is calling, the callblock picks up the phone and automatically hangs up after a few seconds. Like this the call is blocked. It's designed to run on small footprints such as a Raspberry Pi. It has the ability to check against online spam check sites and it also supports offline blacklists.
+The callblocker acts like a normal phone. No additional telephone switchboard (like FreePBX or Asterisk) is needed. When a telemarketer is calling, the callblocker picks up the phone and automatically hangs up after a few seconds. Like this the call is blocked. It's designed to run on small footprints such as a Raspberry Pi. In addition when the callblocker is not running (e.g. hardware broke) your home phone is still working. It has the ability to check against online and offline spam lists.
 
 
 ## Features
 - automatically blocks unwanted incoming calls
-- logging of all incoming calls
+- logging of all incoming calls, including caller name lookups
 - different kind of block modes.
   - logging only
   - number blocking using blacklists only
@@ -14,16 +14,21 @@ The callblock acts like a normal phone. No additional telephone switchboard (lik
   - number has to be in whitelist, all other numbers are blocked
 - different kind of ways to verify incoming calls
   - support of online spam check sites, for spam verification
-  - self maintained offline blacklist
+  - user maintained offline blacklist
   - extern maintained offline blacklists (downloaded from the Internet and stored offline)
 - support of online lookup sites, to find out who is calling
-- import your addressbook as whitelist or blacklist
+- import your addressbook as whitelist or blacklist and caller lookup
 - nice web interface
 
-Supported VoIP systems (tested):
+
+## Hardware
+Supported (tested) server host systems
+- Raspberry Pi (running raspbian/jessie)
+
+Supported (tested) VoIP systems
 - Fritzbox 7390
 
-Supported analog modems (tested):
+Supported (tested) analog modems
 - USRobotics 5637
 
 
@@ -45,7 +50,7 @@ sudo systemctl start callblockerd.service
 ```
 
 
-## Optional: Install web interface on a Raspberry Pi (running raspbian/jessie)
+## Install web interface on a Raspberry Pi (running raspbian/jessie)
 ```bash
 sudo apt-get install lighttpd php5-common php5-cgi php5 libjs-dojo-core libjs-dojo-dijit libjs-dojo-dojox
 sudo chgrp -R www-data /etc/callblocker/
