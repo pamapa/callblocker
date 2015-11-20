@@ -1,4 +1,4 @@
-## Documentation of main.json
+# Documentation of main.json
 ```json
 { 
   "name": "main",
