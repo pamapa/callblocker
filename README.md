@@ -218,11 +218,11 @@ There are two ways to connect the callblock application with your phone system, 
 
 ### Symptom: It is unspecific not working.
 1. Double check all installed files, with its locations and permissions. See [File Layout](#fileLayout)
-2. Make sure lighttpd and callblockerd are running.
+2. Make sure lighttpd and callblockerd are running.<br>
    ```bash
    sudo ps aux | grep -E 'lighttpd|callblockerd' | grep -v 'grep' # shows: 2 lines
    ```
-3. Check for possible errors/warning.
+3. Check for possible errors/warning.<br>
    ```bash
    sudo journalctl _SYSTEMD_UNIT=callblockerd.service
    ```
