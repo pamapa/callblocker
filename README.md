@@ -186,12 +186,12 @@ The following cronjob will download each day the blacklist provided by ktipp_ch:
 
 
 ## Setup
-There are two ways to connect the callblock application with your phone system, depending if it is VoIP or analog. 
+There are two ways to connect the callblocker application with your phone system, depending if it is VoIP or analog. 
 
 
 ### Setup using Fritzbox with a IP-phone
 - Create in the Fritzbox a new IP-phone
-  - Open your webbrowser and go to the URL http://fritz.box
+  - Open your web browser and navigate to the URL http://fritz.box
   - In the menu "Telefonie -> Telefoniegeraete" click on "Neues Geraet einrichten"
   - Choose "Telefon (mit und ohne Anrufbeantworter)" and click "Weiter"
   - Choose "LAN/WLAN (IP-Telefon)", for name use for example "callblocker" and click "Weiter"
@@ -205,7 +205,7 @@ There are two ways to connect the callblock application with your phone system, 
   - Make sure the account is enabled and the other fields ok ok for you
 
 
-### Setup using an Analog phone
+### Setup using an analog phone
 - Attach the USB modem to the Raspberry Pi
 - Use `dmesg` to find the device name `/dev/<name>`
 - Setup the Analog phone in the callblocker configuration (/etc/callblocker/setting.json):
@@ -229,7 +229,7 @@ There are two ways to connect the callblock application with your phone system, 
 
 ### Symptom: Configuration done via web interface is not saved persistent.
 The web interface is running within lighttpd, this deamon is using "www-data" as user and group. Make
-sure that this process has access to the configuration file (see [File Layout](#fileLayout))
+sure that this process has access to the configuration file (see [File Layout](#fileLayout)).
 ```bash
 sudo chgrp -R www-data /etc/callblocker/
 ```
