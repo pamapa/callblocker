@@ -45,6 +45,8 @@ require(["dijit/ConfirmDialog",
          "dijit/layout/BorderContainer",
         ], function(ConfirmDialog, domConstruct) { // workaround
 
+  var api_base = "python-fcgi/api.py";
+
   function formatDate(dateStr) {
     if (dateStr) {
       dateStr = dateStr.replace(/-/g, "/");
@@ -64,10 +66,10 @@ require(["dijit/ConfirmDialog",
 
   function createCallerLogGrid() {
     var store = new dojox.data.QueryReadStore({
-      url: "callerlog.php"
+      url: api_base.concat("/callerlog")
     });
     var structure = [
-      { name: "Date",      field: "DATE",      width:"150px", formatter: formatDate},
+      { name: "Date",      field: "DATE",      width:"170px", formatter: formatDate},
       { name: "Number",    field: "NUMBER",    width:"120px"},
       { name: "Name",      field: "NAME",      width:"600px"},
       { name: "Blocked",   field: "BLOCKED",   width:"120px", hidden:true},
@@ -94,11 +96,11 @@ require(["dijit/ConfirmDialog",
     }
     var addToWhitelistMenuItem = new dijit.MenuItem({
       label: "Add to whitelist",
-      onClick: function() { onClickAddToList("list.php?dirname=whitelists"); }
+      onClick: function() { onClickAddToList(api_base.concat("/get_list?dirname=whitelists")); }
     });
     var addToBlacklistMenuItem = new dijit.MenuItem({
       label: "Add to blacklist",
-      onClick: function() { onClickAddToList("list.php?dirname=blacklists"); }
+      onClick: function() { onClickAddToList(api_base.concat("/get_list?dirname=blacklists")); }
     });
     menu.addChild(addToWhitelistMenuItem);
     menu.addChild(addToBlacklistMenuItem);
@@ -130,7 +132,7 @@ require(["dijit/ConfirmDialog",
       url: url
     });
     var structure = [
-      { name: "Date",     field: "DATE",      width:"150px", formatter: formatDate},
+      { name: "Date",     field: "DATE",      width:"170px", formatter: formatDate},
       { name: "PrioId",   field: "PRIO_ID",   width:"50px", hidden:true},
       { name: "Priority", field: "PRIORITY",  width:"70px"},
       { name: "Message",  field: "MESSAGE",   width:"100%"}
@@ -158,11 +160,11 @@ require(["dijit/ConfirmDialog",
   }
 
   function createJournalErrorWarnGrid() {
-    return createJournalGrid("journal.php");
+    return createJournalGrid(api_base.concat("/journal"));
   }
 
   function createJournalAllGrid() {
-    return createJournalGrid("journal.php?all=1");
+    return createJournalGrid(api_base.concat("/journal?all=1"));
   }
 
   function createListStore(url) {
@@ -254,7 +256,7 @@ require(["dijit/ConfirmDialog",
       type: "password"
     });
 
-    var phoneStore = createListStore("phones.php");
+    var phoneStore = createListStore(api_base.concat("/phones"));
     var structure = [
       { name:"Enabled",             field:"enabled",             width:"40px",
         type:dojox.grid.cells._Widget, formatter:function(on){
@@ -433,7 +435,7 @@ require(["dijit/ConfirmDialog",
     menu.addChild(deleteMenuItem);
     menu.addChild(editMenuItem);
 
-    var listStore = createListStore("online_credentials.php");
+    var listStore = createListStore(api_base.concat("/online_credentials"));
     var structure = [
       { name: "Name",      field: "name",     width:"150px"},
       { name: "Username",  field: "username", width:"120px"},
@@ -529,7 +531,7 @@ require(["dijit/ConfirmDialog",
     menu.addChild(editMenuItem);
 
     var structure = [
-      { name: "Date (modified)", field: "date_modified", width:"150px", formatter: formatDate},
+      { name: "Date (modified)", field: "date_modified", width:"170px", formatter: formatDate},
       { name: "Number",          field: "number",        width:"120px"},
       { name: "Name",            field: "name",          width:"600px"}
     ];
@@ -548,7 +550,7 @@ require(["dijit/ConfirmDialog",
       }
     });*/
 
-    var listsStore = createListStore("lists.php?".concat(url_param));
+    var listsStore = createListStore(api_base.concat("/get_lists?", url_param));
     var listSelect = new dijit.form.Select({
       store: listsStore,
       placeHolder: "Select a list",
@@ -557,7 +559,7 @@ require(["dijit/ConfirmDialog",
     dojo.connect(listSelect, "onChange", function(evt) {
       //console.log("dojo.connect");
       // force load
-      grid.setStore(createListStore("list.php?".concat(url_param, "&filename=", evt)));
+      grid.setStore(createListStore(api_base.concat("/get_list?", url_param, "&filename=", evt)));
       // allow/disallow features
       if (evt == "main.json") {
         // allow editing
@@ -610,14 +612,14 @@ require(["dijit/ConfirmDialog",
     });
     dojo.connect(listSelect, "onChange", function(evt) {
       //console.log("dojo.connect");
-      importAddressbookUploader.set("url", "lists.php?".concat(url_param, "&import=addressbook", "&merge=", "import.json"));
+      importAddressbookUploader.set("url", api_base.concat("/get_lists?", url_param, "&import=addressbook", "&merge=", "import.json"));
     });
     dojo.connect(importAddressbookUploader, "onComplete", function(evt) {
       //console.log("dojo.connect");
       // force reload
-      listSelect.setStore(createListStore("lists.php?".concat(url_param)));
+      listSelect.setStore(createListStore(api_base.concat("/get_lists?", url_param)));
       listSelect.set("value", "import.json");
-      grid.setStore(createListStore("list.php?".concat(url_param, "&filename=", listSelect.get("value"))));
+      grid.setStore(createListStore(api_base.concat("/get_list?", url_param, "&filename=", listSelect.get("value"))));
     });
 
     return [

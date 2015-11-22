@@ -50,19 +50,31 @@ sudo systemctl start callblockerd.service
 ```
 
 
-## Install web interface on a Raspberry Pi (running raspbian/jessie)
+## <a name="webInterface"></a> Install web interface on a Raspberry Pi (running raspbian/jessie)
 ```bash
-sudo apt-get install lighttpd php5-common php5-cgi php5 libjs-dojo-core libjs-dojo-dijit libjs-dojo-dojox
+sudo apt-get install lighttpd python-flup libjs-dojo-core libjs-dojo-dijit libjs-dojo-dojox
 sudo chgrp -R www-data /etc/callblocker/
 sudo usermod -a -G systemd-journal www-data
 sudo vi /etc/lighttpd/lighttpd.conf
 ```
-1. In the upper section of this file you can find den section 'server.modules='. Please add this line: '"mod_fastcgi",'.
-2. At the end of file, add: 'fastcgi.server = (".php"=>(("bin-path"=>"/usr/bin/php-cgi", "socket"=>"/tmp/php.sock")))'.
-3. Make server.document-root point to "/usr/var/www/callblocker"
-```bash
-sudo reboot
+1. In the upper section of this file you can find the section 'server.modules='. Please add the module "mod_fastcgi".
+2. Make server.document-root point to "/usr/var/www/callblocker"
+3. At the end of this file add this code:
+```section
+fastcgi.server              = (
+        ".py" => (
+                "callblocker-fcgi" => (
+                        "bin-path" => "/usr/var/www/callblocker/fcgi_api.py",
+                        "socket" => "/var/run/lighttpd/fastcgi.python.socket")
+        )
+)
 ```
+4. Make sure the python file fcgi_api.py has correct executable rights and restart lighttpd daemon.
+```bash
+sudo chmod a+x /usr/var/www/callblocker/python-fcgi/fcgi_api.py
+sudo systemctl restart lighttpd.service
+```
+For additional information see [here](http://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_ModFastCGI).
 
 
 ## <a name="fileLayout"></a> File Layout
@@ -140,8 +152,21 @@ There are two ways to connect the callblocker application with your phone system
    ```bash
    sudo journalctl _SYSTEMD_UNIT=callblockerd.service
    ```
+4. Increase log levels: "log_level" to "debug" and/or "pjsip_log_level" to 2. See documentation of
+   [configuration file](etc/callblocker/README.md) for more info.
+   ```bash
+   sudo vi settings.json
+   ```
 
-### Symptom: Configuration done via web interface is not saved persistent.
+### Symptom: web interface is not working.
+The web interface is running within lighttpd, double check the [configuration](#webInterface) of this deamon. Also
+look into the seperate log file:
+```bash
+sudo cat /var/log/lighttpd/error.log
+sudo journalctl -xn _SYSTEMD_UNIT=lighttpd.service
+```
+
+### Symptom: Configuration done within the web interface is not saved persistent.
 The web interface is running within lighttpd, this deamon is using "www-data" as user and group. Make
 sure that this process has access to the configuration file (see [File Layout](#fileLayout)).
 ```bash
