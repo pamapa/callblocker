@@ -55,6 +55,7 @@ sudo systemctl start callblockerd.service
 sudo apt-get install lighttpd python-flup libjs-dojo-core libjs-dojo-dijit libjs-dojo-dojox
 sudo chgrp -R www-data /etc/callblocker/
 sudo usermod -a -G systemd-journal www-data
+sudo chmod a+x /usr/var/www/callblocker/python-fcgi/api.py
 sudo vi /etc/lighttpd/lighttpd.conf
 ```
 1. In the upper section of this file you can find the section 'server.modules='. Please add the module "mod_fastcgi".

@@ -26,11 +26,10 @@ import cgi, urlparse
 import subprocess
 from datetime import datetime
 
-import fcgi_config
-import fcgi_journal
+import journal
 
 
-SETTINGS_FILE = os.path.join(fcgi_config.CALLBLOCKER_SYSCONFDIR, "settings.json")
+SETTINGS_FILE = os.path.join(config.CALLBLOCKER_SYSCONFDIR, "settings.json")
 
 
 def handle_phones(environ, start_response, params):
@@ -130,7 +129,7 @@ def handle_get_list(environ, start_response, params):
   filename = "main.json"
   if "filename" in params:
     filename = os.path.basename(params["filename"])
-  filename = os.path.join(fcgi_config.CALLBLOCKER_SYSCONFDIR, dirname, filename)
+  filename = os.path.join(config.CALLBLOCKER_SYSCONFDIR, dirname, filename)
   
   if environ.get('REQUEST_METHOD', '') == "POST":
     post = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
@@ -196,11 +195,11 @@ def handle_get_lists(environ, start_response, params):
     cmd = []
     extention = os.path.splitext(post.getvalue('name'))[1]
     if extention == ".csv":
-      cmd = ["python", os.path.join(fcgi_config.CALLBLOCKER_DATADIR, "import_CSV.py")]
+      cmd = ["python", os.path.join(config.CALLBLOCKER_DATADIR, "import_CSV.py")]
     elif extention == ".ldif":
-      cmd = ["python", os.path.join(fcgi_config.CALLBLOCKER_DATADIR, "import_LDIF.py")]
+      cmd = ["python", os.path.join(config.CALLBLOCKER_DATADIR, "import_LDIF.py")]
     elif extention == ".vcf":
-      cmd = ["python", os.path.join(fcgi_config.CALLBLOCKER_DATADIR, "import_VCARD.py")]
+      cmd = ["python", os.path.join(config.CALLBLOCKER_DATADIR, "import_VCARD.py")]
     print >> sys.stderr, 'cmd=%s\n' % cmd
 
     def get_contry_code():
@@ -213,7 +212,7 @@ def handle_get_lists(environ, start_response, params):
     if len(cmd) != 0:
       cmd.append("--input"), cmd.append(tmp_name)
       cmd.append("--country_code"), cmd.append(get_contry_code())
-      cmd.append("--merge"), cmd.append(os.path.join(fcgi_config.CALLBLOCKER_SYSCONFDIR, dirname, merge_name))
+      cmd.append("--merge"), cmd.append(os.path.join(config.CALLBLOCKER_SYSCONFDIR, dirname, merge_name))
       try:
         with open(tmp_name, 'wb') as f:
           f.write(tmp_file.read())
@@ -236,7 +235,7 @@ def handle_get_lists(environ, start_response, params):
 
   # get all files from directory
   files = []
-  base = os.path.join(fcgi_config.CALLBLOCKER_SYSCONFDIR, dirname)
+  base = os.path.join(config.CALLBLOCKER_SYSCONFDIR, dirname)
   for f in os.listdir(base):
     file = os.path.join(base, f)
     if os.path.isfile(file) and os.path.splitext(f)[1] == ".json":
