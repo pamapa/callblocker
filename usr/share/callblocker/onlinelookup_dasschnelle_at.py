@@ -72,7 +72,7 @@ def lookup_number(number):
   #debug(data)
 
   callerName = ""
-  #j = json.loads(data)
+  #j = json.loads(data) # this site returns not valid json data :-(
   j = demjson.decode(data)
   for entry in j["entries"]:
     name = entry["name"]
