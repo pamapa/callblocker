@@ -16,11 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# Subdirectories to descend into.
-SUBDIRS = js python-fcgi
-
-callblockerwwwdir=$(localstatedir)/www/callblocker
-callblockerwww_DATA = \
-  app.css \
-  index.html
+callblockerwwwpythonfcgidir=$(localstatedir)/www/callblocker/js
+callblockerwwwpythonfcgi_DATA = \
+  api.py \
+  config.py \
+  journal.py
 

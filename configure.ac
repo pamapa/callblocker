@@ -50,5 +50,6 @@ AC_CONFIG_FILES([usr/Makefile])
 AC_CONFIG_FILES([usr/share/callblocker/Makefile])
 AC_CONFIG_FILES([usr/var/www/callblocker/Makefile])
 AC_CONFIG_FILES([usr/var/www/callblocker/js/Makefile])
+AC_CONFIG_FILES([usr/var/www/callblocker/python-fcgi/Makefile])
 AC_OUTPUT
 
