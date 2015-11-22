@@ -292,9 +292,9 @@ def application(environ, start_response):
     return handle_get_lists(environ, start_response, params)
  
   if path == "/callerlog":
-    return fcgi_journal.handle_callerlog(environ, start_response, params)
+    return journal.handle_callerlog(environ, start_response, params)
   if path == "/journal":
-    return fcgi_journal.handle_journal(environ, start_response, params)
+    return journal.handle_journal(environ, start_response, params)
  
   # return error
   start_response('404 NOT FOUND', [('Content-Type', 'text/plain')])
