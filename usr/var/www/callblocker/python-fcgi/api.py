@@ -26,6 +26,7 @@ import cgi, urlparse
 import subprocess
 from datetime import datetime
 
+import config
 import journal
 
 

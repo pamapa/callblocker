@@ -65,14 +65,14 @@ sudo vi /etc/lighttpd/lighttpd.conf
 fastcgi.server              = (
         ".py" => (
                 "callblocker-fcgi" => (
-                        "bin-path" => "/usr/var/www/callblocker/fcgi_api.py",
+                        "bin-path" => "/usr/var/www/callblocker/api.py",
                         "socket" => "/var/run/lighttpd/fastcgi.python.socket")
         )
 )
 ```
 4. Make sure the python file fcgi_api.py has correct executable rights and restart lighttpd daemon.
 ```bash
-sudo chmod a+x /usr/var/www/callblocker/python-fcgi/fcgi_api.py
+sudo chmod a+x /usr/var/www/callblocker/python-fcgi/api.py
 sudo systemctl restart lighttpd.service
 ```
 For additional information see [here](http://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_ModFastCGI).
