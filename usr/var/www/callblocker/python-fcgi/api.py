@@ -22,8 +22,8 @@
 # http://dojotoolkit.org/reference-guide/1.10/dojo/data/ItemFileReadStore.html#input-data-format
 
 import os, sys, json, re
-import cgi, urlparse
 import subprocess
+import cgi, urlparse
 from datetime import datetime
 
 import config
