@@ -52,9 +52,8 @@ def extract_slashed_numbers(data):
     ret.append(a0)
     base = a0[0:-2]
     for ax in arr[1:]:
-      ax = extract_number(ax)
+      ax = extract_number(base + ax)
       if (ax != ""):
-        ax = base + ax
         ret.append(ax)
   return ret
 
@@ -168,6 +167,7 @@ def cleanup_entries(arr):
       debug("Skip too long number:" + str(r))
       continue;
 
+    # filter duplicates
     if x not in seen:
       uniq.append(r)
       seen.add(x)
