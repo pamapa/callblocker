@@ -52,8 +52,9 @@ def extract_slashed_numbers(data):
     ret.append(a0)
     base = a0[0:-2]
     for ax in arr[1:]:
-      ax = extract_number(base + ax)
+      ax = extract_number(ax)
       if (ax != ""):
+        ax = extract_number(base + ax)
         ret.append(ax)
   return ret
 
