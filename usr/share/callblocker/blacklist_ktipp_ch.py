@@ -90,6 +90,8 @@ def extract_name(data):
   s = s.replace("&amp", "&")
   s = s.replace("  ", " ")
   s = s.strip()
+  if s.startswith("Firma: "):
+    s = s[7:]
   return s if len(s)<= NAME_MAX_LENGTH else s[0:NAME_MAX_LENGTH-3]+"..."
 
 def fetch_page(page_nr):
