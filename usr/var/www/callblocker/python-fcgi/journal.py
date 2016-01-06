@@ -56,7 +56,7 @@ def handle_journal(environ, start_response, params):
 
   items = []  
   for i in range(start, all_count):
-    if i >= start + count: break   
+    if i >= start + count: break
     entry = all[all_count - i - 1] # newest first
     try:
       jj = json.loads(entry)
@@ -99,26 +99,29 @@ def handle_callerlog(environ, start_response, params):
   for i in range(start, all_count):
     if i >= start + count: break
     entry = all[all_count - i - 1] # newest first
-    jj = json.loads(entry)
-    obj = pattern.match(jj["MESSAGE"])
-    if obj:
-      tmp = {
-        "NUMBER": obj.group(2).strip(),
-        # // -6: usec -> sec => UTC time (substr because timestamp is too big for integer under 32bit
-        "DATE": datetime.fromtimestamp(int(jj["__REALTIME_TIMESTAMP"][0:-6])).strftime("%Y-%m-%d %H:%M:%S +0000")
-      }
-      try: tmp["NAME"] = obj.group(4).strip()
-      except (IndexError, AttributeError): tmp["NAME"] = ""     
-      try: tmp["BLOCKED"] = obj.group(5).strip()
-      except (IndexError, AttributeError): tmp["BLOCKED"] = ""
-      try: tmp["WHITELIST"] = obj.group(7).strip()
-      except (IndexError, AttributeError): tmp["WHITELIST"] = ""
-      try: tmp["BLACKLIST"] = obj.group(9).strip()
-      except (IndexError, AttributeError): tmp["BLACKLIST"] = ""
-      try: tmp["SCORE"] = obj.group(11).strip()
-      except (IndexError, AttributeError): tmp["SCORE"] = ""
-      items.append(tmp)
-  
+    try:
+      jj = json.loads(entry)
+      obj = pattern.match(jj["MESSAGE"])
+      if obj:
+        tmp = {
+          "NUMBER": obj.group(2).strip(),
+          # // -6: usec -> sec => UTC time (substr because timestamp is too big for integer under 32bit
+          "DATE": datetime.fromtimestamp(int(jj["__REALTIME_TIMESTAMP"][0:-6])).strftime("%Y-%m-%d %H:%M:%S +0000")
+        }
+        try: tmp["NAME"] = obj.group(4).strip()
+        except (IndexError, AttributeError): tmp["NAME"] = ""
+        try: tmp["BLOCKED"] = obj.group(5).strip()
+        except (IndexError, AttributeError): tmp["BLOCKED"] = ""
+        try: tmp["WHITELIST"] = obj.group(7).strip()
+        except (IndexError, AttributeError): tmp["WHITELIST"] = ""
+        try: tmp["BLACKLIST"] = obj.group(9).strip()
+        except (IndexError, AttributeError): tmp["BLACKLIST"] = ""
+        try: tmp["SCORE"] = obj.group(11).strip()
+        except (IndexError, AttributeError): tmp["SCORE"] = ""
+        items.append(tmp)
+    except ValueError:
+      pass
+
   headers = [
     ('Content-Type',  'text/json'),
     ('Content-Range', 'items %d-%d/%d' % (start, start+count, all_count))
