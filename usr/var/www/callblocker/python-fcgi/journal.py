@@ -63,7 +63,7 @@ def handle_journal(environ, start_response, params):
       prio = int(jj["PRIORITY"])
       tmp = {
         # // -6: usec -> sec => UTC time (substr because timestamp is too big for integer under 32bit
-        "DATE": datetime.fromtimestamp(int(jj["__REALTIME_TIMESTAMP"][0:-6])).strftime("%Y-%m-%d %H:%M:%S +0000"),
+        "DATE": datetime.utcfromtimestamp(int(jj["__REALTIME_TIMESTAMP"][0:-6])).strftime("%Y-%m-%d %H:%M:%S +0000"),
         "PRIO_ID": prio,
         "PRIORITY": mapPriorityToName(prio),
         "MESSAGE": jj["MESSAGE"]
@@ -106,7 +106,7 @@ def handle_callerlog(environ, start_response, params):
         tmp = {
           "NUMBER": obj.group(2).strip(),
           # // -6: usec -> sec => UTC time (substr because timestamp is too big for integer under 32bit
-          "DATE": datetime.fromtimestamp(int(jj["__REALTIME_TIMESTAMP"][0:-6])).strftime("%Y-%m-%d %H:%M:%S +0000")
+          "DATE": datetime.utcfromtimestamp(int(jj["__REALTIME_TIMESTAMP"][0:-6])).strftime("%Y-%m-%d %H:%M:%S +0000")
         }
         try: tmp["NAME"] = obj.group(4).strip()
         except (IndexError, AttributeError): tmp["NAME"] = ""
