@@ -1,7 +1,7 @@
 # callblocker
 Blocks unwanted calls from your home phone, such as telemarketing, junk, spam, scam, etc.
 
-The callblocker acts like a normal phone. No additional telephone switchboard (like FreePBX or Asterisk) is needed. When a telemarketer is calling, the callblocker picks up the phone and automatically hangs up after a few seconds. Like this the call is blocked. It's designed to run on small footprints such as a Raspberry Pi. In addition when the callblocker is not running (e.g. hardware broke) your home phone is still working. It has the ability to check against online and offline spam lists.
+The call blocker acts like a normal phone. No additional telephone switchboard (like FreePBX or Asterisk) is needed. When a telemarketer is calling, the call blocker picks up the phone and automatically hangs up after a few seconds. Like this the call is blocked. It's designed to run on small footprints such as a Raspberry Pi. In addition when the call blocker is not running (e.g. hardware broke) your home phone is still working. It has the ability to check against online and offline spam lists.
 
 
 ## Features
@@ -114,7 +114,7 @@ The following cronjob will download each day the blacklist provided by ktipp_ch:
 
 
 ## Setup
-There are two ways to connect the callblocker application with your phone system, depending if it is VoIP or analog. 
+There are two ways to connect the call blocker application with your phone system, depending if it is VoIP or analog. 
 
 
 ### Setup using Fritzbox with a IP-phone
@@ -125,7 +125,7 @@ There are two ways to connect the callblocker application with your phone system
   - Choose "LAN/WLAN (IP-Telefon)", for name use for example "callblocker" and click "Weiter"
   - Choose a password, remember it and click "Weiter"
   - Choose "alle Anrufe annehmen" and click "Weiter"
-- Setup the IP-phone in the callblocker configuration (/etc/callblocker/setting.json):
+- Setup the IP-phone in the call blocker configuration (/etc/callblocker/setting.json):
   - Edit the section sip -> accounts
   - "from_domain":   "fritz.box"
   - "from_username": "your username"
@@ -136,7 +136,7 @@ There are two ways to connect the callblocker application with your phone system
 ### Setup using an analog phone
 - Attach the USB modem to the Raspberry Pi
 - Use `dmesg` to find the device name `/dev/<name>`
-- Setup the Analog phone in the callblocker configuration (/etc/callblocker/setting.json):
+- Setup the Analog phone in the call blocker configuration (/etc/callblocker/setting.json):
   - Edit the section analog -> phones
   - "device": "your device name"
   - Make sure the account is enabled and the other fields ok ok for you
