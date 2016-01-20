@@ -13,11 +13,12 @@ The call blocker acts like a normal phone. No additional telephone switchboard (
   - number blocking using blacklists and avoid blocking, if number is in whitelist
   - number has to be in whitelist, all other numbers are blocked
 - different kind of ways to verify incoming calls
-  - support of online spam check sites, for spam verification
   - user maintained offline blacklist
   - extern maintained offline blacklists (downloaded from the Internet and stored offline)
+  - support of online spam check sites, for spam verification
+- import your addressbook as whitelist or blacklist
+- using whitelists and blacklists as offline lookup for caller name
 - support of online lookup sites, to find out who is calling
-- import your addressbook as whitelist or blacklist and caller lookup
 - nice web interface
 
 
@@ -97,8 +98,8 @@ The documentation of the configuration file "settings.json" is located [here](et
 
 
 ## Offline blacklists (automatically periodically downloading)
-Through the web interface you have the possibility to maintain your own blacklist. Additionally there is the possibility to daily
-download an extern maintained blacklist. You will need to setup a cronjob for this task.
+Through the web interface you have the possibility to maintain your own blacklist. Additionally there is the
+possibility to periodically download an extern maintained blacklist. You will need to setup a cronjob for this task.
 
 Currently the following blacklists are supported:
 
@@ -160,7 +161,7 @@ There are two ways to connect the call blocker application with your phone syste
    sudo vi settings.json
    ```
 
-### Symptom: web interface is not working.
+### Symptom: Web interface is not working.
 The web interface is running within lighttpd, double check the [configuration](#webInterface) of this deamon. Also
 look into the seperate log file:
 ```bash
@@ -186,7 +187,7 @@ sudo rm -rf /var/log/* # optional, you will lose all existing log entries (old f
 sudo mkdir /var/log/journal
 sudo reboot # required to finished the switch
 
-# give web interface access
+# allow web interface access the journal
 sudo usermod -a -G systemd-journal www-data
 sudo systemctl restart lighttpd.service
 
