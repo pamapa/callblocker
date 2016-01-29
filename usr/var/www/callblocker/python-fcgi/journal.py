@@ -23,7 +23,6 @@ import subprocess
 from datetime import datetime
 
 
-# TODO: play with systemd.journal         
 # logging via journald
 CALLBLOCKER_CALLLOGCMD       = ["journalctl", "_SYSTEMD_UNIT=callblockerd.service", "--priority", "5..5", "--lines", "1000", "--output", "json"]
 CALLBLOCKER_JOURNALALL       = ["journalctl", "_SYSTEMD_UNIT=callblockerd.service", "--lines", "1000", "--output", "json"]
