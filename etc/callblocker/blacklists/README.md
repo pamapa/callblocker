@@ -12,4 +12,16 @@
     ]
 }
 ```
+Fields    | Values                  | Description
+--------- | ----------------------- | ------------
+"name"    | `<string>`              | Name of the list
+"entries" | [`List<entry>`](#entry) | List of entries
+
+## <a name="entry"></a> Entry
+Fields          | Values       | Description
+--------------- | ------------ | ------------
+"name"          | `<string>`   | Name describing the number
+"number"        | `<\+[0-9]+>` | Number in international format (E.164)
+"date_created"  | `<date>`     | Date in UTC formatted like "%Y-%m-%d %H:%M:%S +0000"
+"date_modified" | `<date>`     | Date in UTC formatted like "%Y-%m-%d %H:%M:%S +0000"
 
