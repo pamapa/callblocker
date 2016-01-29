@@ -140,10 +140,8 @@ def getEntityPerson(fields):
       name += " " + fields[field_name]
       break
   # tellows: name
-  for field_name in fields:
-    if field_name and field_name.find("Anruftyp") != -1:
-      name += " " + fields[field_name]
-      break
+  if "Score" in fields and "Anruftyp" in fields:
+    name = "%s / score:%s" % (fields["Anruftyp"], fields["Score"])
   return name.strip()
 
 def parse_csv(filename, delimiter, encoding, result):
