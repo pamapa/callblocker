@@ -20,5 +20,6 @@ callblockerwwwpythonfcgidir=$(localstatedir)/www/callblocker/python-fcgi
 callblockerwwwpythonfcgi_DATA = \
   api.py \
   config.py \
-  journal.py
+  journal.py \
+  settings.py
 
