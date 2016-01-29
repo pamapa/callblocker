@@ -94,7 +94,7 @@ drwxr-xr-x  root     root      /usr/var/www/callblocker       # web interface
 
 
 ## <a name="settingsJson"></a> Configuration file
-The documentation of the configuration file "settings.json" is located [here](etc/callblocker/README.md).
+The documentation of the configuration file "settings.json" is located [here](/etc/callblocker/README.md).
 
 
 ## Offline blacklists (automatically periodically downloading)
