@@ -37,6 +37,16 @@ def debug(*objs):
   if g_debug: print("DEBUG: ", *objs, file=sys.stdout)
   return
 
+def find_delimiter(filname):
+  with open(filname, 'r') as f:
+    line = f.readline()
+    semi_cnt = line.count(";")
+    comma_cnt = line.count(",")
+    delimiter = ","
+    if semi_cnt >  comma_cnt: delimiter = ";"
+    debug("Correct delimiter is %s" % delimiter)
+    return delimiter
+
 class UTF8Recoder:
     """
     Iterator that reads an encoded stream and reencodes the input to UTF-8
@@ -80,17 +90,21 @@ class UnicodeDictReader:
 
 
 # Finding the correct encoding for the file
-def find_encoding(filname):
+def find_encoding(filname, delimiter):
   debug("Detecting encoding of the CSV file...")
 
-  all_encoding = ["utf-8", "iso-8859-1", "iso-8859-2", 'iso-8859-15', 'iso-8859-3', "us-ascii", 'windows-1250', 'windows-1252', 'windows-1254', 'ibm861']
+  all_encoding = [
+    "utf-8", "iso-8859-1", "iso-8859-2", "iso-8859-15",
+    "iso-8859-3", "us-ascii", "windows-1250", "windows-1252",
+    "windows-1254", "ibm861"
+  ]
   encoding_index = 0
   csv_reader = None
   while csv_reader == None:  
     next_encoding = all_encoding[encoding_index]
     debug("Trying %s" % (next_encoding))
     csv_file = open(filname, "rt")
-    csv_reader = UnicodeDictReader(csv_file, delimiter=',', encoding=next_encoding)
+    csv_reader = UnicodeDictReader(csv_file, delimiter=delimiter, encoding=next_encoding)
     try:
       for line in enumerate(csv_reader):
         # Do nothing, just reading the whole file
@@ -100,7 +114,7 @@ def find_encoding(filname):
       input_csv_file.close()
       encoding_index = encoding_index + 1
 
-  debug("Correct encoding of the file is %s" % (next_encoding))
+  debug("Correct encoding is %s" % next_encoding)
   csv_file.close()
   return next_encoding
 
@@ -112,39 +126,50 @@ def getEntityPerson(fields):
   name = ""
   # first name
   for field_name in fields:
-    if field_name.lower().find("first name") != -1:
+    if field_name and field_name.lower().find("first name") != -1:
       name += " " + fields[field_name]
       break
   # middle name
   for field_name in fields:
-    if field_name.lower().find("middle name") != -1:
+    if field_name and field_name.lower().find("middle name") != -1:
       name += " " + fields[field_name]
       break
   # last name
   for field_name in fields:
-    if field_name.lower().find("last name") != -1:
+    if field_name and field_name.lower().find("last name") != -1:
+      name += " " + fields[field_name]
+      break
+  # tellows: name
+  for field_name in fields:
+    if field_name and field_name.find("Anruftyp") != -1:
       name += " " + fields[field_name]
       break
   return name.strip()
 
-def parse_csv(filename, encoding, result):
+def parse_csv(filename, delimiter, encoding, result):
   csv_file = open(filename, "rt")
-  csv_reader = UnicodeDictReader(csv_file, delimiter=',', encoding=encoding)
+  csv_reader = UnicodeDictReader(csv_file, delimiter=delimiter, encoding=encoding)
 
   date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
   #debug(date)
 
   for (line, fields) in enumerate(csv_reader):
+    #debug(fields)
     name = getEntityPerson(fields)
     #debug(name)
     for field_name in fields:
+      if not field_name: continue
       number = ""
       if field_name.lower().find("phone") != -1:
         number = fields[field_name]
-      if field_name.lower().find("pager") != -1:
+      elif field_name.lower().find("pager") != -1:
         number = fields[field_name]
-      if field_name.lower().find("fax") != -1:
+      elif field_name.lower().find("fax") != -1:
         number = fields[field_name]
+      # tellows: number = Land Nummer
+      elif field_name.find("Nummer") != -1 and "Land" in fields:
+        number = "+%s%s" % (fields["Land"], fields[field_name][1:])
+        field_name = "phone"
 
       number = extract_number(number)
       if len(number) != 0:
@@ -216,10 +241,12 @@ def main(argv):
     pass
 
   # convert
-  encoding = find_encoding(args.input)
-  result = parse_csv(args.input, encoding, result)
+  delimiter = find_delimiter(args.input)
+  encoding = find_encoding(args.input, delimiter)
+  result = parse_csv(args.input, delimiter, encoding, result)
 
   result = cleanup_entries(result, args.country_code)
+  print(result)
   if len(result) != 0:
     data = OrderedDict((
       ("name", name),
