@@ -146,7 +146,7 @@ There are two ways to connect the call blocker application with your phone syste
 ## Troubleshooting
 
 ### Symptom: It is unspecific not working.
-1. Double check all installed files, with its locations and permissions. See [File Layout](#fileLayout)
+1. Double check all installed files, with its locations and permissions. See [file layout](#fileLayout)
 2. Make sure lighttpd and callblockerd are running.<br>
    ```bash
    sudo ps aux | grep -E 'lighttpd|callblockerd' | grep -v 'grep' # shows: 2 lines
@@ -156,13 +156,13 @@ There are two ways to connect the call blocker application with your phone syste
    sudo journalctl _SYSTEMD_UNIT=callblockerd.service
    ```
 4. Increase log levels: "log_level" to "debug" and/or "pjsip_log_level" to 2. See documentation of
-   [configuration file](etc/callblocker/README.md) for more info.
+   [configuration file](#settingsJson) for more info.
    ```bash
    sudo vi settings.json
    ```
 
 ### Symptom: Web interface is not working.
-The web interface is running within lighttpd, double check the [configuration](#webInterface) of this deamon. Also
+The web interface is running within lighttpd, double check the [web configuration](#webInterface) of this deamon. Also
 look into the seperate log file:
 ```bash
 sudo cat /var/log/lighttpd/error.log
@@ -171,7 +171,7 @@ sudo journalctl -xn _SYSTEMD_UNIT=lighttpd.service
 
 ### Symptom: Configuration done within the web interface is not saved persistent.
 The web interface is running within lighttpd, this deamon is using "www-data" as user and group. Make
-sure that this process has access to the configuration file (see [File Layout](#fileLayout)).
+sure that this process has access to the configuration file (see [file layout](#fileLayout)).
 ```bash
 sudo chgrp -R www-data /etc/callblocker/
 ```
