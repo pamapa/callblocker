@@ -217,7 +217,7 @@ def cleanup_entries(arr, country_code):
 #
 def main(argv):
   global g_debug
-  parser = argparse.ArgumentParser(description="Convert LDIF file to json")
+  parser = argparse.ArgumentParser(description="Convert CSV file to json")
   parser.add_argument("--input", help="input file", required=True)
   parser.add_argument("--country_code", help="country code, e.g. +41", required=True)
   parser.add_argument("--merge", help="file to merge with", default="out.json")
