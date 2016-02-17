@@ -5,6 +5,7 @@ The call blocker acts like a normal phone. No additional telephone switchboard (
 
 
 ## Features
+- supports VoIP systems and analog modems
 - automatically blocks unwanted incoming calls
 - logging of all incoming calls, including caller name lookups
 - different kind of blocking modes
@@ -25,6 +26,7 @@ The call blocker acts like a normal phone. No additional telephone switchboard (
 ## Hardware
 Supported (tested) server host systems
 - Raspberry Pi (running raspbian/jessie)
+- Debian GNU/Linux (jessie)
 
 Supported (tested) VoIP systems
 - Fritzbox 7390
@@ -131,7 +133,7 @@ There are two ways to connect the call blocker application with your phone syste
   - "from_domain":   "fritz.box"
   - "from_username": "your username"
   - "from_password": "your password"
-  - Make sure the account is enabled and the other fields ok ok for you
+  - Make sure the account is enabled and the other fields are ok for you
 
 
 ### Setup using an analog phone
@@ -140,7 +142,7 @@ There are two ways to connect the call blocker application with your phone syste
 - Setup the Analog phone in the call blocker configuration (/etc/callblocker/setting.json):
   - Edit the section analog -> phones
   - "device": "your device name"
-  - Make sure the account is enabled and the other fields ok ok for you
+  - Make sure the account is enabled and the other fields are ok for you
 
 
 ## Troubleshooting
