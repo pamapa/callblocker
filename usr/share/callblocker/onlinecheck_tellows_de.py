@@ -57,20 +57,22 @@ def main(argv):
   g_debug = args.debug
 
   # make correct format for number
-  number = "";
+  number = ""
   if args.number.startswith("+"):
     number = "00" + args.number[1:]
   else:
     error("Invalid number: " + args.number)
 
-  url = "http://www.tellows.de/basic/num/"+number+"?xml=1&partner="+args.username+"&apikey="+args.password
+  url = "http://www.tellows.de/basic/num/%s?xml=1&partner=%s&apikey=%s" % (number, args.username, args.password)
   content = fetch_url(url)
   #debug(content)
   soup = BeautifulSoup(content)
   debug(soup)
 
+  score = 5 # = neutral score
   scorelist = soup.findAll("score")
-  score = int(scorelist[0].contents[0])
+  if len(scorelist) > 0:
+    score = int(scorelist[0].contents[0])
 
   callerName = ""
   callerTypes = soup.findAll("callertypes")
