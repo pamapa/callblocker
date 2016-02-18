@@ -55,7 +55,7 @@ def main(argv):
   args = parser.parse_args()
   g_debug = args.debug
 
-  url = "http://whocalled.us/do?action=getScore&name="+args.username+"&pass="+args.password+"&"+urllib.urlencode({"phoneNumber":args.number})
+  url = "http://whocalled.us/do?action=getScore&name=%s&pass=%s&%s" % (args.username, args.password, urllib.urlencode({"phoneNumber":args.number}))
   content = fetch_url(url)
   debug(content)
 

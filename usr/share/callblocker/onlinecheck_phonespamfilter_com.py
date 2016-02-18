@@ -54,19 +54,22 @@ def main(argv):
   g_debug = args.debug
 
   # map number to correct URL
-  url = "";
+  number = args.number[3:]
   if args.number.startswith("+1"): # USA, Canada
-    url="http://www.phonespamfilter.com/check.php?phone="+args.number[2:];
+    site = "www.phonespamfilter.com"
+    number = args.number[2:]
   elif args.number.startswith("+33"): # France
-    url="http://fr.phonespamfilter.com/check.php?phone="+args.number[3:];
+    site = "fr.phonespamfilter.com"
   elif args.number.startswith("+44"): # United Kingdom
-    url="http://www.phonespamfilter.co.uk/check.php?phone="+args.number[3:];
+    site = "www.phonespamfilter.co.uk"
   elif args.number.startswith("+61"): # Australia
-    url="http://au.phonespamfilter.com/check.php?phone="+args.number[3:];
+    site = "au.phonespamfilter.com"
   elif args.number.startswith("+64"): # New Zealand
-    url="http://www.phonespamfilter.co.nz/check.php?phone="+args.number[3:];
+    site = "www.phonespamfilter.co.nz"
   else:
     error("Number not supported: " + args.number)
+
+  url="http://%s/check.php?phone=%s" % (site, number)
 
   content = fetch_url(url)
   debug(content)
