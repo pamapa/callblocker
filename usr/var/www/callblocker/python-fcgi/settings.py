@@ -39,14 +39,14 @@ def handle_phones(environ, start_response, params):
     json_phones = json.loads(post.getvalue('data'))
     # Analog vs. SIP: remove "device" or others
     for phone in json_phones["items"]:
-      if phone["device"] == "":
+      if phone.get("device", "") == "":
         # mark as SIP
-        del phone["device"]
+        phone.pop("device", None)
       else:
         # mark as Analog
-        del phone["from_domain"]
-        del phone["from_username"]
-        del phone["from_password"]
+        phone.pop("from_domain", None)
+        phone.pop("from_username", None)
+        phone.pop("from_password", None)
     jj["phones"] = json_phones["items"]
     with open(SETTINGS_FILE, 'w') as f:
       json.dump(jj, f, indent=4)
@@ -55,10 +55,6 @@ def handle_phones(environ, start_response, params):
   all = []
   if "phones" in jj:
     all = jj["phones"]
-  # we need at least one default entry to keep app.js simple
-  if len(all) == 0:
-    entry = {"enabled": False, "name": "My Home Phone"}
-    all.append(entry)
   all_count = len(all)
 
   # handle paging       

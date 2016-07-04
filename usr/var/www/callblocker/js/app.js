@@ -64,6 +64,10 @@ require(["dijit/ConfirmDialog",
     return str;
   };
 
+
+  // --------------------------------------------------------------------------
+  // Caller Log
+  // --------------------------------------------------------------------------
   function createCallerLogGrid() {
     var store = new dojox.data.QueryReadStore({
       url: api_base.concat("/callerlog")
@@ -159,14 +163,10 @@ require(["dijit/ConfirmDialog",
     return grid;
   }
 
-  function createJournalErrorWarnGrid() {
-    return createJournalGrid(api_base.concat("/journal"));
-  }
 
-  function createJournalAllGrid() {
-    return createJournalGrid(api_base.concat("/journal?all=1"));
-  }
-
+  // --------------------------------------------------------------------------
+  // Configuration
+  // --------------------------------------------------------------------------
   function createListStore(url) {
     var store = new dojo.data.ItemFileWriteStore({
       url: url
@@ -284,6 +284,21 @@ require(["dijit/ConfirmDialog",
     ];
 
     var menu = new dijit.Menu();
+    var deleteMenuItem = new dijit.MenuItem({
+      label: "Delete",
+      onClick: function(){
+        var items = grid.selection.getSelected();
+        if (items.length) {
+          dojo.forEach(items, function(si){
+            if (si !== null) {
+              grid.store.deleteItem(si);
+            }
+          });
+          grid.store.save();
+        }
+      },
+      iconClass: "dijitEditorIcon dijitEditorIconDelete"
+    });
     var editMenuItem = new dijit.MenuItem({
       label: "Edit",
       onClick: function(){
@@ -356,6 +371,7 @@ require(["dijit/ConfirmDialog",
       },
       iconClass: "iconClass dijitIconEdit"
     });
+    menu.addChild(deleteMenuItem);
     menu.addChild(editMenuItem);
 
     var grid = new dojox.grid.EnhancedGrid({
@@ -366,12 +382,22 @@ require(["dijit/ConfirmDialog",
       plugins : {menus: menusObject = {rowMenu: menu}},
       style:"height:100%; width:100%;",
     });
+
+    var addNewEntryButton = new dijit.form.Button({
+      label: "Add new entry",
+      onClick: function() {
+        var newItem = {enabled: false, name: "New Phone"};
+        grid.store.newItem(newItem);
+        grid.store.save();
+      }
+    });
+
 /*
     grid.layout.setColumnVisibility(7, false);
     grid.layout.setColumnVisibility(8, false);
     grid.layout.setColumnVisibility(9, false);
 */
-    return grid;
+    return [addNewEntryButton.domNode, domConstruct.create("br"), grid.domNode]
   }
 
   function createOnlineCredentials(url) {
@@ -639,6 +665,22 @@ require(["dijit/ConfirmDialog",
     return createListX("dirname=blacklists");
   }
 
+
+  // --------------------------------------------------------------------------
+  // Diagnostics
+  // --------------------------------------------------------------------------
+  function createJournalErrorWarnGrid() {
+    return createJournalGrid(api_base.concat("/journal"));
+  }
+
+  function createJournalAllGrid() {
+    return createJournalGrid(api_base.concat("/journal?all=1"));
+  }
+
+
+  // --------------------------------------------------------------------------
+  // Main
+  // --------------------------------------------------------------------------
   function createTree() {  
     var treeData = {
       identifier: "id",
@@ -688,10 +730,6 @@ require(["dijit/ConfirmDialog",
     return tree;
   }
 
-
-  //
-  // main
-  //
   var appLayout = new dijit.layout.BorderContainer({
     design: "headline",
     style: "height: 100%; width: 100%;",
