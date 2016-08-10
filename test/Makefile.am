@@ -17,16 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-bin_PROGRAMS = callblockerd
-callblockerd_SOURCES = \
+bin_PROGRAMS = unit_tests
+unit_tests_SOURCES = \
   Main.cpp
-callblockerd_LDADD = \
-  libcallblockerd.a
-
-noinst_LIBRARIES = libcallblockerd.a
-libcallblockerd_a_SOURCES = \
-  Logger.cpp Notify.cpp FileLists.cpp FileList.cpp Helper.cpp Settings.cpp Block.cpp \
-  Phone.cpp SipPhone.cpp SipAccount.cpp AnalogPhone.cpp Modem.cpp
+    
+unit_tests_LDADD = \
+  ../src/libcallblockerd.a
 
 AM_CPPFLAGS = -Wall -DSYSCONFDIR=\"${sysconfdir}\"
-

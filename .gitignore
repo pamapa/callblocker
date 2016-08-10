@@ -9,3 +9,8 @@ depcomp
 install-sh
 missing
 autom4te.cache
+
+.deps
+*.o
+src/libcallblockerd.a
+test/unit_tests
