@@ -151,24 +151,26 @@ def parse_csv(filename, delimiter, encoding, result):
   date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
   #debug(date)
 
+  # "Home Phone" and "Work Phone"
+  # "Mobile Number" and "Pager Number"
+  # "Home Fax" and "Work Fax"
+  number_names = ["phone", "number", "fax"]
+
   for (line, fields) in enumerate(csv_reader):
     #debug(fields)
     name = getEntityPerson(fields)
-    #debug(name)
+    debug(name)
     for field_name in fields:
       if not field_name: continue
       number = ""
-      if field_name.lower().find("phone") != -1:
-        number = fields[field_name]
-      elif field_name.lower().find("pager") != -1:
-        number = fields[field_name]
-      elif field_name.lower().find("fax") != -1:
-        number = fields[field_name]
-      # tellows: number = Land Nummer
-      elif field_name.find("Nummer") != -1 and "Land" in fields:
+      for n in number_names:
+        if field_name.lower().find(n) != -1:
+          number = fields[field_name]
+          break
+      # workaround for tellows.de: number = Land Nummer
+      if field_name.find("Nummer") != -1 and "Land" in fields:
         number = "+%s%s" % (fields["Land"], fields[field_name][1:])
-        field_name = "phone"
-
+        field_name = "Work Phone"
       number = extract_number(number)
       if len(number) != 0:
         result.append({"number":number, "name":name+" ("+field_name+")", "date_created":date, "date_modified":date})
@@ -244,7 +246,7 @@ def main(argv):
   result = parse_csv(args.input, delimiter, encoding, result)
 
   result = cleanup_entries(result, args.country_code)
-  print(result)
+  #print(result)
   if len(result) != 0:
     data = OrderedDict((
       ("name", name),
