@@ -186,13 +186,13 @@ def handle_get_lists(environ, start_response, params):
     print >> sys.stderr, 'POST tmp_name=%s\n' % tmp_name
 
     cmd = []
-    extention = os.path.splitext(post.getvalue('name'))[1]
+    extention = os.path.splitext(post.getvalue('name'))[1].lower()
     if extention == ".csv":
       cmd = ["python", os.path.join(config.CALLBLOCKER_DATADIR, "import_CSV.py")]
     elif extention == ".ldif":
       cmd = ["python", os.path.join(config.CALLBLOCKER_DATADIR, "import_LDIF.py")]
     elif extention == ".vcf":
-      cmd = ["python", os.path.join(config.CALLBLOCKER_DATADIR, "import_VCARD.py")]
+      cmd = ["python", os.path.join(config.CALLBLOCKER_DATADIR, "import_VCF.py")]
     print >> sys.stderr, 'cmd=%s\n' % cmd
 
     def get_contry_code():
