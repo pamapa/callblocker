@@ -62,7 +62,7 @@ def parse_vcard(result, filename):
         number = extract_number(cl.value)
         field_name = cl.params['TYPE'][0].lower()
         if field_name == "cell":
-          field_name = "mobile2"
+          field_name = "mobile"
         field_name += " phone"
         field_name = field_name.title()
         result.append({"number":number, "name":name+" ("+field_name+")", "date_created":date, "date_modified":date})
