@@ -19,8 +19,10 @@ dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 AC_PREREQ(2.60)
 AC_INIT([callblocker], [0.0.7], [pammann@gmx.net])
-
 AM_INIT_AUTOMAKE()
+
+dnl Add support for libraries
+AC_PROG_RANLIB
 
 dnl Checks for programs.
 AC_PROG_CXX
@@ -51,5 +53,6 @@ AC_CONFIG_FILES([usr/share/callblocker/Makefile])
 AC_CONFIG_FILES([usr/var/www/callblocker/Makefile])
 AC_CONFIG_FILES([usr/var/www/callblocker/js/Makefile])
 AC_CONFIG_FILES([usr/var/www/callblocker/python-fcgi/Makefile])
+dnl Tests
+AC_CONFIG_FILES([test/Makefile])
 AC_OUTPUT
-
