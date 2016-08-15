@@ -26,7 +26,7 @@ The call blocker acts like a normal phone. No additional telephone switchboard (
 ## Hardware
 Supported (tested) server host systems
 - Raspberry Pi (running raspbian/jessie)
-- Debian GNU/Linux (jessie)
+- Debian GNU/Linux (running jessie)
 
 Supported (tested) VoIP systems
 - Fritzbox 7390
@@ -35,7 +35,7 @@ Supported (tested) analog modems
 - USRobotics 5637
 
 
-## Install daemon on a Raspberry Pi (running raspbian/jessie)
+## Install daemon on a Linux
 ```bash
 sudo apt-get install git make automake g++ libpjproject-dev libjson-c-dev libboost-dev libboost-regex-dev 
 sudo apt-get install python python-beautifulsoup python-demjson python-ldap python-vobject
@@ -54,7 +54,7 @@ sudo systemctl start callblockerd.service
 ```
 
 
-## <a name="webInterface"></a> Install web interface on a Raspberry Pi (running raspbian/jessie)
+## <a name="webInterface"></a> Install web interface on a Linux
 ```bash
 sudo apt-get install lighttpd python-flup libjs-dojo-core libjs-dojo-dijit libjs-dojo-dojox
 sudo chgrp -R www-data /etc/callblocker/
@@ -62,7 +62,7 @@ sudo usermod -a -G systemd-journal www-data
 sudo chmod a+x /usr/var/www/callblocker/python-fcgi/api.py
 sudo vi /etc/lighttpd/lighttpd.conf
 ```
-1. In the upper section of this file you can find the section 'server.modules='. Please add the module "mod_fastcgi".
+1. In the upper section you can find the section 'server.modules='. Please add the module "mod_fastcgi" to it.
 2. Make server.document-root point to "/usr/var/www/callblocker"
 3. At the end of this file add this code:
 ```section
@@ -74,7 +74,7 @@ fastcgi.server              = (
         )
 )
 ```
-4. Make sure the python file fcgi_api.py has correct executable rights and restart lighttpd daemon.
+4. Make sure the python file api.py has correct execution rights and restart lighttpd daemon.
 ```bash
 sudo chmod a+x /usr/var/www/callblocker/python-fcgi/api.py
 sudo systemctl restart lighttpd.service
@@ -120,7 +120,7 @@ The following cronjob will download each day the blacklist provided by ktipp_ch:
 There are two ways to connect the call blocker application with your phone system, depending if it is VoIP or analog. 
 
 
-### Setup using Fritzbox with a IP-phone
+### Setup using Fritzbox with an IP-phone
 - Create in the Fritzbox a new IP-phone
   - Open your web browser and navigate to the URL http://fritz.box
   - In the menu "Telefonie -> Telefoniegeraete" click on "Neues Geraet einrichten"
