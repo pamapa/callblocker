@@ -22,7 +22,7 @@ callblocker_SCRIPTS = \
   blacklist_toastedspam_com.py \
   import_CSV.py \
   import_LDIF.py \
-  import_VCARD.py \
+  import_VCF.py \
   onlinecheck_phonespamfilter_com.py \
   onlinecheck_tellows_de.py \
   onlinecheck_whocalled_us.py \
