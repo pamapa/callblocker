@@ -229,26 +229,23 @@ def handle_get_lists(environ, start_response, params):
   # get all files from directory
   files = []
   base = os.path.join(config.CALLBLOCKER_SYSCONFDIR, dirname)
-  for f in os.listdir(base):
-    file = os.path.join(base, f)
-    if os.path.isfile(file) and os.path.splitext(f)[1] == ".json":
-      files.append(file)
+  for fname in os.listdir(base):
+    fullname = os.path.join(base, fname)
+    if os.path.isfile(fullname) and os.path.splitext(fname)[1] == ".json":
+      files.append(fullname)
 
-  main_found = False
-
-  all = []
-  for file in files:
-    with open(file) as f:
-      jj = json.load(f)
-    if os.path.basename(file) == "main.json": main_found = True
-    all.append({"name": jj["name"], "file": os.path.basename(file)})
-
-  # we need at least "main.json" to keep app.js simple
-  if not main_found:
-    filename = os.path.join(base, "main.json")
-    with open(filename, 'w') as f:
+  # we need "main.json" to keep app.js simple
+  mainfilename = os.path.join(base, "main.json")
+  if not mainfilename in files:
+    with open(mainfilename, 'w') as f:
       json.dump({"name": "main", "entries": []}, f, indent=4)
-    all.append({"name": "main", "file": "main.json"})
+    files.append(mainfilename)
+    
+  all = []
+  for fname in files:
+    with open(fname) as f:
+      jj = json.load(f)
+    all.append({"name": jj["name"], "file": os.path.basename(fname)})
 
   all_count = len(all)
 
