@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -243,8 +243,11 @@ def handle_get_lists(environ, start_response, params):
     if os.path.basename(file) == "main.json": main_found = True
     all.append({"name": jj["name"], "file": os.path.basename(file)})
 
-  # we need at least "main.json" entry to keep app.js simple
+  # we need at least "main.json" to keep app.js simple
   if not main_found:
+    filename = os.path.join(base, "main.json")
+    with open(filename, 'w') as f:
+      json.dump({"name": "main", "entries": []}, f, indent=4)
     all.append({"name": "main", "file": "main.json"})
 
   all_count = len(all)
