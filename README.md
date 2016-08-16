@@ -1,7 +1,7 @@
 # callblocker
 Blocks unwanted calls from your home phone, such as telemarketing, junk, spam, scam, etc.
 
-The call blocker acts like a normal phone. No additional telephone switchboard (like FreePBX or Asterisk) is needed. When a telemarketer is calling, the call blocker picks up the phone and automatically hangs up after a few seconds. Like this the call is blocked. It's designed to run on small footprints such as a Raspberry Pi 1. When the call blocker is not running (e.g. hardware broke) your home phone is still working by design. Also it has the ability to check against online and offline phone spam lists.
+The call blocker acts like a normal phone. No additional telephone switchboard (like FreePBX or Asterisk) is needed. When a telemarketer is calling, the call blocker picks up the phone and automatically hangs up after a few seconds. Like this the call is blocked. It's designed to run on small footprints such as a Raspberry Pi. When the call blocker is not running (e.g. hardware broke) your home phone is still working by design. Also it has the ability to check against online and offline phone spam lists.
 
 
 ## Features
@@ -35,7 +35,7 @@ Supported (tested) analog modems
 - USRobotics 5637
 
 
-## Install daemon on a Linux
+## Install daemon on Linux
 ```bash
 sudo apt-get install git make automake g++ libpjproject-dev libjson-c-dev libboost-dev libboost-regex-dev 
 sudo apt-get install python python-beautifulsoup python-demjson python-ldap python-vobject
@@ -54,7 +54,7 @@ sudo systemctl start callblockerd.service
 ```
 
 
-## <a name="webInterface"></a> Install web interface on a Linux
+## <a name="webInterface"></a> Install web interface on Linux
 ```bash
 sudo apt-get install lighttpd python-flup libjs-dojo-core libjs-dojo-dijit libjs-dojo-dojox
 sudo chgrp -R www-data /etc/callblocker/
@@ -62,7 +62,7 @@ sudo usermod -a -G systemd-journal www-data
 sudo chmod a+x /usr/var/www/callblocker/python-fcgi/api.py
 sudo vi /etc/lighttpd/lighttpd.conf
 ```
-1. In the upper section you can find the section 'server.modules='. Please add the module "mod_fastcgi" to it.
+1. In the upper part you find the section 'server.modules='. Please add the module "mod_fastcgi" to it.
 2. Make server.document-root point to "/usr/var/www/callblocker"
 3. At the end of this file add this code:
 ```section
@@ -99,9 +99,10 @@ drwxr-xr-x  root     root      /usr/var/www/callblocker       # web interface
 The documentation of the configuration file "settings.json" is located [here](/etc/callblocker/README.md).
 
 
-## Offline blacklists (automatically periodically downloading)
+## Offline blacklists
 Through the web interface you have the possibility to maintain your own blacklist. Additionally there is the
-possibility to periodically download an extern maintained blacklist. You will need to setup a cronjob for this task.
+possibility to download automatically an extern maintained blacklist for later offline usage. You will need to
+setup a cronjob for this task to download the blacklist periodically.
 
 Currently the following blacklists are supported:
 
