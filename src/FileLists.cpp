@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -26,7 +26,6 @@
 #include <sys/inotify.h>
 
 #include "Logger.h"
-#include "Helper.h"
 
 
 FileLists::FileLists(const std::string& rPathname) : Notify(rPathname, IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) {

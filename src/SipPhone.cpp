@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@
 
 #include "Logger.h"
 #include "SipAccount.h"
-#include "Helper.h"
+#include "Utils.h"
 
 // pjsua_init fails otherwise with the second time
 // transport_srtp  ..Failed to initialize libsrtp: unsupported parameter
@@ -85,7 +85,7 @@ bool SipPhone::init_pjsua() {
   // create pjsua  
   pj_status_t status = pjsua_create();
   if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_create() failed (%s)", Helper::getPjStatusAsString(status).c_str());
+    Logger::error("pjsua_create() failed (%s)", Utils::getPjStatusAsString(status).c_str());
     return false;
   }
 
@@ -112,7 +112,7 @@ bool SipPhone::init_pjsua() {
   // initialize pjsua 
   status = pjsua_init(&ua_cfg, &log_cfg, &media_cfg);
   if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_init() failed (%s)", Helper::getPjStatusAsString(status).c_str());
+    Logger::error("pjsua_init() failed (%s)", Utils::getPjStatusAsString(status).c_str());
     return false;
   }
 
@@ -122,21 +122,21 @@ bool SipPhone::init_pjsua() {
 
   status = pjsua_transport_create(PJSIP_TRANSPORT_UDP, &udpcfg, NULL);
   if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_transport_create() failed (%s)", Helper::getPjStatusAsString(status).c_str());
+    Logger::error("pjsua_transport_create() failed (%s)", Utils::getPjStatusAsString(status).c_str());
     return false;
   }
 
   // disable sound device - use null sound device
   status = pjsua_set_null_snd_dev();
   if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_set_null_snd_dev() failed (%s)", Helper::getPjStatusAsString(status).c_str());
+    Logger::error("pjsua_set_null_snd_dev() failed (%s)", Utils::getPjStatusAsString(status).c_str());
     return false;
   }
 
   // initialization is done, start pjsua
   status = pjsua_start();
   if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_start() failed (%s)", Helper::getPjStatusAsString(status).c_str());
+    Logger::error("pjsua_start() failed (%s)", Utils::getPjStatusAsString(status).c_str());
     return false;
   }
 
@@ -160,13 +160,13 @@ bool SipPhone::init_pjmedia() {
 
   pj_status_t status = pjmedia_null_port_create(m_Pool, CLOCK_RATE, 1, SAMPLES_PER_FRAME, 16, &m_mediaPortSilence);
   if (status != PJ_SUCCESS) {
-    Logger::error("pjmedia_null_port_create() failed (%s)", Helper::getPjStatusAsString(status).c_str());
+    Logger::error("pjmedia_null_port_create() failed (%s)", Utils::getPjStatusAsString(status).c_str());
     return false;
   }
 
   status = pjsua_conf_add_port(m_Pool, m_mediaPortSilence, &m_mediaConfSilenceId);
   if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_conf_add_port() failed (%s)", Helper::getPjStatusAsString(status).c_str());
+    Logger::error("pjsua_conf_add_port() failed (%s)", Utils::getPjStatusAsString(status).c_str());
     return false;
   }
 #endif

@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@
 #include <json-c/json.h>
 
 #include "Logger.h"
-#include "Helper.h"
+#include "Utils.h"
 
 
 FileList::FileList() {
@@ -57,7 +57,7 @@ bool FileList::load(const std::string& filename) {
   m_entries.clear();
   struct json_object* root = json_tokener_parse(str.c_str());
 
-  if (!Helper::getObject(root, "name", true, m_filename, &m_name)) {
+  if (!Utils::getObject(root, "name", true, m_filename, &m_name)) {
     return false;
   }
 
@@ -67,10 +67,10 @@ bool FileList::load(const std::string& filename) {
       struct json_object* entry = json_object_array_get_idx(entries, i);
       
       struct FileListEntry add;
-      if (!Helper::getObject(entry, "number", true, m_filename, &add.number)) {
+      if (!Utils::getObject(entry, "number", true, m_filename, &add.number)) {
         continue;
       }
-      if (!Helper::getObject(entry, "name", true, m_filename, &add.name)) {
+      if (!Utils::getObject(entry, "name", true, m_filename, &add.name)) {
         continue;
       }
       m_entries.push_back(add);

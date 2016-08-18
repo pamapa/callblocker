@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -23,7 +23,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "Logger.h"
-#include "Helper.h"
+#include "Utils.h"
 
 
 Block::Block(Settings* pSettings) {
@@ -120,7 +120,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
     if (pSettings->onlineLookup.length() != 0) {
       struct json_object* root;
       if (checkOnline("onlinelookup_", pSettings->onlineLookup, rNumber, &root)) {
-        (void)Helper::getObject(root, "name", false, "script result", &callerName);
+        (void)Utils::getObject(root, "name", false, "script result", &callerName);
       }
     }
   }
@@ -129,7 +129,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
   std::ostringstream oss;
   oss << "Incoming call: number='" << rNumber << "'";
   if (callerName.length() != 0) {
-    oss << " name='" << Helper::escapeSqString(callerName) << "'";
+    oss << " name='" << Utils::escapeSqString(callerName) << "'";
   }
   if (block) {
     oss << " blocked";
@@ -164,14 +164,14 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
     struct json_object* root;
     if (checkOnline("onlinecheck_", pSettings->onlineCheck, rNumber, &root)) {
       bool spam;
-      if (!Helper::getObject(root, "spam", true, "script result", &spam)) {
+      if (!Utils::getObject(root, "spam", true, "script result", &spam)) {
         return false;
       }
       if (spam) {
         *pListName = pSettings->onlineCheck;
-        (void)Helper::getObject(root, "name", false, "script result", pCallerName);
+        (void)Utils::getObject(root, "name", false, "script result", pCallerName);
         int score;
-        if (Helper::getObject(root, "score", false, "script result", &score)) {
+        if (Utils::getObject(root, "score", false, "script result", &score)) {
           *pScore = std::to_string(score);
         }
         return true;
@@ -203,7 +203,7 @@ bool Block::checkOnline(std::string prefix, std::string scriptBaseName, const st
   }
 
   std::string res;
-  if (!Helper::executeCommand(script + " " + parameters + " 2>&1", &res)) {
+  if (!Utils::executeCommand(script + " " + parameters + " 2>&1", &res)) {
     return false; // script failed, error already logged
   }
 

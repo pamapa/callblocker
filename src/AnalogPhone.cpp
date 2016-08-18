@@ -34,7 +34,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "Logger.h"
-#include "Helper.h"
+#include "Utils.h"
 
 
 /*
@@ -128,7 +128,7 @@ void AnalogPhone::run() {
             }
 
             // make number international
-            number = Helper::makeNumberInternational(&m_settings.base, number);
+            number = Utils::makeNumberInternational(&m_settings.base, number);
 
             std::string msg;
             block = isNumberBlocked(&m_settings.base, number, &msg);

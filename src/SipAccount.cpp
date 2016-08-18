@@ -27,7 +27,7 @@
 
 #include "Logger.h"
 #include "Settings.h"
-#include "Helper.h"
+#include "Utils.h"
 
 
 SipAccount::SipAccount(SipPhone* pPhone) {
@@ -49,7 +49,7 @@ SipAccount::~SipAccount() {
   pj_status_t status = pjsua_acc_del(m_accId);
   m_accId = -1;
   if (status != PJ_SUCCESS) {
-    Logger::warn("pjsua_acc_del() failed (%s)", Helper::getPjStatusAsString(status).c_str());
+    Logger::warn("pjsua_acc_del() failed (%s)", Utils::getPjStatusAsString(status).c_str());
   }
 }
 
@@ -82,13 +82,13 @@ bool SipAccount::add(struct SettingSipAccount* pSettings) {
   // add account
   pj_status_t status = pjsua_acc_add(&cfg, PJ_TRUE, &m_accId);
   if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_acc_add() failed (%s)", Helper::getPjStatusAsString(status).c_str());
+    Logger::error("pjsua_acc_add() failed (%s)", Utils::getPjStatusAsString(status).c_str());
     return false;
   }
 
   status = pjsua_acc_set_user_data(m_accId, this);
   if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_acc_set_user_data() failed (%s)", Helper::getPjStatusAsString(status).c_str());
+    Logger::error("pjsua_acc_set_user_data() failed (%s)", Utils::getPjStatusAsString(status).c_str());
     return false;
   }
 
@@ -110,7 +110,7 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
 
   pj_status_t status = pjsua_call_set_user_data(call_id, this);
   if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_acc_set_user_data() failed (%s)", Helper::getPjStatusAsString(status).c_str());
+    Logger::error("pjsua_acc_set_user_data() failed (%s)", Utils::getPjStatusAsString(status).c_str());
   }
 
   pjsua_call_info ci;
@@ -162,7 +162,7 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
     // answer incoming calls with 200/OK, then we hangup in onCallState...
     pj_status_t status = pjsua_call_answer(call_id, 200, NULL, NULL);
     if (status != PJ_SUCCESS) {
-      Logger::warn("pjsua_call_answer() failed (%s)", Helper::getPjStatusAsString(status).c_str());
+      Logger::warn("pjsua_call_answer() failed (%s)", Utils::getPjStatusAsString(status).c_str());
     }
   }
 }
@@ -198,7 +198,7 @@ void SipAccount::onCallState(pjsua_call_id call_id, pjsip_event* e) {
     // code 0: pj takes care of hangup SIP status code
     pj_status_t status = pjsua_call_hangup(call_id, 0, NULL, NULL);
     if (status != PJ_SUCCESS) {
-      Logger::warn("pjsua_call_hangup() failed (%s)", Helper::getPjStatusAsString(status).c_str());
+      Logger::warn("pjsua_call_hangup() failed (%s)", Utils::getPjStatusAsString(status).c_str());
     }
   }
 #endif
@@ -247,7 +247,7 @@ bool SipAccount::getNumber(pj_str_t* uri, std::string* pDisplay, std::string* pN
   std::string number = std::string(sip->user.ptr, sip->user.slen);
   
   // make number international
-  *pNumber = Helper::makeNumberInternational(&m_settings.base, number);
+  *pNumber = Utils::makeNumberInternational(&m_settings.base, number);
 
   pj_pool_release(pool);
   return true;

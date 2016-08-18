@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -17,7 +17,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "Helper.h" // API
+#include "Utils.h" // API
 
 #include <string.h>
 #include <boost/algorithm/string.hpp>
@@ -25,7 +25,7 @@
 #include "Logger.h"
 
 
-bool Helper::getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, std::string* pRes) {
+bool Utils::getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, std::string* pRes) {
   struct json_object* n;
   *pRes = "";
   if (!json_object_object_get_ex(objbase, objname, &n)) {
@@ -40,7 +40,7 @@ bool Helper::getObject(struct json_object* objbase, const char* objname, bool lo
   return true;
 }
 
-bool Helper::getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, int* pRes) {
+bool Utils::getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, int* pRes) {
   struct json_object* n;
    *pRes = 0;
   if (!json_object_object_get_ex(objbase, objname, &n)) {
@@ -55,7 +55,7 @@ bool Helper::getObject(struct json_object* objbase, const char* objname, bool lo
   return true;
 }
 
-bool Helper::getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, bool* pRes) {
+bool Utils::getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, bool* pRes) {
   struct json_object* n;
   *pRes = false;
   if (!json_object_object_get_ex(objbase, objname, &n)) {
@@ -70,7 +70,7 @@ bool Helper::getObject(struct json_object* objbase, const char* objname, bool lo
   return true;
 }
 
-bool Helper::executeCommand(const std::string& rCmd, std::string* pRes) {
+bool Utils::executeCommand(const std::string& rCmd, std::string* pRes) {
   Logger::debug("executing(%s)...", rCmd.c_str());
 
   FILE* fp = popen(rCmd.c_str(), "r");
@@ -97,20 +97,20 @@ bool Helper::executeCommand(const std::string& rCmd, std::string* pRes) {
   return true;
 }
 
-std::string Helper::getPjStatusAsString(pj_status_t status) {
+std::string Utils::getPjStatusAsString(pj_status_t status) {
   static char buf[100];
   pj_str_t pjstr = pj_strerror(status, buf, sizeof(buf)); 
   std::string ret = pj_strbuf(&pjstr);
   return ret;
 }
 
-std::string Helper::getBaseFilename(const std::string& rFilename) {
+std::string Utils::getBaseFilename(const std::string& rFilename) {
   size_t last = rFilename.find_last_of("/");
   if (last != std::string::npos) return rFilename.substr(last + 1);
   else return rFilename;
 }
 
-std::string Helper::escapeSqString(const std::string& rStr) {
+std::string Utils::escapeSqString(const std::string& rStr) {
   std::size_t n = rStr.length();
   std::string escaped;
   escaped.reserve(n * 2); // pessimistic preallocation
@@ -123,7 +123,7 @@ std::string Helper::escapeSqString(const std::string& rStr) {
   return escaped;
 }
 
-std::string Helper::makeNumberInternational(const struct SettingBase* pSettings, const std::string& rNumber) {
+std::string Utils::makeNumberInternational(const struct SettingBase* pSettings, const std::string& rNumber) {
   std::string res;
   if (boost::starts_with(rNumber, "00")) res = "+" + rNumber.substr(2);
   else if (boost::starts_with(rNumber, "0")) res = pSettings->countryCode + rNumber.substr(1);
