@@ -17,21 +17,12 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include <stdio.h>
-#include <assert.h>
-
-#include "Test.h"
+#ifndef TEST_H
+#define TEST_H
 
 
-int main(int argc, char *argv[]) {
-  printf("Executing unit_tests...\n");
+extern void Test_Utils_Run();
 
-#if 0
-  assert(0);
+
 #endif
-
-  Test_Utils_Run();
-
-  return 0; // success (asserts will abort before)
-}
 

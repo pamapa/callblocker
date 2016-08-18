@@ -17,21 +17,26 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include "Test.h"
+
 #include <stdio.h>
 #include <assert.h>
 
-#include "Test.h"
+#include "Utils.h"
 
 
-int main(int argc, char *argv[]) {
-  printf("Executing unit_tests...\n");
+// string
+void TestCase_startsWith()
+{
+  assert(Utils::startsWith("+212122112", "+") == true);
+  assert(Utils::startsWith("+212122112", "-") == false);
+}
 
-#if 0
-  assert(0);
-#endif
-
-  Test_Utils_Run();
-
-  return 0; // success (asserts will abort before)
+void Test_Utils_Run()
+{
+  printf("Test_Utils_Run...\n");
+  
+  // string
+  TestCase_startsWith();
 }
 
