@@ -188,7 +188,7 @@ bool Block::checkOnline(std::string prefix, std::string scriptBaseName, const st
     return false;
   }
 
-  std::string script = "/usr/share/callblocker/" + prefix + scriptBaseName + ".py";
+  std::string script = DATADIR "/callblocker/" + prefix + scriptBaseName + ".py";
   std::string parameters = "--number " + rNumber;
   std::vector<struct SettingOnlineCredential> creds = m_pSettings->getOnlineCredentials();
   for(size_t i = 0; i < creds.size(); i++) {

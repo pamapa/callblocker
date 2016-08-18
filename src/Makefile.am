@@ -27,5 +27,5 @@ libcallblockerd_a_SOURCES = \
   Logger.cpp Notify.cpp FileLists.cpp FileList.cpp Utils.cpp Settings.cpp Block.cpp \
   Phone.cpp SipPhone.cpp SipAccount.cpp AnalogPhone.cpp Modem.cpp
 
-AM_CPPFLAGS = -Wall -DSYSCONFDIR=\"${sysconfdir}\"
+AM_CPPFLAGS = -Wall -DSYSCONFDIR=\"${sysconfdir}\" -DDATADIR=\"${datadir}\"
 
