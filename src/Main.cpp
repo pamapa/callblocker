@@ -139,14 +139,13 @@ private:
 
 
 int main(int argc, char *argv[]) {
-	// register signal handler for break-in-keys (e.g. ctrl+c)
-	signal(SIGINT, signal_handler);
-	signal(SIGKILL, signal_handler);
+  // register signal handler for break-in-keys (e.g. ctrl+c)
+  signal(SIGINT, signal_handler);
+  signal(SIGKILL, signal_handler);
   // register signal handler for systemd shutdown request
   signal(SIGTERM, signal_handler);
   // register signal handler for systemd reload the configuration files request
   signal(SIGHUP, signal_handler);
-
 
   Logger::info("starting callblockerd %s", VERSION);
 

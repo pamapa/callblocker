@@ -85,13 +85,14 @@ For additional information see [here](http://redmine.lighttpd.net/projects/light
 ## <a name="fileLayout"></a> File Layout
 When installed on Linux, the following file layout is used
 ```
-drwxr-xr-x  www-data www-data  /etc/callblocker               # configuration
--rw-r--r--  www-data www-data  /etc/callblocker/settings.json # configuration file
-drwxr-xr-x  www-data www-data  /etc/callblocker/blacklists    # put your blacklists here
-drwxr-xr-x  www-data www-data  /etc/callblocker/whitelists    # put your whitelists here
--rwxr-xr-x  root     root      /usr/bin/callblockerd          # daemon
-drwxr-xr-x  root     root      /usr/share/callblocker         # python helper scripts
-drwxr-xr-x  root     root      /usr/var/www/callblocker       # web interface
+drwxr-xr-x  www-data www-data  /etc/callblocker                            # configuration
+-rw-r--r--  www-data www-data  /etc/callblocker/settings.json              # configuration file
+drwxr-xr-x  www-data www-data  /etc/callblocker/blacklists                 # put your blacklists here
+drwxr-xr-x  www-data www-data  /etc/callblocker/whitelists                 # put your whitelists here
+-rwxr-xr-x  root     root      /usr/bin/callblockerd                       # daemon
+drwxr-xr-x  root     root      /usr/share/callblocker                      # python helper scripts
+drwxr-xr-x  root     root      /usr/var/www/callblocker                    # web interface
+-rwxr-xr-x  root     root      /usr/var/www/callblocker/python-fcgi/api.py # web api
 ```
 
 
