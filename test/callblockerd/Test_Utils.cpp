@@ -25,18 +25,34 @@
 #include "Utils.h"
 
 
-// string
-void TestCase_startsWith()
+static void TestCase_string()
 {
+  // startsWith
   assert(Utils::startsWith("+212122112", "+") == true);
   assert(Utils::startsWith("+212122112", "-") == false);
+
+  // trim
+  std::string str = "123";
+  Utils::trim(str);
+  assert(str.compare("123") == 0);
+  str = "  123";
+  Utils::trim(str);
+  assert(str.compare("123") == 0);
+  str = "123  ";
+  Utils::trim(str);
+  assert(str.compare("123") == 0);
+  str = "  123  ";
+  Utils::trim(str);
+  assert(str.compare("123") == 0);
+  str = "\t\n123\n\n\n";
+  Utils::trim(str);
+  assert(str.compare("123") == 0);
 }
 
 void Test_Utils_Run()
 {
   printf("Test_Utils_Run...\n");
   
-  // string
-  TestCase_startsWith();
+  TestCase_string();
 }
 
