@@ -22,6 +22,6 @@ unit_tests_SOURCES = \
   Main.cpp
     
 unit_tests_LDADD = \
-  ../src/libcallblockerd.a
+  ../../src/libcallblockerd.a
 
 AM_CPPFLAGS = -Wall -DSYSCONFDIR=\"${sysconfdir}\"

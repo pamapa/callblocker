@@ -54,5 +54,5 @@ AC_CONFIG_FILES([usr/var/www/callblocker/Makefile])
 AC_CONFIG_FILES([usr/var/www/callblocker/js/Makefile])
 AC_CONFIG_FILES([usr/var/www/callblocker/python-fcgi/Makefile])
 dnl Tests
-AC_CONFIG_FILES([test/Makefile])
+AC_CONFIG_FILES([test/callblockerd/Makefile])
 AC_OUTPUT
