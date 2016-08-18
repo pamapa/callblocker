@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -23,7 +23,6 @@
 #include <sstream>
 #include <unistd.h>
 #include <pjsua-lib/pjsua.h>
-#include <boost/algorithm/string/predicate.hpp>
 
 #include "Logger.h"
 #include "Settings.h"

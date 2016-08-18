@@ -36,6 +36,7 @@ public:
 
   // string
   static bool startsWith(const std::string& rStr, const char* pPrefix);
+  static void trim(std::string& rStr);
   static std::string getBaseFilename(const std::string& rFilename);
   static std::string escapeSqString(const std::string& rStr);
   static std::string makeNumberInternational(const struct SettingBase* pSettings, const std::string& rNumber);

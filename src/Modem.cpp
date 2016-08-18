@@ -27,13 +27,8 @@
 #include <unistd.h>
 #include <poll.h>
 
-#include <boost/regex.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-
 #include "Logger.h"
+#include "Utils.h"
 
 
 #define CHARWAIT_TIME_DSEC    1             // deciseconds (1dsec = 0.1sec)
@@ -162,7 +157,7 @@ bool Modem::sendCommand(std::string cmd) {
   buffer[size] = '\0';
   
   std::string str = buffer;
-  boost::algorithm::trim(str);
+  Utils::trim(str);
   Logger::debug("[%s] received '%s' tries=%d ret=%d", m_name.c_str(), str.c_str(), tries, ret);
   return ret;
 }
@@ -182,7 +177,7 @@ bool Modem::getData(std::string* data) {
     if (num > 0) {
       buffer[num] = '\0';
       std::string str = buffer;
-      boost::algorithm::trim(str);
+      Utils::trim(str);
       *data = str;
       Logger::debug("[%s] received '%s'", m_name.c_str(), data->c_str());
       res = true;

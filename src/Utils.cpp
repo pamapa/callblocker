@@ -20,7 +20,6 @@
 #include "Utils.h" // API
 
 #include <string.h>
-#include <boost/algorithm/string.hpp>
 
 #include "Logger.h"
 
@@ -84,7 +83,7 @@ bool Utils::executeCommand(const std::string& rCmd, std::string* pRes) {
   while (fgets(buf, sizeof(buf), fp) != NULL) {
     res += buf;
   }
-  boost::algorithm::trim(res);
+  Utils::trim(res);
 
   int status = pclose(fp);
   if (status != 0) {
@@ -106,6 +105,25 @@ std::string Utils::getPjStatusAsString(pj_status_t status) {
 
 bool Utils::startsWith(const std::string& rStr, const char* pPrefix) {
   return rStr.find(pPrefix) == 0 ? true : false;
+}
+
+static void leftTrim(std::string& rStr) {
+  std::string::size_type pos = rStr.find_last_not_of(" \t\n");
+  if (pos != std::string::npos) {
+    rStr.erase(pos + 1);
+  }
+}
+
+static void rightTrim(std::string& rStr) {
+  std::string::size_type pos = rStr.find_first_not_of(" \t\n");
+  if (pos != std::string::npos) {
+    rStr.erase(0, pos);
+  }
+}
+
+void Utils::trim(std::string& rStr) {
+  leftTrim(rStr);
+  rightTrim(rStr);
 }
 
 std::string Utils::getBaseFilename(const std::string& rFilename) {
