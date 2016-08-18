@@ -104,6 +104,10 @@ std::string Utils::getPjStatusAsString(pj_status_t status) {
   return ret;
 }
 
+bool Utils::startsWith(const std::string& rStr, const char* pPrefix) {
+  return rStr.find(pPrefix) == 0 ? true : false;
+}
+
 std::string Utils::getBaseFilename(const std::string& rFilename) {
   size_t last = rFilename.find_last_of("/");
   if (last != std::string::npos) return rFilename.substr(last + 1);
@@ -125,8 +129,8 @@ std::string Utils::escapeSqString(const std::string& rStr) {
 
 std::string Utils::makeNumberInternational(const struct SettingBase* pSettings, const std::string& rNumber) {
   std::string res;
-  if (boost::starts_with(rNumber, "00")) res = "+" + rNumber.substr(2);
-  else if (boost::starts_with(rNumber, "0")) res = pSettings->countryCode + rNumber.substr(1);
+  if (Utils::startsWith(rNumber, "00")) res = "+" + rNumber.substr(2);
+  else if (Utils::startsWith(rNumber, "0")) res = pSettings->countryCode + rNumber.substr(1);
   else res = rNumber;
   return res;
 }

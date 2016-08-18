@@ -34,9 +34,10 @@ public:
 
   static std::string getPjStatusAsString(pj_status_t status);
 
+  // string
+  static bool startsWith(const std::string& rStr, const char* pPrefix);
   static std::string getBaseFilename(const std::string& rFilename);
   static std::string escapeSqString(const std::string& rStr);
-
   static std::string makeNumberInternational(const struct SettingBase* pSettings, const std::string& rNumber);
 };
 

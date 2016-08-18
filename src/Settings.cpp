@@ -25,7 +25,6 @@
 #include <sys/inotify.h>
 #include <json-c/json.h>
 #include <pjsua-lib/pjsua.h>
-#include <boost/algorithm/string/predicate.hpp>
 
 #include "Logger.h"
 #include "Utils.h"
@@ -164,7 +163,7 @@ bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
   if (!Utils::getObject(objbase, "country_code", true, m_filename, &res->countryCode)) {
     return false;
   }
-  if (!boost::starts_with(res->countryCode, "+")) {
+  if (!Utils::startsWith(res->countryCode, "+")) {
     Logger::warn("invalid country_code '%s' in settings file %s", res->countryCode.c_str(), m_filename.c_str());
     return false;
   }

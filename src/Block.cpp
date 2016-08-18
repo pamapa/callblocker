@@ -20,7 +20,6 @@
 #include "Block.h" // API
 
 #include <json-c/json.h>
-#include <boost/algorithm/string/predicate.hpp>
 
 #include "Logger.h"
 #include "Utils.h"
@@ -184,7 +183,7 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
 }
 
 bool Block::checkOnline(std::string prefix, std::string scriptBaseName, const std::string& rNumber, struct json_object** root) {
-  if (boost::starts_with(rNumber, "**")) {
+  if (Utils::startsWith(rNumber, "**")) {
     // it is an intern number, thus makes no sense to ask the world
     return false;
   }
