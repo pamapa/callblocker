@@ -35,18 +35,57 @@ static void TestCase_string()
   std::string str = "123";
   Utils::trim(str);
   assert(str.compare("123") == 0);
+
   str = "  123";
   Utils::trim(str);
   assert(str.compare("123") == 0);
+
   str = "123  ";
   Utils::trim(str);
   assert(str.compare("123") == 0);
+
   str = "  123  ";
   Utils::trim(str);
   assert(str.compare("123") == 0);
+
   str = "\t\n123\n\n\n";
   Utils::trim(str);
   assert(str.compare("123") == 0);
+
+  // parseCallerID
+  std::vector<std::pair<std::string, std::string>> result;
+  str = "DATE=0306\nTIME=1517\nNMBR=0123456789\nNAME=aasd asdd\n";
+  Utils::parseCallerID(str, &result);
+  assert(result.size() == 4);
+  assert(result[0].first.compare("DATE") == 0);
+  assert(result[0].second.compare("0306") == 0);
+  assert(result[1].first.compare("TIME") == 0);
+  assert(result[1].second.compare("1517") == 0);
+  assert(result[2].first.compare("NMBR") == 0);
+  assert(result[2].second.compare("0123456789") == 0);
+  assert(result[3].first.compare("NAME") == 0);
+  assert(result[3].second.compare("aasd asdd") == 0);
+  result.clear();
+
+  str = "DATE\n TIME=12";
+  Utils::parseCallerID(str, &result);
+  assert(result.size() == 1);
+  assert(result[0].first.compare("TIME") == 0);
+  assert(result[0].second.compare("12") == 0);
+  result.clear();
+
+  str = "DATE= 12\nTIME=1\nNMBR=\nNAME=saas ";
+  Utils::parseCallerID(str, &result);
+  assert(result.size() == 4);
+  assert(result[0].first.compare("DATE") == 0);
+  assert(result[0].second.compare("12") == 0);
+  assert(result[1].first.compare("TIME") == 0);
+  assert(result[1].second.compare("1") == 0);
+  assert(result[2].first.compare("NMBR") == 0);
+  assert(result[2].second.compare("") == 0);
+  assert(result[3].first.compare("NAME") == 0);
+  assert(result[3].second.compare("saas") == 0);
+  result.clear();
 }
 
 void Test_Utils_Run()
