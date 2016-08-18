@@ -40,5 +40,6 @@ public:
   static std::string getBaseFilename(const std::string& rFilename);
   static std::string escapeSqString(const std::string& rStr);
   static std::string makeNumberInternational(const struct SettingBase* pSettings, const std::string& rNumber);
+  static void parseCallerID(std::string& rData, std::vector<std::pair<std::string, std::string>>* pResult);
 };
 

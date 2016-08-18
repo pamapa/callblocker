@@ -27,12 +27,6 @@
 #include <unistd.h>
 #include <poll.h>
 
-#include <boost/regex.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-
 #include "Logger.h"
 #include "Utils.h"
 
@@ -102,39 +96,37 @@ void AnalogPhone::run() {
       // TIME=1517
       // NMBR=0123456789
       // NAME=aasdasdd
+      
+      //Logger::debug("CID(orig): '%s'", data.c_str());
 
       bool block = false;
-      std::vector<std::string> lines;
-      boost::split(lines, data, boost::is_any_of("\n"));
-      for (size_t i = 0; i < lines.size(); i++) {
-        Logger::debug("CID: '%s'", lines[i].c_str());
-        boost::smatch str_matches;
-        static const boost::regex nmbr_regex("^(\\S+)\\s*=\\s*(\\S+)\\s*$");
-        if (boost::regex_match(lines[i], str_matches, nmbr_regex)) {
-          std::string key = str_matches[1];
-          std::string value = str_matches[2];
+      std::vector<std::pair<std::string, std::string>> result;
+      Utils::parseCallerID(data, &result);
+      for (auto& it : result) {
+        std::string key = it.first;
+        std::string value = it.second;
+        Logger::debug("CID(tok): '%s=%s'", key.c_str(), value.c_str());
 
-          if (key == "NMBR") {
-            m_foundCID = true;
-            std::string number = value;
+        if (key == "NMBR") {
+          m_foundCID = true;
+          std::string number = value;
 
-            if (number == "PRIVATE") {
-              // Caller ID information has been blocked by the user of the other end
-              // see http://ads.usr.com/support/3453c/3453c-ug/dial_answer.html#IDfunctions
-              std::string msg;
-              block = isAnonymousNumberBlocked(&m_settings.base, &msg);
-              Logger::notice(msg.c_str());
-              break;
-            }
-
-            // make number international
-            number = Utils::makeNumberInternational(&m_settings.base, number);
-
+          if (number == "PRIVATE") {
+            // Caller ID information has been blocked by the user of the other end
+            // see http://ads.usr.com/support/3453c/3453c-ug/dial_answer.html#IDfunctions
             std::string msg;
-            block = isNumberBlocked(&m_settings.base, number, &msg);
+            block = isAnonymousNumberBlocked(&m_settings.base, &msg);
             Logger::notice(msg.c_str());
             break;
           }
+
+          // make number international
+          number = Utils::makeNumberInternational(&m_settings.base, number);
+
+          std::string msg;
+          block = isNumberBlocked(&m_settings.base, number, &msg);
+          Logger::notice(msg.c_str());
+          break;
         }
       } // for    
 

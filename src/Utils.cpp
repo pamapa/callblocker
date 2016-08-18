@@ -127,8 +127,8 @@ void Utils::trim(std::string& rStr) {
 }
 
 std::string Utils::getBaseFilename(const std::string& rFilename) {
-  size_t last = rFilename.find_last_of("/");
-  if (last != std::string::npos) return rFilename.substr(last + 1);
+  std::string::size_type pos = rFilename.find_last_of("/");
+  if (pos != std::string::npos) return rFilename.substr(pos + 1);
   else return rFilename;
 }
 
@@ -151,5 +151,30 @@ std::string Utils::makeNumberInternational(const struct SettingBase* pSettings, 
   else if (Utils::startsWith(rNumber, "0")) res = pSettings->countryCode + rNumber.substr(1);
   else res = rNumber;
   return res;
+}
+
+void Utils::parseCallerID(std::string& rData, std::vector<std::pair<std::string, std::string>>* pResult) {
+  // DATE=0306
+  // TIME=1517
+  // NMBR=0123456789
+  // NAME=aasdasdd
+
+  // split by newline
+  std::stringstream ss(rData);
+  std::string to;
+  while (std::getline(ss, to, '\n')) {
+    // key=val
+    std::string::size_type pos = to.find('=');
+    if (pos == std::string::npos) continue;
+    std::string key = to.substr(0, pos);
+    std::string val = "";
+    if (pos + 1 < to.length()) {
+      val = to.substr(pos + 1, to.length() - pos);
+    }
+    Utils::trim(key);
+    Utils::trim(val);
+    std::pair<std::string, std::string> p(key, val);
+    pResult->push_back(p);
+  }
 }
 
