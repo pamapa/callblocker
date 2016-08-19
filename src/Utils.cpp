@@ -108,14 +108,14 @@ bool Utils::startsWith(const std::string& rStr, const char* pPrefix) {
 }
 
 static void leftTrim(std::string& rStr) {
-  std::string::size_type pos = rStr.find_last_not_of(" \t\n");
+  std::string::size_type pos = rStr.find_last_not_of(" \t\r\n");
   if (pos != std::string::npos) {
     rStr.erase(pos + 1);
   }
 }
 
 static void rightTrim(std::string& rStr) {
-  std::string::size_type pos = rStr.find_first_not_of(" \t\n");
+  std::string::size_type pos = rStr.find_first_not_of(" \t\r\n");
   if (pos != std::string::npos) {
     rStr.erase(0, pos);
   }
