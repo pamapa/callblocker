@@ -18,3 +18,7 @@
 
 # Subdirectories to descend into.
 SUBDIRS = etc src usr test/callblockerd
+
+install-exec-hook:
+	chown -R www-data.www-data $(sysconfdir)/callblocker
+	chmod a+x $(localstatedir)/www/callblocker/python-fcgi/api.py

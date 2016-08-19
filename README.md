@@ -57,29 +57,26 @@ sudo systemctl start callblockerd.service
 ## <a name="webInterface"></a> Install web interface on Linux
 ```bash
 sudo apt-get install lighttpd python-flup libjs-dojo-core libjs-dojo-dijit libjs-dojo-dojox
-sudo chgrp -R www-data /etc/callblocker/
 sudo usermod -a -G systemd-journal www-data
-sudo chmod a+x /usr/var/www/callblocker/python-fcgi/api.py
 sudo vi /etc/lighttpd/lighttpd.conf
 ```
 1. In the upper part you find the section 'server.modules='. Please add the module "mod_fastcgi" to it.
 2. Make server.document-root point to "/usr/var/www/callblocker"
 3. At the end of this file add this code:
-```section
-fastcgi.server              = (
+   ```section
+   fastcgi.server              = (
         ".py" => (
                 "callblocker-fcgi" => (
                         "bin-path" => "/usr/var/www/callblocker/python-fcgi/api.py",
                         "socket" => "/var/run/lighttpd/fastcgi.python.socket")
         )
-)
-```
+   )
+   ```
 4. Make sure the python file api.py has correct execution rights and restart lighttpd daemon.
-```bash
-sudo chmod a+x /usr/var/www/callblocker/python-fcgi/api.py
-sudo systemctl restart lighttpd.service
-```
-For additional information see [here](http://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_ModFastCGI).
+   ```bash
+   sudo systemctl restart lighttpd.service
+   ```
+   For additional information see [here](http://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_ModFastCGI).
 
 
 ## <a name="fileLayout"></a> File Layout
@@ -166,18 +163,22 @@ There are two ways to connect the call blocker application with your phone syste
    ```
 
 ### Symptom: Web interface is not working.
-The web interface is running within lighttpd, double check the [web configuration](#webInterface) of this deamon. Also
-look into the seperate log file:
-```bash
-sudo cat /var/log/lighttpd/error.log
-sudo journalctl -xn _SYSTEMD_UNIT=lighttpd.service
-```
+The web interface is running within lighttpd, double check the [web configuration](#webInterface) of this deamon.
+1. Also look into the seperate log file:
+   ```bash
+   sudo cat /var/log/lighttpd/error.log
+   sudo journalctl -xn _SYSTEMD_UNIT=lighttpd.service
+   ```
+2. Make sure the python file api.py has correct execution rights
+   ```bash
+   sudo chmod a+x /usr/var/www/callblocker/python-fcgi/api.py
+   ```
 
 ### Symptom: Configuration done within the web interface is not saved persistent.
 The web interface is running within lighttpd, this deamon is using "www-data" as user and group. Make
 sure that this process has access to the configuration file (see [file layout](#fileLayout)).
 ```bash
-sudo chgrp -R www-data /etc/callblocker/
+sudo chmod -R www-data.www-data /etc/callblocker/
 ```
 
 ### Symptom: Caller log and diagnostics stay empty within the web interface.
