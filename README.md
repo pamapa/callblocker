@@ -60,10 +60,10 @@ sudo apt-get install lighttpd python-flup libjs-dojo-core libjs-dojo-dijit libjs
 sudo usermod -a -G systemd-journal www-data
 sudo vi /etc/lighttpd/lighttpd.conf
 ```
-1. In the upper part you find the section 'server.modules='. Please add the module "mod_fastcgi" to it.
-2. Make server.document-root point to "/usr/var/www/callblocker"
-3. At the end of this file add this code:
-   ```section
+- In the upper part you find the section 'server.modules='. Please add the module "mod_fastcgi" to it.
+- Make server.document-root point to "/usr/var/www/callblocker"
+- At the end of this file add this code:
+```section
    fastcgi.server              = (
         ".py" => (
                 "callblocker-fcgi" => (
@@ -71,12 +71,12 @@ sudo vi /etc/lighttpd/lighttpd.conf
                         "socket" => "/var/run/lighttpd/fastcgi.python.socket")
         )
    )
-   ```
-4. Make sure the python file api.py has correct execution rights and restart lighttpd daemon.
-   ```bash
-   sudo systemctl restart lighttpd.service
-   ```
-   For additional information see [here](http://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_ModFastCGI).
+```
+- Make sure the python file api.py has correct execution rights and restart lighttpd daemon.
+```bash
+sudo systemctl restart lighttpd.service
+```
+For additional information see [here](http://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_ModFastCGI).
 
 
 ## <a name="fileLayout"></a> File Layout
@@ -147,32 +147,32 @@ There are two ways to connect the call blocker application with your phone syste
 ## Troubleshooting
 
 ### Symptom: It is unspecific not working.
-1. Double check all installed files, with its locations and permissions. See [file layout](#fileLayout)
-2. Make sure lighttpd and callblockerd are running.<br>
-   ```bash
-   sudo ps aux | grep -E 'lighttpd|callblockerd' | grep -v 'grep' # shows: 2 lines
-   ```
-3. Check for possible errors/warning.<br>
-   ```bash
-   sudo journalctl _SYSTEMD_UNIT=callblockerd.service
-   ```
-4. Increase log levels: "log_level" to "debug" and/or "pjsip_log_level" to 2. See documentation of
+- Double check all installed files, with its locations and permissions. See [file layout](#fileLayout)
+- Make sure lighttpd and callblockerd are running.<br>
+```bash
+sudo ps aux | grep -E 'lighttpd|callblockerd' | grep -v 'grep' # shows: 2 lines
+```
+- Check for possible errors/warning.<br>
+```bash
+sudo journalctl _SYSTEMD_UNIT=callblockerd.service
+```
+- Increase log levels: "log_level" to "debug" and/or "pjsip_log_level" to 2. See documentation of
    [configuration file](#settingsJson) for more info.
-   ```bash
-   sudo vi settings.json
-   ```
+```bash
+sudo vi settings.json
+```
 
 ### Symptom: Web interface is not working.
 The web interface is running within lighttpd, double check the [web configuration](#webInterface) of this deamon.
-1. Also look into the seperate log file:
-   ```bash
-   sudo cat /var/log/lighttpd/error.log
-   sudo journalctl -xn _SYSTEMD_UNIT=lighttpd.service
-   ```
-2. Make sure the python file api.py has correct execution rights
-   ```bash
-   sudo chmod a+x /usr/var/www/callblocker/python-fcgi/api.py
-   ```
+- Also look into the seperate log file:
+```bash
+sudo cat /var/log/lighttpd/error.log
+sudo journalctl -xn _SYSTEMD_UNIT=lighttpd.service
+```
+- Make sure the python file api.py has correct execution rights
+```bash
+sudo chmod a+x /usr/var/www/callblocker/python-fcgi/api.py
+```
 
 ### Symptom: Configuration done within the web interface is not saved persistent.
 The web interface is running within lighttpd, this deamon is using "www-data" as user and group. Make
@@ -199,4 +199,3 @@ sudo systemctl restart lighttpd.service
 # manual verify that journal is working
 sudo journalctl _SYSTEMD_UNIT=callblockerd.service
 ```
-
