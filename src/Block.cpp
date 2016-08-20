@@ -147,11 +147,11 @@ bool Block::isValidNumberBlocked(const struct SettingBase* pSettings, const std:
   if (callerName.length() != 0) {
     oss << " name='" << Utils::escapeSqString(callerName) << "'";
   }
-  if (!validNumber) {
-    oss << " invalid";
-  }
   if (block) {
     oss << " blocked";
+  }
+  if (!validNumber) {
+    oss << " invalid";
   }
   if (onWhitelist) {
     oss << " whitelist='" << listName << "'";
