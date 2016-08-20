@@ -76,10 +76,8 @@ require(["dijit/ConfirmDialog",
       { name: "Date",      field: "DATE",      width:"170px", formatter: formatDate},
       { name: "Number",    field: "NUMBER",    width:"120px"},
       { name: "Name",      field: "NAME",      width:"600px"},
-      { name: "Blocked",   field: "BLOCKED",   width:"120px", hidden:true},
-      { name: "Whitelist", field: "WHITELIST", width:"100px"},
-      { name: "Blacklist", field: "BLACKLIST", width:"100px"},
-      { name: "Score",     field: "SCORE",     width:"50px"}
+      { name: "What",      field: "WHAT",      width:"50px", hidden:true},
+      { name: "Reason",    field: "REASON",    width:"300px"}
     ];
 
     var menu = new dijit.Menu();
@@ -121,10 +119,15 @@ require(["dijit/ConfirmDialog",
     dojo.connect(grid, 'onStyleRow', this, function (row) {
       var item = grid.getItem(row.index);
       if (item != null) {
-        if (item.i.BLOCKED.indexOf("blocked") != -1) {
-          row.customClasses = "blockedRow";
-        } else if (item.i.WHITELIST) {
-          row.customClasses = "whitelistRow";
+        switch(item.i.WHAT) {
+          case 1:
+            row.customClasses = "whitelistRow";
+            break;
+          case -1:
+            row.customClasses = "blockedRow";
+            break;
+          default:
+            break;
         }
       }
     });
@@ -759,7 +762,7 @@ require(["dijit/ConfirmDialog",
   var statusbarPane = new dijit.layout.ContentPane({
     region: "bottom",
     style: "text-align: center",
-    content: "v0.0.7"
+    content: "v0.8.0"
   });
   appLayout.addChild(statusbarPane);
   appLayout.placeAt(document.body);

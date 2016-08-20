@@ -92,7 +92,9 @@ def handle_callerlog(environ, start_response, params):
   count = int(params.get("count", str(all_count)))
 
   re_eq = r"'([^'\\]*(?:\\.[^'\\]*)*)'" # escaped quotes
-  pattern = re.compile(r"^Incoming call: (number="+re_eq+")?\s?(name="+re_eq+")?\s?(blocked)?\s?"+
+  pattern = re.compile(r"^Incoming call: (number="+re_eq+")?\s?(name="+re_eq+")?\s?" +
+                        "(blocked)?\s?" +
+                        "(invalid)?\s?" +
                         "(whitelist="+re_eq+")?\s?(blacklist="+re_eq+")?\s?(score=([0-9]*))?$")
   items = []  
   for i in range(start, all_count):
@@ -109,14 +111,29 @@ def handle_callerlog(environ, start_response, params):
         }
         try: tmp["NAME"] = obj.group(4).strip()
         except (IndexError, AttributeError): tmp["NAME"] = ""
-        try: tmp["BLOCKED"] = obj.group(5).strip()
-        except (IndexError, AttributeError): tmp["BLOCKED"] = ""
-        try: tmp["WHITELIST"] = obj.group(7).strip()
-        except (IndexError, AttributeError): tmp["WHITELIST"] = ""
-        try: tmp["BLACKLIST"] = obj.group(9).strip()
-        except (IndexError, AttributeError): tmp["BLACKLIST"] = ""
-        try: tmp["SCORE"] = obj.group(11).strip()
-        except (IndexError, AttributeError): tmp["SCORE"] = ""
+
+        tmp["WHAT"] = 0;
+        try:
+          obj.group(5).strip()
+          tmp["WHAT"] = -1 # blocked
+        except (IndexError, AttributeError): pass
+        try:
+          obj.group(8).strip()
+          tmp["WHAT"] = 1  # whitelisted
+        except (IndexError, AttributeError): pass
+
+        tmp["REASON"] = ""
+        try:
+          obj.group(6).strip() # invalid
+          tmp["REASON"] = "Invalid Caller ID. "
+        except (IndexError, AttributeError): pass
+        try: tmp["REASON"] += "Whitelist '" + obj.group(8).strip() + "'" # whitelist
+        except (IndexError, AttributeError): pass
+        try: tmp["REASON"] += "Blacklist '" + obj.group(10).strip() + "'" # blacklist
+        except (IndexError, AttributeError): pass
+        try: tmp["REASON"] += " with score '" + obj.group(12).strip() + "'" # score
+        except (IndexError, AttributeError): pass
+
         items.append(tmp)
     except ValueError:
       pass
