@@ -88,7 +88,7 @@ private:
 public:
   AnalogPhone(Block* pBlock);
   virtual ~AnalogPhone();
-  bool init(struct SettingAnalogPhone* pPhone);
+  bool init(struct SettingAnalogPhone* pSettings);
   void run();
 };
 

@@ -19,6 +19,7 @@
 
 #include "Block.h" // API
 
+#include <sstream>
 #include <json-c/json.h>
 
 #include "Logger.h"
@@ -62,7 +63,7 @@ bool Block::isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::s
 }
 
 bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg) {
-  Logger::debug("Block::isNumberBlocked(%s,number=%s)", pSettings->toString().c_str(), rNumber.c_str());
+  Logger::debug("Block::isNumberBlocked(%s,number=%s)", Settings::toString(pSettings).c_str(), rNumber.c_str());
 
   std::string listName = "";
   std::string callerName = "";

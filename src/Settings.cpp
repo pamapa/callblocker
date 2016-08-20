@@ -190,7 +190,27 @@ bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
   return true;
 }
 
-void Settings::dump() {
-  // TODO?
+std::string Settings::toString(const struct SettingBase* pBase) {
+  std::ostringstream oss;
+  oss << "n=" << pBase->name
+      << ",cc=" << pBase->countryCode
+      << ",bm=" << pBase->blockMode << ",bucid=" << pBase->blockAnonymousCID
+      << ",on=" << pBase->onlineCheck << ",ol=" << pBase->onlineLookup;
+  return oss.str();
+}
+
+std::string Settings::toString(const struct SettingSipAccount* pSip) {
+  std::ostringstream oss;
+  oss << Settings::toString(&pSip->base)
+      << ",fd=" << pSip->fromDomain
+      << ",fu=" << pSip->fromUsername;// << ",fp=" << fromPassword;
+  return oss.str();
+}
+
+std::string Settings::toString(const struct SettingAnalogPhone* pAnalog) {
+  std::ostringstream oss;
+  oss << Settings::toString(&pAnalog->base)
+      << ",d=" << pAnalog->device;
+  return oss.str();
 }
 

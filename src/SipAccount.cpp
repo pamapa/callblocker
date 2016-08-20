@@ -53,7 +53,7 @@ SipAccount::~SipAccount() {
 }
 
 bool SipAccount::add(struct SettingSipAccount* pSettings) {
-  Logger::debug("SipAccount::add(%s)...", pSettings->toString().c_str());
+  Logger::debug("SipAccount::add(%s)...", Settings::toString(pSettings).c_str());
   m_settings = *pSettings; // strcut copy
 
   // prepare account configuration

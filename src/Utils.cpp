@@ -21,6 +21,9 @@
 
 #include <string.h>
 #include <sstream>
+#include <errno.h>
+#include <json-c/json.h>
+#include <pjsua-lib/pjsua.h>
 
 #include "Logger.h"
 
@@ -154,7 +157,7 @@ std::string Utils::makeNumberInternational(const struct SettingBase* pSettings, 
   return res;
 }
 
-void Utils::parseCallerID(std::string& rData, std::vector<std::pair<std::string, std::string>>* pResult) {
+void Utils::parseCallerID(std::string& rData, std::vector<std::pair<std::string, std::string> >* pResult) {
   // DATE=0306
   // TIME=1517
   // NMBR=0123456789

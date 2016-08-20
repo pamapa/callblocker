@@ -20,8 +20,9 @@
 #ifndef SIPPHONE_H
 #define SIPPHONE_H
 
-#include <string>
+#if 0
 #include <pjsua-lib/pjsua.h>
+#endif
 
 #include "Phone.h"
 

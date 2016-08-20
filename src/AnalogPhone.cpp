@@ -54,11 +54,11 @@ AnalogPhone::~AnalogPhone() {
   Logger::debug("AnalogPhone::~AnalogPhone()...");
 }
 
-bool AnalogPhone::init(struct SettingAnalogPhone* phone) {
-  Logger::debug("AnalogPhone::init(%s)...", phone->toString().c_str());
-  m_settings = *phone; // struct copy
+bool AnalogPhone::init(struct SettingAnalogPhone* pSettings) {
+  Logger::debug("AnalogPhone::init(%s)...", Settings::toString(pSettings).c_str());
+  m_settings = *pSettings; // struct copy
 
-  if (!m_modem.open(phone->device)) {
+  if (!m_modem.open(pSettings->device)) {
     return false;
   }
 

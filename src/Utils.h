@@ -17,11 +17,16 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#ifndef UTILS_H
+#define UTILS_H
+
 #include <string>
-#include <json-c/json.h>
-#include <pjsua-lib/pjsua.h>
 
 #include "Settings.h"
+
+// forward declaration
+struct json_object;       // avoids inclusion of <json-c/json.h>
+typedef int pj_status_t;  // avoids inclusion of <pjsua-lib/pjsua.h>
 
 
 class Utils {
@@ -40,6 +45,8 @@ public:
   static std::string getBaseFilename(const std::string& rFilename);
   static std::string escapeSqString(const std::string& rStr);
   static std::string makeNumberInternational(const struct SettingBase* pSettings, const std::string& rNumber);
-  static void parseCallerID(std::string& rData, std::vector<std::pair<std::string, std::string>>* pResult);
+  static void parseCallerID(std::string& rData, std::vector<std::pair<std::string, std::string> >* pResult);
 };
+
+#endif
 
