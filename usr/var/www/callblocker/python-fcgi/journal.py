@@ -99,7 +99,7 @@ def handle_callerlog(environ, start_response, params):
   items = []  
   for i in range(start, all_count):
     if i >= start + count: break
-    entry = all[all_count - i - 1] # newest first
+    entry = all[i] # to reverse: [all_count - i - 1] # newest first
     try:
       jj = json.loads(entry)
       obj = pattern.match(jj["MESSAGE"])
