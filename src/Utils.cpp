@@ -152,29 +152,7 @@ std::string Utils::escapeSqString(const std::string& rStr) {
   return escaped;
 }
 
-void Utils::makeNumberInternational(const struct SettingBase* pSettings, std::string* pNumber) {
-#if defined(HAVE_LIBPHONENUMBER)
-  i18n::phonenumbers::PhoneNumberUtil* pPhoneUtil = i18n::phonenumbers::PhoneNumberUtil::GetInstance();
-  i18n::phonenumbers::PhoneNumber n;
-
-  std::string tmp = pSettings->countryCode;
-  tmp.erase(0, 1); // remove '+'
-  int country_code = std::stoi(tmp);
-
-  std::string region_code;
-  pPhoneUtil->GetRegionCodeForCountryCode(country_code, &region_code);
-
-  i18n::phonenumbers::PhoneNumberUtil::ErrorType err = pPhoneUtil->Parse(*pNumber, region_code, &n);
-  if (err == i18n::phonenumbers::PhoneNumberUtil::ErrorType::NO_PARSING_ERROR) {
-    pPhoneUtil->Format(n, i18n::phonenumbers::PhoneNumberUtil::PhoneNumberFormat::E164, pNumber);
-  }
-#else
-  if (Utils::startsWith(rNumber, "00")) *pNumber = "+" + rNumber->substr(2);
-  else if (Utils::startsWith(rNumber, "0")) *pNumber = pSettings->countryCode + pNumber->substr(1);
-#endif
-}
-
-bool Utils::isNumberValid(const struct SettingBase* pSettings, std::string* pNumber) {
+void Utils::makeNumberInternational(const struct SettingBase* pSettings, std::string* pNumber, bool* valid) {
 #if defined(HAVE_LIBPHONENUMBER)
   i18n::phonenumbers::PhoneNumberUtil* pPhoneUtil = i18n::phonenumbers::PhoneNumberUtil::GetInstance();
   i18n::phonenumbers::PhoneNumber n;
@@ -188,11 +166,15 @@ bool Utils::isNumberValid(const struct SettingBase* pSettings, std::string* pNum
 
   i18n::phonenumbers::PhoneNumberUtil::ErrorType err = pPhoneUtil->Parse(*pNumber, region_code, &n);
   if (err != i18n::phonenumbers::PhoneNumberUtil::ErrorType::NO_PARSING_ERROR) {
-    return false;
+    *valid = false;
+    return;
   }
-  return pPhoneUtil->IsValidNumber(n);
+  pPhoneUtil->Format(n, i18n::phonenumbers::PhoneNumberUtil::PhoneNumberFormat::E164, pNumber);
+  *valid = pPhoneUtil->IsValidNumber(n);
 #else
-  return true;
+  if (Utils::startsWith(rNumber, "00")) *pNumber = "+" + rNumber->substr(2);
+  else if (Utils::startsWith(rNumber, "0")) *pNumber = pSettings->countryCode + pNumber->substr(1);
+  *valid = true;
 #endif
 }
 

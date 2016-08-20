@@ -55,7 +55,10 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
     return isAnonymousNumberBlocked(pSettings, pMsg);
   }
 
-  return isValidNumberBlocked(pSettings, rNumber, pMsg);
+  std::string e164Number = rNumber;
+  bool valid;
+  Utils::makeNumberInternational(pSettings, &e164Number, &valid);
+  return isValidNumberBlocked(pSettings, e164Number, pMsg);
 }
 
 bool Block::isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg) {

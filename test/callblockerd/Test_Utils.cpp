@@ -60,16 +60,20 @@ static void TestCase_makeNumberInternational()
   // CH
   settings.countryCode = "+41";
   std::string str = "0441234567"; // local
-  Utils::makeNumberInternational(&settings, &str);
+  bool valid;
+  Utils::makeNumberInternational(&settings, &str, &valid);
   assert(str.compare("+41441234567") == 0);
+  assert(valid);
   
   str = "+41791234567"; // already international
-  Utils::makeNumberInternational(&settings, &str);
+  Utils::makeNumberInternational(&settings, &str, &valid);
   assert(str.compare("+41791234567") == 0);
+  assert(valid);
   
   str = "0041791234567"; // already international
-  Utils::makeNumberInternational(&settings, &str);
+  Utils::makeNumberInternational(&settings, &str, &valid);
   assert(str.compare("+41791234567") == 0);
+  assert(valid);
 }
 
 static void TestCase_parseCallerID()

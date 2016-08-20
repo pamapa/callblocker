@@ -117,9 +117,6 @@ void AnalogPhone::run() {
             number = BLOCK_ANONYMOUS_NUMBER_STR;
           }
 
-          // make number international
-          Utils::makeNumberInternational(&m_settings.base, &number);
-
           std::string msg;
           block = isNumberBlocked(&m_settings.base, number, &msg);
           Logger::notice(msg.c_str());

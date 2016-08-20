@@ -241,12 +241,6 @@ bool SipAccount::getNumber(pj_str_t* uri, std::string* pDisplay, std::string* pN
   pjsip_sip_uri *sip = (pjsip_sip_uri*)pjsip_uri_get_uri(n);
   *pNumber = std::string(sip->user.ptr, sip->user.slen);
 
-  // NOTE: in case CID is blocked, the number will be "anonymous"
-  if (*pNumber != "anonymous") {
-    // make number international
-    Utils::makeNumberInternational(&m_settings.base, pNumber);
-  }
-
   pj_pool_release(pool);
   return true;
 }
