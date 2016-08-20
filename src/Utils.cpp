@@ -172,8 +172,8 @@ void Utils::makeNumberInternational(const struct SettingBase* pSettings, std::st
   pPhoneUtil->Format(n, i18n::phonenumbers::PhoneNumberUtil::PhoneNumberFormat::E164, pNumber);
   *valid = pPhoneUtil->IsValidNumber(n);
 #else
-  if (Utils::startsWith(rNumber, "00")) *pNumber = "+" + pNumber->substr(2);
-  else if (Utils::startsWith(rNumber, "0")) *pNumber = pSettings->countryCode + pNumber->substr(1);
+  if (Utils::startsWith(*pNumber, "00")) *pNumber = "+" + pNumber->substr(2);
+  else if (Utils::startsWith(*pNumber, "0")) *pNumber = pSettings->countryCode + pNumber->substr(1);
   *valid = true;
 #endif
 }
