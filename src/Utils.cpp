@@ -90,7 +90,7 @@ bool Utils::executeCommand(const std::string& rCmd, std::string* pRes) {
   while (fgets(buf, sizeof(buf), fp) != NULL) {
     res += buf;
   }
-  Utils::trim(res);
+  Utils::trim(&res);
 
   int status = pclose(fp);
   if (status != 0) {
@@ -114,23 +114,23 @@ bool Utils::startsWith(const std::string& rStr, const char* pPrefix) {
   return rStr.find(pPrefix) == 0 ? true : false;
 }
 
-static void leftTrim(std::string& rStr) {
-  std::string::size_type pos = rStr.find_last_not_of(" \t\r\n");
+static void leftTrim(std::string* pStr) {
+  std::string::size_type pos = pStr->find_last_not_of(" \t\r\n");
   if (pos != std::string::npos) {
-    rStr.erase(pos + 1);
+    pStr->erase(pos + 1);
   }
 }
 
-static void rightTrim(std::string& rStr) {
-  std::string::size_type pos = rStr.find_first_not_of(" \t\r\n");
+static void rightTrim(std::string* pStr) {
+  std::string::size_type pos = pStr->find_first_not_of(" \t\r\n");
   if (pos != std::string::npos) {
-    rStr.erase(0, pos);
+    pStr->erase(0, pos);
   }
 }
 
-void Utils::trim(std::string& rStr) {
-  leftTrim(rStr);
-  rightTrim(rStr);
+void Utils::trim(std::string* pStr) {
+  leftTrim(pStr);
+  rightTrim(pStr);
 }
 
 std::string Utils::getBaseFilename(const std::string& rFilename) {
@@ -214,8 +214,8 @@ void Utils::parseCallerID(std::string& rData, std::vector<std::pair<std::string,
     if (pos + 1 < to.length()) {
       val = to.substr(pos + 1, to.length() - pos);
     }
-    Utils::trim(key);
-    Utils::trim(val);
+    Utils::trim(&key);
+    Utils::trim(&val);
     std::pair<std::string, std::string> p(key, val);
     pResult->push_back(p);
   }

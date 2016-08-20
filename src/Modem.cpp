@@ -157,7 +157,7 @@ bool Modem::sendCommand(std::string cmd) {
   buffer[size] = '\0';
   
   std::string str = buffer;
-  Utils::trim(str);
+  Utils::trim(&str);
   Logger::debug("[%s] received '%s' tries=%d ret=%d", m_name.c_str(), str.c_str(), tries, ret);
   return ret;
 }
@@ -177,7 +177,7 @@ bool Modem::getData(std::string* data) {
     if (num > 0) {
       buffer[num] = '\0';
       std::string str = buffer;
-      Utils::trim(str);
+      Utils::trim(&str);
       *data = str;
       Logger::debug("[%s] received '%s'", m_name.c_str(), data->c_str());
       res = true;

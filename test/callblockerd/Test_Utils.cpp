@@ -34,23 +34,23 @@ static void TestCase_string()
 
   // trim
   std::string str = "123";
-  Utils::trim(str);
+  Utils::trim(&str);
   assert(str.compare("123") == 0);
 
   str = "  123";
-  Utils::trim(str);
+  Utils::trim(&str);
   assert(str.compare("123") == 0);
 
   str = "123  ";
-  Utils::trim(str);
+  Utils::trim(&str);
   assert(str.compare("123") == 0);
 
   str = "  123  ";
-  Utils::trim(str);
+  Utils::trim(&str);
   assert(str.compare("123") == 0);
 
   str = "\t\n123\n\n\n";
-  Utils::trim(str);
+  Utils::trim(&str);
   assert(str.compare("123") == 0);
 }
 
@@ -62,9 +62,11 @@ static void TestCase_makeNumberInternational()
   std::string str = "0441234567"; // local
   Utils::makeNumberInternational(&settings, &str);
   assert(str.compare("+41441234567") == 0);
+  
   str = "+41791234567"; // already international
   Utils::makeNumberInternational(&settings, &str);
   assert(str.compare("+41791234567") == 0);
+  
   str = "0041791234567"; // already international
   Utils::makeNumberInternational(&settings, &str);
   assert(str.compare("+41791234567") == 0);
