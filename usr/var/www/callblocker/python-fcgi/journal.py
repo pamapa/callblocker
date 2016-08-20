@@ -24,7 +24,7 @@ from datetime import datetime
 
 
 # logging via journald
-CALLBLOCKER_CALLLOGCMD       = ["journalctl", "_SYSTEMD_UNIT=callblockerd.service", "--priority", "5..5", "--lines", "1000", "--output", "json"]
+CALLBLOCKER_CALLLOGCMD       = ["journalctl", "_SYSTEMD_UNIT=callblockerd.service", "--priority", "5..5", "--reverse", "--since", "-12 months", "--output", "json"]
 CALLBLOCKER_JOURNALALL       = ["journalctl", "_SYSTEMD_UNIT=callblockerd.service", "--lines", "1000", "--output", "json"]
 CALLBLOCKER_JOURNALERRORWARN = ["journalctl", "_SYSTEMD_UNIT=callblockerd.service", "--priority", "0..4", "--lines", "1000", "--output", "json"]
 
