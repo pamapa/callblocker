@@ -21,12 +21,13 @@
 #define SETTINGS_H
 
 #include <string>
-#include <sstream>
 #include <vector>
 #include <map>
 
 #include "Notify.h"
-struct json_object;
+
+// forward declaration
+struct json_object; // avoids inclusion of <json-c/json.h>
 
 
 enum SettingBlockMode {
@@ -43,12 +44,6 @@ struct SettingBase {
   bool blockAnonymousCID;
   std::string onlineCheck;
   std::string onlineLookup;
-
-  std::string toString() const {
-    std::ostringstream oss;
-    oss << "n=" << name << ",cc=" << countryCode << ",bm=" << blockMode << ",bucid=" << blockAnonymousCID << ",on=" << onlineCheck << ",ol=" << onlineLookup;
-    return oss.str();
-  }
 };
 
 struct SettingSipAccount {
@@ -56,23 +51,11 @@ struct SettingSipAccount {
   std::string fromDomain;
   std::string fromUsername;
   std::string fromPassword;
-
-  std::string toString() const {
-    std::ostringstream oss;
-    oss << base.toString() << ",fd=" << fromDomain << ",fu=" << fromUsername;// << ",fp=" << fromPassword;
-    return oss.str();
-  }
 };
 
 struct SettingAnalogPhone {
   struct SettingBase base;
   std::string device;
-
-  std::string toString() const {
-    std::ostringstream oss;
-    oss << base.toString() << ",d=" << device;
-    return oss.str();
-  }
 };
 
 struct SettingOnlineCredential {
@@ -95,7 +78,10 @@ public:
   std::vector<struct SettingSipAccount> getSipAccounts() { return m_sipAccounts; }
   std::vector<struct SettingAnalogPhone> getAnalogPhones() { return m_analogPhones; }
   std::vector<struct SettingOnlineCredential> getOnlineCredentials() { return m_onlineCredentials; }
-  void dump();
+  
+  static std::string toString(const struct SettingBase* pBase);
+  static std::string toString(const struct SettingSipAccount* pSip);
+  static std::string toString(const struct SettingAnalogPhone* pAnalog);
 
 private:
   void clear();
@@ -105,3 +91,4 @@ private:
 };
 
 #endif
+
