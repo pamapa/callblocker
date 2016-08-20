@@ -24,7 +24,7 @@ from datetime import datetime
 
 
 # logging via journald
-CALLBLOCKER_CALLLOGCMD       = ["journalctl", "_SYSTEMD_UNIT=callblockerd.service", "--priority", "5..5", "--reverse", "--since", "-12 months", "--output", "json"]
+CALLBLOCKER_CALLLOGCMD       = ["journalctl", "_SYSTEMD_UNIT=callblockerd.service", "--priority", "5..5", "--since", "-12 months", "--output", "json"]
 CALLBLOCKER_JOURNALALL       = ["journalctl", "_SYSTEMD_UNIT=callblockerd.service", "--lines", "1000", "--output", "json"]
 CALLBLOCKER_JOURNALERRORWARN = ["journalctl", "_SYSTEMD_UNIT=callblockerd.service", "--priority", "0..4", "--lines", "1000", "--output", "json"]
 
@@ -99,7 +99,7 @@ def handle_callerlog(environ, start_response, params):
   items = []  
   for i in range(start, all_count):
     if i >= start + count: break
-    entry = all[i] # to reverse: [all_count - i - 1] # newest first
+    entry = all[all_count - i - 1] # newest first
     try:
       jj = json.loads(entry)
       obj = pattern.match(jj["MESSAGE"])
