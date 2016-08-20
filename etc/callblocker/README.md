@@ -11,26 +11,28 @@ The settings file looks like this.
   "pjsip_log_level": 0,
   "phones": [
     {
-      "enabled":           false,
-      "name":              "Analog Home Phone",
-      "country_code":      "+41",
-      "block_mode":        "logging_only",
-      "block_unknown_cid": false,
-      "online_check":      "tellows_de",
-      "online_lookup":     "tel_search_ch",
-      "device":            "/dev/ttyACM0"
+      "enabled":             false,
+      "name":                "Analog Home Phone",
+      "country_code":        "+41",
+      "block_mode":          "logging_only",
+      "block_anonymous_cid": false,
+      "block_invalid_cid":   false,
+      "online_check":        "tellows_de",
+      "online_lookup":       "tel_search_ch",
+      "device":              "/dev/ttyACM0"
     },
     { 
-      "enabled":           false,
-      "name":              "SIP Home Phone",
-      "country_code":      "+41",
-      "block_mode":        "whitelists_and_blacklists",
-      "block_unknown_cid": false,
-      "online_check":      "tellows_de",
-      "online_lookup":     "tel_search_ch",
-      "from_domain":       "<your domain>",
-      "from_username":     "<your username>",
-      "from_password":     "<your password>"
+      "enabled":             false,
+      "name":                "SIP Home Phone",
+      "country_code":        "+41",
+      "block_mode":          "whitelists_and_blacklists",
+      "block_anonymous_cid": false,
+      "block_invalid_cid":   false,
+      "online_check":        "tellows_de",
+      "online_lookup":       "tel_search_ch",
+      "from_domain":         "<your domain>",
+      "from_username":       "<your username>",
+      "from_password":       "<your password>"
     }
   ],
   "online_credentials": [
@@ -53,7 +55,8 @@ Fields               | Values | Description
 "pjsip_log_level"    | 0-5 | Logging level of the pjsip library, for debugging proposes. Default is 0.
 "country_code"       | `+<X[Y][Z]>` | Your international country code (e.g. +33 for France)
 "block_mode"         | "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only" | "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists. (whitelists not used)
-"block_anonymous_cid"  | true, false | optional: block all calls that come to your system with a anonymous/unknown caller ID. Default is false.
+"block_anonymous_cid" | true, false | optional: block all calls that have an anonymous/unknown caller ID. Default is false.
+"block_invalid_cid"   | true, false | optional: block all calls that have an invalid caller ID. Default is false.
 "online_check"       | [`<string>`](#onlineCheck)  | optional: online check site to verify if number is spam
 "online_lookup"      | [`<string>`](#onlineLookup)  | optional: online lookup site, to see who is calling
 "device"             | `<string>` | Your device name (get it with dmesg). Usually its "/dev/ttyACM0".

@@ -56,13 +56,13 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
   }
 
   std::string e164Number = rNumber;
-  bool valid;
-  Utils::makeNumberInternational(pSettings, &e164Number, &valid);
-  return isValidNumberBlocked(pSettings, e164Number, pMsg);
+  bool validNumber = true;
+  Utils::makeNumberInternational(pSettings, &e164Number, &validNumber);
+
+  return isValidNumberBlocked(pSettings, e164Number, validNumber, pMsg);
 }
 
 bool Block::isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg) {
-
   bool block = pSettings->blockAnonymousCID;
 
   // Incoming call number='anonymous' [blocked]
@@ -76,31 +76,14 @@ bool Block::isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::s
   return block;
 }
 
-/*
-bool Block::isInvalidNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg) {
-
-  bool block = false; // TODO
-
-  // Incoming call number='x' invalid
-  std::ostringstream oss;
-  oss << "Incoming call: number='" << rNumber << "' invalid";
-  if (block) {
-    oss << " blocked";
-  }
-
-  *pMsg = oss.str();
-  return false;
-}
-*/
-
-bool Block::isValidNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg) {
+bool Block::isValidNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber, std::string* pMsg) {
   std::string listName = "";
   std::string callerName = "";
   std::string score = "";
   bool onWhitelist = false;
   bool onBlacklist = false;
   bool block = false;
-
+  
   switch (pSettings->blockMode) {
     default:
       Logger::warn("invalid block mode %d", pSettings->blockMode);
@@ -154,11 +137,18 @@ bool Block::isValidNumberBlocked(const struct SettingBase* pSettings, const std:
     }
   }
 
+  if (!block && !validNumber) {
+    block = pSettings->blockInvalidCID;
+  }
+
   // Incoming call number='x' name='y' [blocked] [whitelist='w'] [blacklist='b'] [score=s]
   std::ostringstream oss;
   oss << "Incoming call: number='" << rNumber << "'";
   if (callerName.length() != 0) {
     oss << " name='" << Utils::escapeSqString(callerName) << "'";
+  }
+  if (!validNumber) {
+    oss << " invalid";
   }
   if (block) {
     oss << " blocked";

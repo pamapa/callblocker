@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -44,7 +44,7 @@ public:
 
 private:
   bool isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg);
-  bool isValidNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);
+  bool isValidNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber, std::string* pMsg);
 
   bool isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pName);
   bool isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pName, std::string* pScore);

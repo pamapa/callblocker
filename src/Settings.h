@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -42,6 +42,7 @@ struct SettingBase {
   std::string countryCode;
   enum SettingBlockMode blockMode;
   bool blockAnonymousCID;
+  bool blockInvalidCID;
   std::string onlineCheck;
   std::string onlineLookup;
 };

@@ -180,11 +180,10 @@ bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
     Logger::warn("unknown block_mode '%s' in settings file %s", tmp.c_str(), m_filename.c_str());
     return false;
   }
-  // block unknown cid
+
   (void)Utils::getObject(objbase, "block_anonymous_cid", false, m_filename, &res->blockAnonymousCID);
-  // online check
+  (void)Utils::getObject(objbase, "block_invalid_cid", false, m_filename, &res->blockInvalidCID);
   (void)Utils::getObject(objbase, "online_check", false, m_filename, &res->onlineCheck);
-  // online check
   (void)Utils::getObject(objbase, "online_lookup", false, m_filename, &res->onlineLookup);
 
   return true;
@@ -194,7 +193,7 @@ std::string Settings::toString(const struct SettingBase* pBase) {
   std::ostringstream oss;
   oss << "n=" << pBase->name
       << ",cc=" << pBase->countryCode
-      << ",bm=" << pBase->blockMode << ",bucid=" << pBase->blockAnonymousCID
+      << ",bm=" << pBase->blockMode << ",bacid=" << pBase->blockAnonymousCID << ",bicid=" << pBase->blockAnonymousCID
       << ",on=" << pBase->onlineCheck << ",ol=" << pBase->onlineLookup;
   return oss.str();
 }
