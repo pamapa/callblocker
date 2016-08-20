@@ -121,7 +121,7 @@ void AnalogPhone::run() {
           }
 
           // make number international
-          number = Utils::makeNumberInternational(&m_settings.base, number);
+          Utils::makeNumberInternational(&m_settings.base, &number);
 
           std::string msg;
           block = isNumberBlocked(&m_settings.base, number, &msg);

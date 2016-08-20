@@ -152,7 +152,7 @@ std::string Utils::escapeSqString(const std::string& rStr) {
   return escaped;
 }
 
-std::string Utils::makeNumberInternational(const struct SettingBase* pSettings, const std::string& rNumber) {
+void Utils::makeNumberInternational(const struct SettingBase* pSettings, std::string* pNumber) {
 #if defined(HAVE_LIBPHONENUMBER)
   i18n::phonenumbers::PhoneNumberUtil* pPhoneUtil = i18n::phonenumbers::PhoneNumberUtil::GetInstance();
   i18n::phonenumbers::PhoneNumber n;
@@ -164,22 +164,35 @@ std::string Utils::makeNumberInternational(const struct SettingBase* pSettings, 
   std::string region_code;
   pPhoneUtil->GetRegionCodeForCountryCode(country_code, &region_code);
 
-  i18n::phonenumbers::PhoneNumberUtil::ErrorType err = pPhoneUtil->Parse(rNumber, region_code, &n);
-  if (err != i18n::phonenumbers::PhoneNumberUtil::ErrorType::NO_PARSING_ERROR &&
-      !pPhoneUtil->IsValidNumber(n)) {
-    // TODO: add bogus flag
-    return rNumber;
+  i18n::phonenumbers::PhoneNumberUtil::ErrorType err = pPhoneUtil->Parse(*pNumber, region_code, &n);
+  if (err == i18n::phonenumbers::PhoneNumberUtil::ErrorType::NO_PARSING_ERROR) {
+    pPhoneUtil->Format(n, i18n::phonenumbers::PhoneNumberUtil::PhoneNumberFormat::E164, pNumber);
   }
-
-  std::string res;
-  pPhoneUtil->Format(n, i18n::phonenumbers::PhoneNumberUtil::PhoneNumberFormat::E164, &res);
-  return res;
 #else
-  std::string res;
-  if (Utils::startsWith(rNumber, "00")) res = "+" + rNumber.substr(2);
-  else if (Utils::startsWith(rNumber, "0")) res = pSettings->countryCode + rNumber.substr(1);
-  else res = rNumber;
-  return res;
+  if (Utils::startsWith(rNumber, "00")) *pNumber = "+" + rNumber->substr(2);
+  else if (Utils::startsWith(rNumber, "0")) *pNumber = pSettings->countryCode + pNumber->substr(1);
+#endif
+}
+
+bool Utils::isNumberValid(const struct SettingBase* pSettings, std::string* pNumber) {
+#if defined(HAVE_LIBPHONENUMBER)
+  i18n::phonenumbers::PhoneNumberUtil* pPhoneUtil = i18n::phonenumbers::PhoneNumberUtil::GetInstance();
+  i18n::phonenumbers::PhoneNumber n;
+
+  std::string tmp = pSettings->countryCode;
+  tmp.erase(0, 1); // remove '+'
+  int country_code = std::stoi(tmp);
+
+  std::string region_code;
+  pPhoneUtil->GetRegionCodeForCountryCode(country_code, &region_code);
+
+  i18n::phonenumbers::PhoneNumberUtil::ErrorType err = pPhoneUtil->Parse(*pNumber, region_code, &n);
+  if (err != i18n::phonenumbers::PhoneNumberUtil::ErrorType::NO_PARSING_ERROR) {
+    return false;
+  }
+  return pPhoneUtil->IsValidNumber(n);
+#else
+  return true;
 #endif
 }
 

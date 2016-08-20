@@ -182,6 +182,7 @@ void SipAccount::onCallState(pjsua_call_id call_id, pjsip_event* e) {
   pjsua_call_info ci;
   pjsua_call_get_info(call_id, &ci);
 
+  // NOTE: if the number is not blocked, we would not be here
   std::string display, number;
   if (!getNumber(&ci.remote_info, &display, &number)) {
     Logger::warn("invalid URI received '%s'", pj_strbuf(&ci.remote_info));
@@ -243,10 +244,13 @@ bool SipAccount::getNumber(pj_str_t* uri, std::string* pDisplay, std::string* pN
   *pDisplay = std::string(n->display.ptr, n->display.slen);
 
   pjsip_sip_uri *sip = (pjsip_sip_uri*)pjsip_uri_get_uri(n);
-  std::string number = std::string(sip->user.ptr, sip->user.slen);
-  
-  // make number international
-  *pNumber = Utils::makeNumberInternational(&m_settings.base, number);
+  *pNumber = std::string(sip->user.ptr, sip->user.slen);
+
+  // NOTE: in case CID is blocked, the number will be "anonymous"
+  if (*pNumber != "anonymous") {
+    // make number international
+    Utils::makeNumberInternational(&m_settings.base, pNumber);
+  }
 
   pj_pool_release(pool);
   return true;
