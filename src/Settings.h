@@ -21,7 +21,6 @@
 #define SETTINGS_H
 
 #include <string>
-#include <sstream>
 #include <vector>
 #include <map>
 

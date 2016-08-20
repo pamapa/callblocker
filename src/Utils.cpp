@@ -20,6 +20,7 @@
 #include "Utils.h" // API
 
 #include <string.h>
+#include <sstream>
 
 #include "Logger.h"
 
