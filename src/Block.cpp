@@ -141,7 +141,7 @@ bool Block::isValidNumberBlocked(const struct SettingBase* pSettings, const std:
     block = pSettings->blockInvalidCID;
   }
 
-  // Incoming call number='x' name='y' [blocked] [whitelist='w'] [blacklist='b'] [score=s]
+  // Incoming call number='x' name='y' [invalid] [blocked] [whitelist='w'] [blacklist='b'] [score=s]
   std::ostringstream oss;
   oss << "Incoming call: number='" << rNumber << "'";
   if (callerName.length() != 0) {
