@@ -52,21 +52,28 @@ static void TestCase_string()
   str = "\t\n123\n\n\n";
   Utils::trim(str);
   assert(str.compare("123") == 0);
+}
 
-  // makeNumberInternational
+static void TestCase_makeNumberInternational()
+{
   SettingBase settings;
   // CH
   settings.countryCode = "+41";
-  str = "0441234567"; // local
+  std::string str = "0441234567"; // local
   str = Utils::makeNumberInternational(&settings, str);
   assert(str.compare("+41441234567") == 0);
   str = "+41791234567"; // already international
   str = Utils::makeNumberInternational(&settings, str);
   assert(str.compare("+41791234567") == 0);
+  str = "0041791234567"; // already international
+  str = Utils::makeNumberInternational(&settings, str);
+  assert(str.compare("+41791234567") == 0);
+}
 
-  // parseCallerID
+static void TestCase_parseCallerID()
+{
   std::vector<std::pair<std::string, std::string>> result;
-  str = "DATE=0306\nTIME=1517\nNMBR=0123456789\nNAME=aasd asdd\n";
+  std::string str = "DATE=0306\nTIME=1517\nNMBR=0123456789\nNAME=aasd asdd\n";
   Utils::parseCallerID(str, &result);
   assert(result.size() == 4);
   assert(result[0].first.compare("DATE") == 0);
@@ -105,5 +112,7 @@ void Test_Utils_Run()
   printf("Test_Utils_Run...\n");
   
   TestCase_string();
+  TestCase_makeNumberInternational();
+  TestCase_parseCallerID();
 }
 
