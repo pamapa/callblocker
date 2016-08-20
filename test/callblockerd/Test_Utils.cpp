@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include "Settings.h"
 #include "Utils.h"
 
 
@@ -51,6 +52,17 @@ static void TestCase_string()
   str = "\t\n123\n\n\n";
   Utils::trim(str);
   assert(str.compare("123") == 0);
+
+  // makeNumberInternational
+  SettingBase settings;
+  // CH
+  settings.countryCode = "+41";
+  str = "0441234567"; // local
+  str = Utils::makeNumberInternational(&settings, str);
+  assert(str.compare("+41441234567") == 0);
+  str = "+41791234567"; // already international
+  str = Utils::makeNumberInternational(&settings, str);
+  assert(str.compare("+41791234567") == 0);
 
   // parseCallerID
   std::vector<std::pair<std::string, std::string>> result;
