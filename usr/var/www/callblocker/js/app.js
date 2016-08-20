@@ -226,6 +226,9 @@ require(["dijit/ConfirmDialog",
     var blockAnonymousCIDCheckBox = new dijit.form.CheckBox({
       checked: false,
     });
+    var blockInvalidCIDCheckBox = new dijit.form.CheckBox({
+      checked: false,
+    });
     var onlineCheckSelect = new dijit.form.Select({
       options: [
         { label: "none", value: "", selected: true },
@@ -274,6 +277,11 @@ require(["dijit/ConfirmDialog",
           return new dijit.form.CheckBox({checked: on, readOnly: true});
         }
       },
+      { name:"Block invalid CID", field:"block_invalid_cid", width:"60px",
+        type:dojox.grid.cells._Widget, formatter:function(on){
+          return new dijit.form.CheckBox({checked: on, readOnly: true});
+        }
+      },
       { name:"Online check",        field:"online_check",        width:"100px"},
       { name:"Online lookup",       field:"online_lookup",       width:"100px"},
       { name:"Device",              field:"device",              width:"100px"},
@@ -317,6 +325,7 @@ require(["dijit/ConfirmDialog",
               domConstruct.create("T", {innerHTML:"Country code: "}), countryCodeTextBox.domNode, domConstruct.create("br"),
               domConstruct.create("T", {innerHTML:"Block mode: "}), blockModeSelect.domNode, domConstruct.create("br"),
               domConstruct.create("T", {innerHTML:"Block anonymous CID: "}), blockAnonymousCIDCheckBox.domNode, domConstruct.create("br"),
+              domConstruct.create("T", {innerHTML:"Block invalid CID: "}), blockInvalidCIDCheckBox.domNode, domConstruct.create("br"),
               domConstruct.create("T", {innerHTML:"Online check: "}), onlineCheckSelect.domNode, domConstruct.create("br"),
               domConstruct.create("T", {innerHTML:"Online lookup: "}), onlineLookupSelect.domNode, domConstruct.create("br"),
               domConstruct.create("T", {innerHTML:"Device: "}), deviceTextBox.domNode, domConstruct.create("br"),
@@ -346,6 +355,7 @@ require(["dijit/ConfirmDialog",
               grid.store.setValue(si, "country_code", countryCodeTextBox.get("value"));
               grid.store.setValue(si, "block_mode", blockModeSelect.get("value"));
               grid.store.setValue(si, "block_anonymous_cid", blockAnonymousCIDCheckBox.get("checked"));
+              grid.store.setValue(si, "block_invalid_cid", blockInvalidCIDCheckBox.get("checked"));
               grid.store.setValue(si, "online_check", onlineCheckSelect.get("value"));
               grid.store.setValue(si, "online_lookup", onlineLookupSelect.get("value"));
               grid.store.save();
@@ -367,6 +377,7 @@ require(["dijit/ConfirmDialog",
           countryCodeTextBox.set("value", grid.store.getValue(si, "country_code"));
           blockModeSelect.set("value", grid.store.getValue(si, "block_mode"));
           blockAnonymousCIDCheckBox.set("value", grid.store.getValue(si, "block_anonymous_cid"));
+          blockInvalidCIDCheckBox.set("value", grid.store.getValue(si, "block_invalid_cid"));
           onlineCheckSelect.set("value", grid.store.getValue(si, "online_check"));
           onlineLookupSelect.set("value", grid.store.getValue(si, "online_lookup"));
           myDialog.show();
