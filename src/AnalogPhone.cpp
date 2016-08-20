@@ -114,10 +114,7 @@ void AnalogPhone::run() {
           if (number == "PRIVATE") {
             // Caller ID information has been blocked by the user of the other end
             // see http://ads.usr.com/support/3453c/3453c-ug/dial_answer.html#IDfunctions
-            std::string msg;
-            block = isAnonymousNumberBlocked(&m_settings.base, &msg);
-            Logger::notice(msg.c_str());
-            break;
+            number = BLOCK_ANONYMOUS_NUMBER_STR;
           }
 
           // make number international

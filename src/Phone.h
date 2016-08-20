@@ -35,7 +35,6 @@ public:
   virtual ~Phone();
 
   bool isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);
-  bool isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg);
 };
 
 #endif

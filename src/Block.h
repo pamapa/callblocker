@@ -27,6 +27,9 @@
 #include "Settings.h"
 
 
+#define BLOCK_ANONYMOUS_NUMBER_STR "anonymous"
+
+
 class Block {
 private:
   Settings* m_pSettings;
@@ -38,9 +41,11 @@ public:
   virtual ~Block();
   void run();
   bool isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);
-  bool isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg);
 
 private:
+  bool isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg);
+  bool isValidNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);
+
   bool isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pName);
   bool isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pName, std::string* pScore);
 
