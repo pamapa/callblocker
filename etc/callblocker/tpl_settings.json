@@ -1,31 +1,31 @@
 { 
-  "log_level" : "info",
-  "pjsip_log_level" : 0,
-  "phones" : [
+  "log_level": "info",
+  "pjsip_log_level": 0,
+  "phones": [
     { 
-      "enabled"             : false,
-      "name"                : "My Home Phone",
-      "country_code"        : "+41",
-      "block_mode"          : "whitelists_and_blacklists",
-      "block_anonymous_cid" : false,
-      "block_invalid_cid"   : false,
-      "online_check"        : "tellows_de",
-      "online_lookup"       : "tel_search_ch",
-      "from_domain"         : "<your domain>",
-      "from_username"       : "<your username>",
-      "from_password"       : "<your password>"
+      "enabled":             false,
+      "name":                "My Home Phone",
+      "country_code":        "+41",
+      "block_mode":          "whitelists_and_blacklists",
+      "block_anonymous_cid": false,
+      "block_invalid_cid":   false,
+      "online_check":        "tellows_de",
+      "online_lookup":       "tel_search_ch",
+      "from_domain":         "<your domain>",
+      "from_username":       "<your username>",
+      "from_password":       "<your password>"
     }
   ],
-  "online_credentials" : [
+  "online_credentials": [
     {
-      "name"     : "tellows_de",
-      "username" : "<your partner name>",
-      "password" : "<your api key>"
+      "name":     "tellows_de",
+      "username": "<your partner name>",
+      "password": "<your api key>"
     },
     {
-      "name"     : "whocalled_us",
-      "username" : "<your name>",
-      "password" : "<your pass>"
+      "name":     "whocalled_us",
+      "username": "<your name>",
+      "password": "<your pass>"
     }
   ]
 }
