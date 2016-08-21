@@ -154,6 +154,12 @@ std::string Utils::escapeSqString(const std::string& rStr) {
 
 void Utils::makeNumberInternational(const struct SettingBase* pSettings, std::string* pNumber, bool* valid) {
 #if defined(HAVE_LIBPHONENUMBER)
+  if (Utils::startsWith(*pNumber, "**")) {
+    // it is an intern number
+    *valid = true;
+    return;
+  }
+
   i18n::phonenumbers::PhoneNumberUtil* pPhoneUtil = i18n::phonenumbers::PhoneNumberUtil::GetInstance();
   i18n::phonenumbers::PhoneNumber n;
 

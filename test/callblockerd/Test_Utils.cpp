@@ -74,6 +74,11 @@ static void TestCase_makeNumberInternational()
   Utils::makeNumberInternational(&settings, &str, &valid);
   assert(str.compare("+41791234567") == 0);
   assert(valid);
+
+  str = "**600"; // intern, not public number
+  Utils::makeNumberInternational(&settings, &str, &valid);
+  assert(str.compare("**600") == 0);
+  assert(valid);
 }
 
 static void TestCase_parseCallerID()
