@@ -96,7 +96,7 @@ static void TestCase_logging_only()
   assert(msg.compare("Incoming call: number='anonymous'") == 0);
 
 #if defined(HAVE_LIBPHONENUMBER)
-  // test invalid
+  // test invalid: too small number
   settingsBase.blockInvalidCID = false;
   assert(block->isBlocked(&settingsBase, "+410000000", &msg) == false);
   assert(msg.compare("Incoming call: number='+410000000' invalid") == 0);
@@ -145,7 +145,7 @@ static void TestCase_whitelists_only()
   assert(msg.compare("Incoming call: number='anonymous' blocked") == 0);
 
 #if defined(HAVE_LIBPHONENUMBER)
-  // test invalid
+  // test invalid: too small number
   settingsBase.blockInvalidCID = false;
   assert(block->isBlocked(&settingsBase, "+410000000", &msg) == true);
   assert(msg.compare("Incoming call: number='+410000000' blocked invalid") == 0);
@@ -259,7 +259,7 @@ static void TestCase_blacklists_only()
   assert(msg.compare("Incoming call: number='anonymous' blocked") == 0);
 
 #if defined(HAVE_LIBPHONENUMBER)
-  // test invalid
+  // test invalid: too small number
   settingsBase.blockInvalidCID = false;
   assert(block->isBlocked(&settingsBase, "+410000000", &msg) == false);
   assert(msg.compare("Incoming call: number='+410000000' invalid") == 0);
