@@ -34,7 +34,8 @@ public:
   Phone(Block* pBlock);
   virtual ~Phone();
 
-  bool isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);
+  // helper
+  bool isBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);
 };
 
 #endif

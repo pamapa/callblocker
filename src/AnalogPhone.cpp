@@ -118,7 +118,7 @@ void AnalogPhone::run() {
           }
 
           std::string msg;
-          block = isNumberBlocked(&m_settings.base, number, &msg);
+          block = isBlocked(&m_settings.base, number, &msg);
           Logger::notice(msg.c_str());
           break;
         }
