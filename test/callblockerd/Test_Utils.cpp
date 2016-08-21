@@ -20,6 +20,7 @@
 #include "Test.h"
 
 #include <stdio.h>
+#include <string.h>
 #include <assert.h>
 
 #include "Settings.h"
@@ -56,29 +57,37 @@ static void TestCase_string()
 
 static void TestCase_makeNumberInternational()
 {
-  SettingBase settings;
+  SettingBase settingsBase;
+  memset(&settingsBase, 0, sizeof(settingsBase));
   // CH
-  settings.countryCode = "+41";
+  settingsBase.countryCode = "+41";
   std::string str = "0441234567"; // local
   bool valid;
-  Utils::makeNumberInternational(&settings, &str, &valid);
+  Utils::makeNumberInternational(&settingsBase, &str, &valid);
   assert(str.compare("+41441234567") == 0);
   assert(valid);
   
   str = "+41791234567"; // already international
-  Utils::makeNumberInternational(&settings, &str, &valid);
+  Utils::makeNumberInternational(&settingsBase, &str, &valid);
   assert(str.compare("+41791234567") == 0);
   assert(valid);
   
   str = "0041791234567"; // already international
-  Utils::makeNumberInternational(&settings, &str, &valid);
+  Utils::makeNumberInternational(&settingsBase, &str, &valid);
   assert(str.compare("+41791234567") == 0);
   assert(valid);
 
   str = "**600"; // intern, not public number
-  Utils::makeNumberInternational(&settings, &str, &valid);
+  Utils::makeNumberInternational(&settingsBase, &str, &valid);
   assert(str.compare("**600") == 0);
   assert(valid);
+
+#if defined(HAVE_LIBPHONENUMBER)
+  str = "04488811"; // test invalid: too small number
+  Utils::makeNumberInternational(&settingsBase, &str, &valid);
+  assert(str.compare("04488811") == 0);
+  assert(!valid);
+#endif
 }
 
 static void TestCase_parseCallerID()

@@ -160,23 +160,26 @@ void Utils::makeNumberInternational(const struct SettingBase* pSettings, std::st
     return;
   }
 
-  i18n::phonenumbers::PhoneNumberUtil* pPhoneUtil = i18n::phonenumbers::PhoneNumberUtil::GetInstance();
-  i18n::phonenumbers::PhoneNumber n;
-
+  // country code as interger
   std::string tmp = pSettings->countryCode;
   tmp.erase(0, 1); // remove '+'
   int country_code = std::stoi(tmp);
 
+  // get region code from country code
+  i18n::phonenumbers::PhoneNumberUtil* pPhoneUtil = i18n::phonenumbers::PhoneNumberUtil::GetInstance();
   std::string region_code;
   pPhoneUtil->GetRegionCodeForCountryCode(country_code, &region_code);
 
+  i18n::phonenumbers::PhoneNumber n;
   i18n::phonenumbers::PhoneNumberUtil::ErrorType err = pPhoneUtil->Parse(*pNumber, region_code, &n);
   if (err != i18n::phonenumbers::PhoneNumberUtil::ErrorType::NO_PARSING_ERROR) {
     *valid = false;
     return;
   }
-  pPhoneUtil->Format(n, i18n::phonenumbers::PhoneNumberUtil::PhoneNumberFormat::E164, pNumber);
   *valid = pPhoneUtil->IsValidNumber(n);
+  if (*valid) {
+    pPhoneUtil->Format(n, i18n::phonenumbers::PhoneNumberUtil::PhoneNumberFormat::E164, pNumber);
+  }
 #else
   if (Utils::startsWith(*pNumber, "00")) *pNumber = "+" + pNumber->substr(2);
   else if (Utils::startsWith(*pNumber, "0")) *pNumber = pSettings->countryCode + pNumber->substr(1);

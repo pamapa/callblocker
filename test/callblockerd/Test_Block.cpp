@@ -20,6 +20,7 @@
 #include "Test.h"
 
 #include <stdio.h>
+#include <string.h>
 #include <linux/limits.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -56,6 +57,7 @@ static void TestCase_logging_only()
   Block* block = new Block(settings);
 
   SettingBase settingsBase;
+  memset(&settingsBase, 0, sizeof(settingsBase));
   settingsBase.blockMode = LOGGING_ONLY;
   // CH
   settingsBase.countryCode = "+41";
@@ -111,6 +113,7 @@ static void TestCase_whitelists_only()
   Block* block = new Block(settings);
 
   SettingBase settingsBase;
+  memset(&settingsBase, 0, sizeof(settingsBase));
   settingsBase.blockMode = WHITELISTS_ONLY;
   // CH
   settingsBase.countryCode = "+41";
@@ -158,6 +161,7 @@ static void TestCase_whitelists_and_blacklists()
   Block* block = new Block(settings);
 
   SettingBase settingsBase;
+  memset(&settingsBase, 0, sizeof(settingsBase));
   settingsBase.blockMode = WHITELISTS_AND_BLACKLISTS;
   // CH
   settingsBase.countryCode = "+41";
@@ -168,7 +172,7 @@ static void TestCase_whitelists_and_blacklists()
   assert(block->isBlocked(&settingsBase, "+41449999999", &msg) == true);
   assert(msg.compare("Incoming call: number='+41449999999' name='Test single number' blocked blacklist='main'") == 0);
 
-  // test range in blacklist
+  // test number in range in blacklist
   assert(block->isBlocked(&settingsBase, "0448881111", &msg) == true);
   assert(msg.compare("Incoming call: number='+41448881111' name='Test range' blocked blacklist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+41448881111", &msg) == true);
@@ -195,7 +199,7 @@ static void TestCase_whitelists_and_blacklists()
   assert(msg.compare("Incoming call: number='anonymous' blocked") == 0);
 
 #if defined(HAVE_LIBPHONENUMBER)
-  // test invalid
+  // test invalid: too small number
   settingsBase.blockInvalidCID = false;
   assert(block->isBlocked(&settingsBase, "+410000000", &msg) == false);
   assert(msg.compare("Incoming call: number='+410000000' invalid") == 0);
@@ -213,6 +217,7 @@ static void TestCase_blacklists_only()
   Block* block = new Block(settings);
 
   SettingBase settingsBase;
+  memset(&settingsBase, 0, sizeof(settingsBase));
   settingsBase.blockMode = BLACKLISTS_ONLY;
   // CH
   settingsBase.countryCode = "+41";
