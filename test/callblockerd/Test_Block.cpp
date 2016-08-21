@@ -57,7 +57,8 @@ static void TestCase_logging_only()
   Block* block = new Block(settings);
 
   SettingBase settingsBase;
-  memset(&settingsBase, 0, sizeof(settingsBase));
+  settingsBase.blockAnonymousCID = false;
+  settingsBase.blockInvalidCID = false;
   settingsBase.blockMode = LOGGING_ONLY;
   // CH
   settingsBase.countryCode = "+41";
@@ -113,7 +114,8 @@ static void TestCase_whitelists_only()
   Block* block = new Block(settings);
 
   SettingBase settingsBase;
-  memset(&settingsBase, 0, sizeof(settingsBase));
+  settingsBase.blockAnonymousCID = false;
+  settingsBase.blockInvalidCID = false;
   settingsBase.blockMode = WHITELISTS_ONLY;
   // CH
   settingsBase.countryCode = "+41";
@@ -161,7 +163,8 @@ static void TestCase_whitelists_and_blacklists()
   Block* block = new Block(settings);
 
   SettingBase settingsBase;
-  memset(&settingsBase, 0, sizeof(settingsBase));
+  settingsBase.blockAnonymousCID = false;
+  settingsBase.blockInvalidCID = false;
   settingsBase.blockMode = WHITELISTS_AND_BLACKLISTS;
   // CH
   settingsBase.countryCode = "+41";
@@ -217,7 +220,8 @@ static void TestCase_blacklists_only()
   Block* block = new Block(settings);
 
   SettingBase settingsBase;
-  memset(&settingsBase, 0, sizeof(settingsBase));
+  settingsBase.blockAnonymousCID = false;
+  settingsBase.blockInvalidCID = false;
   settingsBase.blockMode = BLACKLISTS_ONLY;
   // CH
   settingsBase.countryCode = "+41";

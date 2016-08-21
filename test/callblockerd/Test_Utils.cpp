@@ -58,7 +58,8 @@ static void TestCase_string()
 static void TestCase_makeNumberInternational()
 {
   SettingBase settingsBase;
-  memset(&settingsBase, 0, sizeof(settingsBase));
+  settingsBase.blockAnonymousCID = false;
+  settingsBase.blockInvalidCID = false;
   // CH
   settingsBase.countryCode = "+41";
   std::string str = "0441234567"; // local
