@@ -1,0 +1,15 @@
+{
+    "name": "main",
+    "entries": [
+        {
+            "name": "Test single number",
+            "number": "+41449999999",
+            "date_modified": "2016-8-21 14:54:2 +0000"
+        },
+        {
+            "name": "Test range",
+            "number": "+4144888",
+            "date_modified": "2016-8-21 14:54:2 +0000"
+        }
+    ]
+}

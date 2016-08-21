@@ -18,7 +18,7 @@
 
 bin_PROGRAMS = unit_tests
 unit_tests_SOURCES = \
-  Main.cpp Test_Utils.cpp
+  Main.cpp Test_Utils.cpp Test_Block.cpp
     
 unit_tests_LDADD = \
   ../../src/libcallblockerd.a

@@ -31,6 +31,7 @@ int main(int argc, char *argv[]) {
 #endif
 
   Test_Utils_Run();
+  Test_Block_Run();
 
   return 0; // success (asserts will abort before)
 }

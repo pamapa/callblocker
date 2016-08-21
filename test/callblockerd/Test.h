@@ -22,7 +22,7 @@
 
 
 extern void Test_Utils_Run();
-
+extern void Test_Block_Run();
 
 #endif
 

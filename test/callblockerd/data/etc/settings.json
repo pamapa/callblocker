@@ -1,0 +1,9 @@
+{
+    "pjsip_log_level": 0,
+    "log_level": "warn",
+    "phones": [
+    ],
+    "online_credentials": [
+    ], 
+}
+
