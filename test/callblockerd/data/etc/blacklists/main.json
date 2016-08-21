@@ -10,6 +10,11 @@
             "name": "Test range",
             "number": "+4144888",
             "date_modified": "2016-8-21 14:54:2 +0000"
-        }
+        },
+        {
+            "name": "Mr. Whitelist 2 in blacklist too",
+            "number": "+41441119999",
+            "date_modified": "2015-7-6 14:54:2 +0000"
+        },
     ]
 }

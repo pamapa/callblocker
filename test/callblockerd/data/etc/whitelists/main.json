@@ -2,75 +2,14 @@
     "name": "main",
     "entries": [
         {
-            "name": "Call Center of Company Y",
-            "number": "+491234567890123",
+            "name": "Mr. Whitelist 1",
+            "number": "+41441112233",
             "date_modified": "2015-7-6 14:54:2 +0000"
         },
         {
-            "name": "Call Center of Company Y",
-            "number": "+491234567890123"
+            "name": "Mr. Whitelist 2 in blacklist too",
+            "number": "+41441119999",
+            "date_modified": "2015-7-6 14:54:2 +0000"
         },
-        {
-            "name": "Call Center of Company Y",
-            "number": "+491234567890123"
-        },
-        {
-            "name": "Call Center of Company Y",
-            "number": "+491234567890123"
-        },
-        {
-            "name": "Call Center of Company Y",
-            "number": "+491234567890123"
-        },
-        {
-            "name": "Call Center of Company Y",
-            "number": "+491234567890123"
-        },
-        {
-            "name": "Call Center of Company Y",
-            "number": "+491234567890123"
-        },
-        {
-            "name": "Call Center of Company Y",
-            "number": "+491234567890123"
-        },
-        {
-            "name": "Call Center of Company Y1",
-            "number": "+491234567890123",
-            "timestamp": 1428433912479,
-            "date_modified": "2015-4-19 12:45:7 +0000"
-        },
-        {
-            "name": "Telemarketing Company X",
-            "number": "+123567890123"
-        },
-        {
-            "name": "Telemarketing Company X",
-            "number": "+123567890123"
-        },
-        {
-            "name": "Telemarketing Company X",
-            "number": "+123567890123"
-        },
-        {
-            "name": "Telemarketing Company X",
-            "number": "+123567890123"
-        },
-        {
-            "name": "Telemarketing Company X",
-            "number": "+123567890123"
-        },
-        {
-            "name": "Telemarketing Company X",
-            "number": "+123567890123"
-        },
-        {
-            "name": "Telemarketing Company X",
-            "number": "+123567890123"
-        },
-        {
-            "name": "Telemarketing Company X",
-            "number": "+123567890123"
-        }
     ]
 }
