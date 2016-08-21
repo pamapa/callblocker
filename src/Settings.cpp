@@ -30,9 +30,10 @@
 #include "Utils.h"
 
 
-Settings::Settings() : Notify(SYSCONFDIR "/" PACKAGE_NAME, IN_CLOSE_WRITE) {
+Settings::Settings(const std::string& rPathname) : Notify(rPathname, IN_CLOSE_WRITE) {
   Logger::debug("Settings::Settings()...");
-  m_filename = SYSCONFDIR "/" PACKAGE_NAME "/settings.json";
+  m_basePathname = rPathname;
+  m_filename = rPathname + "/settings.json";
   load();
 }
 
@@ -49,6 +50,10 @@ bool Settings::hasChanged() {
     return true;
   }
   return false;
+}
+
+std::string Settings::getBasePath() {
+  return m_basePathname;
 }
 
 void Settings::clear() {

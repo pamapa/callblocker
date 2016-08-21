@@ -66,15 +66,18 @@ struct SettingOnlineCredential {
 
 class Settings : public Notify {
 private:
-  std::string m_filename;
+  std::string m_basePathname; // default: /etc/callblocker
+  std::string m_filename;     // full filename for settings.json
   std::vector<struct SettingSipAccount> m_sipAccounts;
   std::vector<struct SettingAnalogPhone> m_analogPhones;
   std::vector<struct SettingOnlineCredential> m_onlineCredentials;
 
 public:
-  Settings();
+  Settings(const std::string& rPathname);
   virtual ~Settings();
   virtual bool hasChanged();
+
+  std::string getBasePath();
 
   std::vector<struct SettingSipAccount> getSipAccounts() { return m_sipAccounts; }
   std::vector<struct SettingAnalogPhone> getAnalogPhones() { return m_analogPhones; }

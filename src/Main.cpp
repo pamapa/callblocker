@@ -59,7 +59,7 @@ public:
   Main() {
     Logger::start();
 
-    m_pSettings = new Settings();
+    m_pSettings = new Settings(SYSCONFDIR "/" PACKAGE_NAME);
     m_pBlock = new Block(m_pSettings);
 
     m_pSipPhone = NULL;
