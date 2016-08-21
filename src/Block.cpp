@@ -63,7 +63,7 @@ bool Block::isBlocked(const struct SettingBase* pSettings, const std::string& rN
 }
 
 bool Block::isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg) {
-  bool block = pSettings->blockAnonymousCID;
+  bool block = pSettings->blockMode != LOGGING_ONLY ? pSettings->blockAnonymousCID : false;
 
   // Incoming call number='anonymous' [blocked]
   std::ostringstream oss;
@@ -137,7 +137,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
     }
   }
 
-  if (!block && !validNumber) {
+  if (!block && !validNumber && pSettings->blockMode != LOGGING_ONLY) {
     block = pSettings->blockInvalidCID;
   }
 
