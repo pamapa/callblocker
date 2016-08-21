@@ -63,7 +63,21 @@ bool Block::isBlocked(const struct SettingBase* pSettings, const std::string& rN
 }
 
 bool Block::isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg) {
-  bool block = pSettings->blockMode != LOGGING_ONLY ? pSettings->blockAnonymousCID : false;
+  bool block = false;
+  switch (pSettings->blockMode) {
+    default:
+      Logger::warn("Invalid block mode %d", pSettings->blockMode);
+    case LOGGING_ONLY:
+      block = false;
+      break;
+    case WHITELISTS_ONLY:
+      block = true;
+      break;
+    case WHITELISTS_AND_BLACKLISTS:
+    case BLACKLISTS_ONLY:
+      block = pSettings->blockAnonymousCID;
+      break;
+  }
 
   // Incoming call number='anonymous' [blocked]
   std::ostringstream oss;
@@ -86,7 +100,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
   
   switch (pSettings->blockMode) {
     default:
-      Logger::warn("invalid block mode %d", pSettings->blockMode);
+      Logger::warn("Invalid block mode %d", pSettings->blockMode);
     case LOGGING_ONLY:
       if (isWhiteListed(pSettings, rNumber, &listName, &callerName)) {
         onWhitelist = true;
@@ -97,7 +111,6 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
         break;
       }
       break;
-
     case WHITELISTS_ONLY:
       if (isWhiteListed(pSettings, rNumber, &listName, &callerName)) {
         onWhitelist = true;
@@ -105,7 +118,6 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
       }
       block = true;
       break;
-
     case WHITELISTS_AND_BLACKLISTS:
       if (isWhiteListed(pSettings, rNumber, &listName, &callerName)) {
         onWhitelist = true;
@@ -117,7 +129,6 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
         break;
       }
       break;
-
     case BLACKLISTS_ONLY:
       if (isBlacklisted(pSettings, rNumber, &listName, &callerName, &score)) {
         onBlacklist = true;
