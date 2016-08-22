@@ -17,6 +17,7 @@ The call blocker acts like a normal phone. No additional telephone switchboard (
   - user maintained offline blacklist
   - extern maintained offline blacklists (downloaded from the Internet and stored offline)
   - support of online spam check sites, for spam verification
+- allows to block anonymous and invalid numbers
 - import your addressbook as whitelist or blacklist
 - using whitelists and blacklists as offline lookup for caller name
 - support of online lookup sites, to find out who is calling

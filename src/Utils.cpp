@@ -152,11 +152,11 @@ std::string Utils::escapeSqString(const std::string& rStr) {
   return escaped;
 }
 
-void Utils::makeNumberInternational(const struct SettingBase* pSettings, std::string* pNumber, bool* valid) {
+void Utils::makeNumberInternational(const struct SettingBase* pSettings, std::string* pNumber, bool* pValid) {
 #if defined(HAVE_LIBPHONENUMBER)
   if (Utils::startsWith(*pNumber, "**")) {
     // it is an intern number
-    *valid = true;
+    *pValid = true;
     return;
   }
 
@@ -173,17 +173,32 @@ void Utils::makeNumberInternational(const struct SettingBase* pSettings, std::st
   i18n::phonenumbers::PhoneNumber n;
   i18n::phonenumbers::PhoneNumberUtil::ErrorType err = pPhoneUtil->Parse(*pNumber, region_code, &n);
   if (err != i18n::phonenumbers::PhoneNumberUtil::ErrorType::NO_PARSING_ERROR) {
-    *valid = false;
+    *pValid = false;
     return;
   }
-  *valid = pPhoneUtil->IsValidNumber(n);
-  if (*valid) {
+  *pValid = pPhoneUtil->IsValidNumber(n);
+  if (*pValid) {
     pPhoneUtil->Format(n, i18n::phonenumbers::PhoneNumberUtil::PhoneNumberFormat::E164, pNumber);
   }
 #else
-  if (Utils::startsWith(*pNumber, "00")) *pNumber = "+" + pNumber->substr(2);
-  else if (Utils::startsWith(*pNumber, "0")) *pNumber = pSettings->countryCode + pNumber->substr(1);
-  *valid = true;
+  std::string number;
+  if (Utils::startsWith(*pNumber, "00")) number = "+" + pNumber->substr(2);
+  else if (Utils::startsWith(*pNumber, "0")) number = pSettings->countryCode + pNumber->substr(1);
+  else number = *pNumber;
+
+  // minimal validity check
+  bool valid = true;
+  if (Utils::startsWith(number, "+")) {
+    if (number.length() < (1+8) || (1+15) < number.length()) { // 1+: "+" prefix
+      // E.164: too short or too long
+      valid = false;
+    }
+  } else if (!Utils::startsWith(number, "**")) {
+    valid = false;
+  }
+
+  if (valid) *pNumber = number;
+  *pValid = valid;
 #endif
 }
 
