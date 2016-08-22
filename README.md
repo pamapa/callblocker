@@ -8,6 +8,7 @@ The call blocker acts like a normal phone. No additional telephone switchboard (
 - supports VoIP systems and analog modems
 - automatically blocks unwanted incoming calls
 - logging of all incoming calls, including caller name lookups
+- import your addressbook as whitelist or blacklist
 - different kind of blocking modes
   - logging only
   - number blocking using blacklists only
@@ -17,11 +18,11 @@ The call blocker acts like a normal phone. No additional telephone switchboard (
   - user maintained offline blacklist
   - extern maintained offline blacklists (downloaded from the Internet and stored offline)
   - support of online spam check sites, for spam verification
-- allows to block anonymous and invalid numbers
-- allows to block whole areas/regions
-- import your addressbook as whitelist or blacklist
-- using whitelists and blacklists as offline lookup for caller name
-- support of online lookup sites, to find out who is calling
+  - detect anonymous and invalid numbers
+  - support range of numbers matching whole areas/regions
+- different kind of ways to get caller name of incoming calls
+  - using whitelists and blacklists as offline lookup for caller name
+  - support of online lookup sites, to find out who is calling
 - nice web interface
 
 
