@@ -128,10 +128,18 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
         block = true;
         break;
       }
+      if (!validNumber && pSettings->blockInvalidCID) {
+        block = true;
+        break;
+      }
       break;
     case BLACKLISTS_ONLY:
       if (isBlacklisted(pSettings, rNumber, &listName, &callerName, &score)) {
         onBlacklist = true;
+        block = true;
+        break;
+      }
+      if (!validNumber && pSettings->blockInvalidCID) {
         block = true;
         break;
       }
@@ -146,10 +154,6 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
         (void)Utils::getObject(root, "name", false, "script result", &callerName);
       }
     }
-  }
-
-  if (!block && !validNumber && pSettings->blockMode != LOGGING_ONLY) {
-    block = pSettings->blockInvalidCID;
   }
 
   // Incoming call number='x' name='y' [invalid] [blocked] [whitelist='w'] [blacklist='b'] [score=s]
