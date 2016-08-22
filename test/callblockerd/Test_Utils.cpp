@@ -83,12 +83,15 @@ static void TestCase_makeNumberInternational()
   assert(str.compare("**600") == 0);
   assert(valid);
 
-#if defined(HAVE_LIBPHONENUMBER)
-  str = "04488811"; // test invalid: too small number
+  str = "+4144888"; // test invalid: too short number
   Utils::makeNumberInternational(&settingsBase, &str, &valid);
-  assert(str.compare("04488811") == 0);
+  assert(str.compare("+4144888") == 0);
   assert(!valid);
-#endif
+
+  str = "+493456789012345678"; // test invalid: too long number
+  Utils::makeNumberInternational(&settingsBase, &str, &valid);
+  assert(str.compare("+493456789012345678") == 0);
+  assert(!valid);
 }
 
 static void TestCase_parseCallerID()

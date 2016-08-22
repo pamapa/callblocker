@@ -82,8 +82,8 @@ static void TestCase_logging_only()
   assert(msg.compare("Incoming call: number='+41441112233' name='Mr. Whitelist 1' whitelist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+41441112233", &msg) == false);
   assert(msg.compare("Incoming call: number='+41441112233' name='Mr. Whitelist 1' whitelist='main'") == 0);
-  assert(block->isBlocked(&settingsBase, "+414411133", &msg) == false);
-  assert(msg.compare("Incoming call: number='+414411133' name='Mr. Whitelist 3 too small' invalid whitelist='main'") == 0);
+  assert(block->isBlocked(&settingsBase, "+4144222", &msg) == false);
+  assert(msg.compare("Incoming call: number='+4144222' name='Mr. Whitelist 3 too small' invalid whitelist='main'") == 0);
 
   // test number in whitelist and blacklist
   assert(block->isBlocked(&settingsBase, "+41441119999", &msg) == false);
@@ -97,15 +97,21 @@ static void TestCase_logging_only()
   assert(block->isBlocked(&settingsBase, "anonymous", &msg) == false);
   assert(msg.compare("Incoming call: number='anonymous'") == 0);
 
-#if defined(HAVE_LIBPHONENUMBER)
   // test invalid: too small number
   settingsBase.blockInvalidCID = false;
-  assert(block->isBlocked(&settingsBase, "+410000000", &msg) == false);
-  assert(msg.compare("Incoming call: number='+410000000' invalid") == 0);
+  assert(block->isBlocked(&settingsBase, "+4144333", &msg) == false);
+  assert(msg.compare("Incoming call: number='+4144333' invalid") == 0);
   settingsBase.blockInvalidCID = true;
-  assert(block->isBlocked(&settingsBase, "+410000000", &msg) == false);
-  assert(msg.compare("Incoming call: number='+410000000' invalid") == 0);
-#endif
+  assert(block->isBlocked(&settingsBase, "+4144333", &msg) == false);
+  assert(msg.compare("Incoming call: number='+4144333' invalid") == 0);
+
+  // test invalid: too long number
+  settingsBase.blockInvalidCID = false;
+  assert(block->isBlocked(&settingsBase, "+493456789012345678", &msg) == false);
+  assert(msg.compare("Incoming call: number='+493456789012345678' invalid") == 0);
+  settingsBase.blockInvalidCID = true;
+  assert(block->isBlocked(&settingsBase, "+493456789012345678", &msg) == false);
+  assert(msg.compare("Incoming call: number='+493456789012345678' invalid") == 0);
 }
 
 static void TestCase_whitelists_only()
@@ -133,8 +139,8 @@ static void TestCase_whitelists_only()
   assert(msg.compare("Incoming call: number='+41441112233' name='Mr. Whitelist 1' whitelist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+41441112233", &msg) == false);
   assert(msg.compare("Incoming call: number='+41441112233' name='Mr. Whitelist 1' whitelist='main'") == 0);
-  assert(block->isBlocked(&settingsBase, "+414411133", &msg) == false);
-  assert(msg.compare("Incoming call: number='+414411133' name='Mr. Whitelist 3 too small' invalid whitelist='main'") == 0);
+  assert(block->isBlocked(&settingsBase, "+4144222", &msg) == false);
+  assert(msg.compare("Incoming call: number='+4144222' name='Mr. Whitelist 3 too small' invalid whitelist='main'") == 0);
 
   // test number in whitelist and blacklist
   assert(block->isBlocked(&settingsBase, "+41441119999", &msg) == false);
@@ -148,15 +154,21 @@ static void TestCase_whitelists_only()
   assert(block->isBlocked(&settingsBase, "anonymous", &msg) == true);
   assert(msg.compare("Incoming call: number='anonymous' blocked") == 0);
 
-#if defined(HAVE_LIBPHONENUMBER)
   // test invalid: too small number
   settingsBase.blockInvalidCID = false;
-  assert(block->isBlocked(&settingsBase, "+410000000", &msg) == true);
-  assert(msg.compare("Incoming call: number='+410000000' blocked invalid") == 0);
+  assert(block->isBlocked(&settingsBase, "+4144333", &msg) == true);
+  assert(msg.compare("Incoming call: number='+4144333' blocked invalid") == 0);
   settingsBase.blockInvalidCID = true;
-  assert(block->isBlocked(&settingsBase, "+410000000", &msg) == true);
-  assert(msg.compare("Incoming call: number='+410000000' blocked invalid") == 0);
-#endif
+  assert(block->isBlocked(&settingsBase, "+4144333", &msg) == true);
+  assert(msg.compare("Incoming call: number='+4144333' blocked invalid") == 0);
+
+  // test invalid: too long number
+  settingsBase.blockInvalidCID = false;
+  assert(block->isBlocked(&settingsBase, "+493456789012345678", &msg) == true);
+  assert(msg.compare("Incoming call: number='+493456789012345678' blocked invalid") == 0);
+  settingsBase.blockInvalidCID = true;
+  assert(block->isBlocked(&settingsBase, "+493456789012345678", &msg) == true);
+  assert(msg.compare("Incoming call: number='+493456789012345678' blocked invalid") == 0);
 }
 
 static void TestCase_whitelists_and_blacklists()
@@ -192,8 +204,8 @@ static void TestCase_whitelists_and_blacklists()
   assert(msg.compare("Incoming call: number='+41441112233' name='Mr. Whitelist 1' whitelist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+41441112233", &msg) == false);
   assert(msg.compare("Incoming call: number='+41441112233' name='Mr. Whitelist 1' whitelist='main'") == 0);
-  assert(block->isBlocked(&settingsBase, "+414411133", &msg) == false);
-  assert(msg.compare("Incoming call: number='+414411133' name='Mr. Whitelist 3 too small' invalid whitelist='main'") == 0);
+  assert(block->isBlocked(&settingsBase, "+4144222", &msg) == false);
+  assert(msg.compare("Incoming call: number='+4144222' name='Mr. Whitelist 3 too small' invalid whitelist='main'") == 0);
 
   // test number in whitelist and blacklist
   assert(block->isBlocked(&settingsBase, "+41441119999", &msg) == false);
@@ -207,15 +219,21 @@ static void TestCase_whitelists_and_blacklists()
   assert(block->isBlocked(&settingsBase, "anonymous", &msg) == true);
   assert(msg.compare("Incoming call: number='anonymous' blocked") == 0);
 
-#if defined(HAVE_LIBPHONENUMBER)
   // test invalid: too small number
   settingsBase.blockInvalidCID = false;
-  assert(block->isBlocked(&settingsBase, "+410000000", &msg) == false);
-  assert(msg.compare("Incoming call: number='+410000000' invalid") == 0);
+  assert(block->isBlocked(&settingsBase, "+4144333", &msg) == false);
+  assert(msg.compare("Incoming call: number='+4144333' invalid") == 0);
   settingsBase.blockInvalidCID = true;
-  assert(block->isBlocked(&settingsBase, "+410000000", &msg) == true);
-  assert(msg.compare("Incoming call: number='+410000000' blocked invalid") == 0);
-#endif
+  assert(block->isBlocked(&settingsBase, "+4144333", &msg) == true);
+  assert(msg.compare("Incoming call: number='+4144333' blocked invalid") == 0);
+
+  // test invalid: too long number
+  settingsBase.blockInvalidCID = false;
+  assert(block->isBlocked(&settingsBase, "+493456789012345678", &msg) == false);
+  assert(msg.compare("Incoming call: number='+493456789012345678' invalid") == 0);
+  settingsBase.blockInvalidCID = true;
+  assert(block->isBlocked(&settingsBase, "+493456789012345678", &msg) == true);
+  assert(msg.compare("Incoming call: number='+493456789012345678' blocked invalid") == 0);
 }
 
 static void TestCase_blacklists_only()
@@ -251,8 +269,8 @@ static void TestCase_blacklists_only()
   assert(msg.compare("Incoming call: number='+41441112233'") == 0);
   assert(block->isBlocked(&settingsBase, "+41441112233", &msg) == false);
   assert(msg.compare("Incoming call: number='+41441112233'") == 0);
-  assert(block->isBlocked(&settingsBase, "+414411133", &msg) == false);
-  assert(msg.compare("Incoming call: number='+414411133' invalid") == 0);
+  assert(block->isBlocked(&settingsBase, "+4144222", &msg) == false);
+  assert(msg.compare("Incoming call: number='+4144222' invalid") == 0);
 
   // test number in whitelist and blacklist
   assert(block->isBlocked(&settingsBase, "+41441119999", &msg) == true);
@@ -266,15 +284,21 @@ static void TestCase_blacklists_only()
   assert(block->isBlocked(&settingsBase, "anonymous", &msg) == true);
   assert(msg.compare("Incoming call: number='anonymous' blocked") == 0);
 
-#if defined(HAVE_LIBPHONENUMBER)
-  // test invalid: too small number
+  // test invalid: too short number
   settingsBase.blockInvalidCID = false;
-  assert(block->isBlocked(&settingsBase, "+410000000", &msg) == false);
-  assert(msg.compare("Incoming call: number='+410000000' invalid") == 0);
+  assert(block->isBlocked(&settingsBase, "+4144333", &msg) == false);
+  assert(msg.compare("Incoming call: number='+4144333' invalid") == 0);
   settingsBase.blockInvalidCID = true;
-  assert(block->isBlocked(&settingsBase, "+410000000", &msg) == true);
-  assert(msg.compare("Incoming call: number='+410000000' blocked invalid") == 0);
-#endif
+  assert(block->isBlocked(&settingsBase, "+4144333", &msg) == true);
+  assert(msg.compare("Incoming call: number='+4144333' blocked invalid") == 0);
+
+  // test invalid: too long number
+  settingsBase.blockInvalidCID = false;
+  assert(block->isBlocked(&settingsBase, "+493456789012345678", &msg) == false);
+  assert(msg.compare("Incoming call: number='+493456789012345678' invalid") == 0);
+  settingsBase.blockInvalidCID = true;
+  assert(block->isBlocked(&settingsBase, "+493456789012345678", &msg) == true);
+  assert(msg.compare("Incoming call: number='+493456789012345678' blocked invalid") == 0);
 }
 
 void Test_Block_Run()
