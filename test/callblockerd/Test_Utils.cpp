@@ -93,17 +93,15 @@ static void TestCase_makeNumberInternational()
   assert(str.compare("+493456789012345678") == 0);
   assert(!valid);
 
-#if defined(HAVE_LIBPHONENUMBER)
-  str = "+99986203236"; // test invalid: wrong sequence of numbers
+  str = "+99986203236"; // test invalid: unassigned country code
   Utils::makeNumberInternational(&settingsBase, &str, &valid);
   assert(str.compare("+99986203236") == 0);
   assert(!valid);
 
-  str = "+219225595"; // test invalid: wrong sequence of numbers
+  str = "+219225595"; // test invalid: unassigned country code
   Utils::makeNumberInternational(&settingsBase, &str, &valid);
   assert(str.compare("+219225595") == 0);
   assert(!valid);
-#endif
 }
 
 static void TestCase_parseCallerID()

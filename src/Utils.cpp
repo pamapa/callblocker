@@ -193,6 +193,31 @@ void Utils::makeNumberInternational(const struct SettingBase* pSettings, std::st
       // E.164: too short or too long
       valid = false;
     }
+
+    // unassigned (https://en.wikipedia.org/wiki/List_of_country_calling_codes)
+    static const char * unassignedCountryCodes[] {
+      // Zone 2    
+      "+210", "+214", "+215", "+217", "+219",
+      "+259",
+      "+28",
+      "+292", "+293", "+294", "+296",
+      // Zones 3-4
+      "+384",
+      "+422", "+424", "+425", "+426", "+427", "+428", "+429",
+      // Zone 6
+      "+693", "+694", "+695", "+696", "+697", "+698", "+699",
+      // Zone 8
+      "+801", "+802", "+803", "+804", "+805", "+806", "+807", "+809",
+      "+851", "+854", "+857", "+858", "+859",
+      "+871", "+872", "+873", "+874", "+884", "+885", "+887", "+889", "+89x",
+      // Zone 9
+      "+969", "+978", "+990", "+997", "+999"
+    };
+    for (size_t i = 0; valid && i < sizeof(unassignedCountryCodes)/sizeof(unassignedCountryCodes[0]); i++) {
+      if (Utils::startsWith(number, unassignedCountryCodes[i])) {
+        valid = false;
+      }
+    }
   } else if (!Utils::startsWith(number, "**")) {
     valid = false;
   }
