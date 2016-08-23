@@ -195,7 +195,7 @@ void Utils::makeNumberInternational(const struct SettingBase* pSettings, std::st
     }
 
     // unassigned (https://en.wikipedia.org/wiki/List_of_country_calling_codes)
-    static const char * unassignedCountryCodes[] {
+    static const char* unassignedCountryCodes[] {
       // Zone 2    
       "+210", "+214", "+215", "+217", "+219",
       "+259",
@@ -216,6 +216,7 @@ void Utils::makeNumberInternational(const struct SettingBase* pSettings, std::st
     for (size_t i = 0; valid && i < sizeof(unassignedCountryCodes)/sizeof(unassignedCountryCodes[0]); i++) {
       if (Utils::startsWith(number, unassignedCountryCodes[i])) {
         valid = false;
+        break;
       }
     }
   } else if (!Utils::startsWith(number, "**")) {

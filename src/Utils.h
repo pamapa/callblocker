@@ -45,7 +45,7 @@ public:
   static std::string getBaseFilename(const std::string& rFilename);
   static std::string escapeSqString(const std::string& rStr);
 
-  // returns phone number in E164 format
+  // returns phone number in E.164 format
   static void makeNumberInternational(const struct SettingBase* pSettings, std::string* pNumber, bool* pValid);
   static void parseCallerID(std::string& rData, std::vector<std::pair<std::string, std::string> >* pResult);
 };
