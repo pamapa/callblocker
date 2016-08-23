@@ -159,7 +159,7 @@ def cleanup_entries(arr):
     # filter
     if len(x) < 4:
       # too dangerous
-      debug("Skip too small number: " + str(r))
+      debug("Skip too short number: " + str(r))
       continue
     if not x.startswith("+"):
       # not in international format
