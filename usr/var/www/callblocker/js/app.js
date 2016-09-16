@@ -73,8 +73,8 @@ require(["dijit/ConfirmDialog",
       url: api_base.concat("/callerlog")
     });
     var structure = [
-      { name: "Date",      field: "DATE",      width:"170px", formatter: formatDate},
-      { name: "Number",    field: "NUMBER",    width:"120px"},
+      { name: "Date",      field: "DATE",      width:"180px", formatter: formatDate},
+      { name: "Number",    field: "NUMBER",    width:"110px"},
       { name: "Name",      field: "NAME",      width:"600px"},
       { name: "What",      field: "WHAT",      width:"50px", hidden:true},
       { name: "Reason",    field: "REASON",    width:"300px"}
@@ -139,7 +139,7 @@ require(["dijit/ConfirmDialog",
       url: url
     });
     var structure = [
-      { name: "Date",     field: "DATE",      width:"170px", formatter: formatDate},
+      { name: "Date",     field: "DATE",      width:"180px", formatter: formatDate},
       { name: "PrioId",   field: "PRIO_ID",   width:"50px", hidden:true},
       { name: "Priority", field: "PRIORITY",  width:"70px"},
       { name: "Message",  field: "MESSAGE",   width:"100%"}
