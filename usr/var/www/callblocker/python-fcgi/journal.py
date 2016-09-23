@@ -129,19 +129,19 @@ def handle_callerlog(environ, start_response, params):
           tmp["REASON"] = "Invalid Caller ID"
         except (IndexError, AttributeError): pass
         try:
-          add = "Whitelisted in '" + obj.group(8).strip() + "'" # whitelist
+          add = "whitelisted in '" + obj.group(8).strip() + "'" # whitelist
           if len(tmp["REASON"]) == 0: tmp["REASON"] += add
-          else: tmp["REASON"] += " / " + add
+          else: tmp["REASON"] += ", " + add
         except (IndexError, AttributeError): pass
         try:
-          add = "Blacklisted in '" + obj.group(10).strip() + "'" # blacklist
+          add = "blacklisted in '" + obj.group(10).strip() + "'" # blacklist
           if len(tmp["REASON"]) == 0: tmp["REASON"] += add
-          else: tmp["REASON"] += " / " + add
+          else: tmp["REASON"] += ", " + add
         except (IndexError, AttributeError): pass
         try:
-          add = "Score of '" + obj.group(12).strip() + "'" # score
+          add = "with score '" + obj.group(12).strip() + "'" # score
           if len(tmp["REASON"]) == 0: tmp["REASON"] += add
-          else: tmp["REASON"] += " / " + add
+          else: tmp["REASON"] += " " + add
         except (IndexError, AttributeError): pass
 
         items.append(tmp)
