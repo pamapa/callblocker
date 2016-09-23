@@ -224,13 +224,13 @@ require(["dijit/ConfirmDialog",
       ]
     });
     function selectBlockMode(mode) {
-      console.log("selectBlockMode: ", mode);
+      //console.log("selectBlockMode: ", mode);
       var isLoggingOnly = (mode == "logging_only" ? true : false);
       blockAnonymousCIDCheckBox.set("disabled", isLoggingOnly);
       blockInvalidCIDCheckBox.set("disabled", isLoggingOnly);
     }
     dojo.connect(blockModeSelect, "onChange", function(evt) {
-      console.log("blockModeSelect(onChange): ", evt);
+      //console.log("blockModeSelect(onChange): ", evt);
       selectBlockMode(evt);
     });
     var blockAnonymousCIDCheckBox = new dijit.form.CheckBox({
