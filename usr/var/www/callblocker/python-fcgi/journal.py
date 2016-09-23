@@ -126,7 +126,7 @@ def handle_callerlog(environ, start_response, params):
         tmp["REASON"] = ""
         try:
           obj.group(6).strip() # invalid
-          tmp["REASON"] = "Invalid Caller ID"
+          tmp["REASON"] = "invalid Caller ID"
         except (IndexError, AttributeError): pass
         try:
           add = "whitelisted in '" + obj.group(8).strip() + "'" # whitelist
