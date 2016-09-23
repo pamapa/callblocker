@@ -73,11 +73,11 @@ require(["dijit/ConfirmDialog",
       url: api_base.concat("/callerlog")
     });
     var structure = [
-      { name: "Date",      field: "DATE",      width:"180px", formatter: formatDate},
-      { name: "Number",    field: "NUMBER",    width:"110px"},
-      { name: "Name",      field: "NAME",      width:"600px"},
-      { name: "What",      field: "WHAT",      width:"50px", hidden:true},
-      { name: "Reason",    field: "REASON",    width:"300px"}
+      { name: "Date",   field: "DATE",   width: "180px", formatter: formatDate },
+      { name: "Number", field: "NUMBER", width: "110px"                        },
+      { name: "Name",   field: "NAME",   width: "600px"                        },
+      { name: "What",   field: "WHAT",   width: "50px",  hidden: true          },
+      { name: "Reason", field: "REASON", width: "300px"                        }
     ];
 
     var menu = new dijit.Menu();
@@ -139,10 +139,10 @@ require(["dijit/ConfirmDialog",
       url: url
     });
     var structure = [
-      { name: "Date",     field: "DATE",      width:"180px", formatter: formatDate},
-      { name: "PrioId",   field: "PRIO_ID",   width:"50px", hidden:true},
-      { name: "Priority", field: "PRIORITY",  width:"70px"},
-      { name: "Message",  field: "MESSAGE",   width:"100%"}
+      { name: "Date",     field: "DATE",     width: "180px", formatter: formatDate },
+      { name: "PrioId",   field: "PRIO_ID",  width: "50px",  hidden: true          },
+      { name: "Priority", field: "PRIORITY", width: "70px"                         },
+      { name: "Message",  field: "MESSAGE",  width: "100%"                         }
     ];
     var grid = new dojox.grid.EnhancedGrid({
       //id: "myGridId",
@@ -264,30 +264,30 @@ require(["dijit/ConfirmDialog",
 
     var phoneStore = createListStore(api_base.concat("/phones"));
     var structure = [
-      { name:"Enabled",             field:"enabled",             width:"40px",
+      { name: "Enabled",             field: "enabled",             width: "40px",
         type:dojox.grid.cells._Widget, formatter:function(on){
           return new dijit.form.CheckBox({checked: on, readOnly: true});
         }
       },
-      { name:"Name",                field:"name",                width:"100px"},
-      { name:"Country code",        field:"country_code",        width:"40px"},
-      { name:"Block mode",          field:"block_mode",          width:"120px"},
-      { name:"Block anonymous CID", field:"block_anonymous_cid", width:"60px",
+      { name: "Name",                field: "name",                width: "100px" },
+      { name: "Country code",        field: "country_code",        width: "40px"  },
+      { name: "Block mode",          field: "block_mode",          width: "120px" },
+      { name: "Block anonymous CID", field: "block_anonymous_cid", width: "60px",
         type:dojox.grid.cells._Widget, formatter:function(on){
           return new dijit.form.CheckBox({checked: on, readOnly: true});
         }
       },
-      { name:"Block invalid CID", field:"block_invalid_cid", width:"60px",
+      { name: "Block invalid CID",   field: "block_invalid_cid",   width: "60px",
         type:dojox.grid.cells._Widget, formatter:function(on){
           return new dijit.form.CheckBox({checked: on, readOnly: true});
         }
       },
-      { name:"Online check",        field:"online_check",        width:"100px"},
-      { name:"Online lookup",       field:"online_lookup",       width:"100px"},
-      { name:"Device",              field:"device",              width:"100px"},
-      { name:"From domain",         field:"from_domain",         width:"160px"},
-      { name:"From username",       field:"from_username",       width:"160px"},
-      { name:"From password",       field:"from_password",       width:"160px",
+      { name: "Online check",        field: "online_check",        width: "100px" },
+      { name: "Online lookup",       field: "online_lookup",       width: "100px" },
+      { name: "Device",              field: "device",              width: "100px" },
+      { name: "From domain",         field: "from_domain",         width: "160px" },
+      { name: "From username",       field: "from_username",       width: "160px" },
+      { name: "From password",       field: "from_password",       width: "160px",
         type:dojox.grid.cells._Widget, formatter:function(str){
           return new dijit.form.TextBox({value: str, type: "password", readOnly: true});
         }
@@ -477,9 +477,9 @@ require(["dijit/ConfirmDialog",
 
     var listStore = createListStore(api_base.concat("/online_credentials"));
     var structure = [
-      { name: "Name",      field: "name",     width:"150px"},
-      { name: "Username",  field: "username", width:"120px"},
-      { name: "Password",  field: "password", width:"200px",
+      { name: "Name",     field: "name",     width: "150px" },
+      { name: "Username", field: "username", width: "120px" },
+      { name: "Password", field: "password", width: "200px",
         type:dojox.grid.cells._Widget, formatter:function(str){
           return new dijit.form.TextBox({value: str, type: "password", readOnly: true});
         }
@@ -571,9 +571,9 @@ require(["dijit/ConfirmDialog",
     menu.addChild(editMenuItem);
 
     var structure = [
-      { name: "Date (modified)", field: "date_modified", width:"170px", formatter: formatDate},
-      { name: "Number",          field: "number",        width:"120px"},
-      { name: "Name",            field: "name",          width:"600px"}
+      { name: "Date (modified)", field: "date_modified", width: "180px", formatter: formatDate },
+      { name: "Number",          field: "number",        width: "110px"                        },
+      { name: "Name",            field: "name",          width: "600px"                        }
     ];
     var grid = new dojox.grid.EnhancedGrid({
       //store: added later (see dojo.connect(listSelect...))
