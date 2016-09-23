@@ -106,7 +106,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
         onWhitelist = true;
         break;
       }
-      if (isBlacklisted(pSettings, rNumber, &listName, &callerName, &score)) {
+      if (isBlacklisted(pSettings, rNumber, validNumber, &listName, &callerName, &score)) {
         onBlacklist = true;
         break;
       }
@@ -123,7 +123,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
         onWhitelist = true;
         break;
       }
-      if (isBlacklisted(pSettings, rNumber, &listName, &callerName, &score)) {
+      if (isBlacklisted(pSettings, rNumber, validNumber, &listName, &callerName, &score)) {
         onBlacklist = true;
         block = true;
         break;
@@ -134,7 +134,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
       }
       break;
     case BLACKLISTS_ONLY:
-      if (isBlacklisted(pSettings, rNumber, &listName, &callerName, &score)) {
+      if (isBlacklisted(pSettings, rNumber, validNumber, &listName, &callerName, &score)) {
         onBlacklist = true;
         block = true;
         break;
@@ -150,7 +150,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
     // online lookup caller name
     if (pSettings->onlineLookup.length() != 0) {
       struct json_object* root;
-      if (checkOnline("onlinelookup_", pSettings->onlineLookup, rNumber, &root)) {
+      if (checkOnline("onlinelookup_", pSettings->onlineLookup, rNumber, validNumber, &root)) {
         (void)Utils::getObject(root, "name", false, "script result", &callerName);
       }
     }
@@ -187,7 +187,7 @@ bool Block::isWhiteListed(const struct SettingBase* pSettings, const std::string
   return m_pWhitelists->isListed(rNumber, pListName, pCallerName);
 }
 
-bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber,
+bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
                           std::string* pListName, std::string* pCallerName, std::string* pScore) {
   if (m_pBlacklists->isListed(rNumber, pListName, pCallerName)) {
     return true;
@@ -196,7 +196,7 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
   // online check if spam
   if (pSettings->onlineCheck.length() != 0) {
     struct json_object* root;
-    if (checkOnline("onlinecheck_", pSettings->onlineCheck, rNumber, &root)) {
+    if (checkOnline("onlinecheck_", pSettings->onlineCheck, rNumber, validNumber, &root)) {
       bool spam;
       if (!Utils::getObject(root, "spam", true, "script result", &spam)) {
         return false;
@@ -217,9 +217,14 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
   return false;
 }
 
-bool Block::checkOnline(std::string prefix, std::string scriptBaseName, const std::string& rNumber, struct json_object** root) {
+bool Block::checkOnline(std::string prefix, std::string scriptBaseName, const std::string& rNumber, const bool validNumber,
+                        struct json_object** root) {
   if (Utils::startsWith(rNumber, "**")) {
     // it is an intern number, thus makes no sense to ask the world
+    return false;
+  }
+  if (!validNumber) {
+    // number is invalid, thus makes no sense to ask the world
     return false;
   }
 
