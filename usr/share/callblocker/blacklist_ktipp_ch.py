@@ -27,9 +27,6 @@ from collections import OrderedDict
 from blacklist_base import BlacklistBase
 
 
-NAME_MAX_LENGTH = 200
-
-
 class BlacklistKTippCH(BlacklistBase):
 
     def _extract_number(self, data):
@@ -86,9 +83,8 @@ class BlacklistKTippCH(BlacklistBase):
         s = s.replace("&amp", "&")
         s = s.replace("  ", " ")
         s = s.strip()
-        if s.startswith("Firma: "):
-            s = s[7:]
-        return s if len(s)<= NAME_MAX_LENGTH else s[0:NAME_MAX_LENGTH-3] + "..."
+        if s.startswith("Firma: "): s = s[7:]
+        return self.minimize_name(s)
 
     def _fetch_page(self, page_nr):
         print("fetch_page: " + str(page_nr))

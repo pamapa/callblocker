@@ -25,6 +25,9 @@ import urllib2
 import json
 
 
+NAME_MAX_LENGTH = 200
+
+
 class BlacklistBase(object):
 
     def __init__(self):
@@ -42,6 +45,11 @@ class BlacklistBase(object):
         self.log.debug("http_get: '%s'" % url)
         data = urllib2.urlopen(url, timeout=5)
         return data.read()
+
+    def minimize_name(self, name):
+        if len(name) <= NAME_MAX_LENGTH:
+            return name
+        return name[0:NAME_MAX_LENGTH - 3] + "..."
 
     def preserve_dates(self, result, old_result):
         for i in range(0, len(result)):

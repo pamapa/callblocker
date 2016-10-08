@@ -19,17 +19,12 @@
 #
 
 from __future__ import print_function
-import os, sys, argparse, re
+import os, re
 from BeautifulSoup import BeautifulSoup
-import urllib2
 from collections import OrderedDict
 from datetime import datetime
-import json
 
 from blacklist_base import BlacklistBase
-
-
-NAME_MAX_LENGTH = 200
 
 
 class BlacklistKToastedSpamCOM(BlacklistBase):
@@ -55,7 +50,7 @@ class BlacklistKToastedSpamCOM(BlacklistBase):
         if s.startswith("- "): s = s[2:]
         s = s.replace("  ", " ")
         s = s.strip()
-        return s if len(s)<= NAME_MAX_LENGTH else s[0:NAME_MAX_LENGTH-3]+"..."
+        return self.minimize_name(s)
 
     def _parse_page(self, content):
         ret = []
