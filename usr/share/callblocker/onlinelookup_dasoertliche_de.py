@@ -59,7 +59,7 @@ def lookup_number(number):
     e = content.find("\n", s)
     if s != -1:
       name = content[s+3:e].strip()
-      callerName = name[1:-1]
+      callerName = name[1:-1].decode("utf-8")
   return callerName
 
 #
