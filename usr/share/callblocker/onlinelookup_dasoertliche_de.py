@@ -19,75 +19,37 @@
 #
 
 from __future__ import print_function
-import os, sys, argparse
-import urllib, urllib2
-import json
+import urllib
+
+from online_base import OnlineBase
 
 
-g_debug = False
+class OnlineLookupDasOertlicheDE(OnlineBase):
+    def supported_country_codes(self):
+        return ["+49"]
 
+    def handle_number(self, args, number):
+        url = "http://www.dasoertliche.de/?form_name=search_inv&"+urllib.urlencode({"ph":number})
+        content = self.http_get(url)
+        #self.log.debug(content)
 
-def error(*objs):
-  print("ERROR: ", *objs, file=sys.stderr)
-  sys.exit(-1)
+        caller_name = unicode("")
+        # na: "Caller name"
+        s = content.find("na:")
+        if s != -1:
+            e = content.find("\n", s)
+            if s != -1:
+                name = content[s+3:e].strip()
+                caller_name = name[1:-1].decode("utf-8")
 
-def debug(*objs):
-  if g_debug: print("DEBUG: ", *objs, file=sys.stdout)
-  return
+        return self.onlinelookup_2_result(caller_name)
 
-def fetch_url(url):
-  debug("fetch_url: '" + str(url)+"'")
-  data = urllib2.urlopen(url, timeout = 5)
-  return data.read()
-
-def extract_callerName(name):
-  matchObj = re.match(r"<a.*>(.*)</a>", name)
-  if matchObj: name = matchObj.group(1)
-  matchObj = re.match(r"(.*)<span.*>(.*)</span>", name)
-  if matchObj: name = matchObj.group(1) + matchObj.group(2)
-  return name
-
-def lookup_number(number):
-  url = "http://www.dasoertliche.de/?form_name=search_inv&"+urllib.urlencode({"ph":number})
-  content = fetch_url(url)
-  #debug(content)
-
-  callerName = ""
-  # na: "Caller name"
-  s = content.find("na:")
-  if s != -1:
-    e = content.find("\n", s)
-    if s != -1:
-      name = content[s+3:e].strip()
-      callerName = name[1:-1].decode("utf-8")
-  return callerName
 
 #
 # main
 #
-def main(argv):
-  global g_debug
-  parser = argparse.ArgumentParser(description="Online lookup via tel.search.ch")
-  parser.add_argument("--number", help="number to be checked", required=True)
-  parser.add_argument('--debug', action='store_true')
-  args = parser.parse_args()
-  g_debug = args.debug
-
-  # map number to correct URL
-  if not args.number.startswith("+49"):
-    error("Not a valid Germany number: " + args.number)
-
-  callerName = lookup_number(args.number)
-
-  # result in json format, if not found empty field
-  result = {
-    "name"  : callerName
-  }
-  j = json.dumps(result, encoding="utf-8", ensure_ascii=False)
-  sys.stdout.write(j.encode("utf8"))
-  sys.stdout.write("\n") # must be seperate line, to avoid conversion of json into ascii
-
 if __name__ == "__main__":
-    main(sys.argv)
-    sys.exit(0)
-
+    m = OnlineLookupDasOertlicheDE()
+    parser = m.get_parser("Online lookup via www.dasoertliche.de")
+    args = parser.parse_args()
+    m.run(args)

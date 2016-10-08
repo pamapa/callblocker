@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,68 +19,48 @@
 #
 
 from __future__ import print_function
-import os, sys, argparse, re
-import urllib, urllib2
-import json
+import sys, re
+import urllib
+
+from online_base import OnlineBase
 
 
-g_debug = False
+class OnlineCheckWhoCalledUS(OnlineBase):
+    def supported_country_codes(self):
+        return ["+1"]
 
+    def handle_number(self, args, number):
+        url = "https://whocalled.us/do?action=getScore&%s" % urllib.urlencode({"phoneNumber": number})
+        if args.username and args.password:
+            url += "&name=%s&pass=%s" % (args.username, args.password)
+        content = self.http_get(url)
+        self.log.debug(content)
 
-def error(*objs):
-  print("ERROR: ", *objs, file=sys.stderr)
-  sys.exit(-1)
+        matchObj = re.match(r".*success=([0-9]*)[^0-9]*", content)
+        if not matchObj:
+            self.log.error("unexpected result: " + content)
+            sys.exit(-1)
+        if int(matchObj.group(1)) != 1:
+            self.log.error("not successful, result: " + content)
+            sys.exit(-1)
 
-def debug(*objs):
-  if g_debug: print("DEBUG: ", *objs, file=sys.stdout)
-  return
+        score = 0
+        matchObj = re.match(r".*score=([0-9]*)[^0-9]*", content)
+        if matchObj:
+            score = int(matchObj.group(1))
 
-def fetch_url(url):
-  debug("fetch_url: " + str(url))
-  data = urllib2.urlopen(url, timeout = 5)
-  return data.read()
+        spam = False if score < args.spamscore else True
+        return self.onlinecheck_2_result(spam, score)
 
 
 #
 # main
 #
-def main(argv):
-  global g_debug
-  parser = argparse.ArgumentParser(description="Online spam check via whocalled.us")
-  parser.add_argument("--number", help="number to be checked", required=True)
-  parser.add_argument("--username", help="username", required=True)
-  parser.add_argument("--password", help="password", required=True)
-  parser.add_argument("--spamscore", help="score limit to mark as spam [-1..?]", default=5)
-  parser.add_argument('--debug', action='store_true')
-  args = parser.parse_args()
-  g_debug = args.debug
-
-  url = "http://whocalled.us/do?action=getScore&name=%s&pass=%s&%s" % (args.username, args.password, urllib.urlencode({"phoneNumber":args.number}))
-  content = fetch_url(url)
-  debug(content)
-
-  matchObj = re.match(r".*success=([0-9]*)[^0-9]*", content)
-  if not matchObj:
-    error("unexpected result: "+content)
-  if int(matchObj.group(1)) != 1:
-    error("not successful, result: "+content)
-
-  score = 0
-  matchObj = re.match(r".*score=([0-9]*)[^0-9]*", content)
-  if matchObj:
-    score = int(matchObj.group(1))
-  
-  # result in json format
-  # caller name is not available in received content
-  result = {
-    "spam"  : False if score < args.spamscore else True,
-    "score" : score
-  }
-  j = json.dumps(result, encoding="utf-8", ensure_ascii=False)
-  sys.stdout.write(j.encode("utf8"))
-  sys.stdout.write("\n") # must be seperate line, to avoid conversion of json into ascii
-
 if __name__ == "__main__":
-    main(sys.argv)
-    sys.exit(0)
-
+    m = OnlineCheckWhoCalledUS()
+    parser = m.get_parser("Online check via whocalled.us")
+    parser.add_argument("--username", help="username", required=False)
+    parser.add_argument("--password", help="password", required=False)
+    parser.add_argument("--spamscore", help="score limit to mark as spam [-1..?]", default=5)
+    args = parser.parse_args()
+    m.run(args)

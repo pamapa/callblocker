@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,95 +19,47 @@
 #
 
 from __future__ import print_function
-import os, sys, argparse
-import urllib, urllib2
-import json, demjson
+import urllib
+from BeautifulSoup import BeautifulSoup
+
+from online_base import OnlineBase
 
 
-g_debug = False
+class OnlineLookupDasSchnelleAT(OnlineBase):
+    def supported_country_codes(self):
+        return ["+43"]
+
+    def handle_number(self, args, number):
+        url = "https://www.dasschnelle.at/ergebnisse?" + urllib.urlencode({"what": number})
+        content = self.http_get(url)
+
+        #self.log.debug(content)
+        soup = BeautifulSoup(content)
+        #self.log.debug(soup)
+
+        caller_name = unicode("")
+        entries = soup.findAll("article")
+        for entry in entries:
+            eintrag_name = entry.findAll("h3", {"class": "eintrag_name"})[0]
+            name = eintrag_name.a.contents[0]
+            if eintrag_name.span:
+                vorname = eintrag_name.span.contents[0]
+                name = vorname + " " + name[:-2] # remove ', '
 
 
-def error(*objs):
-  print("ERROR: ", *objs, file=sys.stderr)
-  sys.exit(-1)
+            if len(caller_name) == 0:
+                caller_name = unicode(name)
+            else:
+                caller_name += "; " + unicode(name)
 
-def debug(*objs):
-  if g_debug: print("DEBUG: ", *objs, file=sys.stdout)
-  return
+        return self.onlinelookup_2_result(caller_name)
 
-def fetch_url(url, values):
-  debug("fetch_url: '" + str(url)+"'")
-  post_data = urllib.urlencode(values)
-  req = urllib2.Request(url, post_data)
-  response = urllib2.urlopen(req)
-  return response.read()
-
-def extract_callerName(name):
-  matchObj = re.match(r"<a.*>(.*)</a>", name)
-  if matchObj: name = matchObj.group(1)
-  matchObj = re.match(r"(.*)<span.*>(.*)</span>", name)
-  if matchObj: name = matchObj.group(1) + matchObj.group(2)
-  return name
-
-def lookup_number(number):
-  # convert international number into local one
-  number = "0"+number[3:]
-
-  url = "http://www.dasschnelle.at/result/index/"
-  values = {
-    "bezirk" : 0,
-    "boundsE" : 0,
-    "boundsN" : 0,
-    "boundsS" : 0,
-    "boundsW" : 0,
-    "mapsearch" : False,
-    "orderBy" : "Standard",
-    "pageNum" : 1,
-    "resultsPerPage" : 20,
-    "rubrik" : 0,
-    "what" : number,
-    "where" : ""
-  }
-  data = fetch_url(url, values)
-  #debug(data)
-
-  callerName = ""
-  #j = json.loads(data) # this site returns not valid json data :-(
-  j = demjson.decode(data)
-  for entry in j["entries"]:
-    name = entry["name"]
-    if len(callerName) == 0:
-      callerName = name
-    else:
-      callerName += "; " + name
-  return callerName
 
 #
 # main
 #
-def main(argv):
-  global g_debug
-  parser = argparse.ArgumentParser(description="Online lookup via tel.search.ch")
-  parser.add_argument("--number", help="number to be checked", required=True)
-  parser.add_argument('--debug', action='store_true')
-  args = parser.parse_args()
-  g_debug = args.debug
-
-  # map number to correct URL
-  if not args.number.startswith("+43"):
-    error("Not a valid Austria number: " + args.number)
-
-  callerName = lookup_number(args.number)
-
-  # result in json format, if not found empty field
-  result = {
-    "name"  : callerName
-  }
-  j = json.dumps(result, encoding="utf-8", ensure_ascii=False)
-  sys.stdout.write(j.encode("utf8"))
-  sys.stdout.write("\n") # must be seperate line, to avoid conversion of json into ascii
-
 if __name__ == "__main__":
-    main(sys.argv)
-    sys.exit(0)
-
+    m = OnlineLookupDasSchnelleAT()
+    parser = m.get_parser("Online lookup via www.dasschnelle.at")
+    args = parser.parse_args()
+    m.run(args)

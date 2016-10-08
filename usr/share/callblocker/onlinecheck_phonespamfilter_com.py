@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,73 +19,47 @@
 #
 
 from __future__ import print_function
-import os, sys, argparse
-import urllib2
-import json
+
+from online_base import OnlineBase
 
 
-g_debug = False
+class OnlineCheckTellowsDE(OnlineBase):
+    def supported_country_codes(self):
+        return ["+1", "+33", "+44", "+61", "+64"]
 
+    def handle_number(self, args, number):
+        # map number to correct URL
+        if args.number.startswith("+1"):  # USA, Canada
+            site = "www.phonespamfilter.com"
+            number = number[2:]
+        elif args.number.startswith("+33"):  # France
+            site = "fr.phonespamfilter.com"
+            number = number[3:]
+        elif args.number.startswith("+44"):  # United Kingdom
+            site = "www.phonespamfilter.co.uk"
+            number = number[3:]
+        elif args.number.startswith("+61"):  # Australia
+            site = "au.phonespamfilter.com"
+            number = number[3:]
+        elif args.number.startswith("+64"):  # New Zealand
+            site = "www.phonespamfilter.co.nz"
+            number = number[3:]
 
-def error(*objs):
-  print("ERROR: ", *objs, file=sys.stderr)
-  sys.exit(-1)
+        url = "http://%s/check.php?phone=%s" % (site, number)
+        content = self.http_get(url)
+        self.log.debug(content)
 
-def debug(*objs):
-  if g_debug: print("DEBUG: ", *objs, file=sys.stdout)
-  return
-
-def fetch_url(url):
-  debug("fetch_url: " + str(url))
-  data = urllib2.urlopen(url, timeout=5)
-  return data.read()
+        score = int(content)
+        spam = False if score < args.spamscore else True
+        return self.onlinecheck_2_result(spam, score)
 
 
 #
 # main
 #
-def main(argv):
-  global g_debug
-  parser = argparse.ArgumentParser(description="Online spam check via phonespamfilter.com")
-  parser.add_argument("--number", help="number to be checked", required=True)
-  parser.add_argument("--spamscore", help="score limit to mark as spam [0..100]", default=50)
-  parser.add_argument('--debug', action='store_true')
-  args = parser.parse_args()
-  g_debug = args.debug
-
-  # map number to correct URL
-  number = args.number[3:]
-  if args.number.startswith("+1"): # USA, Canada
-    site = "www.phonespamfilter.com"
-    number = args.number[2:]
-  elif args.number.startswith("+33"): # France
-    site = "fr.phonespamfilter.com"
-  elif args.number.startswith("+44"): # United Kingdom
-    site = "www.phonespamfilter.co.uk"
-  elif args.number.startswith("+61"): # Australia
-    site = "au.phonespamfilter.com"
-  elif args.number.startswith("+64"): # New Zealand
-    site = "www.phonespamfilter.co.nz"
-  else:
-    error("Number not supported: " + args.number)
-
-  url="http://%s/check.php?phone=%s" % (site, number)
-
-  content = fetch_url(url)
-  debug(content)
-  score = int(content)
-
-  # result in json format
-  # caller name is not available in received content
-  result = {
-    "spam"  : False if score < args.spamscore else True,
-    "score" : score
-  }
-  j = json.dumps(result, encoding="utf-8", ensure_ascii=False)
-  sys.stdout.write(j.encode("utf8"))
-  sys.stdout.write("\n") # must be seperate line, to avoid conversion of json into ascii
-
 if __name__ == "__main__":
-    main(sys.argv)
-    sys.exit(0)
-
+    m = OnlineCheckTellowsDE()
+    parser = m.get_parser("Online check via phonespamfilter.com")
+    parser.add_argument("--spamscore", help="score limit to mark as spam [0..100]", default=50)
+    args = parser.parse_args()
+    m.run(args)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,53 +19,33 @@
 #
 
 from __future__ import print_function
-import os, sys, argparse
-import json
+import sys
 
-import onlinelookup_tel_search_ch
-import onlinelookup_dasschnelle_at
-import onlinelookup_dasoertliche_de
+from online_base import OnlineBase
+from onlinelookup_tel_search_ch import OnlineLookupTelSearchCH
+from onlinelookup_dasoertliche_de import OnlineLookupDasOertlicheDE
+from onlinelookup_dasschnelle_at import OnlineLookupDasSchnelleAT
 
-
-g_debug = False
-
-
-def error(*objs):
-  print("ERROR: ", *objs, file=sys.stderr)
-  sys.exit(-1)
-
-def debug(*objs):
-  if g_debug: print("DEBUG: ", *objs, file=sys.stdout)
-  return
 
 #
 # main
 #
-def main(argv):
-  global g_debug
-  parser = argparse.ArgumentParser(description="Online lookup all")
-  parser.add_argument("--number", help="number to be checked", required=True)
-  parser.add_argument('--debug', action='store_true')
-  args = parser.parse_args()
-  g_debug = args.debug
-
-  callerName = ""
-  if args.number.startswith("+41"):
-    callerName = onlinelookup_tel_search_ch.lookup_number(args.number)
-  elif args.number.startswith("+43"):
-    callerName = onlinelookup_dasschnelle_at.lookup_number(args.number)
-  elif args.number.startswith("+49"):
-    callerName = onlinelookup_dasoertliche_de.lookup_number(args.number)
-
-  # result in json format, if not found empty field
-  result = {
-    "name"  : callerName
-  }
-  j = json.dumps(result, encoding="utf-8", ensure_ascii=False)
-  sys.stdout.write(j.encode("utf8"))
-  sys.stdout.write("\n") # must be seperate line, to avoid conversion of json into ascii
-
 if __name__ == "__main__":
-    main(sys.argv)
-    sys.exit(0)
+    base = OnlineBase()
+    parser = base.get_parser("Online lookup via all supported sources")
+    args = parser.parse_args()
 
+    all = [
+        OnlineLookupTelSearchCH(),
+        OnlineLookupDasOertlicheDE(),
+        OnlineLookupDasSchnelleAT()
+    ]
+
+    for m in all:
+        for cc in m.supported_country_codes():
+            if args.number.startswith(cc):
+                m.run(args)
+
+    # m.run would have exited
+    base.log.error("number '%s' is not supported" % args.number)
+    sys.exit(-1)
