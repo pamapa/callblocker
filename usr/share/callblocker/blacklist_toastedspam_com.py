@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,119 +26,101 @@ from collections import OrderedDict
 from datetime import datetime
 import json
 
+from blacklist_base import BlacklistBase
+
 
 NAME_MAX_LENGTH = 200
-g_debug = False
 
 
-def error(*objs):
-  print("ERROR: ", *objs, file=sys.stderr)
-  sys.exit(-1)
+class BlacklistKToastedSpamCOM(BlacklistBase):
 
-def debug(*objs):
-  if g_debug: print("DEBUG: ", *objs, file=sys.stdout)
-  return
+    def _extract_number(self, data):
+        n = re.sub(r"[^0-9\+]","", data)
+        return n
 
-def extract_number(data):
-  n = re.sub(r"[^0-9\+]","", data)
-  return n
+    def _extract_numbers(self, data):
+        ret = []
+        #print "data:" + data
 
-def extract_numbers(data):
-  ret = []
-  #print "data:" + data
+        # 514-931-2572x110 -> 514-931-2572
+        x = data.find("x")
+        if x != -1: data = data[0:x]
 
-  # 514-931-2572x110 -> 514-931-2572
-  x = data.find("x")
-  if x != -1: data = data[0:x]
+        a = self._extract_number(data)
+        if a != "": ret.append(a)
+        return ret
 
-  a = extract_number(data)
-  if (a != ""): ret.append(a)
+    def _extract_name(self, data):
+        s = data
+        if s.startswith("- "): s = s[2:]
+        s = s.replace("  ", " ")
+        s = s.strip()
+        return s if len(s)<= NAME_MAX_LENGTH else s[0:NAME_MAX_LENGTH-3]+"..."
 
-  return ret
+    def _parse_page(self, content):
+        ret = []
+        soup = BeautifulSoup(content)
+        #self.log.debug(soup)
+        list = soup.findAll("b")
+        now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
+        for e in list:
+            numbers = self._extract_numbers(e.contents[0])
+            name = self._extract_name(e.nextSibling)
+            for n in numbers:
+                ret.append({"number": n, "name": name, "date_created": now, "date_modified": now})
+        return ret
 
-def extract_name(data):
-  s = data
-  if s.startswith("- "): s = s[2:]
-  s = s.replace("  ", " ")
-  s = s.strip()
-  return s if len(s)<= NAME_MAX_LENGTH else s[0:NAME_MAX_LENGTH-3]+"..."
+    # remove duplicates
+    # remove too small numbers -> dangerous
+    # make sure numbers are in international format (e.g. +41AAAABBBBBB)
+    def _cleanup_entries(self, arr):
+        self.log.debug("cleanup_entries (num=%s)" % len(arr))
+        seen = set()
+        uniq = []
+        for r in arr:
+            x = r["number"]
 
-def fetch_page(url):
-  debug("fetch_page: " + str(url))
-  page = urllib2.urlopen(url, timeout=10)
-  return page.read()
+            # make international format
+            if not x.startswith("+"):  x = "+1"+x
+            r["number"] = x
 
-def parse_page(content):
-  ret = []
-  soup = BeautifulSoup(content)
-  list = soup.findAll("b")
+            # filter
+            if len(x) < 4:
+                # too dangerous
+                self.log.debug("Skip too small number: " + str(r))
+                continue
+            if len(x) > 16:
+                # see spec E.164 for international numbers: 15 (including country code) + 1 ("+")
+                self.log.debug("Skip too long number:" + str(r))
+                continue;
 
-  date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
+            if x not in seen:
+                uniq.append(r)
+                seen.add(x)
+        self.log.debug("cleanup_entries done (num=%s)" % len(uniq))
+        return uniq
 
-  for e in list:
-    numbers = extract_numbers(e.contents[0])
-    name = extract_name(e.nextSibling)
-    for n in numbers:
-      ret.append({"number":n, "name":name}, "date_created":date, "date_modified":date)
+    def get_result(self, args, last_update):
+        content = self.http_get("http://www.toastedspam.com/phonelist.cgi")
 
-  return ret
+        entries = self._parse_page(content)
+        entries = self._cleanup_entries(entries)
 
-# remove duplicates
-# remove too small numbers -> dangerous
-# make sure numbers are in international format (e.g. +41AAAABBBBBB)
-def cleanup_entries(arr):
-  seen = set()
-  uniq = []
-  for r in arr:
-    x = r["number"]
+        result = OrderedDict()
+        result["name"] = "toastedspam.com blacklist"
+        result["origin"] = "http://www.toastedspam.com/phonelist.cgi"
+        result["parsed_by"] = "callblocker script: %s" % os.path.basename(__file__)
+        result["num_entries"] = len(entries)
+        result["entries"] = entries
+        return result
 
-    # make international format
-    if not x.startswith("+"):  x = "+1"+x
-    r["number"] = x
-
-    # filter
-    if len(x) < 4:
-      # too dangerous
-      debug("Skip too small number: " + str(r))
-      continue
-    if len(x) > 16:
-      # see spec E.164 for international numbers: 15 (including country code) + 1 ("+")
-      debug("Skip too long number:" + str(r))
-      continue;
-
-    if x not in seen:
-      uniq.append(r)
-      seen.add(x)
-  return uniq
 
 #
 # main
 #
-def main(argv):
-  global g_debug
-  parser = argparse.ArgumentParser(description="Fetch blacklist provided by toastedspam.com")
-  parser.add_argument("--output", help="output path", default=".")
-  parser.add_argument('--debug', action='store_true')
-  args = parser.parse_args()
-  g_debug = args.debug
-  json_filename = args.output+"/blacklist_toastedspam_com.json"
-
-  content = fetch_page("http://www.toastedspam.com/phonelist.cgi")
-  #debug(content)
-  result = parse_page(content)
-  result = cleanup_entries(result)
-  if len(result) != 0:
-    data = OrderedDict((
-      ("name","toastedspam.com blacklist"),
-      ("origin", "http://www.toastedspam.com/phonelist.cgi"),
-      ("parsed_by","callblocker script: "+os.path.basename(__file__)),
-      ("num_entries",len(result)),
-      ("entries",result)
-    ))
-    with open(json_filename, 'w') as outfile:
-      json.dump(data, outfile, indent=2)
-
 if __name__ == "__main__":
-    main(sys.argv)
-    sys.exit(0)
-
+    m = BlacklistKToastedSpamCOM()
+    parser = m.get_parser("Fetch blacklist provided by toastedspam.com")
+    args = parser.parse_args()
+    json_filename = args.output + "/blacklist_toastedspam_com.json"
+    m.run(args, json_filename)
