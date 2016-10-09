@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,149 +19,71 @@
 #
 
 from __future__ import print_function
-import os, sys, argparse, re
+import re
 from ldif import LDIFParser
-from collections import OrderedDict
 from datetime import datetime
-import json
+
+from import_base import ImportBase
 
 
-g_debug = False
-
-
-def error(*objs):
-  print("ERROR: ", *objs, file=sys.stderr)
-  sys.exit(-1)
-
-def debug(*objs):
-  if g_debug: print("DEBUG: ", *objs, file=sys.stdout)
-  return
-
-def extract_number(data):
-  n = re.sub(r"[^0-9\+]","", data)
-  return n
-
-def getEntityPerson(entry):
-  fname = ""
-  sname = ""
-  cname = ""
-  if "givenName" in entry: fname = entry["givenName"][0].decode(encoding='UTF-8',errors='strict')
-  if "sn" in entry: sname = entry["sn"][0].decode(encoding='UTF-8',errors='strict')
-  if "cn" in entry: cname = entry["cn"][0].decode(encoding='UTF-8',errors='strict')
-  name = ""
-  if sname == "":
-    name = cname
-  elif fname == "":
-    name = sname;
-  else:
-    name = fname + " " + sname
-  return name
-
-result = []
 class MyLDIF(LDIFParser):
-  def __init__(self, input):
-    LDIFParser.__init__(self, input)
-    self.date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
-    #debug(self.date)
-    
-  def handle(self, dn, entry):
-    #debug(entry)
-    name = getEntityPerson(entry)
-    number = ""
-    field_name = ""
-    if "mobile" in entry:
-      number = extract_number(entry["mobile"][0])
-      field_name = "Mobile Phone"
-      if len(number) != 0:
-        result.append({"number":number, "name":name+" ("+field_name+")", "date_created":self.date, "date_modified":self.date})
-    if "homePhone" in entry:
-      number = extract_number(entry["homePhone"][0])
-      field_name = "Home Phone"
-      if len(number) != 0:
-        result.append({"number":number, "name":name+" ("+field_name+")", "date_created":self.date, "date_modified":self.date})
-    if "telephoneNumber" in entry:
-      number = extract_number(entry["telephoneNumber"][0])
-      field_name = "Work Phone"
-      if len(number) != 0:
-        result.append({"number":number, "name":name+" ("+field_name+")", "date_created":self.date, "date_modified":self.date})
+    def __init__(self, input, log):
+        LDIFParser.__init__(self, input)
+        self.log = log
+        self.date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
+        self.entries = []
+
+    def _extract_number(self, data):
+        n = re.sub(r"[^0-9\+]", "", data)
+        return n
+
+    def _get_entity_person(self, entry):
+        fname = ""
+        sname = ""
+        cname = ""
+        if "givenName" in entry: fname = entry["givenName"][0].decode(encoding='UTF-8', errors='strict')
+        if "sn" in entry: sname = entry["sn"][0].decode(encoding='UTF-8', errors='strict')
+        if "cn" in entry: cname = entry["cn"][0].decode(encoding='UTF-8', errors='strict')
+        name = ""
+        if sname == "": name = cname
+        elif fname == "": name = sname
+        else: name = fname + " " + sname
+        return name
+
+    def handle(self, dn, entry):
+        self.log.debug(entry)
+        name = self._get_entity_person(entry)
+        if "mobile" in entry:
+            number = self._extract_number(entry["mobile"][0])
+            field_name = "Mobile Phone"
+            if len(number) != 0:
+                self.entries.append({"number": number, "name": name + " (" + field_name + ")",
+                                     "date_created": self.date, "date_modified": self.date})
+        if "homePhone" in entry:
+            number = self._extract_number(entry["homePhone"][0])
+            field_name = "Home Phone"
+            if len(number) != 0:
+                self.entries.append({"number": number, "name": name + " (" + field_name + ")",
+                                     "date_created": self.date, "date_modified": self.date})
+        if "telephoneNumber" in entry:
+            number = self._extract_number(entry["telephoneNumber"][0])
+            field_name = "Work Phone"
+            if len(number) != 0:
+                self.entries.append({"number": number, "name": name + " (" + field_name + ")",
+                                     "date_created": self.date, "date_modified": self.date})
 
 
-# remove duplicates
-# remove too small numbers -> dangerous
-# make sure numbers are in international format (e.g. +41AAAABBBBBB)
-def cleanup_entries(arr, country_code):
-  debug("cleanup_entries...")
-  seen = set()
-  uniq = []
-  for r in arr:
-    x = r["number"]
+class ImportLDIF(ImportBase):
+    def get_entries(self, args):
+        parser = MyLDIF(open(args.input, "r"), self.log)
+        parser.parse()
+        return parser.entries
 
-    # make international format
-    if x.startswith("00"):  x = "+"+x[2:]
-    elif x.startswith("0"): x = country_code+x[1:]
-    r["number"] = x
 
-    # filter
-    if len(x) < 4:
-      # too dangerous
-      debug("Skip too small number: " + str(r))
-      continue
-    if not x.startswith("+"):
-      # not in international format
-      debug("Skip unknown format number: " + str(r))
-      continue;
-    if len(x) > 16:
-      # see spec E.164 for international numbers: 15 (including country code) + 1 ("+")
-      debug("Skip too long number:" + str(r))
-      continue;
-
-    if x not in seen:
-      uniq.append(r)
-      seen.add(x)
-
-  debug("cleanup_entries done")
-  return uniq
-
-#
 # main
 #
-def main(argv):
-  global result, g_debug
-  parser = argparse.ArgumentParser(description="Convert LDIF file to json")
-  parser.add_argument("--input", help="input file", required=True)
-  parser.add_argument("--country_code", help="country code, e.g. +41", required=True)
-  parser.add_argument("--merge", help="file to merge with", default="out.json")
-  parser.add_argument('--debug', action='store_true')
-  args = parser.parse_args()
-  g_debug = args.debug
-
-  name = os.path.splitext(os.path.basename(args.merge))[0]
-  result = []
-
-  # merge
-  try:
-    data = open(args.merge, "r").read()
-    j = json.loads(data)
-    name = j["name"]
-    result = j["entries"]
-    #debug(result)
-  except IOError:
-    pass
-
-  # convert
-  parser = MyLDIF(open(args.input, "r"))
-  parser.parse()
-  
-  result = cleanup_entries(result, args.country_code)
-  if len(result) != 0:
-    data = OrderedDict((
-      ("name", name),
-      ("entries", result)
-    ))
-    with open(args.merge, 'w') as outfile:
-      json.dump(data, outfile, indent=2)
-
 if __name__ == "__main__":
-    main(sys.argv)
-    sys.exit(0)
-
+    m = ImportLDIF()
+    parser = m.get_parser("Convert LDIF file to json")
+    args = parser.parse_args()
+    m.run(args)

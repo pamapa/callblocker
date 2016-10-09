@@ -19,131 +19,55 @@
 #
 
 from __future__ import print_function
-import os, sys, argparse, re
+import re
 import vobject
-from collections import OrderedDict
 from datetime import datetime
-import json
+
+from import_base import ImportBase
 
 
-g_debug = False
+class ImportVCF(ImportBase):
+    def _extract_number(self, data):
+        n = re.sub(r"[^0-9\+]", "", data)
+        return n
+
+    def _get_entity_person(self, card):
+        fn = card.fn.value if card.fn else ""
+        return fn
+
+    def _parse_vcard(self, filename):
+        file = open(filename, "r")
+        data = file.read()
+        file.close()
+
+        entries = []
+        now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
+        for card in list(vobject.readComponents(data)):
+            c = card.contents
+            name = self._get_entity_person(card)
+            self.log.debug("Name: %s" % name)
+
+            if c.has_key('tel'):
+                for cl in c['tel']:
+                    number = self._extract_number(cl.value)
+                    field_name = cl.params['TYPE'][0].lower()
+                    if field_name == "cell":
+                        field_name = "mobile"
+                    field_name += " phone"
+                    field_name = field_name.title()
+                    entries.append({"number": number, "name": name + " (" + field_name + ")",
+                                   "date_created": now, "date_modified": now})
+        return entries
+
+    def get_entries(self, args):
+        entries = self._parse_vcard(args.input)
+        return entries
 
 
-def error(*objs):
-  print("ERROR: ", *objs, file=sys.stderr)
-  sys.exit(-1)
-
-def debug(*objs):
-  if g_debug: print("DEBUG: ", *objs, file=sys.stdout)
-  return
-
-def extract_number(data):
-  n = re.sub(r"[^0-9\+]","", data)
-  return n
-
-def getEntityPerson(card):
-  fn = card.fn.value if card.fn else ""
-  return fn
-
-def parse_vcard(result, filename):
-  file = open(filename, "r")
-  data = file.read()
-  file.close()
-
-  date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
-
-  for card in list(vobject.readComponents(data)):
-    c = card.contents
-    name = getEntityPerson(card)
-    #print("Name: %s" % name)
-
-    if c.has_key('tel'):
-      for cl in c['tel']:
-        number = extract_number(cl.value)
-        field_name = cl.params['TYPE'][0].lower()
-        if field_name == "cell":
-          field_name = "mobile"
-        field_name += " phone"
-        field_name = field_name.title()
-        result.append({"number":number, "name":name+" ("+field_name+")", "date_created":date, "date_modified":date})
-  return result
-
-
-# remove duplicates
-# remove too small numbers -> dangerous
-# make sure numbers are in international format (e.g. +41AAAABBBBBB)
-def cleanup_entries(arr, country_code):
-  debug("cleanup_entries...")
-  seen = set()
-  uniq = []
-  for r in arr:
-    x = r["number"]
-
-    # make international format
-    if x.startswith("00"):  x = "+"+x[2:]
-    elif x.startswith("0"): x = country_code+x[1:]
-    r["number"] = x
-
-    # filter
-    if len(x) < 4:
-      # too dangerous
-      debug("Skip too small number: " + str(r))
-      continue
-    if not x.startswith("+"):
-      # not in international format
-      debug("Skip unknown format number: " + str(r))
-      continue;
-    if len(x) > 16:
-      # see spec E.164 for international numbers: 15 (including country code) + 1 ("+")
-      debug("Skip too long number:" + str(r))
-      continue;
-
-    if x not in seen:
-      uniq.append(r)
-      seen.add(x)
-
-  debug("cleanup_entries done")
-  return uniq
-
-#
 # main
 #
-def main(argv):
-  global result, g_debug
-  parser = argparse.ArgumentParser(description="Convert VCARD file to json")
-  parser.add_argument("--input", help="input file", required=True)
-  parser.add_argument("--country_code", help="country code, e.g. +41", required=True)
-  parser.add_argument("--merge", help="file to merge with", default="out.json")
-  parser.add_argument('--debug', action='store_true')
-  args = parser.parse_args()
-  g_debug = args.debug
-
-  name = os.path.splitext(os.path.basename(args.merge))[0]
-  result = []
-
-  # merge
-  try:
-    data = open(args.merge, "r").read()
-    j = json.loads(data)
-    name = j["name"]
-    result = j["entries"]
-    debug(result)
-  except IOError:
-    pass
-
-  # convert
-  result = parse_vcard(result, args.input)
-
-  result = cleanup_entries(result, args.country_code)
-  if len(result) != 0:
-    data = OrderedDict((
-      ("name", name),
-      ("entries", result)
-    ))
-    with open(args.merge, 'w') as outfile:
-      json.dump(data, outfile, indent=2)
-
 if __name__ == "__main__":
-    main(sys.argv)
-    sys.exit(0)
-
+    m = ImportVCF()
+    parser = m.get_parser("Convert VCF file to json")
+    args = parser.parse_args()
+    m.run(args)

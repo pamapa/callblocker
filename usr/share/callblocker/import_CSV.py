@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,37 +19,16 @@
 #
 
 from __future__ import print_function
-import os, sys, argparse, re
+import re
 import codecs, csv
-from collections import OrderedDict
 from datetime import datetime
-import json
 
+from import_base import ImportBase
 
-g_debug = False
-
-
-def error(*objs):
-  print("ERROR: ", *objs, file=sys.stderr)
-  sys.exit(-1)
-
-def debug(*objs):
-  if g_debug: print("DEBUG: ", *objs, file=sys.stdout)
-  return
-
-def find_delimiter(filname):
-  with open(filname, 'r') as f:
-    line = f.readline()
-    semi_cnt = line.count(";")
-    comma_cnt = line.count(",")
-    delimiter = ","
-    if semi_cnt >  comma_cnt: delimiter = ";"
-    debug("Correct delimiter is %s" % delimiter)
-    return delimiter
 
 class UTF8Recoder:
     """
-    Iterator that reads an encoded stream and reencodes the input to UTF-8
+    Iterator that reads an encoded stream and re-encodes the input to UTF-8
     """
     def __init__(self, f, encoding):
         self.reader = codecs.getreader(encoding)(f)
@@ -89,173 +68,117 @@ class UnicodeDictReader:
         return self
 
 
-# Finding the correct encoding for the file
-def find_encoding(filname, delimiter):
-  debug("Detecting encoding of the CSV file...")
+class ImportCSV(ImportBase):
+    def _find_delimiter(self, filname):
+        with open(filname, 'r') as f:
+            line = f.readline()
+            semi_cnt = line.count(";")
+            comma_cnt = line.count(",")
+            delimiter = ","
+            if semi_cnt > comma_cnt: delimiter = ";"
+            self.log.debug("Correct delimiter is %s" % delimiter)
+            return delimiter
 
-  all_encoding = [
-    "utf-8", "iso-8859-1", "iso-8859-2", "iso-8859-15",
-    "iso-8859-3", "us-ascii", "windows-1250", "windows-1252",
-    "windows-1254", "ibm861"
-  ]
-  encoding_index = 0
-  csv_reader = None
-  while csv_reader == None:  
-    next_encoding = all_encoding[encoding_index]
-    debug("Trying %s" % (next_encoding))
-    csv_file = open(filname, "rt")
-    csv_reader = UnicodeDictReader(csv_file, delimiter=delimiter, encoding=next_encoding)
-    try:
-      for line in enumerate(csv_reader):
-        # Do nothing, just reading the whole file
-        encoding_index = encoding_index
-    except UnicodeDecodeError:
-      csv_reader = None
-      input_csv_file.close()
-      encoding_index = encoding_index + 1
+    # Finding the correct encoding for the file
+    def _find_encoding(self, filname, delimiter):
+        self.log.debug("Detecting encoding of the CSV file...")
 
-  debug("Correct encoding is %s" % next_encoding)
-  csv_file.close()
-  return next_encoding
+        all_encoding = [
+            "utf-8", "iso-8859-1", "iso-8859-2", "iso-8859-15",
+            "iso-8859-3", "us-ascii", "windows-1250", "windows-1252",
+            "windows-1254", "ibm861"
+        ]
+        encoding_index = 0
+        csv_reader = None
+        while csv_reader == None:
+            next_encoding = all_encoding[encoding_index]
+            self.log.debug("Trying %s" % (next_encoding))
+            csv_file = open(filname, "rt")
+            csv_reader = UnicodeDictReader(csv_file, delimiter=delimiter, encoding=next_encoding)
+            try:
+                for line in enumerate(csv_reader):
+                    # Do nothing, just reading the whole file
+                    encoding_index = encoding_index
+            except UnicodeDecodeError:
+                csv_reader = None
+            csv_file.close()
+            encoding_index = encoding_index + 1
 
-def extract_number(data):
-  n = re.sub(r"[^0-9\+]","", data)
-  return n
+        self.log.debug("Correct encoding is %s" % next_encoding)
+        return next_encoding
 
-def getEntityPerson(fields):
-  name = ""
-  # first name
-  for field_name in fields:
-    if field_name and field_name.lower().find("first name") != -1:
-      name += " " + fields[field_name]
-      break
-  # middle name
-  for field_name in fields:
-    if field_name and field_name.lower().find("middle name") != -1:
-      name += " " + fields[field_name]
-      break
-  # last name
-  for field_name in fields:
-    if field_name and field_name.lower().find("last name") != -1:
-      name += " " + fields[field_name]
-      break
-  # tellows: name
-  if "Score" in fields and "Anruftyp" in fields:
-    name = "%s / score:%s" % (fields["Anruftyp"], fields["Score"])
-  return name.strip()
+    def _extract_number(self, data):
+        n = re.sub(r"[^0-9\+]","", data)
+        return n
 
-def parse_csv(filename, delimiter, encoding, result):
-  csv_file = open(filename, "rt")
-  csv_reader = UnicodeDictReader(csv_file, delimiter=delimiter, encoding=encoding)
+    def _get_entity_person(self, fields):
+        name = ""
+        # first name
+        for field_name in fields:
+            if field_name and field_name.lower().find("first name") != -1:
+                name += " " + fields[field_name]
+                break
+        # middle name
+        for field_name in fields:
+            if field_name and field_name.lower().find("middle name") != -1:
+                name += " " + fields[field_name]
+                break
+        # last name
+        for field_name in fields:
+            if field_name and field_name.lower().find("last name") != -1:
+                name += " " + fields[field_name]
+                break
+        # tellows: name
+        if "Score" in fields and "Anruftyp" in fields:
+            name = "%s / score:%s" % (fields["Anruftyp"], fields["Score"])
+        return name.strip()
 
-  date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
-  #debug(date)
+    def _parse_csv(self, filename, delimiter, encoding):
+        csv_file = open(filename, "rt")
+        csv_reader = UnicodeDictReader(csv_file, delimiter=delimiter, encoding=encoding)
 
-  # "Home Phone" and "Work Phone"
-  # "Mobile Number" and "Pager Number"
-  # "Home Fax" and "Work Fax"
-  number_names = ["phone", "number", "fax"]
+        date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
+        #self.log.debug(date)
 
-  for (line, fields) in enumerate(csv_reader):
-    #debug(fields)
-    name = getEntityPerson(fields)
-    debug(name)
-    for field_name in fields:
-      if not field_name: continue
-      number = ""
-      for n in number_names:
-        if field_name.lower().find(n) != -1:
-          number = fields[field_name]
-          break
-      # workaround for tellows.de: number = Land Nummer
-      if field_name.find("Nummer") != -1 and "Land" in fields:
-        number = "+%s%s" % (fields["Land"], fields[field_name][1:])
-        field_name = "Work Phone"
-      number = extract_number(number)
-      if len(number) != 0:
-        result.append({"number":number, "name":name+" ("+field_name+")", "date_created":date, "date_modified":date})
+        # "Home Phone" and "Work Phone"
+        # "Mobile Number" and "Pager Number"
+        # "Home Fax" and "Work Fax"
+        number_names = ["phone", "number", "fax"]
 
-  csv_file.close()
-  return result  
+        entries = []
+        for (line, fields) in enumerate(csv_reader):
+            #self.log.debug(fields)
+            name = self._get_entity_person(fields)
+            self.log.debug(name)
+            for field_name in fields:
+                if not field_name: continue
+                number = ""
+                for n in number_names:
+                    if field_name.lower().find(n) != -1:
+                        number = fields[field_name]
+                        break
+                # workaround for tellows.de: number = Land Nummer
+                if field_name.find("Nummer") != -1 and "Land" in fields:
+                    number = "+%s%s" % (fields["Land"], fields[field_name][1:])
+                    field_name = "Work Phone"
+                number = self._extract_number(number)
+                if len(number) != 0:
+                    entries.append({"number": number, "name": name+" ("+field_name+")", "date_created": date, "date_modified": date})
 
-# remove duplicates
-# remove too small numbers -> dangerous
-# make sure numbers are in international format (e.g. +41AAAABBBBBB)
-def cleanup_entries(arr, country_code):
-  debug("cleanup_entries...")
-  seen = set()
-  uniq = []
-  for r in arr:
-    x = r["number"]
+        csv_file.close()
+        return entries
 
-    # make international format
-    if x.startswith("00"):  x = "+"+x[2:]
-    elif x.startswith("0"): x = country_code+x[1:]
-    r["number"] = x
+    def get_entries(self, args):
+        delimiter = self._find_delimiter(args.input)
+        encoding = self._find_encoding(args.input, delimiter)
+        entries = self._parse_csv(args.input, delimiter, encoding)
+        return entries
 
-    # filter
-    if len(x) < 4:
-      # too dangerous
-      debug("Skip too small number: " + str(r))
-      continue
-    if not x.startswith("+"):
-      # not in international format
-      debug("Skip unknown format number: " + str(r))
-      continue;
-    if len(x) > 16:
-      # see spec E.164 for international numbers: 15 (including country code) + 1 ("+")
-      debug("Skip too long number:" + str(r))
-      continue;
 
-    if x not in seen:
-      uniq.append(r)
-      seen.add(x)
-
-  debug("cleanup_entries done")
-  return uniq
-
-#
 # main
 #
-def main(argv):
-  global g_debug
-  parser = argparse.ArgumentParser(description="Convert CSV file to json")
-  parser.add_argument("--input", help="input file", required=True)
-  parser.add_argument("--country_code", help="country code, e.g. +41", required=True)
-  parser.add_argument("--merge", help="file to merge with", default="out.json")
-  parser.add_argument('--debug', action='store_true')
-  args = parser.parse_args()
-  g_debug = args.debug
-
-  name = os.path.splitext(os.path.basename(args.merge))[0]
-  result = []
-
-  # merge
-  try:
-    data = open(args.merge, "r").read()
-    j = json.loads(data)
-    name = j["name"]
-    result = j["entries"]
-    debug(result)
-  except IOError:
-    pass
-
-  # convert
-  delimiter = find_delimiter(args.input)
-  encoding = find_encoding(args.input, delimiter)
-  result = parse_csv(args.input, delimiter, encoding, result)
-
-  result = cleanup_entries(result, args.country_code)
-  #print(result)
-  if len(result) != 0:
-    data = OrderedDict((
-      ("name", name),
-      ("entries", result)
-    ))
-    with open(args.merge, 'w') as outfile:
-      json.dump(data, outfile, indent=2)
-
 if __name__ == "__main__":
-    main(sys.argv)
-    sys.exit(0)
-
+    m = ImportCSV()
+    parser = m.get_parser("Convert CSV file to json")
+    args = parser.parse_args()
+    m.run(args)
