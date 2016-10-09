@@ -64,8 +64,45 @@ class BlacklistBase(object):
                     break
         return new_entries
 
+    # remove duplicates
+    # remove too small numbers -> dangerous
+    # make sure numbers are in international format (e.g. +41AAAABBBBBB)
+    def cleanup_entries(self, arr, country_code="+41"):
+        self.log.debug("cleanup_entries (num=%s)" % len(arr))
+        seen = set()
+        uniq = []
+        for r in arr:
+            x = r["number"]
+
+            # make international format
+            if x.startswith("00"):  x = "+" + x[2:]
+            elif x.startswith("0"): x = country_code + x[1:]
+            else: x = country_code + x
+            r["number"] = x
+
+            # filter
+            if len(x) < 5:
+                # too dangerous
+                self.log.debug("Skip too short number: " + str(r))
+                continue
+            if not x.startswith("+"):
+                # not in international format
+                self.log.debug("Skip unknown format number: " + str(r))
+                continue;
+            if len(x) > 16:
+                # see spec E.164 for international numbers: 15 (including country code) + 1 ("+")
+                self.log.debug("Skip too long number:" + str(r))
+                continue;
+
+            # filter duplicates
+            if x not in seen:
+                uniq.append(r)
+                seen.add(x)
+        self.log.debug("cleanup_entries done (num=%s)" % len(uniq))
+        return uniq
+
     # must be implemented in the inherited class
-    def get_result(self, args, last_update):
+    def get_entries(self, args, last_update):
         return {}
 
     def run(self, args, json_filename):

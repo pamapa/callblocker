@@ -41,8 +41,16 @@ class BlacklistKToastedSpamCOM(BlacklistBase):
         x = data.find("x")
         if x != -1: data = data[0:x]
 
+        # 865-362-4450pin4346 -> 865-362-4450
+        x = data.find("pin")
+        if x != -1: data = data[0:x]
+
+        x = data.find("fastsize")
+        if x != -1: data = "" # no idea
+
         a = self._extract_number(data)
         if a != "": ret.append(a)
+        self.log.debug("_extract_numbers() data:'%s' -> %s" % (data, ret))
         return ret
 
     def _extract_name(self, data):
@@ -59,47 +67,17 @@ class BlacklistKToastedSpamCOM(BlacklistBase):
         list = soup.findAll("b")
         now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
         for e in list:
-            numbers = self._extract_numbers(e.contents[0])
-            name = self._extract_name(e.nextSibling)
+            numbers = self._extract_numbers(e.contents[0].strip())
+            name = self._extract_name(e.nextSibling.strip())
             for n in numbers:
                 ret.append({"number": n, "name": name, "date_created": now, "date_modified": now})
         return ret
-
-    # remove duplicates
-    # remove too small numbers -> dangerous
-    # make sure numbers are in international format (e.g. +41AAAABBBBBB)
-    def _cleanup_entries(self, arr):
-        self.log.debug("cleanup_entries (num=%s)" % len(arr))
-        seen = set()
-        uniq = []
-        for r in arr:
-            x = r["number"]
-
-            # make international format
-            if not x.startswith("+"):  x = "+1"+x
-            r["number"] = x
-
-            # filter
-            if len(x) < 4:
-                # too dangerous
-                self.log.debug("Skip too small number: " + str(r))
-                continue
-            if len(x) > 16:
-                # see spec E.164 for international numbers: 15 (including country code) + 1 ("+")
-                self.log.debug("Skip too long number:" + str(r))
-                continue;
-
-            if x not in seen:
-                uniq.append(r)
-                seen.add(x)
-        self.log.debug("cleanup_entries done (num=%s)" % len(uniq))
-        return uniq
 
     def get_result(self, args, last_update):
         content = self.http_get("http://www.toastedspam.com/phonelist.cgi")
 
         entries = self._parse_page(content)
-        entries = self._cleanup_entries(entries)
+        entries = self.cleanup_entries(entries, country_code="+1")
 
         result = OrderedDict()
         result["name"] = "toastedspam.com blacklist"

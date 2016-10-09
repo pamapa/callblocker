@@ -136,43 +136,8 @@ class BlacklistKTippCH(BlacklistBase):
             ret.extend(self._parse_page(soup))
         return ret
 
-    # remove duplicates
-    # remove too small numbers -> dangerous
-    # make sure numbers are in international format (e.g. +41AAAABBBBBB)
-    def _cleanup_entries(self, arr):
-        self.log.debug("cleanup_entries (num=%s)" % len(arr))
-        seen = set()
-        uniq = []
-        for r in arr:
-            x = r["number"]
-
-            # make international format
-            if x.startswith("00"):  x = "+"+x[2:]
-            elif x.startswith("0"): x = "+41"+x[1:]
-            r["number"] = x
-
-            # filter
-            if len(x) < 4:
-                # too dangerous
-                self.log.debug("Skip too short number: " + str(r))
-                continue
-            if not x.startswith("+"):
-                # not in international format
-                self.log.debug("Skip unknown format number: " + str(r))
-                continue;
-            if len(x) > 16:
-                # see spec E.164 for international numbers: 15 (including country code) + 1 ("+")
-                self.log.debug("Skip too long number:" + str(r))
-                continue;
-
-            # filter duplicates
-            if x not in seen:
-                uniq.append(r)
-                seen.add(x)
-        self.log.debug("cleanup_entries done (num=%s)" % len(uniq))
-        return uniq
-
     def get_result(self, args, last_update):
+
         content = self._fetch_page(0)
         source_date = unicode(self._extract_str(content, "Letzte Aktualisierung:", "<", "Can't extract creation date"))
         self.log.debug(source_date)
@@ -182,13 +147,13 @@ class BlacklistKTippCH(BlacklistBase):
             sys.exit(0)
 
         entries = self._parse_pages(content)
-        entries = self._cleanup_entries(entries)
+        entries = self.cleanup_entries(entries, country_code="+41")
 
         result = OrderedDict()
         result["name"] = "ktipp.ch blacklist"
         result["origin"] = "https://www.ktipp.ch/service/warnlisten/detail/?warnliste_id=7"
-        result["last_update"] = source_date
         result["parsed_by"] = "callblocker script: %s" % os.path.basename(__file__)
+        result["last_update"] = source_date
         result["num_entries"] = len(entries)
         result["entries"] = entries
         return result
