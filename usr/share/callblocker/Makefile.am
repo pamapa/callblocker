@@ -18,11 +18,14 @@
 
 callblockerdir=$(datadir)/callblocker
 callblocker_SCRIPTS = \
+  blacklist_base.py \
   blacklist_ktipp_ch.py \
   blacklist_toastedspam_com.py \
+  import_base.py \
   import_CSV.py \
   import_LDIF.py \
   import_VCF.py \
+  online_base.py \
   onlinecheck_phonespamfilter_com.py \
   onlinecheck_tellows_de.py \
   onlinecheck_whocalled_us.py \
