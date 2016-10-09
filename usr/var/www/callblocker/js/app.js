@@ -372,30 +372,32 @@ require(["dijit/ConfirmDialog",
             }
           });
 
+          // prepare dialog fields
+          enabledCheckBox.set("value", grid.store.getValue(si, "enabled"));
+          nameTextBox.set("value", grid.store.getValue(si, "name"));
+          countryCodeTextBox.set("value", grid.store.getValue(si, "country_code", ""));
+
+          var blockMode = grid.store.getValue(si, "block_mode", "logging_only")
+          blockModeSelect.set("value", blockMode);
+          blockAnonymousCIDCheckBox.set("value", grid.store.getValue(si, "block_anonymous_cid", false));
+          blockInvalidCIDCheckBox.set("value", grid.store.getValue(si, "block_invalid_cid", false));
+          selectBlockMode(blockMode);
+
+          onlineCheckSelect.set("value", grid.store.getValue(si, "online_check", ""));
+          onlineLookupSelect.set("value", grid.store.getValue(si, "online_lookup", ""));
+
           var isSIP = !grid.store.getValue(si, "device");
           if (isSIP) {
             typeSelect.set("value", "sip");
-            domainTextBox.set("value", grid.store.getValue(si, "domain"));
-            usernameTextBox.set("value", grid.store.getValue(si, "username"));
-            passwordTextBox.set("value", grid.store.getValue(si, "password"));
+            domainTextBox.set("value", grid.store.getValue(si, "domain", ""));
+            usernameTextBox.set("value", grid.store.getValue(si, "username", ""));
+            passwordTextBox.set("value", grid.store.getValue(si, "password", ""));
           }
           else {
             typeSelect.set("value", "analog");
-            deviceTextBox.set("value", grid.store.getValue(si, "device"));
+            deviceTextBox.set("value", grid.store.getValue(si, "device", ""));
           }
           selectType(isSIP);
-          
-          enabledCheckBox.set("value", grid.store.getValue(si, "enabled"));
-          nameTextBox.set("value", grid.store.getValue(si, "name"));
-          countryCodeTextBox.set("value", grid.store.getValue(si, "country_code"));
-
-          blockModeSelect.set("value", grid.store.getValue(si, "block_mode"));
-          blockAnonymousCIDCheckBox.set("value", grid.store.getValue(si, "block_anonymous_cid"));
-          blockInvalidCIDCheckBox.set("value", grid.store.getValue(si, "block_invalid_cid"));
-          selectBlockMode(grid.store.getValue(si, "block_mode"));
-
-          onlineCheckSelect.set("value", grid.store.getValue(si, "online_check"));
-          onlineLookupSelect.set("value", grid.store.getValue(si, "online_lookup"));
 
           myDialog.show();
         }
