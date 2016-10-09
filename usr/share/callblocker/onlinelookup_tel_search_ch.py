@@ -30,7 +30,7 @@ class OnlineLookupTelSearchCH(OnlineBase):
         return ["+41"]
 
     def handle_number(self, args, number):
-        url = "http://tel.search.ch/api/?" + urllib.urlencode({"was": number})
+        url = "https://tel.search.ch/api/?" + urllib.urlencode({"was": number})
         content = self.http_get(url)
         soup = BeautifulSoup(content)
         self.log.debug(soup)
