@@ -112,16 +112,15 @@ class ImportBase(object):
             pass
 
         entries = self.get_entries(args)
-
         if old_json is not None and "entries" in old_json:
             entries = self.merge_entries(entries, old_json["entries"])
-
         entries = self.cleanup_entries(entries, args.country_code)
 
         result = OrderedDict()
         result["name"] = os.path.splitext(os.path.basename(args.merge))[0]
         result["num_entries"] = len(entries)
         result["entries"] = entries
+
         with open(args.merge, 'w') as outfile:
             json.dump(result, outfile, indent=2)
 
