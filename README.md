@@ -38,10 +38,17 @@ Supported (tested) analog modems
 - USRobotics 5637
 
 
+## Privacy
+Try to avoid too many online looks if possible. Each time your callee phone number gets through the internet and the
+used sites may track your calle phone numbers.
+- use whitelist of your known good phone numbers (importing your address book)
+- use offline blacklist
+
+
 ## Install daemon on Linux
 ```bash
 sudo apt-get install git make automake g++ libpjproject-dev libjson-c-dev
-sudo apt-get install python python-beautifulsoup python-demjson python-ldap python-vobject
+sudo apt-get install python python-beautifulsoup python-ldap python-vobject
 git clone https://github.com/pamapa/callblocker.git
 cd callblocker
 aclocal
@@ -202,3 +209,4 @@ sudo systemctl restart lighttpd.service
 # manual verify that journal is working
 sudo journalctl _SYSTEMD_UNIT=callblockerd.service
 ```
+
