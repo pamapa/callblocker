@@ -483,6 +483,7 @@ require(["dijit/ConfirmDialog",
               }
             }
           });
+          // prepare dialog fields
           nameSelect.set("value", grid.store.getValue(si, "name"));
           usernameTextBox.set("value", grid.store.getValue(si, "username"));
           passwordTextBox.set("value", grid.store.getValue(si, "password"));
@@ -579,6 +580,7 @@ require(["dijit/ConfirmDialog",
               }
             }
           });
+          // prepare dialog fields
           numberTextBox.set("value", grid.store.getValue(si, "number"));
           nameTextBox.set("value", grid.store.getValue(si, "name"));
           myDialog.show();
@@ -659,6 +661,9 @@ require(["dijit/ConfirmDialog",
             }
           }
         });
+        // prepare dialog fields
+        numberTextBox.set("value", "");
+        nameTextBox.set("value", "");
         myDialog.show();
       }
     });
