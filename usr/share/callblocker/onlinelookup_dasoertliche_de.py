@@ -29,7 +29,7 @@ class OnlineLookupDasOertlicheDE(OnlineBase):
         return ["+49"]
 
     def handle_number(self, args, number):
-        url = "http://www.dasoertliche.de/?form_name=search_inv&"+urllib.urlencode({"ph":number})
+        url = "http://www.dasoertliche.de/?form_name=search_inv&" + urllib.urlencode({"ph": number})
         content = self.http_get(url)
         #self.log.debug(content)
 

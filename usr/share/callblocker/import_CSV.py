@@ -51,7 +51,7 @@ class UnicodeDictReader:
     def next(self):
         row = self.reader.next()
         for key in row:
-            if row[key] != None:
+            if row[key] is not None:
               try:
                 row[key] = row[key].decode("utf-8")
               # Special case, sometimes the content gets reqd as a list
@@ -80,7 +80,7 @@ class ImportCSV(ImportBase):
             return delimiter
 
     # Finding the correct encoding for the file
-    def _find_encoding(self, filname, delimiter):
+    def _find_encoding(self, filename, delimiter):
         self.log.debug("Detecting encoding of the CSV file...")
 
         all_encoding = [
@@ -88,12 +88,13 @@ class ImportCSV(ImportBase):
             "iso-8859-3", "us-ascii", "windows-1250", "windows-1252",
             "windows-1254", "ibm861"
         ]
+        next_encoding = "?"
         encoding_index = 0
         csv_reader = None
-        while csv_reader == None:
+        while csv_reader is None:
             next_encoding = all_encoding[encoding_index]
-            self.log.debug("Trying %s" % (next_encoding))
-            csv_file = open(filname, "rt")
+            self.log.debug("Trying %s" % next_encoding)
+            csv_file = open(filename, "rt")
             csv_reader = UnicodeDictReader(csv_file, delimiter=delimiter, encoding=next_encoding)
             try:
                 for line in enumerate(csv_reader):
@@ -102,7 +103,7 @@ class ImportCSV(ImportBase):
             except UnicodeDecodeError:
                 csv_reader = None
             csv_file.close()
-            encoding_index = encoding_index + 1
+            encoding_index += 1
 
         self.log.debug("Correct encoding is %s" % next_encoding)
         return next_encoding

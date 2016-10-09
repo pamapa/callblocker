@@ -88,11 +88,11 @@ class BlacklistBase(object):
             if not x.startswith("+"):
                 # not in international format
                 self.log.debug("Skip unknown format number: " + str(r))
-                continue;
+                continue
             if len(x) > 16:
                 # see spec E.164 for international numbers: 15 (including country code) + 1 ("+")
                 self.log.debug("Skip too long number:" + str(r))
-                continue;
+                continue
 
             # filter duplicates
             if x not in seen:
@@ -102,11 +102,11 @@ class BlacklistBase(object):
         return uniq
 
     # must be implemented in the inherited class
-    def get_entries(self, args, last_update):
+    def get_result(self, args, last_update):
         return {}
 
     def run(self, args, json_filename):
-        if (args.debug): self.log.setLevel(logging.DEBUG)
+        if args.debug: self.log.setLevel(logging.DEBUG)
 
         last_update = ""
         old_json = None

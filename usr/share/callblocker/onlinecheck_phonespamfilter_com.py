@@ -19,6 +19,7 @@
 #
 
 from __future__ import print_function
+import sys
 
 from online_base import OnlineBase
 
@@ -44,6 +45,9 @@ class OnlineCheckTellowsDE(OnlineBase):
         elif args.number.startswith("+64"):  # New Zealand
             site = "www.phonespamfilter.co.nz"
             number = number[3:]
+        else:
+            self.log.error("number '%s' is not supported '%s'" % (args.number, self.supported_country_codes()))
+            sys.exit(-1)
 
         url = "http://%s/check.php?phone=%s" % (site, number)
         content = self.http_get(url)

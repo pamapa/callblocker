@@ -36,9 +36,9 @@ class ImportVCF(ImportBase):
         return fn
 
     def _parse_vcard(self, filename):
-        file = open(filename, "r")
-        data = file.read()
-        file.close()
+        with open(filename, "r") as f:
+            data = f.read()
+            f.close()
 
         entries = []
         now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
@@ -47,10 +47,10 @@ class ImportVCF(ImportBase):
             name = self._get_entity_person(card)
             self.log.debug("Name: %s" % name)
 
-            if c.has_key('tel'):
-                for cl in c['tel']:
+            if "tel" in c:
+                for cl in c["tel"]:
                     number = self._extract_number(cl.value)
-                    field_name = cl.params['TYPE'][0].lower()
+                    field_name = cl.params["TYPE"][0].lower()
                     if field_name == "cell":
                         field_name = "mobile"
                     field_name += " phone"

@@ -46,7 +46,6 @@ class OnlineLookupDasSchnelleAT(OnlineBase):
                 vorname = eintrag_name.span.contents[0]
                 name = vorname + " " + name[:-2] # remove ', '
 
-
             if len(caller_name) == 0:
                 caller_name = unicode(name)
             else:

@@ -30,7 +30,7 @@ from blacklist_base import BlacklistBase
 class BlacklistKToastedSpamCOM(BlacklistBase):
 
     def _extract_number(self, data):
-        n = re.sub(r"[^0-9\+]","", data)
+        n = re.sub(r"[^0-9\+]", "", data)
         return n
 
     def _extract_numbers(self, data):
@@ -45,8 +45,9 @@ class BlacklistKToastedSpamCOM(BlacklistBase):
         x = data.find("pin")
         if x != -1: data = data[0:x]
 
+        # no idea
         x = data.find("fastsize")
-        if x != -1: data = "" # no idea
+        if x != -1: data = ""
 
         a = self._extract_number(data)
         if a != "": ret.append(a)
@@ -64,9 +65,9 @@ class BlacklistKToastedSpamCOM(BlacklistBase):
         ret = []
         soup = BeautifulSoup(content)
         #self.log.debug(soup)
-        list = soup.findAll("b")
+        number_list = soup.findAll("b")
         now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
-        for e in list:
+        for e in number_list:
             numbers = self._extract_numbers(e.contents[0].strip())
             name = self._extract_name(e.nextSibling.strip())
             for n in numbers:

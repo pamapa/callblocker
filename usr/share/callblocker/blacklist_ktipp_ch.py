@@ -93,12 +93,12 @@ class BlacklistKTippCH(BlacklistBase):
 
     def _extract_str(self, data, start_str, end_str, error_msg):
         s = data.find(start_str)
-        if (s == -1):
+        if s == -1:
             self.log.error(error_msg+". Start ("+start_str+") not found.")
             sys.exit(-1)
         s += len(start_str)
         e = data.find(end_str, s)
-        if (e == -1):
+        if e == -1:
             self.log.error(error_msg+". End ("+end_str+") not found.")
             sys.exit(-1)
         return data[s:e].strip()
@@ -106,9 +106,9 @@ class BlacklistKTippCH(BlacklistBase):
     def _parse_page(self, soup):
         ret = []
         #self.log.debug("parse_page...")
-        list = soup.findAll("section",{"class":"teaser cf"})
+        number_list = soup.findAll("section", {"class": "teaser cf"})
         now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
-        for e in list:
+        for e in number_list:
             numbers = self._extract_numbers(e.strong.contents[0])
             name = self._extract_name(e.p)
             for n in numbers:
@@ -129,7 +129,7 @@ class BlacklistKTippCH(BlacklistBase):
         # only first page
         #return ret
 
-        for p in range(1,last_page+1):
+        for p in range(1, last_page+1):
             content = self._fetch_page(p)
             soup = BeautifulSoup(content)
             #self.log.debug(soup)

@@ -63,11 +63,11 @@ class ImportBase(object):
             if not x.startswith("+"):
                 # not in international format
                 self.log.debug("Skip unknown format number: " + str(r))
-                continue;
+                continue
             if len(x) > 16:
                 # see spec E.164 for international numbers: 15 (including country code) + 1 ("+")
                 self.log.debug("Skip too long number:" + str(r))
-                continue;
+                continue
 
             if x not in seen:
                 uniq.append(r)

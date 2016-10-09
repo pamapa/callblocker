@@ -27,8 +27,8 @@ from import_base import ImportBase
 
 
 class MyLDIF(LDIFParser):
-    def __init__(self, input, log):
-        LDIFParser.__init__(self, input)
+    def __init__(self, input_file, log):
+        LDIFParser.__init__(self, input_file)
         self.log = log
         self.date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
         self.entries = []
@@ -44,7 +44,6 @@ class MyLDIF(LDIFParser):
         if "givenName" in entry: fname = entry["givenName"][0].decode(encoding='UTF-8', errors='strict')
         if "sn" in entry: sname = entry["sn"][0].decode(encoding='UTF-8', errors='strict')
         if "cn" in entry: cname = entry["cn"][0].decode(encoding='UTF-8', errors='strict')
-        name = ""
         if sname == "": name = cname
         elif fname == "": name = sname
         else: name = fname + " " + sname

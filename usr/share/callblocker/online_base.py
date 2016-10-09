@@ -68,7 +68,7 @@ class OnlineBase(object):
         return result
 
     def run(self, args):
-        if (args.debug): self.log.setLevel(logging.DEBUG)
+        if args.debug: self.log.setLevel(logging.DEBUG)
 
         supported = False
         for cc in self.supported_country_codes():
