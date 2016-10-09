@@ -54,7 +54,7 @@ SipAccount::~SipAccount() {
 
 bool SipAccount::add(struct SettingSipAccount* pSettings) {
   Logger::debug("SipAccount::add(%s)...", Settings::toString(pSettings).c_str());
-  m_settings = *pSettings; // strcut copy
+  m_settings = *pSettings; // struct copy
 
   // prepare account configuration
   pjsua_acc_config cfg;
