@@ -139,9 +139,9 @@ There are two ways to connect the call blocker application with your phone syste
   - Choose "alle Anrufe annehmen" and click "Weiter"
 - Setup the IP-phone in the call blocker configuration (/etc/callblocker/setting.json):
   - Edit the section sip -> accounts
-  - "from_domain":   "fritz.box"
-  - "from_username": "your username"
-  - "from_password": "your password"
+  - "domain":   "fritz.box"
+  - "username": "your username"
+  - "password": "your password"
   - Make sure the account is enabled and the other fields are ok for you
 
 

@@ -11,9 +11,9 @@
       "block_invalid_cid":   false,
       "online_check":        "tellows_de",
       "online_lookup":       "tel_search_ch",
-      "from_domain":         "<your domain>",
-      "from_username":       "<your username>",
-      "from_password":       "<your password>"
+      "domain":              "<your sip domain>",
+      "username":            "<your sip username>",
+      "password":            "<your sip password>"
     }
   ],
   "online_credentials": [

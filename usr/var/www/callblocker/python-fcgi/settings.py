@@ -44,9 +44,11 @@ def handle_phones(environ, start_response, params):
         phone.pop("device", None)
       else:
         # mark as Analog
-        phone.pop("from_domain", None)
-        phone.pop("from_username", None)
-        phone.pop("from_password", None)
+        phone.pop("domain", None)
+        phone.pop("username", None)
+        phone.pop("password", None)
+        phone.pop("realm", None)
+        phone.pop("secure", None)
     jj["phones"] = json_phones["items"]
     with open(SETTINGS_FILE, 'w') as f:
       json.dump(jj, f, indent=4)

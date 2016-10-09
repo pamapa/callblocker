@@ -49,9 +49,11 @@ struct SettingBase {
 
 struct SettingSipAccount {
   struct SettingBase base;
-  std::string fromDomain;
-  std::string fromUsername;
-  std::string fromPassword;
+  std::string domain;
+  std::string username;
+  std::string password;
+  std::string realm;
+  bool secure;
 };
 
 struct SettingAnalogPhone {

@@ -30,9 +30,9 @@ The settings file looks like this.
       "block_invalid_cid":   false,
       "online_check":        "tellows_de",
       "online_lookup":       "tel_search_ch",
-      "from_domain":         "<your domain>",
-      "from_username":       "<your username>",
-      "from_password":       "<your password>"
+      "domain":              "<your sip domain>",
+      "username":            "<your sip username>",
+      "password":            "<your sip password>"
     }
   ],
   "online_credentials": [
@@ -60,9 +60,11 @@ Fields                | Values       | Description
 "online_check"        | [`<string>`](#onlineCheck)  | optional: online check site to verify if number is spam
 "online_lookup"       | [`<string>`](#onlineLookup)  | optional: online lookup site, to see who is calling
 "device"              | `<string>`   | Your device name (get it with dmesg). Usually its "/dev/ttyACM0".
-"from_domain"         | `<string>`   | Your SIP domain name
-"from_username"       | `<string>`   | Your SIP username
-"from_password"       | `<string>`   | Your SIP password
+"domain"              | `<string>`   | Your SIP domain name
+"username"            | `<string>`   | Your SIP username
+"password"            | `<string>`   | Your SIP password
+"realm"               | `<string>`   | optional: allows to change the realm. Default is same value as specified in "domain".
+"secure"              | `<string>`   | optional: allows to use SIPS instead of SIP. Default is false.
 "online_credentials"  | | In this section you can define credentials, which are needed by some [online check](#onlineCheck) and [online lookup](#onlineLookup) scripts.
 
 

@@ -195,9 +195,9 @@ require(["dijit/ConfirmDialog",
     function selectType(isSIP) {
       //console.log("selectType: ", isSIP);
       deviceTextBox.set("disabled", isSIP);
-      fromDomainTextBox.set("disabled", !isSIP);
-      fromUsernameTextBox.set("disabled", !isSIP);
-      fromPasswordTextBox.set("disabled", !isSIP);
+      domainTextBox.set("disabled", !isSIP);
+      usernameTextBox.set("disabled", !isSIP);
+      passwordTextBox.set("disabled", !isSIP);
     }
     dojo.connect(typeSelect, "onChange", function(evt) {
       //console.log("typeSelect(onChange): ", evt);
@@ -261,14 +261,14 @@ require(["dijit/ConfirmDialog",
       pattern: "/dev/.*",
       invalidMessage: "Not a valid device name (/dev/...)"
     });
-    var fromDomainTextBox = new dijit.form.ValidationTextBox({
-      placeHolder: "from domain"
+    var domainTextBox = new dijit.form.ValidationTextBox({
+      placeHolder: "sip domain"
     });
-    var fromUsernameTextBox = new dijit.form.ValidationTextBox({
-      placeHolder: "from username"
+    var usernameTextBox = new dijit.form.ValidationTextBox({
+      placeHolder: "sip username"
     });
-    var fromPasswordTextBox = new dijit.form.ValidationTextBox({
-      placeHolder: "from password",
+    var passwordTextBox = new dijit.form.ValidationTextBox({
+      placeHolder: "sip password",
       type: "password"
     });
 
@@ -292,12 +292,12 @@ require(["dijit/ConfirmDialog",
           return new dijit.form.CheckBox({checked: on, readOnly: true});
         }
       },
-      { name: "Online check",        field: "online_check",        width: "100px" },
-      { name: "Online lookup",       field: "online_lookup",       width: "100px" },
-      { name: "Device",              field: "device",              width: "100px" },
-      { name: "From domain",         field: "from_domain",         width: "160px" },
-      { name: "From username",       field: "from_username",       width: "160px" },
-      { name: "From password",       field: "from_password",       width: "160px",
+      { name: "Online check",  field: "online_check",  width: "100px" },
+      { name: "Online lookup", field: "online_lookup", width: "100px" },
+      { name: "Device",        field: "device",        width: "100px" },
+      { name: "SIP domain",    field: "domain",        width: "160px" },
+      { name: "SIP username",  field: "username",      width: "160px" },
+      { name: "SIP password",  field: "password",      width: "160px",
         type:dojox.grid.cells._Widget, formatter:function(str){
           return new dijit.form.TextBox({value: str, type: "password", readOnly: true});
         }
@@ -339,26 +339,26 @@ require(["dijit/ConfirmDialog",
               domConstruct.create("T", {innerHTML:"Online check: "}), onlineCheckSelect.domNode, domConstruct.create("br"),
               domConstruct.create("T", {innerHTML:"Online lookup: "}), onlineLookupSelect.domNode, domConstruct.create("br"),
               domConstruct.create("T", {innerHTML:"Device: "}), deviceTextBox.domNode, domConstruct.create("br"),
-              domConstruct.create("T", {innerHTML:"From domain: "}), fromDomainTextBox.domNode, domConstruct.create("br"),
-              domConstruct.create("T", {innerHTML:"From username: "}), fromUsernameTextBox.domNode, domConstruct.create("br"),
-              domConstruct.create("T", {innerHTML:"From password: "}), fromPasswordTextBox.domNode, domConstruct.create("br"),
+              domConstruct.create("T", {innerHTML:"SIP domain: "}), domainTextBox.domNode, domConstruct.create("br"),
+              domConstruct.create("T", {innerHTML:"SIP username: "}), usernameTextBox.domNode, domConstruct.create("br"),
+              domConstruct.create("T", {innerHTML:"SIP password: "}), passwordTextBox.domNode, domConstruct.create("br"),
             ],
             onExecute:function() {
               if (!nameTextBox.isValid()) return;
               if (typeSelect.get("value") == "analog") {
                 if (!deviceTextBox.isValid()) return;
                 grid.store.setValue(si, "device", deviceTextBox.get("value"));
-                grid.store.setValue(si, "from_domain", "");
-                grid.store.setValue(si, "from_username", "");
-                grid.store.setValue(si, "from_password", "");
+                grid.store.setValue(si, "domain", "");
+                grid.store.setValue(si, "username", "");
+                grid.store.setValue(si, "password", "");
               } else {
-                if (!fromDomainTextBox.isValid()) return;
-                if (!fromUsernameTextBox.isValid()) return;
-                if (!fromPasswordTextBox.isValid()) return;
+                if (!domainTextBox.isValid()) return;
+                if (!usernameTextBox.isValid()) return;
+                if (!passwordTextBox.isValid()) return;
                 grid.store.setValue(si, "device", "");
-                grid.store.setValue(si, "from_domain", fromDomainTextBox.get("value"));
-                grid.store.setValue(si, "from_username", fromUsernameTextBox.get("value"));
-                grid.store.setValue(si, "from_password", fromPasswordTextBox.get("value"));
+                grid.store.setValue(si, "domain", domainTextBox.get("value"));
+                grid.store.setValue(si, "username", usernameTextBox.get("value"));
+                grid.store.setValue(si, "password", passwordTextBox.get("value"));
               }
               grid.store.setValue(si, "enabled", enabledCheckBox.get("checked"));
               grid.store.setValue(si, "name", nameTextBox.get("value"));
@@ -375,9 +375,9 @@ require(["dijit/ConfirmDialog",
           var isSIP = !grid.store.getValue(si, "device");
           if (isSIP) {
             typeSelect.set("value", "sip");
-            fromDomainTextBox.set("value", grid.store.getValue(si, "from_domain"));
-            fromUsernameTextBox.set("value", grid.store.getValue(si, "from_username"));
-            fromPasswordTextBox.set("value", grid.store.getValue(si, "from_password"));
+            domainTextBox.set("value", grid.store.getValue(si, "domain"));
+            usernameTextBox.set("value", grid.store.getValue(si, "username"));
+            passwordTextBox.set("value", grid.store.getValue(si, "password"));
           }
           else {
             typeSelect.set("value", "analog");
@@ -790,7 +790,7 @@ require(["dijit/ConfirmDialog",
   var statusbarPane = new dijit.layout.ContentPane({
     region: "bottom",
     style: "text-align: center",
-    content: "v0.8.1"
+    content: "v0.9.0"
   });
   appLayout.addChild(statusbarPane);
   appLayout.placeAt(document.body);

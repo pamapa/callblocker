@@ -59,24 +59,23 @@ bool SipAccount::add(struct SettingSipAccount* pSettings) {
   // prepare account configuration
   pjsua_acc_config cfg;
   pjsua_acc_config_default(&cfg);
-  
-  std::ostringstream user_url_ss;
-  user_url_ss << "sip:" << m_settings.fromUsername << "@" << m_settings.fromDomain;
-  std::string user_url = user_url_ss.str();
-  
-  std::ostringstream provider_url_ss;
-  provider_url_ss << "sip:" << m_settings.fromDomain;
-  std::string provider_url = provider_url_ss.str();
+
+  std::string schema = "sip:";
+  if (m_settings.secure) {
+    schema = "sips:";
+  }
+  std::string id = schema + m_settings.username + "@" + m_settings.domain;
+  std::string reg_uri = schema + m_settings.domain;
 
   // create and define account
-  cfg.id = pj_str((char*)user_url.c_str());
-  cfg.reg_uri = pj_str((char*)provider_url.c_str());
+  cfg.id = pj_str((char*)id.c_str());
+  cfg.reg_uri = pj_str((char*)reg_uri.c_str());
   cfg.cred_count = 1;
-  cfg.cred_info[0].realm = pj_str((char*)m_settings.fromDomain.c_str());
+  cfg.cred_info[0].realm = pj_str((char*)m_settings.realm.c_str());
   cfg.cred_info[0].scheme = pj_str((char*)"digest");
-  cfg.cred_info[0].username = pj_str((char*)m_settings.fromUsername.c_str());
+  cfg.cred_info[0].username = pj_str((char*)m_settings.username.c_str());
   cfg.cred_info[0].data_type = PJSIP_CRED_DATA_PLAIN_PASSWD;
-  cfg.cred_info[0].data = pj_str((char*)m_settings.fromPassword.c_str());
+  cfg.cred_info[0].data = pj_str((char*)m_settings.password.c_str());
 
   // add account
   pj_status_t status = pjsua_acc_add(&cfg, PJ_TRUE, &m_accId);

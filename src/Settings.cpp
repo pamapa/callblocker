@@ -99,7 +99,7 @@ bool Settings::load() {
       }
 
       if (json_object_object_get_ex(entry, "device", NULL)) {
-        // Analog
+        // Analog account
         struct SettingAnalogPhone analog;
         if (!getBase(entry, &analog.base)) {
           continue;
@@ -109,20 +109,26 @@ bool Settings::load() {
         }
         m_analogPhones.push_back(analog);
       } else {
-        // SIP
+        // SIP account
         struct SettingSipAccount sip;
         if (!getBase(entry, &sip.base)) {
           continue;
         }
-        if (!Utils::getObject(entry, "from_domain", true, m_filename, &sip.fromDomain)) {
+        if (!Utils::getObject(entry, "domain", true, m_filename, &sip.domain)) {
           continue;
         }
-        if (!Utils::getObject(entry, "from_username", true, m_filename, &sip.fromUsername)) {
+        if (!Utils::getObject(entry, "username", true, m_filename, &sip.username)) {
           continue;
         }
-        if (!Utils::getObject(entry, "from_password", true, m_filename, &sip.fromPassword)) {
+        if (!Utils::getObject(entry, "password", true, m_filename, &sip.password)) {
           continue;
         }
+        // optionals
+        if (!Utils::getObject(entry, "realm", false, m_filename, &sip.realm)) {
+          sip.realm = sip.domain; // default
+        }
+        (void)Utils::getObject(entry, "secure", false, m_filename, &sip.secure);
+
         m_sipAccounts.push_back(sip);
       }
     }
@@ -198,7 +204,7 @@ std::string Settings::toString(const struct SettingBase* pBase) {
   std::ostringstream oss;
   oss << "n=" << pBase->name
       << ",cc=" << pBase->countryCode
-      << ",bm=" << pBase->blockMode << ",bacid=" << pBase->blockAnonymousCID << ",bicid=" << pBase->blockAnonymousCID
+      << ",bm=" << pBase->blockMode << ",bacid=" << pBase->blockAnonymousCID << ",bicid=" << pBase->blockInvalidCID
       << ",on=" << pBase->onlineCheck << ",ol=" << pBase->onlineLookup;
   return oss.str();
 }
@@ -206,8 +212,10 @@ std::string Settings::toString(const struct SettingBase* pBase) {
 std::string Settings::toString(const struct SettingSipAccount* pSip) {
   std::ostringstream oss;
   oss << Settings::toString(&pSip->base)
-      << ",fd=" << pSip->fromDomain
-      << ",fu=" << pSip->fromUsername;// << ",fp=" << fromPassword;
+      << ",d=" << pSip->domain
+      << ",u=" << pSip->username
+      << ",r=" << pSip->realm
+      << ",s=" << pSip->secure;
   return oss.str();
 }
 
