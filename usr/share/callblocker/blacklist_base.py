@@ -51,19 +51,18 @@ class BlacklistBase(object):
             return name
         return name[0:NAME_MAX_LENGTH - 3] + "..."
 
-    def preserve_dates(self, result, old_result):
-        for i in range(0, len(result)):
-            n = result[i]["number"]
-            for o in old_result:
-                if n == o["number"]:
-                    # was already in the list
-                    result[i]["date_created"] = o["date_created"]
-                    if result[i]["name"] == o["name"]:
+    def preserve_dates(self, new_entries, old_entries):
+        for n in new_entries:
+            for o in old_entries:
+                if n["number"] == o["number"]:
+                    # was already in the old list
+                    n["date_created"] = o["date_created"]
+                    if n["name"] == o["name"]:
                         # did not change at all
-                        result[i]["date_modified"] = o["date_modified"]
+                        n["date_modified"] = o["date_modified"]
                         #self.log.debug("found")
                     break
-        return result
+        return new_entries
 
     # must be implemented in the inherited class
     def get_result(self, args, last_update):
@@ -73,19 +72,19 @@ class BlacklistBase(object):
         if (args.debug): self.log.setLevel(logging.DEBUG)
 
         last_update = ""
-        json_data = None
+        old_json = None
         try:
             data = open(json_filename, "r").read()
-            json_data = json.loads(data)
-            last_update = json_data["last_update"]
+            old_json = json.loads(data)
+            last_update = old_json["last_update"]
             if last_update: self.log.debug("old last_update: %s" % last_update)
         except (IOError, KeyError):
             pass
 
         result = self.get_result(args, last_update)
 
-        if json_data is not None and "entries" in json_data:
-            result["entries"] = self.preserve_dates(result["entries"], json_data["entries"])
+        if old_json is not None and "entries" in old_json:
+            result["entries"] = self.preserve_dates(result["entries"], old_json["entries"])
 
         with open(json_filename, 'w') as outfile:
             json.dump(result, outfile, indent=2)
