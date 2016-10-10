@@ -43,7 +43,7 @@ class BlacklistBase(object):
 
     def http_get(self, url):
         self.log.debug("http_get: '%s'" % url)
-        data = urllib2.urlopen(url, timeout=5)
+        data = urllib2.urlopen(url, timeout=30)
         return data.read()
 
     def minimize_name(self, name):
