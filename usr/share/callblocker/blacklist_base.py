@@ -23,6 +23,7 @@ import sys, argparse
 import logging
 import urllib2
 import json
+import codecs
 
 
 NAME_MAX_LENGTH = 200
@@ -111,7 +112,8 @@ class BlacklistBase(object):
         last_update = ""
         old_json = None
         try:
-            data = open(json_filename, "r").read()
+            with open(json_filename, "r") as f:
+                data = f.read().decode("utf-8-sig")
             old_json = json.loads(data)
             last_update = old_json["last_update"]
             if last_update: self.log.debug("old last_update: %s" % last_update)
@@ -123,8 +125,8 @@ class BlacklistBase(object):
         if old_json is not None and "entries" in old_json:
             result["entries"] = self.preserve_dates(result["entries"], old_json["entries"])
 
-        with open(json_filename, 'w') as outfile:
-            json.dump(result, outfile, indent=2)
+        with codecs.open(json_filename, "w", encoding="utf-8") as f:
+            json.dump(result, f, indent=2, ensure_ascii=False)
 
         # no error occurred
         sys.exit(0)

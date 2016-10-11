@@ -31,7 +31,7 @@ SETTINGS_FILE = os.path.join(config.CALLBLOCKER_SYSCONFDIR, "settings.json")
 
 def handle_phones(environ, start_response, params):
   with open(SETTINGS_FILE) as f:
-    jj = json.load(f)
+    jj = json.loads(f.read().decode("utf-8-sig"))
 
   if environ.get('REQUEST_METHOD', '') == "POST":
     post = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
@@ -50,8 +50,8 @@ def handle_phones(environ, start_response, params):
         phone.pop("realm", None)
         phone.pop("secure", None)
     jj["phones"] = json_phones["items"]
-    with open(SETTINGS_FILE, 'w') as f:
-      json.dump(jj, f, indent=4)
+    with codecs.open(SETTINGS_FILE, "w", encoding="utf-8") as f:
+      json.dump(jj, f, indent=4, ensure_ascii=False)
     return
 
   all = []
@@ -79,7 +79,7 @@ def handle_phones(environ, start_response, params):
 
 def handle_online_credentials(environ, start_response, params):
   with open(SETTINGS_FILE) as f:
-    jj = json.load(f)
+    jj = json.loads(f.read().decode("utf-8-sig"))
 
   if environ.get('REQUEST_METHOD', '') == "POST":
     post = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
@@ -130,12 +130,12 @@ def handle_get_list(environ, start_response, params):
     post = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
     #print >> sys.stderr, 'POST data=%s\n' % post.getvalue('data')
     json_list = json.loads(post.getvalue('data'))
-    with open(filename, 'w') as f:
-      json.dump({"name": json_list["label"], "entries": json_list["items"]}, f, indent=4)
+    with codecs.open(filename, "w", encoding="utf-8") as f:
+      json.dump({"name": json_list["label"], "entries": json_list["items"]}, f, indent=2, ensure_ascii=False)
     return
 
   with open(filename) as f:
-    jj = json.load(f)
+    jj = json.loads(f.read().decode("utf-8-sig"))
   all = jj["entries"]
   # sort entries by name
   all = sorted(all, key=lambda k: k['name']) 
@@ -199,7 +199,7 @@ def handle_get_lists(environ, start_response, params):
 
     def get_contry_code():
       with open(SETTINGS_FILE) as f:
-        jj = json.load(f)
+        jj = json.loads(f.read().decode("utf-8-sig"))
       phones = jj["phones"]
       return phones[0]["country_code"]
 
@@ -239,14 +239,14 @@ def handle_get_lists(environ, start_response, params):
   # we need "main.json" to keep app.js simple
   mainfilename = os.path.join(base, "main.json")
   if not mainfilename in files:
-    with open(mainfilename, 'w') as f:
-      json.dump({"name": "main", "entries": []}, f, indent=4)
+    with codecs.open(mainfilename, "w", encoding="utf-8") as f:
+      json.dump({"name": "main", "entries": []}, f, indent=2, ensure_ascii=False)
     files.append(mainfilename)
     
   all = []
   for fname in files:
     with open(fname) as f:
-      jj = json.load(f)
+      jj = json.loads(f.read().decode("utf-8-sig"))
     all.append({"name": jj["name"], "file": os.path.basename(fname)})
 
   all_count = len(all)
@@ -267,4 +267,3 @@ def handle_get_lists(environ, start_response, params):
   ]
   start_response('200 OK', headers)
   return [json.dumps({"identifier": "file", "label": "name", "numRows": all_count, "items": items})]
-
