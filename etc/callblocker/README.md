@@ -68,6 +68,13 @@ Fields                | Values       | Description
 "online_credentials"  | | In this section you can define credentials, which are needed by some [online check](#onlineCheck) and [online lookup](#onlineLookup) scripts.
 
 
+## Privacy
+Try to avoid as many online checks and lookups as possible. Each time the phone number gets through the internet and the
+used sites may this phone number. Good strategies to do so are:
+- use whitelist of your known good phone numbers (importing your address book)
+- use offline blacklist
+
+
 ## <a name="onlineCheck"></a> Online check option
 This option selects the online check site to verify the number from the incoming call. If the number is listed as spam, the callblocker will block it.
 
