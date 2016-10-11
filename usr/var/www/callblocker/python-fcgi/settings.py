@@ -22,6 +22,7 @@ import os, sys, json, re
 import subprocess
 import cgi
 from datetime import datetime
+import codecs
 
 import config
 
@@ -29,9 +30,18 @@ import config
 SETTINGS_FILE = os.path.join(config.CALLBLOCKER_SYSCONFDIR, "settings.json")
 
 
-def handle_phones(environ, start_response, params):
+def _load_settings():
+  if not os.path.exists(SETTINGS_FILE):
+    with codecs.open(SETTINGS_FILE, "w", encoding="utf-8") as f:
+      empty = {"log_level": "info", "pjsip_log_level": 0, "phones": []}
+      json.dump(empty, f, indent=2, ensure_ascii=False)
   with open(SETTINGS_FILE) as f:
     jj = json.loads(f.read().decode("utf-8-sig"))
+  return jj
+
+
+def handle_phones(environ, start_response, params):
+  jj = _load_settings()
 
   if environ.get('REQUEST_METHOD', '') == "POST":
     post = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
@@ -78,8 +88,7 @@ def handle_phones(environ, start_response, params):
 
 
 def handle_online_credentials(environ, start_response, params):
-  with open(SETTINGS_FILE) as f:
-    jj = json.loads(f.read().decode("utf-8-sig"))
+  jj = _load_settings()
 
   if environ.get('REQUEST_METHOD', '') == "POST":
     post = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
