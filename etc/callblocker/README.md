@@ -53,7 +53,7 @@ Fields                | Values       | Description
 ------                | ------       | -------
 "log_level"           | "error", "warn", "info" or "debug" | Logging level. Default is "info".
 "pjsip_log_level"     | 0-5          | Logging level of the pjsip library, for debugging proposes. Default is 0.
-"country_code"        | `+<X[Y][Z]>` | Your international country code (e.g. +33 for France)
+"country_code"        | `"+<X[Y][Z]>"` | Your international country code (e.g. +33 for France)
 "block_mode"          | "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only" | "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists. (whitelists not used)
 "block_anonymous_cid" | true, false  | optional: block all calls that have an anonymous/unknown caller ID. Default is false.
 "block_invalid_cid"   | true, false  | optional: block all calls that have an invalid caller ID. Default is false.
