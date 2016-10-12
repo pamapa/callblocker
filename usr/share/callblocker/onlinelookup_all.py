@@ -19,12 +19,10 @@
 #
 
 from __future__ import print_function
-import sys
+import os, sys
+import logging
 
 from online_base import OnlineBase
-from onlinelookup_tel_search_ch import OnlineLookupTelSearchCH
-from onlinelookup_dasoertliche_de import OnlineLookupDasOertlicheDE
-from onlinelookup_dasschnelle_at import OnlineLookupDasSchnelleAT
 
 
 #
@@ -35,12 +33,37 @@ if __name__ == "__main__":
     parser = base.get_parser("Online lookup via all supported sources")
     args = parser.parse_args()
 
-    all = [
-        OnlineLookupTelSearchCH(),
-        OnlineLookupDasOertlicheDE(),
-        OnlineLookupDasSchnelleAT()
-    ]
+    if args.debug: base.log.setLevel(logging.DEBUG)
+    
+    all = []
 
+    # dynamic use all "onlinelookup_x.py" modules
+    path = os.path.dirname(os.path.realpath(__file__))
+    base.log.debug("search in: %s" % path)
+    for fn in os.listdir(path):
+        if not os.path.isfile(os.path.join(path, fn)): continue
+        if not fn.startswith("onlinelookup_"): continue
+        if not fn.endswith(".py"): continue
+        if fn == "onlinelookup_all.py": continue
+        module_name = os.path.splitext(fn)[0]
+        base.log.debug("try to load: %s" % module_name)
+        found = False
+        try:
+            module = __import__(module_name)
+            for key in dir(module):
+                if key == "OnlineBase": continue
+                try:
+                    olClass = getattr(module, key)
+                    if issubclass(olClass, OnlineBase):
+                        base.log.debug("use module %s" % module_name)
+                        all.append(olClass())
+                        found = True
+                except TypeError: pass
+        except: pass
+        if not found:
+            base.log.warn("failed to load/use %s" % module_name)
+    
+    # lookup
     for m in all:
         for cc in m.supported_country_codes():
             if args.number.startswith(cc):
