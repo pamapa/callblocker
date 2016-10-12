@@ -84,7 +84,7 @@ class OnlineBase(object):
         # result in json format, if not found: empty fields
         j = json.dumps(result, encoding="utf-8", ensure_ascii=False)
         sys.stdout.write(j.encode("utf8"))
-        sys.stdout.write("\n")  # must be seperate line, to avoid conversion of json into ascii
+        sys.stdout.write("\n")  # must be separate line, to avoid conversion of json into ascii
 
         # no error occurred
         sys.exit(0)
