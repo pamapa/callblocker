@@ -1,12 +1,13 @@
 #!/bin/bash
 
-TEST_PATH=../../usr/share/callblocker
+BASE_PATH=`dirname $0`
+SCRIPT_PATH=$BASE_PATH/../../usr/share/callblocker
 
 UNKNOWN_CID="{\"name\": \"\"}"
 #echo $UNKNOWN_CID
 
 
-#python $TEST_PATH/onlinelookup_dasschnelle_at.py --number +436642503442 --debug
+#python $SCRIPT_PATH/onlinelookup_dasschnelle_at.py --number +436642503442 --debug
 #exit
 
 numbers='
@@ -17,7 +18,7 @@ numbers='
   +49897557354
 '
 for number in $numbers; do
-  res=`python $TEST_PATH/onlinelookup_all.py --number $number`
+  res=`python $SCRIPT_PATH/onlinelookup_all.py --number $number`
   if [ $? -ne 0 ]; then
     echo "ERROR: script failed"
     exit -1
