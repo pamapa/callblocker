@@ -94,7 +94,7 @@ which site to use, as all sites only support a certain region.
 
 Name                  | Site                           | Description
 ----                  | ----                           | -----------
-""                    | N/A                            | No online check is done
+""                    | N/A                            | No online lookup is done
 "all"                 | Automatic select               | Depending on the country code, it will automatically select one of the below
 "tel_search_ch"       | http://tel.search.ch           | Switzerland (+41). Free for non commercial use
 "dasschnelle_at"      | http://www.dasschnelle.at      | Austria (+43). Free for non commercial use
