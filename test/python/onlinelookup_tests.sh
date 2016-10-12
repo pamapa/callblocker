@@ -9,6 +9,7 @@ UNKNOWN_CID="{\"name\": \"\"}"
 echo "Executing onlinelookup tests..."
 
 #python $SCRIPT_PATH/onlinelookup_dasschnelle_at.py --number +436642503442 --debug
+#python $SCRIPT_PATH/onlinelookup_tel_search_ch.py --number +41265051361 --debug
 #exit
 
 echo "Execute onlinelookup_all.py tests..."
