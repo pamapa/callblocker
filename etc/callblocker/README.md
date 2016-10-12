@@ -96,8 +96,10 @@ Name                  | Site                           | Description
 ----                  | ----                           | -----------
 ""                    | N/A                            | No online lookup is done
 "all"                 | Automatic select               | Depending on the country code, it will automatically select one of the below
-"tel_search_ch"       | http://tel.search.ch           | Switzerland (+41). Free for non commercial use
-"dasschnelle_at"      | http://www.dasschnelle.at      | Austria (+43). Free for non commercial use
 "dasoertliche_de"     | http://www.dasoertliche.de     | Germany (+49). Free for non commercial use
+"dasschnelle_at"      | https://www.dasschnelle.at     | Austria (+43). Free for non commercial use
+"tel_search_ch"       | https://tel.search.ch          | Switzerland (+41). Free for non commercial use
+"pagesjaunes_fr"      | http://www.pagesjaunes.fr      | France (+33). Free for non commercial use
+"paginebianche_it"    | http://www.paginebianche.it    | Italy (+39). Free for non commercial use
 
 Developer hint: The online lookup name e.g. "tel_search_ch" leds to the python script name onlinelookup_tel_search_ch.py.
