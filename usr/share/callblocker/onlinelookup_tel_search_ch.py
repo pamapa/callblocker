@@ -38,11 +38,15 @@ class OnlineLookupTelSearchCH(OnlineBase):
         caller_name = unicode("")
         entries = soup.findAll("entry")
         for entry in entries:
-            name = entry.title.contents[0]
+            name = unicode(entry.title.contents[0])
+            # nachname, vorname -> vorname nachname
+            arr = name.split(", ")
+            if len(arr) == 2:
+                name = "%s %s" % (arr[1], arr[0])
             if len(caller_name) == 0:
-                caller_name = unicode(name)
+                caller_name = name
             else:
-                caller_name += "; " + unicode(name)
+                caller_name += "; " + name
 
         return self.onlinelookup_2_result(caller_name)
 
