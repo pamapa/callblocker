@@ -30,7 +30,7 @@ class OnlineLookupDasSchnelleAT(OnlineBase):
         return ["+43"]
 
     def handle_number(self, args, number):
-        url = "https://www.dasschnelle.at/ergebnisse?" + urllib.urlencode({"what": number})
+        url = "https://www.dasschnelle.at/ergebnisse?" + urllib.urlencode({"what": number}) + "&distance=0"
         content = self.http_get(url)
 
         #self.log.debug(content)
@@ -40,11 +40,12 @@ class OnlineLookupDasSchnelleAT(OnlineBase):
         caller_name = unicode("")
         entries = soup.findAll("article")
         for entry in entries:
-            eintrag_name = entry.findAll("h3", {"class": "eintrag_name"})[0]
-            name = eintrag_name.a.contents[0]
-            if eintrag_name.span:
-                vorname = eintrag_name.span.contents[0]
-                name = vorname + " " + name[:-2] # remove ', '
+            eintrag_name = entry.find("h3")
+            if eintrag_name:
+                name = eintrag_name.a.contents[0]
+                if eintrag_name.span:
+                    vorname = eintrag_name.span.contents[0]
+                    name = vorname + " " + name[:-2] # remove ', '
 
             if len(caller_name) == 0:
                 caller_name = unicode(name)
