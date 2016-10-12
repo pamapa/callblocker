@@ -6,10 +6,12 @@ SCRIPT_PATH=$BASE_PATH/../../usr/share/callblocker
 UNKNOWN_CID="{\"name\": \"\"}"
 #echo $UNKNOWN_CID
 
+echo "Executing onlinelookup tests..."
 
 #python $SCRIPT_PATH/onlinelookup_dasschnelle_at.py --number +436642503442 --debug
 #exit
 
+echo "Execute onlinelookup_all.py tests..."
 numbers='
   +33145537601
   +39885432087
