@@ -40,9 +40,10 @@ FileList::~FileList() {
 }
 
 bool FileList::load(const std::string& filename) {
+  Logger::debug("loading file %s", filename.c_str());
   m_filename = filename;
 
-  Logger::debug("loading file %s", m_filename.c_str());
+  m_entries.clear();
 
   std::ifstream in(m_filename);
   if (in.fail()) {
@@ -53,10 +54,9 @@ bool FileList::load(const std::string& filename) {
   std::stringstream buffer;
   buffer << in.rdbuf();
   std::string str = buffer.str();
+  in.close();
 
-  m_entries.clear();
   struct json_object* root = json_tokener_parse(str.c_str());
-
   if (!Utils::getObject(root, "name", true, m_filename, &m_name)) {
     return false;
   }
