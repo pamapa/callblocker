@@ -120,14 +120,14 @@ void FileList::addEntry(const std::string& rNumber, const std::string& rCallerNa
   m_entries.push_back(add);
 }
 
-void FileList::eraseAged(size_t days) {
+void FileList::eraseAged(size_t maxHours) {
   Logger::debug("erase age entries... %s", m_filename.c_str());
 
   std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
   m_entries.erase(std::remove_if(m_entries.begin(), m_entries.end(),
-                  [days, now](FileListEntry e) {
+                  [maxHours, now](FileListEntry e) {
                     size_t hours = std::chrono::duration_cast<std::chrono::hours>(now.time_since_epoch() - e.date_created.time_since_epoch()).count();
-                    return (hours / 24) > days ? true : false;
+                    return hours > maxHours ? true : false;
                   }),
                   m_entries.end());
 }

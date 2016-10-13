@@ -17,40 +17,44 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef FILELIST_H
-#define FILELIST_H
+#ifndef FILELISTS_CACHED_H
+#define FILELISTS_CACHED_H
 
-#include <string>
-#include <chrono>
-#include <vector>
+#include <pthread.h>
+
+#include "FileList.h"
 
 
-struct FileListEntry {
-  std::string number;
-  std::string name;
-  std::chrono::system_clock::time_point date_created;
+enum class CacheType {
+  OnlineLookup = 0,
+  OnlineCheck
 };
 
-class FileList {
+struct CacheFileList {
+  FileList* list;
+  bool saveNeeded;
+};
+
+class FileListsCached {
 private:
-  std::string m_filename;
-  std::string m_name;
-  std::vector<FileListEntry> m_entries;
+  pthread_mutex_t m_mutexLock;
+  std::string m_pathname;
+  
+  CacheFileList m_lists[2];
 
 public:
-  FileList();
-  virtual ~FileList();
-
-  bool load(const std::string& filename);
-  std::string getName();
-  bool isListed(const std::string& rNumber, std::string* pName);
-
-  void addEntry(const std::string& rNumber, const std::string& rName);
-  void eraseAged(size_t maxHours);
-  bool save();
-
+  FileListsCached(const std::string& rPathname);
+  virtual ~FileListsCached();
+  void run();
+  
+  void addEntry(const CacheType type, const std::string& rNumber, const std::string& rCallerName);
+  bool getEntry(const CacheType type, const std::string& rNumber, std::string* pCallerName);
+  
   void dump();
+
+private:
+  void load();
+  void clear();
 };
 
 #endif
-

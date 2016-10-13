@@ -24,7 +24,7 @@ callblockerd_LDADD = \
 
 noinst_LIBRARIES = libcallblockerd.a
 libcallblockerd_a_SOURCES = \
-  Logger.cpp Notify.cpp FileListsNotified.cpp FileList.cpp Utils.cpp Settings.cpp Block.cpp \
+  Logger.cpp Notify.cpp Utils.cpp FileList.cpp FileListsNotified.cpp FileListsCached.cpp Settings.cpp Block.cpp \
   Phone.cpp SipPhone.cpp SipAccount.cpp AnalogPhone.cpp Modem.cpp
 
 AM_CPPFLAGS = -Wall -DSYSCONFDIR=\"${sysconfdir}\" -DDATADIR=\"${datadir}\"
