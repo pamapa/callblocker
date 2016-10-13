@@ -57,7 +57,7 @@ bool FileList::load(const std::string& filename) {
   in.close();
 
   struct json_object* root = json_tokener_parse(str.c_str());
-  if (!Utils::getObject(root, "name", true, m_filename, &m_name)) {
+  if (!Utils::getObject(root, "name", true, m_filename, &m_name, "")) {
     return false;
   }
 
@@ -67,10 +67,10 @@ bool FileList::load(const std::string& filename) {
       struct json_object* entry = json_object_array_get_idx(entries, i);
       
       struct FileListEntry add;
-      if (!Utils::getObject(entry, "number", true, m_filename, &add.number)) {
+      if (!Utils::getObject(entry, "number", true, m_filename, &add.number, "")) {
         continue;
       }
-      if (!Utils::getObject(entry, "name", true, m_filename, &add.name)) {
+      if (!Utils::getObject(entry, "name", true, m_filename, &add.name, "")) {
         continue;
       }
       m_entries.push_back(add);

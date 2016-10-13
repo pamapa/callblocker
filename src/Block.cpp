@@ -151,7 +151,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
     if (pSettings->onlineLookup.length() != 0) {
       struct json_object* root;
       if (checkOnline("onlinelookup_", pSettings->onlineLookup, rNumber, validNumber, &root)) {
-        (void)Utils::getObject(root, "name", false, "script result", &callerName);
+        (void)Utils::getObject(root, "name", false, "script result", &callerName, "");
       }
     }
   }
@@ -198,14 +198,14 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
     struct json_object* root;
     if (checkOnline("onlinecheck_", pSettings->onlineCheck, rNumber, validNumber, &root)) {
       bool spam;
-      if (!Utils::getObject(root, "spam", true, "script result", &spam)) {
+      if (!Utils::getObject(root, "spam", true, "script result", &spam, false)) {
         return false;
       }
       if (spam) {
         *pListName = pSettings->onlineCheck;
-        (void)Utils::getObject(root, "name", false, "script result", pCallerName);
+        (void)Utils::getObject(root, "name", false, "script result", pCallerName, "");
         int score;
-        if (Utils::getObject(root, "score", false, "script result", &score)) {
+        if (Utils::getObject(root, "score", false, "script result", &score, 0)) {
           *pScore = std::to_string(score);
         }
         return true;

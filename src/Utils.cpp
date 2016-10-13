@@ -49,66 +49,69 @@ std::string Utils::pathBasename(const std::string& rPath) {
     return rPath.substr(pos + 1);
 }
 
-bool Utils::getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, std::string* pRes) {
+bool Utils::getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const std::string& rLocation,
+                      std::string* pRes, const std::string& rDefault) {
   struct json_object* n;
-  *pRes = "";
+  *pRes = rDefault;
   if (!json_object_object_get_ex(objbase, objname, &n)) {
-    if (logError) Logger::warn("%s not found in %s", objname, rLocation.c_str());
+    if (logNotFoundError) Logger::warn("%s not found in %s", objname, rLocation.c_str());
     return false;
   }
   if (json_object_get_type(n) != json_type_string) {
-    if (logError) Logger::warn("string type expected for %s in %s", objname, rLocation.c_str());
+    Logger::warn("string type expected for %s in %s", objname, rLocation.c_str());
     return false;
   }
   *pRes = json_object_get_string(n);
   return true;
 }
 
-bool Utils::getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, int* pRes) {
+bool Utils::getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const std::string& rLocation,
+                      int* pRes, const int rDefault) {
   struct json_object* n;
-   *pRes = 0;
+   *pRes = rDefault;
   if (!json_object_object_get_ex(objbase, objname, &n)) {
-    if (logError) Logger::warn("%s not found in %s", objname, rLocation.c_str());
+    if (logNotFoundError) Logger::warn("%s not found in %s", objname, rLocation.c_str());
     return false;
   }
   if (json_object_get_type(n) != json_type_int) {
-    if (logError) Logger::warn("integer type expected for %s in %s", objname, rLocation.c_str());
+    Logger::warn("integer type expected for %s in %s", objname, rLocation.c_str());
     return false;
   }
   *pRes = json_object_get_int(n);
   return true;
 }
 
-bool Utils::getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, bool* pRes) {
+bool Utils::getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const std::string& rLocation,
+                      bool* pRes, const bool rDefault) {
   struct json_object* n;
-  *pRes = false;
+  *pRes = rDefault;
   if (!json_object_object_get_ex(objbase, objname, &n)) {
-    if (logError) Logger::warn("%s not found in %s", objname, rLocation.c_str());
+    if (logNotFoundError) Logger::warn("%s not found in %s", objname, rLocation.c_str());
     return false;
   }
   if (json_object_get_type(n) != json_type_boolean) {
-    if (logError) Logger::warn("boolean type expected for %s in %s", objname, rLocation.c_str());
+    Logger::warn("boolean type expected for %s in %s", objname, rLocation.c_str());
     return false;
   }
   *pRes = (bool)json_object_get_boolean(n);
   return true;
 }
 
-bool Utils::getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const char* location,
+bool Utils::getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const std::string& rLocation,
                       std::chrono::system_clock::time_point* pRes, const std::chrono::system_clock::time_point& rDefault) {
   struct json_object* n;
   *pRes = rDefault;
   if (!json_object_object_get_ex(objbase, objname, &n)) {
-    if (logNotFoundError) Logger::warn("%s not found in %s", objname, location);
+    if (logNotFoundError) Logger::warn("%s not found in %s", objname, rLocation.c_str());
     return false;
   }
   if (json_object_get_type(n) != json_type_string) {
-    Logger::warn("string type expected for %s in %s", objname, location);
+    Logger::warn("string type expected for %s in %s", objname, rLocation.c_str());
     return false;
   }
   std::string str = json_object_get_string(n);
   if (!Utils::parseTime(str, pRes)) {
-    Logger::warn("invalid timestamp string found '%s' for %s in %s", str.c_str(), objname, location);
+    Logger::warn("invalid timestamp string found '%s' for %s in %s", str.c_str(), objname, rLocation.c_str());
     return false;
   }
   return true;

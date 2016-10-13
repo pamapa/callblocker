@@ -37,10 +37,13 @@ public:
   static std::string pathBasename(const std::string& rPath);
 
   // json
-  static bool getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, std::string* pRes);
-  static bool getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, int* pRes);
-  static bool getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, bool* pRes);
-  static bool getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const char* location,
+  static bool getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const std::string& rLocation,
+                        std::string* pRes, const std::string& rDefault);
+  static bool getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const std::string& rLocation,
+                        int* pRes, const int rDefault);
+  static bool getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const std::string& rLocation,
+                        bool* pRes, const bool rDefault);
+  static bool getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const std::string& rLocation,
                         std::chrono::system_clock::time_point* pRes, const std::chrono::system_clock::time_point& rDefault);
 
   // execute
