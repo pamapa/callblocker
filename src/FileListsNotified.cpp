@@ -17,7 +17,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "FileLists.h" // API
+#include "FileListsNotified.h" // API
 
 #include <string>
 #include <dirent.h>
@@ -28,8 +28,8 @@
 #include "Logger.h"
 
 
-FileLists::FileLists(const std::string& rPathname) : Notify(rPathname, IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) {
-  Logger::debug("FileLists::FileLists()...");
+FileListsNotified::FileListsNotified(const std::string& rPathname) : Notify(rPathname, IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) {
+  Logger::debug("FileListsNotified::FileListsNotified()...");
   m_pathname = rPathname;
 
   if (pthread_mutex_init(&m_mutexLock, NULL) != 0) {
@@ -39,12 +39,12 @@ FileLists::FileLists(const std::string& rPathname) : Notify(rPathname, IN_CLOSE_
   load();
 }
 
-FileLists::~FileLists() {
-  Logger::debug("FileLists::~FileLists()...");
+FileListsNotified::~FileListsNotified() {
+  Logger::debug("FileListsNotified::~FileListsNotified()...");
   clear();
 }
 
-void FileLists::run() {
+void FileListsNotified::run() {
   if (hasChanged()) {
     Logger::info("reload %s", m_pathname.c_str());
 
@@ -55,11 +55,10 @@ void FileLists::run() {
   }
 }
 
-bool FileLists::isListed(const std::string& rNumber, std::string* pListName, std::string* pCallerName) {
+bool FileListsNotified::isListed(const std::string& rNumber, std::string* pListName, std::string* pCallerName) {
   bool ret = false;
   pthread_mutex_lock(&m_mutexLock);
   for(size_t i = 0; i < m_lists.size(); i++) {
-    std::string msg;
     if (m_lists[i]->isListed(rNumber, pCallerName)) {
       *pListName = m_lists[i]->getName();
       ret = true;
@@ -70,7 +69,7 @@ bool FileLists::isListed(const std::string& rNumber, std::string* pListName, std
   return ret;
 }
 
-void FileLists::load() {
+void FileListsNotified::load() {
   DIR* dir = opendir(m_pathname.c_str());
   if (dir == NULL) {
     Logger::warn("open directory %s failed", m_pathname.c_str());
@@ -99,14 +98,14 @@ void FileLists::load() {
   closedir(dir);
 }
 
-void FileLists::clear() {
+void FileListsNotified::clear() {
   for(size_t i = 0; i < m_lists.size(); i++) {
     delete m_lists[i];
   }
   m_lists.clear();
 }
 
-void FileLists::dump() {
+void FileListsNotified::dump() {
   pthread_mutex_lock(&m_mutexLock);
   for(size_t i = 0; i < m_lists.size(); i++) {
     FileList* l = m_lists[i];

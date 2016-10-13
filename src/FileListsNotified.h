@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -17,8 +17,8 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef FILELISTS_H
-#define FILELISTS_H
+#ifndef FILELISTS_NOTIFIED_H
+#define FILELISTS_NOTIFIED_H
 
 #include <vector>
 #include <pthread.h>
@@ -27,15 +27,15 @@
 #include "Notify.h"
 
 
-class FileLists : public Notify {
+class FileListsNotified : public Notify {
 private:
   pthread_mutex_t m_mutexLock;
   std::string m_pathname;
   std::vector<FileList*> m_lists;
 
 public:
-  FileLists(const std::string& rDirname);
-  virtual ~FileLists();
+  FileListsNotified(const std::string& rDirname);
+  virtual ~FileListsNotified();
   void run();
 
   bool isListed(const std::string& rNumber, std::string* pListName, std::string* pCallerName);

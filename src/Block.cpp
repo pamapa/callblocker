@@ -30,8 +30,8 @@ Block::Block(Settings* pSettings) {
   Logger::debug("Block::Block()...");
   m_pSettings = pSettings;
 
-  m_pWhitelists = new FileLists(pSettings->getBasePath() + "/whitelists");
-  m_pBlacklists = new FileLists(pSettings->getBasePath() + "/blacklists");
+  m_pWhitelists = new FileListsNotified(pSettings->getBasePath() + "/whitelists");
+  m_pBlacklists = new FileListsNotified(pSettings->getBasePath() + "/blacklists");
 }
 
 Block::~Block() {

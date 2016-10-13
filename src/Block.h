@@ -23,7 +23,7 @@
 #include <string>
 #include <json-c/json.h>
 
-#include "FileLists.h"
+#include "FileListsNotified.h"
 #include "Settings.h"
 
 
@@ -33,8 +33,8 @@
 class Block {
 private:
   Settings* m_pSettings;
-  FileLists* m_pWhitelists;
-  FileLists* m_pBlacklists;
+  FileListsNotified* m_pWhitelists;
+  FileListsNotified* m_pBlacklists;
 
 public:
   Block(Settings* pSettings);
