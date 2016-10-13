@@ -27,6 +27,21 @@
 #include "Utils.h"
 
 
+static void TestCase_fileSystem()
+{
+  std::string res = Utils::pathJoin("/etc/callblocker/cache/", "a.json");
+  assert(res == "/etc/callblocker/cache/a.json");
+  res = Utils::pathJoin("/etc/callblocker/cache", "a.json");
+  assert(res == "/etc/callblocker/cache/a.json");
+
+  res = Utils::pathBasename("name.json");
+  assert(res == "name.json");
+  res = Utils::pathBasename("/etc/callblocker/cache/a.json");
+  assert(res == "a.json");
+  res = Utils::pathBasename("/etc/callblocker/cache/");
+  assert(res == "");
+}
+
 static void TestCase_string()
 {
   // startsWith
@@ -141,12 +156,23 @@ static void TestCase_parseCallerID()
   result.clear();
 }
 
+static void TestCase_time()
+{
+  std::string original = "2015-05-15 12:00:00 +0000";
+  std::chrono::system_clock::time_point tp;
+  assert(Utils::parseTime(original, &tp));
+  std::string reparsed = Utils::formatTime(tp);
+  assert(original == reparsed);
+}
+
 void Test_Utils_Run()
 {
   printf("Test_Utils_Run...\n");
   
+  TestCase_fileSystem();
   TestCase_string();
   TestCase_makeNumberInternational();
   TestCase_parseCallerID();
+  TestCase_time();
 }
 

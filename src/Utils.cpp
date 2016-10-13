@@ -31,6 +31,24 @@
 #include "Logger.h"
 
 
+#define PATH_SEPERATOR    '/'
+
+
+std::string Utils::pathJoin(const std::string& rPath, const std::string& rFilename) {
+    if (rPath.back() == PATH_SEPERATOR || rFilename.front() == PATH_SEPERATOR) {
+        return rPath + rFilename;
+    }
+    return rPath + PATH_SEPERATOR + rFilename;
+}
+
+std::string Utils::pathBasename(const std::string& rPath) {
+    std::string::size_type pos = rPath.rfind(PATH_SEPERATOR);
+    if (pos == std::string::npos) {
+        return rPath;
+    }
+    return rPath.substr(pos + 1);
+}
+
 bool Utils::getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, std::string* pRes) {
   struct json_object* n;
   *pRes = "";
@@ -73,6 +91,26 @@ bool Utils::getObject(struct json_object* objbase, const char* objname, bool log
     return false;
   }
   *pRes = (bool)json_object_get_boolean(n);
+  return true;
+}
+
+bool Utils::getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const char* location,
+                      std::chrono::system_clock::time_point* pRes, const std::chrono::system_clock::time_point& rDefault) {
+  struct json_object* n;
+  *pRes = rDefault;
+  if (!json_object_object_get_ex(objbase, objname, &n)) {
+    if (logNotFoundError) Logger::warn("%s not found in %s", objname, location);
+    return false;
+  }
+  if (json_object_get_type(n) != json_type_string) {
+    Logger::warn("string type expected for %s in %s", objname, location);
+    return false;
+  }
+  std::string str = json_object_get_string(n);
+  if (!Utils::parseTime(str, pRes)) {
+    Logger::warn("invalid timestamp string found '%s' for %s in %s", str.c_str(), objname, location);
+    return false;
+  }
   return true;
 }
 
@@ -133,12 +171,6 @@ void Utils::trim(std::string* pStr) {
   rightTrim(pStr);
 }
 
-std::string Utils::getBaseFilename(const std::string& rFilename) {
-  std::string::size_type pos = rFilename.find_last_of("/");
-  if (pos != std::string::npos) return rFilename.substr(pos + 1);
-  else return rFilename;
-}
-
 std::string Utils::escapeSqString(const std::string& rStr) {
   std::size_t n = rStr.length();
   std::string escaped;
@@ -152,6 +184,7 @@ std::string Utils::escapeSqString(const std::string& rStr) {
   return escaped;
 }
 
+// returns phone number in E.164 format
 void Utils::makeNumberInternational(const struct SettingBase* pSettings, std::string* pNumber, bool* pValid) {
 #if defined(HAVE_LIBPHONENUMBER)
   if (Utils::startsWith(*pNumber, "**")) {
@@ -251,5 +284,29 @@ void Utils::parseCallerID(std::string& rData, std::vector<std::pair<std::string,
     std::pair<std::string, std::string> p(key, val);
     pResult->push_back(p);
   }
+}
+
+std::string Utils::formatTime(const std::chrono::system_clock::time_point& rTp) {
+  // "2015-05-15 12:00:00 +0000"
+  
+  tm tm_tmp;
+  time_t time_t_tmp = std::chrono::system_clock::to_time_t(rTp);
+  gmtime_r(&time_t_tmp, &tm_tmp);
+ 
+  char timeFormat[32];
+  strftime(timeFormat, sizeof(timeFormat), "%Y-%m-%d %H:%M:%S +0000", &tm_tmp);
+  return std::string(timeFormat);
+}
+
+bool Utils::parseTime(const std::string& rStr, std::chrono::system_clock::time_point* pRes) {
+  // "2015-05-15 12:00:00 +0000"
+
+  std::tm tm_tmp;
+  if (strptime(rStr.c_str(), "%Y-%m-%d %H:%M:%S %z", &tm_tmp) == NULL) {
+    return false;
+  }
+  
+  *pRes = std::chrono::system_clock::from_time_t(timegm(&tm_tmp));
+  return true;
 }
 

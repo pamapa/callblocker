@@ -21,6 +21,7 @@
 #define UTILS_H
 
 #include <string>
+#include <chrono>
 
 #include "Settings.h"
 
@@ -31,23 +32,33 @@ typedef int pj_status_t;  // avoids inclusion of <pjsua-lib/pjsua.h>
 
 class Utils {
 public:
+  // file system
+  static std::string pathJoin(const std::string& rPath, const std::string& rFilename);
+  static std::string pathBasename(const std::string& rPath);
+
+  // json
   static bool getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, std::string* pRes);
   static bool getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, int* pRes);
   static bool getObject(struct json_object* objbase, const char* objname, bool logError, const std::string& rLocation, bool* pRes);
+  static bool getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const char* location,
+                        std::chrono::system_clock::time_point* pRes, const std::chrono::system_clock::time_point& rDefault);
 
+  // execute
   static bool executeCommand(const std::string& rCmd, std::string* pRes);
 
-  static std::string getPjStatusAsString(pj_status_t status);
-
   // string
+  static std::string getPjStatusAsString(pj_status_t status);
   static bool startsWith(const std::string& rStr, const char* pPrefix);
   static void trim(std::string* pStr);
-  static std::string getBaseFilename(const std::string& rFilename);
   static std::string escapeSqString(const std::string& rStr);
 
-  // returns phone number in E.164 format
+  // phone number
   static void makeNumberInternational(const struct SettingBase* pSettings, std::string* pNumber, bool* pValid);
   static void parseCallerID(std::string& rData, std::vector<std::pair<std::string, std::string> >* pResult);
+
+  // time
+  static std::string formatTime(const std::chrono::system_clock::time_point& rTp);
+  static bool parseTime(const std::string& rStr, std::chrono::system_clock::time_point* pRes);
 };
 
 #endif
