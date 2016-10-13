@@ -22,6 +22,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <algorithm>
 #include <stdio.h>
 #include <string.h>
 #include <json-c/json.h>
@@ -73,6 +74,8 @@ bool FileList::load(const std::string& filename) {
       if (!Utils::getObject(entry, "name", true, m_filename, &add.name, "")) {
         continue;
       }
+      (void)Utils::getObject(entry, "date_created", false, m_filename, &add.date_created, std::chrono::system_clock::now());
+
       m_entries.push_back(add);
     }
   } else {
@@ -86,18 +89,74 @@ std::string FileList::getName() {
   return m_name;
 }
 
-bool FileList::isListed(const std::string& number, std::string* pName) {
+bool FileList::isListed(const std::string& rNumber, std::string* pName) {
   for(size_t i = 0; i < m_entries.size(); i++) {
     struct FileListEntry* entry = &m_entries[i];
     const char* s = entry->number.c_str();
-    if (strncmp(s, number.c_str(), strlen(s)) == 0) {
+    if (strncmp(s, rNumber.c_str(), strlen(s)) == 0) {
       Logger::debug("FileList::isListed(number='%s') matched with '%s'/'%s' in file %s",
-        number.c_str(), s, entry->name.c_str(), m_filename.c_str());
-      *pName = entry->name;
+        rNumber.c_str(), s, entry->name.c_str(), m_filename.c_str());
+      if (pName != NULL) *pName = entry->name;
       return true;
     }
   }
   return false;
+}
+
+void FileList::addEntry(const std::string& rNumber, const std::string& rCallerName) {
+  Logger::debug("FileList::addEntry(rNumber='%s', rCallerName='%s') to file %s",
+    rNumber.c_str(), rCallerName.c_str(), m_filename.c_str());
+
+  if (isListed(rNumber, NULL)) {
+    Logger::warn("internal error, entry '%s' already part of list", rNumber.c_str());
+    return;
+  }
+
+  struct FileListEntry add;
+  add.number = rNumber;
+  add.name = rCallerName;
+  add.date_created = std::chrono::system_clock::now();
+
+  m_entries.push_back(add);
+}
+
+void FileList::eraseAged(size_t days) {
+  Logger::debug("erase age entries... %s", m_filename.c_str());
+
+  std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+  m_entries.erase(std::remove_if(m_entries.begin(), m_entries.end(),
+                  [days, now](FileListEntry e) {
+                    size_t hours = std::chrono::duration_cast<std::chrono::hours>(now.time_since_epoch() - e.date_created.time_since_epoch()).count();
+                    return (hours / 24) > days ? true : false;
+                  }),
+                  m_entries.end());
+}
+
+bool FileList::save() {
+  Logger::debug("saving file %s", m_filename.c_str());
+  
+  std::ofstream out(m_filename);
+  if (out.fail()) {
+    Logger::warn("saving file %s failed", m_filename.c_str());
+    return false;
+  }
+  
+  out << "{\n";
+  out << "  \"name\": \"" << Utils::pathBasename(m_filename) << "\",\n";
+  out << "  \"entries\": [\n"; 
+  for(size_t i = 0; i < m_entries.size(); i++) {
+    struct FileListEntry* entry = &m_entries[i];
+    out << "      {\n";
+    out << "        \"number\": \"" << entry->number << "\",\n";
+    out << "        \"name\": \"" << entry->name << "\",\n";
+    out << "        \"date_created\": \"" << Utils::formatTime(entry->date_created) << "\"\n";
+    out << "      },\n";
+  }
+  out << "    ]\n";
+  out << "}\n";
+  
+  out.close();
+  return true;
 }
 
 void FileList::dump() {

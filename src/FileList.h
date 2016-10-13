@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -21,12 +21,14 @@
 #define FILELIST_H
 
 #include <string>
+#include <chrono>
 #include <vector>
 
 
 struct FileListEntry {
   std::string number;
   std::string name;
+  std::chrono::system_clock::time_point date_created;
 };
 
 class FileList {
@@ -41,7 +43,12 @@ public:
 
   bool load(const std::string& filename);
   std::string getName();
-  bool isListed(const std::string& number, std::string* pName);
+  bool isListed(const std::string& rNumber, std::string* pName);
+
+  void addEntry(const std::string& rNumber, const std::string& rName);
+  void eraseAged(size_t days);
+  bool save();
+
   void dump();
 };
 
