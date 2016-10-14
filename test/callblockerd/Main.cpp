@@ -38,11 +38,11 @@ int main(int argc, char* argv[]) {
   std::string exePath = Utils::pathDirname(Utils::pathAbsname(argv[0]));
   //printf("exePath: %s\n", exePath.c_str());
 
-  Logger::setLogLevel("warn");
+  Logger::setLogLevel(LogLevel::WARN);
   Test_Utils_Run();
-  Logger::setLogLevel("warn");
+  Logger::setLogLevel(LogLevel::WARN);
   Test_Block_Run(exePath);
-  Logger::setLogLevel("warn");
+  Logger::setLogLevel(LogLevel::WARN);
   Test_FileListsCache_Run(exePath);
 
   Logger::stop();

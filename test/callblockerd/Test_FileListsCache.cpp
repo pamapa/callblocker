@@ -24,6 +24,7 @@
 #include <assert.h>
 
 #include "FileListsCache.h"
+#include "Logger.h"
 #include "Utils.h"
 
 
@@ -37,17 +38,55 @@ static void checkEntry(FileListsCache* pCache, const CacheType type,
   }
 }
 
-void Test_FileListsCache_Run(std::string exePath) {
-  printf("Test_FileListsCache_Run...\n");
-
+static void Test_Empty(std::string exePath) {
   char tmpl[] = "/tmp/testcallblockerd.XXXXXX";
   char* tempPath = mkdtemp(tmpl);
   assert(tempPath != NULL);  
   //printf("tempPath: %s\n", tempPath);
 
+  // start empty
+  LogLevel oldLevel = Logger::setLogLevel(LogLevel::ERROR);
+  FileListsCache* pCache = new FileListsCache(tempPath);
+  Logger::setLogLevel(oldLevel);
+  //pCache->dump();
+
+  // OnlineLookup: append
+  pCache->addEntry(CacheType::OnlineLookup, "+22222221", "Entry Add 1");
+  pCache->addEntry(CacheType::OnlineLookup, "+22222222", "Entry Add 2");
+  //pCache->dump();
+  checkEntry(pCache, CacheType::OnlineLookup, "+22222221", true, "Entry Add 1");
+  checkEntry(pCache, CacheType::OnlineLookup, "+22222222", true, "Entry Add 2");
+
+  // OnlineLookup: append
+  pCache->addEntry(CacheType::OnlineCheck, "+33333331", "Check Add 1");
+  pCache->addEntry(CacheType::OnlineCheck, "+33333332", "Check Add 2");
+  //pCache->dump();
+  checkEntry(pCache, CacheType::OnlineCheck, "+33333331", true, "Check Add 1");
+  checkEntry(pCache, CacheType::OnlineCheck, "+33333332", true, "Check Add 2");
+
+  pCache->run();
+  //pCache->dump();
+  checkEntry(pCache, CacheType::OnlineLookup, "+22222221", true, "Entry Add 1");
+  checkEntry(pCache, CacheType::OnlineLookup, "+22222222", true, "Entry Add 2");
+  checkEntry(pCache, CacheType::OnlineCheck, "+33333331", true, "Check Add 1");
+  checkEntry(pCache, CacheType::OnlineCheck, "+33333332", true, "Check Add 2");
+
+  delete(pCache);
+
+  remove(Utils::pathJoin(tempPath, "onlinelookup.json").c_str());
+  remove(Utils::pathJoin(tempPath, "onlinecheck.json").c_str());
+  remove(tempPath);
+}
+
+static void Test_WithAged(std::string exePath) {
+
+  char tmpl[] = "/tmp/testcallblockerd.XXXXXX";
+  char* tempPath = mkdtemp(tmpl);
+  assert(tempPath != NULL);  
+  //printf("tempPath: %s\n", tempPath);
   std::string cachePath = Utils::pathJoin(exePath, "data/etc/cache");
 
-  // precondtion: contains some old entries
+  // procondtion: already contains some old entries
   assert(Utils::fileCopy(Utils::pathJoin(cachePath, "onlinelookup.json"), Utils::pathJoin(tempPath, "onlinelookup.json")));
   assert(Utils::fileCopy(Utils::pathJoin(cachePath, "onlinecheck.json"), Utils::pathJoin(tempPath, "onlinecheck.json")));
 
@@ -57,22 +96,34 @@ void Test_FileListsCache_Run(std::string exePath) {
   checkEntry(pCache, CacheType::OnlineLookup, "+11111112", true, "Entry Get 2");
 
   // append
-  pCache->addEntry(CacheType::OnlineLookup, "+22222222", "Entry Add 1");
+  pCache->addEntry(CacheType::OnlineLookup, "+22222221", "Entry Add 1");
+  pCache->addEntry(CacheType::OnlineLookup, "+22222222", "Entry Add 2");
   //pCache->dump();
   checkEntry(pCache, CacheType::OnlineLookup, "+11111111", true, "Entry Get 1");
   checkEntry(pCache, CacheType::OnlineLookup, "+11111112", true, "Entry Get 2");
-  checkEntry(pCache, CacheType::OnlineLookup, "+22222222", true, "Entry Add 1");
+  checkEntry(pCache, CacheType::OnlineLookup, "+22222221", true, "Entry Add 1");
+  checkEntry(pCache, CacheType::OnlineLookup, "+22222222", true, "Entry Add 2");
 
   // age
   pCache->run();
   //pCache->dump();
   checkEntry(pCache, CacheType::OnlineLookup, "+11111111", false, "");
   checkEntry(pCache, CacheType::OnlineLookup, "+11111112", false, "");
-  checkEntry(pCache, CacheType::OnlineLookup, "+22222222", true, "Entry Add 1");
+  checkEntry(pCache, CacheType::OnlineLookup, "+22222221", true, "Entry Add 1");
+  checkEntry(pCache, CacheType::OnlineLookup, "+22222222", true, "Entry Add 2");
 
   delete(pCache);
+
+
   remove(Utils::pathJoin(tempPath, "onlinelookup.json").c_str());
   remove(Utils::pathJoin(tempPath, "onlinecheck.json").c_str());
   remove(tempPath);
+}
+
+void Test_FileListsCache_Run(std::string exePath) {
+  printf("Test_FileListsCache_Run...\n");
+
+  Test_Empty(exePath);
+  Test_WithAged(exePath);
 }
 

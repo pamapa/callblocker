@@ -25,11 +25,11 @@
 
 
 bool Logger::s_useSyslog = false;
-int Logger::s_logLevel = LOG_INFO;
+LogLevel Logger::s_logLevel = LogLevel::INFO;
 
 void Logger::start(bool useSyslog) {
   s_useSyslog = useSyslog;
-  s_logLevel = LOG_INFO;
+  s_logLevel = LogLevel::INFO;
   if (s_useSyslog) {
     openlog("callblockerd", 0, LOG_USER);
   }
@@ -41,70 +41,73 @@ void Logger::stop() {
   }
 }
 
-void Logger::setLogLevel(std::string level) {
-  if (level == "debug") s_logLevel = LOG_DEBUG;
-  else if (level == "info") s_logLevel = LOG_INFO;
-  else if (level == "notice") s_logLevel = LOG_NOTICE;
-  else if (level == "warn") s_logLevel = LOG_WARNING;
-  else if (level == "error")s_logLevel = LOG_ERR;
-  else {
-    s_logLevel = LOG_INFO;
-    Logger::warn("invalid settings file: unknown log_level %s", level.c_str());
-  }
+LogLevel Logger::setLogLevel(LogLevel logLevel) {
+  LogLevel oldLogLevel = s_logLevel;
+  s_logLevel = logLevel;
+  return oldLogLevel;
 }
 
 void Logger::error(const char* format, ...) {
   va_list ap;
   va_start(ap, format);
-  message(LOG_ERR, format, ap);
+  message(LogLevel::ERROR, format, ap);
   va_end(ap);
 }
 
 void Logger::warn(const char* format, ...) {
   va_list ap;
   va_start(ap, format);
-  message(LOG_WARNING, format, ap);
+  message(LogLevel::WARN, format, ap);
   va_end(ap);
 }
 
 void Logger::notice(const char* format, ...) {
   va_list ap;
   va_start(ap, format);
-  message(LOG_NOTICE, format, ap);
+  message(LogLevel::NOTICE, format, ap);
   va_end(ap);
 }
 
 void Logger::info(const char* format, ...) {
   va_list ap;
   va_start(ap, format);
-  message(LOG_INFO, format, ap);
+  message(LogLevel::INFO, format, ap);
   va_end(ap);
 }
 
 void Logger::debug(const char* format, ...) {
   va_list ap;
   va_start(ap, format);
-  message(LOG_DEBUG, format, ap);
+  message(LogLevel::DEBUG, format, ap);
   va_end(ap);
 }
 
-void Logger::message(int priority, const char* format, va_list ap) {
-  if (priority > s_logLevel) return;
+void Logger::message(LogLevel level, const char* format, va_list ap) {
+  if (level > s_logLevel) return;
 
   va_list ap2;
   va_copy(ap2, ap);
   if (s_useSyslog) {
+    int priority;
+    switch (level) {
+      default:
+      case LogLevel::ERROR:  priority = LOG_ERR; break;
+      case LogLevel::WARN:   priority = LOG_WARNING; break;
+      case LogLevel::NOTICE: priority = LOG_NOTICE; break;
+      case LogLevel::INFO:   priority = LOG_INFO; break;
+      case LogLevel::DEBUG:  priority = LOG_DEBUG; break;
+    }
     vsyslog(priority, format, ap);
   } else {
     FILE* stream;
     std::string fmt;
-    switch (priority) {
+    switch (level) {
       default:
-      case LOG_ERR:     stream = stderr; fmt = "ERROR:  ";  break;
-      case LOG_WARNING: stream = stderr; fmt = "WARN:   ";  break;
-      case LOG_NOTICE:  stream = stdout; fmt = "NOTICE: ";  break;
-      case LOG_INFO:    stream = stdout; fmt = "INFO:   ";  break;
-      case LOG_DEBUG:   stream = stdout; fmt = "DEBUG:  ";  break;
+      case LogLevel::ERROR:  stream = stderr; fmt = "ERROR:  ";  break;
+      case LogLevel::WARN:   stream = stderr; fmt = "WARN:   ";  break;
+      case LogLevel::NOTICE: stream = stdout; fmt = "NOTICE: ";  break;
+      case LogLevel::INFO:   stream = stdout; fmt = "INFO:   ";  break;
+      case LogLevel::DEBUG:  stream = stdout; fmt = "DEBUG:  ";  break;
     }
     fmt += format;
     fmt += "\n";

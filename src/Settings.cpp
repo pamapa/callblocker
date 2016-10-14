@@ -76,10 +76,17 @@ bool Settings::load() {
 
   struct json_object* root = json_tokener_parse(str.c_str());
 
-  std::string log_level;
-  if (Utils::getObject(root, "log_level", true, m_filename, &log_level, "info")) {
-    Logger::setLogLevel(log_level);
-  }
+  std::string strLogLevel;
+  (void)Utils::getObject(root, "log_level", true, m_filename, &strLogLevel, "info");
+  LogLevel logLevel = LogLevel::INFO;
+  if (strLogLevel == "debug") logLevel = LogLevel::DEBUG;
+  else if (strLogLevel == "info") logLevel = LogLevel::INFO;
+  else if (strLogLevel == "notice") logLevel = LogLevel::NOTICE;
+  else if (strLogLevel == "warn") logLevel = LogLevel::WARN;
+  else if (strLogLevel == "error")logLevel = LogLevel::ERROR;
+  else Logger::warn("ignore invalid log_level %s", strLogLevel.c_str());
+  (void)Logger::setLogLevel(logLevel);
+
 
   Logger::debug("loading file %s", m_filename.c_str());
 

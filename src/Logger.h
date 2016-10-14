@@ -24,11 +24,19 @@
 #include <string>
 
 
+enum class LogLevel {
+  ERROR = 3,
+  WARN,
+  NOTICE,
+  INFO,
+  DEBUG,
+};
+
 class Logger {
 public:
   static void start(bool useSyslog);
   static void stop();
-  static void setLogLevel(std::string level);
+  static LogLevel setLogLevel(LogLevel logLevel);
 
   static void error(const char* format, ...);
   static void warn(const char* format, ...);
@@ -38,9 +46,9 @@ public:
 
 private:
   static bool s_useSyslog;
-  static int s_logLevel;
+  static LogLevel s_logLevel;
 
-  static void message(int priority, const char* format, va_list ap);
+  static void message(LogLevel level, const char* format, va_list ap);
 };
 
 #endif
