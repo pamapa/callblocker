@@ -171,6 +171,7 @@ require(["dijit/ConfirmDialog",
   // Configuration
   // --------------------------------------------------------------------------
   function createListStore(url) {
+    // console.log("createListStore: ", url);
     var store = new dojo.data.ItemFileWriteStore({
       url: url
     });
@@ -622,7 +623,8 @@ require(["dijit/ConfirmDialog",
     dojo.connect(listSelect, "onChange", function(evt) {
       //console.log("dojo.connect");
       // force load
-      grid.setStore(createListStore(api_base.concat("/get_list?", url_param, "&filename=", evt)));
+      var listStore = createListStore(api_base.concat("/get_list?", url_param, "&filename=", evt));
+      grid.setStore(listStore);
       // allow/disallow features
       if (evt == "main.json") {
         // allow editing
@@ -707,8 +709,16 @@ require(["dijit/ConfirmDialog",
 
 
   // --------------------------------------------------------------------------
-  // Cache
+  // Diagnostics
   // --------------------------------------------------------------------------
+  function createJournalErrorWarnGrid() {
+    return createJournalGrid(api_base.concat("/journal"));
+  }
+
+  function createJournalAllGrid() {
+    return createJournalGrid(api_base.concat("/journal?all=1"));
+  }
+
   function createCacheListX(url_param) {
     var menu = new dijit.Menu();
     var deleteMenuItem = new dijit.MenuItem({
@@ -758,18 +768,6 @@ require(["dijit/ConfirmDialog",
 
 
   // --------------------------------------------------------------------------
-  // Diagnostics
-  // --------------------------------------------------------------------------
-  function createJournalErrorWarnGrid() {
-    return createJournalGrid(api_base.concat("/journal"));
-  }
-
-  function createJournalAllGrid() {
-    return createJournalGrid(api_base.concat("/journal?all=1"));
-  }
-
-
-  // --------------------------------------------------------------------------
   // Main
   // --------------------------------------------------------------------------
   function createTree() {  
@@ -778,7 +776,7 @@ require(["dijit/ConfirmDialog",
       label: "name",
       items: [
         { id: "root", name: "Root", func: null,
-          children: [{_reference: "calllog"}, {_reference: "config"}, {_reference: "cache"}, {_reference: "diag"}]
+          children: [{_reference: "calllog"}, {_reference: "config"}, {_reference: "diag"}]
         },
         { id: "calllog", name: "Caller Log", func: createCallerLogGrid},
 
@@ -794,7 +792,10 @@ require(["dijit/ConfirmDialog",
         { id: "config_whitelists", name:"Whitelists", func: createWhitelist},
         { id: "config_blacklists", name:"Blacklists", func: createBlacklist},
 
-        // Cache
+        // Diagnostics
+        { id: "diag", name: "Diagnostics", func: null,
+          children: [{_reference: "cache"}, {_reference: "diag_error_warn"}, {_reference: "diag_all"}]
+        },
         { id: "cache", name: "Cache", func: null,
           children:[
             {_reference:"cache_onlinelookup"}, {_reference:"cache_onlinecheck"}
@@ -802,11 +803,6 @@ require(["dijit/ConfirmDialog",
         },
         { id: "cache_onlinelookup", name: "OnlineLookup", func: createOnlineLookuplist},
         { id: "cache_onlinecheck", name: "OnlineCheck", func: createOnlineChecklist},
-
-        // Diagnostics
-        { id: "diag", name: "Diagnostics", func: null,
-          children: [{_reference: "diag_error_warn"}, {_reference: "diag_all"}]
-        },
         { id: "diag_error_warn", name: "Error/Warnings", func: createJournalErrorWarnGrid},
         { id: "diag_all", name: "All", func: createJournalAllGrid}
       ]
