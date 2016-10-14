@@ -58,6 +58,9 @@ sudo systemctl start callblockerd.service
 
 
 ## <a name="webInterface"></a> Install web interface on Linux
+The installation of the web interface is optional, the callblock daemon works perfectly without it.
+The web interface allows to view the caller log, change settings and diagnose problems.
+
 ```bash
 sudo apt-get install lighttpd python-flup libjs-dojo-core libjs-dojo-dijit libjs-dojo-dojox
 sudo usermod -a -G systemd-journal www-data
