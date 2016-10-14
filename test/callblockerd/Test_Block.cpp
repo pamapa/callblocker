@@ -27,31 +27,13 @@
 #include <assert.h>
 
 #include "Settings.h"
+#include "Utils.h"
 #include "Block.h"
 
 
-static std::string getModuleFileName() {
-  char path[PATH_MAX];
-  char dest[PATH_MAX];
-  pid_t pid = getpid();
-  sprintf(path, "/proc/%d/exe", pid);
-  assert(readlink(path, dest, PATH_MAX) != -1);
-  std::string ret = dest;
-  return ret;
-}
-
-static std::string getTestEtcPath() {
-  std::string etc = getModuleFileName();
-  std::string::size_type pos = etc.find_last_of("/\\");
-  assert(pos != std::string::npos);
-  etc.erase(pos);
-  etc += "/data/etc";
-  return etc;
-}
-
-static void TestCase_logging_only()
+static void TestCase_logging_only(std::string exePath)
 {
-  std::string etc = getTestEtcPath();
+  std::string etc = Utils::pathJoin(exePath, "data/etc");
   //printf("etc: %s\n", etc.c_str());
   Settings* settings = new Settings(etc);
   Block* block = new Block(settings);
@@ -116,9 +98,9 @@ static void TestCase_logging_only()
   assert(msg.compare("Incoming call: number='+493456789012345678' invalid") == 0);
 }
 
-static void TestCase_whitelists_only()
+static void TestCase_whitelists_only(std::string exePath)
 {
-  std::string etc = getTestEtcPath();
+  std::string etc = Utils::pathJoin(exePath, "data/etc");
   //printf("etc: %s\n", etc.c_str());
   Settings* settings = new Settings(etc);
   Block* block = new Block(settings);
@@ -183,9 +165,9 @@ static void TestCase_whitelists_only()
   assert(msg.compare("Incoming call: number='+493456789012345678' blocked invalid") == 0);
 }
 
-static void TestCase_whitelists_and_blacklists()
+static void TestCase_whitelists_and_blacklists(std::string exePath)
 {
-  std::string etc = getTestEtcPath();
+  std::string etc = Utils::pathJoin(exePath, "data/etc");
   //printf("etc: %s\n", etc.c_str());
   Settings* settings = new Settings(etc);
   Block* block = new Block(settings);
@@ -250,9 +232,9 @@ static void TestCase_whitelists_and_blacklists()
   assert(msg.compare("Incoming call: number='+493456789012345678' blocked invalid") == 0);
 }
 
-static void TestCase_blacklists_only()
+static void TestCase_blacklists_only(std::string exePath)
 {
-  std::string etc = getTestEtcPath();
+  std::string etc = Utils::pathJoin(exePath, "data/etc");
   //printf("etc: %s\n", etc.c_str());
   Settings* settings = new Settings(etc);
   Block* block = new Block(settings);
@@ -317,13 +299,13 @@ static void TestCase_blacklists_only()
   assert(msg.compare("Incoming call: number='+493456789012345678' blocked invalid") == 0);
 }
 
-void Test_Block_Run()
+void Test_Block_Run(std::string exePath)
 {
   printf("Test_Block_Run...\n");
   
-  TestCase_logging_only();
-  TestCase_whitelists_only();
-  TestCase_whitelists_and_blacklists();
-  TestCase_blacklists_only();
+  TestCase_logging_only(exePath);
+  TestCase_whitelists_only(exePath);
+  TestCase_whitelists_and_blacklists(exePath);
+  TestCase_blacklists_only(exePath);
 }
 

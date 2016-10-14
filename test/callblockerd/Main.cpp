@@ -17,21 +17,35 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include <string>
 #include <stdio.h>
 #include <assert.h>
 
 #include "Test.h"
+#include "Utils.h"
+#include "Logger.h"
 
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   printf("Executing unit_tests...\n");
+
+  Logger::start();
 
 #if 0
   assert(0);
 #endif
 
+  std::string exePath = Utils::pathDirname(Utils::pathAbsname(argv[0]));
+  //printf("exePath: %s\n", exePath.c_str());
+
+  Logger::setLogLevel("info");
   Test_Utils_Run();
-  Test_Block_Run();
+  Logger::setLogLevel("info");
+  Test_Block_Run(exePath);
+  Logger::setLogLevel("info");
+  Test_FileListsCache_Run(exePath);
+
+  Logger::stop();
 
   return 0; // success (asserts will abort before)
 }

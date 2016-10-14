@@ -40,6 +40,13 @@ static void TestCase_fileSystem()
   assert(res == "a.json");
   res = Utils::pathBasename("/etc/callblocker/cache/");
   assert(res == "");
+
+  res = Utils::pathDirname("/etc/callblocker/cache/a.json");
+  assert(res == "/etc/callblocker/cache");
+  res = Utils::pathDirname("/etc/callblocker/cache/");
+  assert(res == "/etc/callblocker/cache");
+  res = Utils::pathDirname("a.json");
+  assert(res == "");
 }
 
 static void TestCase_string()

@@ -18,9 +18,10 @@
 
 bin_PROGRAMS = unit_tests
 unit_tests_SOURCES = \
-  Main.cpp Test_Utils.cpp Test_Block.cpp
+  Main.cpp \
+  Test_Utils.cpp Test_Block.cpp Test_FileListsCache.cpp
     
 unit_tests_LDADD = \
   ../../src/libcallblockerd.a
 
-AM_CPPFLAGS = -Wall -DSYSCONFDIR=\"${sysconfdir}\" -I"../../src"
+AM_CPPFLAGS = -Wall -DSYSCONFDIR=\"${sysconfdir}\" -DUNITTEST -I"../../src"

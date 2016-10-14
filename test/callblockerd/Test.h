@@ -20,9 +20,12 @@
 #ifndef TEST_H
 #define TEST_H
 
+#include <string>
+
 
 extern void Test_Utils_Run();
-extern void Test_Block_Run();
+extern void Test_Block_Run(std::string exePath);
+extern void Test_FileListsCache_Run(std::string exePath);
 
 #endif
 
