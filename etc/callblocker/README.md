@@ -59,7 +59,7 @@ Fields                | Values       | Description
 "country_code"        | `"+<X[Y][Z]>"` | Your international country code (e.g. +33 for France)
 "block_mode"          | "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only" | "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists. (whitelists not used)
 "block_anonymous_cid" | true, false  | optional: block all calls that have an anonymous/unknown caller ID. Default is false.
-"block_invalid_cid"   | true, false  | optional: block all calls that have an invalid caller ID. Default is false.
+"block_invalid_cid"   | true, false  | optional: block all calls that have an invalid caller ID. Default is true.
 "online_check"        | [`<string>`](#onlineCheck)  | optional: online check site to verify if number is spam
 "online_lookup"       | [`<string>`](#onlineLookup) | optional: online lookup site, to see who is calling
 "online_cache"        | true, false  | optional: allows to cache online checks and lookups. Default is true.
