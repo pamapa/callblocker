@@ -12,6 +12,7 @@
 }
 ```
 and
+```json
 { 
   "name": "onlinelookup",
   "entries": [ 
@@ -22,6 +23,7 @@ and
       }
     ]
 }
+```
 Files within this directory are used for caching proposes, it is not intended to manually add new entries here.
 The structure is the same as described [here](/etc/callblocker/blacklists/README.md).
 
