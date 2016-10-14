@@ -61,15 +61,16 @@ void FileListsCache::run() {
 
       pthread_mutex_lock(&m_mutexLock);
       load();
-      m_lists[i].saveNeeded = true;
+      m_lists[i].saveNeeded = false;
       pthread_mutex_unlock(&m_mutexLock);
     }
-    if (m_lists[i].saveNeeded) {
+
+    if (m_lists[i].list->eraseAged(MAX_AGE_IN_HOURS) || m_lists[i].saveNeeded) {
       Logger::info("save %s", m_pathname.c_str());
 
       pthread_mutex_lock(&m_mutexLock);
-      m_lists[i].list->eraseAged(MAX_AGE_IN_HOURS);
       m_lists[i].list->save();
+      (void)hasChanged(); // skip self notify of above save
       m_lists[i].saveNeeded = false;
       pthread_mutex_unlock(&m_mutexLock);
     }
@@ -94,10 +95,8 @@ bool FileListsCache::getEntry(const CacheType type, const std::string& rNumber, 
 void FileListsCache::load() {
   Logger::debug("loading directory %s", m_pathname.c_str());
 
-  pthread_mutex_lock(&m_mutexLock);
   m_lists[(size_t)CacheType::OnlineLookup].list->load(Utils::pathJoin(m_pathname, "onlinelookup.json"));
   m_lists[(size_t)CacheType::OnlineCheck].list->load(Utils::pathJoin(m_pathname, "onlinecheck.json"));
-  pthread_mutex_unlock(&m_mutexLock);
 }
 
 void FileListsCache::dump() {

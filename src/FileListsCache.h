@@ -55,7 +55,6 @@ public:
 
 private:
   void load();
-  void clear();
 };
 
 #endif
