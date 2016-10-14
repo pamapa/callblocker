@@ -48,7 +48,8 @@ bool FileList::load(const std::string& filename) {
 
   std::ifstream in(m_filename);
   if (in.fail()) {
-    Logger::warn("loading file %s failed", m_filename.c_str());
+    // debug: can happen at the beginning, as we start with none
+    Logger::debug("loading file %s failed", m_filename.c_str());
     return false;
   }
 

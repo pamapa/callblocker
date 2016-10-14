@@ -45,9 +45,7 @@ static void Test_Empty(std::string exePath) {
   //printf("tempPath: %s\n", tempPath);
 
   // start empty
-  LogLevel oldLevel = Logger::setLogLevel(LogLevel::ERROR);
   FileListsCache* pCache = new FileListsCache(tempPath);
-  Logger::setLogLevel(oldLevel);
   //pCache->dump();
 
   // OnlineLookup: append
