@@ -19,8 +19,12 @@
 
 #include "Utils.h" // API
 
+#include <stdlib.h>
 #include <string.h>
 #include <sstream>
+#include <fstream>
+#include <iostream>
+#include <limits.h>
 #include <errno.h>
 #include <json-c/json.h>
 #include <pjsua-lib/pjsua.h>
@@ -47,6 +51,37 @@ std::string Utils::pathBasename(const std::string& rPath) {
         return rPath;
     }
     return rPath.substr(pos + 1);
+}
+
+std::string Utils::pathDirname(const std::string& rPath) {
+  std::string::size_type pos = rPath.rfind(PATH_SEPERATOR);
+  if (pos == std::string::npos) {
+    return "";
+  }
+  return rPath.substr(0, pos);
+}
+
+std::string Utils::pathAbsname(const std::string& rPath) {
+  char resolved_path[PATH_MAX];
+  if (realpath(rPath.c_str(), resolved_path) != 0) {
+    return resolved_path;
+  }
+  return "";
+}
+
+bool Utils::fileCopy(const std::string& rFrom, const std::string& rTo)
+{
+    //printf("copy from %s to %s", rFrom.c_str(), rTo.c_str());
+    std::ifstream ifs(rFrom.c_str(), std::ios::binary);
+    if (ifs.fail()) {
+      return false;
+    }
+    std::ofstream ofs(rTo.c_str(),   std::ios::binary);
+    if (ofs.fail()) {
+      return false;
+    }
+    ofs << ifs.rdbuf();
+    return true;
 }
 
 bool Utils::getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const std::string& rLocation,

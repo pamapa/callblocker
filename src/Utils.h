@@ -35,6 +35,9 @@ public:
   // file system
   static std::string pathJoin(const std::string& rPath, const std::string& rFilename);
   static std::string pathBasename(const std::string& rPath);
+  static std::string pathDirname(const std::string& rPath);
+  static std::string pathAbsname(const std::string& rPath);
+  static bool fileCopy(const std::string& rFrom, const std::string& rTo);
 
   // json
   static bool getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const std::string& rLocation,
