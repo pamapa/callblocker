@@ -120,16 +120,23 @@ void FileList::addEntry(const std::string& rNumber, const std::string& rCallerNa
   m_entries.push_back(add);
 }
 
-void FileList::eraseAged(size_t maxHours) {
+bool FileList::eraseAged(size_t maxHours) {
   Logger::debug("erase age entries... %s", m_filename.c_str());
+  bool changed = false;
 
   std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
   m_entries.erase(std::remove_if(m_entries.begin(), m_entries.end(),
-                  [maxHours, now](FileListEntry e) {
+                  [maxHours, &changed, now](FileListEntry e) {
                     size_t hours = std::chrono::duration_cast<std::chrono::hours>(now.time_since_epoch() - e.date_created.time_since_epoch()).count();
-                    return hours > maxHours ? true : false;
+                    if (hours > maxHours) {
+                      changed = true;
+                      return true;
+                    }
+                    return false;
                   }),
                   m_entries.end());
+
+  return changed;
 }
 
 bool FileList::save() {
@@ -160,10 +167,11 @@ bool FileList::save() {
 }
 
 void FileList::dump() {
-  printf("Name=%s:\n", m_name.c_str());
+  printf("Name='%s': [\n", m_name.c_str());
   for(size_t i = 0; i < m_entries.size(); i++) {
     struct FileListEntry* entry = &m_entries[i];
-    printf("'%s'/'%s'\n", entry->number.c_str(), entry->name.c_str());
+    printf("  '%s', '%s', %s\n", entry->name.c_str(), entry->number.c_str(), Utils::formatTime(entry->date_created).c_str());
   }
+  printf("]\n");
 }
 

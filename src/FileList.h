@@ -46,7 +46,7 @@ public:
   bool isListed(const std::string& rNumber, std::string* pName);
 
   void addEntry(const std::string& rNumber, const std::string& rName);
-  void eraseAged(size_t maxHours);
+  bool eraseAged(size_t maxHours);
   bool save();
 
   void dump();
