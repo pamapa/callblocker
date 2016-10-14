@@ -707,6 +707,57 @@ require(["dijit/ConfirmDialog",
 
 
   // --------------------------------------------------------------------------
+  // Cache
+  // --------------------------------------------------------------------------
+  function createCacheListX(url_param) {
+    var menu = new dijit.Menu();
+    var deleteMenuItem = new dijit.MenuItem({
+      label: "Delete",
+      onClick: function(){
+        var items = grid.selection.getSelected();
+        if (items.length) {
+          dojo.forEach(items, function(si){
+            if (si !== null) {
+              grid.store.deleteItem(si);
+            }
+          });
+          grid.store.save();
+        }
+      },
+      iconClass: "dijitEditorIcon dijitEditorIconDelete"
+    });
+    menu.addChild(deleteMenuItem);
+
+    var structure = [
+      { name: "Date (created)", field: "date_created", width: "180px", formatter: formatDate },
+      { name: "Number",         field: "number",       width: "110px"                        },
+      { name: "Name",           field: "name",         width: "600px"                        }
+    ];
+    var cacheStore = createListStore(api_base.concat("/get_list?dirname=cache&", url_param));
+    var grid = new dojox.grid.EnhancedGrid({
+      store: cacheStore,
+      structure: structure,
+      //canSort: function(){return false}, // disable sorting, its not implemented on backend
+      selectable: true,
+      plugins: {menus: menusObject = {rowMenu: menu}},
+      style: "height:97%; width:100%;"
+    });
+
+    return [
+      grid.domNode
+    ]
+  }
+
+  function createOnlineLookuplist() {
+    return createCacheListX("filename=onlinelookup.json");
+  }
+
+  function createOnlineChecklist() {
+   return createCacheListX("filename=onlinecheck.json");
+  }
+
+
+  // --------------------------------------------------------------------------
   // Diagnostics
   // --------------------------------------------------------------------------
   function createJournalErrorWarnGrid() {
@@ -726,25 +777,38 @@ require(["dijit/ConfirmDialog",
       identifier: "id",
       label: "name",
       items: [
-        { id: "root", name:"Root", func:null,
-          children:[{_reference:"calllog"}, {_reference:"config"}, {_reference:"diag"}] 
+        { id: "root", name: "Root", func: null,
+          children: [{_reference: "calllog"}, {_reference: "config"}, {_reference: "cache"}, {_reference: "diag"}]
         },
-        { id: "calllog", name:"Caller Log", func:createCallerLogGrid},
-        { id: "config", name:"Configuration", func:null,
-          children:[
-            {_reference:"config_phone"}, {_reference:"config_onlinecreds"},
-            {_reference:"config_whitelists"}, {_reference:"config_blacklists"}
+        { id: "calllog", name: "Caller Log", func: createCallerLogGrid},
+
+        // Configuration
+        { id: "config", name: "Configuration", func: null,
+          children: [
+            {_reference: "config_phone"}, {_reference: "config_onlinecreds"},
+            {_reference: "config_whitelists"}, {_reference: "config_blacklists"}
           ] 
         },
         { id: "config_phone", name:"Phone", func:createPhone},
-        { id: "config_onlinecreds", name:"Online Credentials", func:createOnlineCredentials},
-        { id: "config_whitelists", name:"Whitelists", func:createWhitelist},
-        { id: "config_blacklists", name:"Blacklists", func:createBlacklist},
-        { id: "diag", name:"Diagnostics", func:null,
-          children:[{_reference:"diag_error_warn"}, {_reference:"diag_all"}] 
+        { id: "config_onlinecreds", name:"Online Credentials", func: createOnlineCredentials},
+        { id: "config_whitelists", name:"Whitelists", func: createWhitelist},
+        { id: "config_blacklists", name:"Blacklists", func: createBlacklist},
+
+        // Cache
+        { id: "cache", name: "Cache", func: null,
+          children:[
+            {_reference:"cache_onlinelookup"}, {_reference:"cache_onlinecheck"}
+          ]
         },
-        { id: "diag_error_warn", name:"Error/Warnings", func:createJournalErrorWarnGrid},
-        { id: "diag_all", name:"All", func:createJournalAllGrid}
+        { id: "cache_onlinelookup", name: "OnlineLookup", func: createOnlineLookuplist},
+        { id: "cache_onlinecheck", name: "OnlineCheck", func: createOnlineChecklist},
+
+        // Diagnostics
+        { id: "diag", name: "Diagnostics", func: null,
+          children: [{_reference: "diag_error_warn"}, {_reference: "diag_all"}]
+        },
+        { id: "diag_error_warn", name: "Error/Warnings", func: createJournalErrorWarnGrid},
+        { id: "diag_all", name: "All", func: createJournalAllGrid}
       ]
     };
 
@@ -752,15 +816,15 @@ require(["dijit/ConfirmDialog",
       data:treeData
     });
     var treeModel = new dijit.tree.TreeStoreModel({
-      id:"model",
-      store:treeStore,
-      childrenAttrs:["children"],
-      query:{id:"root"}
+      id: "model",
+      store: treeStore,
+      childrenAttrs: ["children"],
+      query: {id: "root"}
     });
     var tree = new dijit.Tree({
-      model:treeModel,
-      persist:false,
-      showRoot:false,
+      model: treeModel,
+      persist: false,
+      showRoot: false,
       onClick: function(item) {
         if (item.func[0] != null) {
           mainPane.set("content", item.func[0]());
@@ -805,4 +869,3 @@ require(["dijit/ConfirmDialog",
   appLayout.placeAt(document.body);
   appLayout.startup();
 });
-

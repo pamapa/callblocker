@@ -126,7 +126,7 @@ def handle_get_list(environ, start_response, params):
   dirname = "blacklists"
   if "dirname" in params:
     dirname = params["dirname"]
-    if dirname != "blacklists" and dirname != "whitelists":
+    if dirname != "blacklists" and dirname != "whitelists" and dirname != "cache":
       start_response('404 NOT FOUND', [('Content-Type', 'text/plain')])
       return ['Not Found']
 
@@ -134,6 +134,9 @@ def handle_get_list(environ, start_response, params):
   if "filename" in params:
     filename = os.path.basename(params["filename"])
   filename = os.path.join(config.CALLBLOCKER_SYSCONFDIR, dirname, filename)
+  if not os.path.exists(filename):
+    start_response('404 NOT FOUND', [('Content-Type', 'text/plain')])
+    return ['Not Found']
   
   if environ.get('REQUEST_METHOD', '') == "POST":
     post = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
