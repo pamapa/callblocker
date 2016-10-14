@@ -25,6 +25,8 @@
 #include <fstream>
 #include <iostream>
 #include <limits.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <errno.h>
 #include <json-c/json.h>
 #include <pjsua-lib/pjsua.h>
@@ -67,6 +69,15 @@ std::string Utils::pathAbsname(const std::string& rPath) {
     return resolved_path;
   }
   return "";
+}
+
+// file or directory
+bool Utils::pathExists(const std::string& rPath) {
+  struct stat st;
+  if (stat(rPath.c_str(), &st) == 0) {
+    return true;
+  }
+  return false;
 }
 
 bool Utils::fileCopy(const std::string& rFrom, const std::string& rTo)

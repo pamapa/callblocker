@@ -37,6 +37,7 @@ public:
   static std::string pathBasename(const std::string& rPath);
   static std::string pathDirname(const std::string& rPath);
   static std::string pathAbsname(const std::string& rPath);
+  static bool pathExists(const std::string& rPath);
   static bool fileCopy(const std::string& rFrom, const std::string& rTo);
 
   // json
