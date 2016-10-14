@@ -216,12 +216,12 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
 
         if (pSettings->onlineCache) {
           // it is spam -> add to cache
-          std::string cacheName = pSettings->onlineCheck;
+          std::string cacheName = "from '" + pSettings->onlineCheck + "'";
           if (pCallerName->length() != 0) {
             cacheName += ": " + *pCallerName;
           }
           if (pScore->length() != 0) {
-            cacheName += ", score=" + *pScore;
+            cacheName += " with score '" + *pScore + "'";
           }
           m_pCache->addEntry(CacheType::OnlineCheck, rNumber, cacheName);
         }
