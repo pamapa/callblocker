@@ -29,7 +29,7 @@
 
 static void checkEntry(FileListsCache* pCache, const CacheType type,
                        const std::string& rNumber, bool exist, const std::string& rExpCallerName) {
-  printf("checkEntry(rNumber='%s' exist=%d rExpCallerName='%s')\n", rNumber.c_str(), (int)exist, rExpCallerName.c_str());
+  //printf("checkEntry(rNumber='%s' exist=%d rExpCallerName='%s')\n", rNumber.c_str(), (int)exist, rExpCallerName.c_str());
   std::string callerName;
   assert(pCache->getEntry(type, rNumber, &callerName) == exist);
   if (exist) {
@@ -43,7 +43,7 @@ void Test_FileListsCache_Run(std::string exePath) {
   char tmpl[] = "/tmp/testcallblockerd.XXXXXX";
   char* tempPath = mkdtemp(tmpl);
   assert(tempPath != NULL);  
-  printf("tempPath: %s\n", tempPath);
+  //printf("tempPath: %s\n", tempPath);
 
   std::string cachePath = Utils::pathJoin(exePath, "data/etc/cache");
 
@@ -52,20 +52,20 @@ void Test_FileListsCache_Run(std::string exePath) {
   assert(Utils::fileCopy(Utils::pathJoin(cachePath, "onlinecheck.json"), Utils::pathJoin(tempPath, "onlinecheck.json")));
 
   FileListsCache* pCache = new FileListsCache(tempPath);
-  pCache->dump();
+  //pCache->dump();
   checkEntry(pCache, CacheType::OnlineLookup, "+11111111", true, "Entry Get 1");
   checkEntry(pCache, CacheType::OnlineLookup, "+11111112", true, "Entry Get 2");
 
   // append
   pCache->addEntry(CacheType::OnlineLookup, "+22222222", "Entry Add 1");
-  pCache->dump();
+  //pCache->dump();
   checkEntry(pCache, CacheType::OnlineLookup, "+11111111", true, "Entry Get 1");
   checkEntry(pCache, CacheType::OnlineLookup, "+11111112", true, "Entry Get 2");
   checkEntry(pCache, CacheType::OnlineLookup, "+22222222", true, "Entry Add 1");
 
   // age
   pCache->run();
-  pCache->dump();
+  //pCache->dump();
   checkEntry(pCache, CacheType::OnlineLookup, "+11111111", false, "");
   checkEntry(pCache, CacheType::OnlineLookup, "+11111112", false, "");
   checkEntry(pCache, CacheType::OnlineLookup, "+22222222", true, "Entry Add 1");

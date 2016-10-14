@@ -57,7 +57,7 @@ FileListsCache::~FileListsCache() {
 void FileListsCache::run() {
   for (size_t i = 0; i < sizeof(m_lists)/sizeof(m_lists[0]); i++) {
     if (hasChanged()) {
-      Logger::info("reload %s", m_pathname.c_str());
+      Logger::info("reload %lu %s", i, m_pathname.c_str());
 
       pthread_mutex_lock(&m_mutexLock);
       load();
@@ -66,7 +66,7 @@ void FileListsCache::run() {
     }
 
     if (m_lists[i].list->eraseAged(MAX_AGE_IN_HOURS) || m_lists[i].saveNeeded) {
-      Logger::info("save %s", m_pathname.c_str());
+      Logger::info("save %lu %s", i, m_pathname.c_str());
 
       pthread_mutex_lock(&m_mutexLock);
       m_lists[i].list->save();
