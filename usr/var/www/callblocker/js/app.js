@@ -380,7 +380,7 @@ require(["dijit/ConfirmDialog",
           var blockMode = grid.store.getValue(si, "block_mode", "logging_only")
           blockModeSelect.set("value", blockMode);
           blockAnonymousCIDCheckBox.set("value", grid.store.getValue(si, "block_anonymous_cid", false));
-          blockInvalidCIDCheckBox.set("value", grid.store.getValue(si, "block_invalid_cid", false));
+          blockInvalidCIDCheckBox.set("value", grid.store.getValue(si, "block_invalid_cid", true));
           selectBlockMode(blockMode);
 
           onlineCheckSelect.set("value", grid.store.getValue(si, "online_check", ""));
