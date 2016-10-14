@@ -97,15 +97,15 @@ void Logger::message(int priority, const char* format, va_list ap) {
 #if USE_SYSLOG
   vsyslog(priority, format, ap);
 #else
-  FILE* stream = stdout;
+  FILE* stream;
   std::string fmt;
   switch (priority) {
     default:
-    case LOG_ERR:     stream = stderr; fmt = "ERROR: ";  break;
-    case LOG_WARNING: stream = stderr; fmt = "WARN:  ";  break;
-    case LOG_NOTICE:  stream = stdout; fmt = "NOTICE:";  break;
-    case LOG_INFO:    stream = stdout; fmt = "INFO:  ";  break;
-    case LOG_DEBUG:   stream = stdout; fmt = "DEBUG: ";  break;
+    case LOG_ERR:     stream = stderr; fmt = "ERROR:  ";  break;
+    case LOG_WARNING: stream = stderr; fmt = "WARN:   ";  break;
+    case LOG_NOTICE:  stream = stdout; fmt = "NOTICE: ";  break;
+    case LOG_INFO:    stream = stdout; fmt = "INFO:   ";  break;
+    case LOG_DEBUG:   stream = stdout; fmt = "DEBUG:  ";  break;
   }
   fmt += format;
   fmt += "\n";
