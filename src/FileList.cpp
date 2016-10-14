@@ -157,9 +157,14 @@ bool FileList::save() {
     out << "        \"number\": \"" << entry->number << "\",\n";
     out << "        \"name\": \"" << entry->name << "\",\n";
     out << "        \"date_created\": \"" << Utils::formatTime(entry->date_created) << "\"\n";
-    out << "      },\n";
+    out << "      }";
+    if (i + 1 < m_entries.size()) {
+      out << ",\n";
+    } else {
+      out << "\n";
+    }
   }
-  out << "    ]\n";
+  out << "  ]\n";
   out << "}\n";
   
   out.close();
