@@ -63,7 +63,7 @@ Fields                | Values       | Description
 "online_check"        | [`<string>`](#onlineCheck)  | optional: online check site to verify if number is spam
 "online_lookup"       | [`<string>`](#onlineLookup) | optional: online lookup site, to see who is calling
 "online_cache"        | true, false  | optional: allows to cache online checks and lookups. Default is true.
-"device"              | `<string>`   | Your device name (get it with dmesg). Usually its "/dev/ttyACM0".
+"device"              | `<string>`   | If present marks phone as analog one. You can get the device name with "dmesg". Usually its "/dev/ttyACM0".
 "domain"              | `<string>`   | Your SIP domain name
 "username"            | `<string>`   | Your SIP username
 "password"            | `<string>`   | Your SIP password

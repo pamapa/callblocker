@@ -23,6 +23,7 @@ The call blocker acts like a normal phone. No additional telephone switchboard (
 - different kind of ways to get caller name of incoming calls
   - using whitelists and blacklists as offline lookup for caller name
   - support of online lookup sites, to find out who is calling
+- online request caching
 - nice web interface
 
 
@@ -92,6 +93,7 @@ drwxr-xr-x  www-data www-data  /etc/callblocker                            # con
 -rw-r--r--  www-data www-data  /etc/callblocker/settings.json              # configuration file
 drwxr-xr-x  www-data www-data  /etc/callblocker/blacklists                 # put your blacklists here
 drwxr-xr-x  www-data www-data  /etc/callblocker/whitelists                 # put your whitelists here
+drwxr-xr-x  www-data www-data  /etc/callblocker/cache                      # used for caching online request
 -rwxr-xr-x  root     root      /usr/bin/callblockerd                       # daemon
 drwxr-xr-x  root     root      /usr/share/callblocker                      # python helper scripts
 drwxr-xr-x  root     root      /usr/var/www/callblocker                    # web interface
