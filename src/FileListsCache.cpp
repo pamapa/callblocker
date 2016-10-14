@@ -28,7 +28,7 @@
 #include "Utils.h"
 
 
-#define MAX_AGE_IN_HOURS        (24 * 365)
+#define MAX_AGE_IN_DAYS        365
 
 
 FileListsCache::FileListsCache(const std::string& rPathname) : Notify(rPathname, IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) {
@@ -65,7 +65,7 @@ void FileListsCache::run() {
       pthread_mutex_unlock(&m_mutexLock);
     }
 
-    if (m_lists[i].list->eraseAged(MAX_AGE_IN_HOURS) || m_lists[i].saveNeeded) {
+    if (m_lists[i].list->eraseAged(MAX_AGE_IN_DAYS) || m_lists[i].saveNeeded) {
       Logger::info("save %lu %s", i, m_pathname.c_str());
 
       pthread_mutex_lock(&m_mutexLock);
