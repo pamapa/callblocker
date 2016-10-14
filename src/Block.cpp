@@ -30,22 +30,23 @@ Block::Block(Settings* pSettings) {
   Logger::debug("Block::Block()...");
   m_pSettings = pSettings;
 
-  m_pWhitelists = new FileListsNotified(pSettings->getBasePath() + "/whitelists");
-  m_pBlacklists = new FileListsNotified(pSettings->getBasePath() + "/blacklists");
+  m_pWhitelists = new FileListsNotified(Utils::pathJoin(pSettings->getBasePath(), "whitelists"));
+  m_pBlacklists = new FileListsNotified(Utils::pathJoin(pSettings->getBasePath(), "blacklists"));
+  m_pCache = new FileListsCache(Utils::pathJoin(pSettings->getBasePath(), "cache"));
 }
 
 Block::~Block() {
   Logger::debug("Block::~Block()...");
 
-  delete m_pWhitelists;
-  m_pWhitelists = NULL;
-  delete m_pBlacklists;
-  m_pBlacklists = NULL;
+  delete(m_pCache);
+  delete(m_pBlacklists);
+  delete(m_pWhitelists);
 }
 
 void Block::run() {
   m_pWhitelists->run();
   m_pBlacklists->run();
+  m_pCache->run();
 }
 
 bool Block::isBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg) {
@@ -148,12 +149,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
 
   if (!onWhitelist && !onBlacklist) {
     // online lookup caller name
-    if (pSettings->onlineLookup.length() != 0) {
-      struct json_object* root;
-      if (checkOnline("onlinelookup_", pSettings->onlineLookup, rNumber, validNumber, &root)) {
-        (void)Utils::getObject(root, "name", false, "script result", &callerName, "");
-      }
-    }
+    onlineLookup(pSettings, rNumber, validNumber, &callerName);
   }
 
   // Incoming call number='x' name='y' [invalid] [blocked] [whitelist='w'] [blacklist='b'] [score=s]
@@ -195,6 +191,15 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
 
   // online check if spam
   if (pSettings->onlineCheck.length() != 0) {
+
+    if (pSettings->onlineCache) {
+      // in cache?
+      if (m_pCache->getEntry(CacheType::OnlineCheck, rNumber, pCallerName)) {
+        *pListName = "cache";
+        return true;
+      }
+    }
+
     struct json_object* root;
     if (checkOnline("onlinecheck_", pSettings->onlineCheck, rNumber, validNumber, &root)) {
       bool spam;
@@ -208,6 +213,19 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
         if (Utils::getObject(root, "score", false, "script result", &score, 0)) {
           *pScore = std::to_string(score);
         }
+
+        if (pSettings->onlineCache) {
+          // it is spam -> add to cache
+          std::string cacheName = pSettings->onlineCheck;
+          if (pCallerName->length() != 0) {
+            cacheName += ": " + *pCallerName;
+          }
+          if (pScore->length() != 0) {
+            cacheName += ", score=" + *pScore;
+          }
+          m_pCache->addEntry(CacheType::OnlineCheck, rNumber, cacheName);
+        }
+
         return true;
       }
     }
@@ -215,6 +233,30 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
 
   // no spam
   return false;
+}
+
+void Block::onlineLookup(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
+                         std::string* pCallerName) {
+  if (pSettings->onlineCache) {
+    // in cache?
+    if (m_pCache->getEntry(CacheType::OnlineLookup, rNumber, pCallerName)) {
+      return;
+    }
+  }
+
+  if (pSettings->onlineLookup.length() != 0) {
+    struct json_object* root;
+    if (checkOnline("onlinelookup_", pSettings->onlineLookup, rNumber, validNumber, &root)) {
+      (void)Utils::getObject(root, "name", false, "script result", pCallerName, "");
+
+      if (pSettings->onlineCache) {
+        if (pCallerName->length() != 0) {
+          // found CID -> add to cache
+          m_pCache->addEntry(CacheType::OnlineLookup, rNumber, *pCallerName);
+        }
+      }
+    }
+  }
 }
 
 bool Block::checkOnline(std::string prefix, std::string scriptBaseName, const std::string& rNumber, const bool validNumber,

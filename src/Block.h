@@ -24,6 +24,7 @@
 #include <json-c/json.h>
 
 #include "FileListsNotified.h"
+#include "FileListsCache.h"
 #include "Settings.h"
 
 
@@ -35,6 +36,7 @@ private:
   Settings* m_pSettings;
   FileListsNotified* m_pWhitelists;
   FileListsNotified* m_pBlacklists;
+  FileListsCache* m_pCache;
 
 public:
   Block(Settings* pSettings);
@@ -49,6 +51,9 @@ private:
   bool isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pName);
   bool isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
                      std::string* pListName, std::string* pName, std::string* pScore);
+
+  void onlineLookup(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
+                    std::string* pCallerName);
 
   bool checkOnline(std::string prefix, std::string name, const std::string& rNumber, const bool validNumber,
                    struct json_object** root);

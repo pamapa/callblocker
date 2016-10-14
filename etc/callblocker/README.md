@@ -49,6 +49,9 @@ The settings file looks like this.
   ]
 }
 ```
+
+
+## "phones" section
 Fields                | Values       | Description
 ------                | ------       | -------
 "log_level"           | "error", "warn", "info" or "debug" | Logging level. Default is "info".
@@ -58,14 +61,18 @@ Fields                | Values       | Description
 "block_anonymous_cid" | true, false  | optional: block all calls that have an anonymous/unknown caller ID. Default is false.
 "block_invalid_cid"   | true, false  | optional: block all calls that have an invalid caller ID. Default is false.
 "online_check"        | [`<string>`](#onlineCheck)  | optional: online check site to verify if number is spam
-"online_lookup"       | [`<string>`](#onlineLookup)  | optional: online lookup site, to see who is calling
+"online_lookup"       | [`<string>`](#onlineLookup) | optional: online lookup site, to see who is calling
+"online_cache"        | true, false  | optional: allows to cache online checks and lookups. Default is true.
 "device"              | `<string>`   | Your device name (get it with dmesg). Usually its "/dev/ttyACM0".
 "domain"              | `<string>`   | Your SIP domain name
 "username"            | `<string>`   | Your SIP username
 "password"            | `<string>`   | Your SIP password
 "realm"               | `<string>`   | optional: allows to change the realm. Default is same value as specified in "domain".
 "secure"              | `<string>`   | optional: allows to use SIPS instead of SIP. Default is false.
-"online_credentials"  | | In this section you can define credentials, which are needed by some [online check](#onlineCheck) and [online lookup](#onlineLookup) scripts.
+
+
+## "online_credentials" section
+In this section you can define credentials, which are needed by some [online check](#onlineCheck) and [online lookup](#onlineLookup) scripts.
 
 
 ## Privacy

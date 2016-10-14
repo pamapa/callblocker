@@ -40,11 +40,14 @@ enum SettingBlockMode {
 struct SettingBase {
   std::string name;
   std::string countryCode;
+
   enum SettingBlockMode blockMode;
   bool blockAnonymousCID;
   bool blockInvalidCID;
+
   std::string onlineCheck;
   std::string onlineLookup;
+  bool onlineCache;
 };
 
 struct SettingSipAccount {

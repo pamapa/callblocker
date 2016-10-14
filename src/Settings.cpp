@@ -190,10 +190,12 @@ bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
     return false;
   }
 
+  // optionals
   (void)Utils::getObject(objbase, "block_anonymous_cid", false, m_filename, &res->blockAnonymousCID, false);
   (void)Utils::getObject(objbase, "block_invalid_cid", false, m_filename, &res->blockInvalidCID, true);
   (void)Utils::getObject(objbase, "online_check", false, m_filename, &res->onlineCheck, "");
   (void)Utils::getObject(objbase, "online_lookup", false, m_filename, &res->onlineLookup, "");
+  (void)Utils::getObject(objbase, "online_cache", false, m_filename, &res->onlineCache, true);
 
   return true;
 }
