@@ -17,7 +17,7 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "FileListsCached.h" // API
+#include "FileListsCache.h" // API
 
 #include <string>
 #include <stdio.h>
@@ -31,8 +31,8 @@
 #define MAX_AGE_IN_HOURS        (24 * 365)
 
 
-FileListsCached::FileListsCached(const std::string& rPathname) : Notify(rPathname, IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) {
-  Logger::debug("FileListsCached::FileListsCached()...");
+FileListsCache::FileListsCache(const std::string& rPathname) : Notify(rPathname, IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) {
+  Logger::debug("FileListsCache::FileListsCache()...");
   m_pathname = rPathname;
 
   if (pthread_mutex_init(&m_mutexLock, NULL) != 0) {
@@ -46,15 +46,15 @@ FileListsCached::FileListsCached(const std::string& rPathname) : Notify(rPathnam
   load();
 }
 
-FileListsCached::~FileListsCached() {
-  Logger::debug("FileListsCached::~FileListsCached()...");
+FileListsCache::~FileListsCache() {
+  Logger::debug("FileListsCache::~FileListsCache()...");
   
   for (size_t i = 0; i < sizeof(m_lists)/sizeof(m_lists[0]); i++) {
     delete(m_lists[i].list);
   }
 }
 
-void FileListsCached::run() {
+void FileListsCache::run() {
   for (size_t i = 0; i < sizeof(m_lists)/sizeof(m_lists[0]); i++) {
     if (hasChanged()) {
       Logger::info("reload %s", m_pathname.c_str());
@@ -76,14 +76,14 @@ void FileListsCached::run() {
   }
 }
 
-void FileListsCached::addEntry(const CacheType type, const std::string& rNumber, const std::string& rCallerName) {
+void FileListsCache::addEntry(const CacheType type, const std::string& rNumber, const std::string& rCallerName) {
   pthread_mutex_lock(&m_mutexLock);
   m_lists[(size_t)type].list->addEntry(rNumber, rCallerName);
   m_lists[(size_t)type].saveNeeded = true;
   pthread_mutex_unlock(&m_mutexLock);
 }
 
-bool FileListsCached::getEntry(const CacheType type, const std::string& rNumber, std::string* pCallerName) {
+bool FileListsCache::getEntry(const CacheType type, const std::string& rNumber, std::string* pCallerName) {
   bool ret;
   pthread_mutex_lock(&m_mutexLock);
   ret = m_lists[(size_t)type].list->isListed(rNumber, pCallerName);
@@ -91,7 +91,7 @@ bool FileListsCached::getEntry(const CacheType type, const std::string& rNumber,
   return ret;
 }
 
-void FileListsCached::load() {
+void FileListsCache::load() {
   Logger::debug("loading directory %s", m_pathname.c_str());
 
   pthread_mutex_lock(&m_mutexLock);
@@ -100,7 +100,7 @@ void FileListsCached::load() {
   pthread_mutex_unlock(&m_mutexLock);
 }
 
-void FileListsCached::dump() {
+void FileListsCache::dump() {
   pthread_mutex_lock(&m_mutexLock);
   for (size_t i = 0; i < sizeof(m_lists)/sizeof(m_lists[0]); i++) {
     FileList* l = m_lists[i].list;

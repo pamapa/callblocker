@@ -17,8 +17,8 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef FILELISTS_CACHED_H
-#define FILELISTS_CACHED_H
+#ifndef FILELISTS_CACHE_H
+#define FILELISTS_CACHE_H
 
 #include <pthread.h>
 
@@ -36,7 +36,7 @@ struct CacheFileList {
   bool saveNeeded;
 };
 
-class FileListsCached : public Notify {
+class FileListsCache : public Notify {
 private:
   pthread_mutex_t m_mutexLock;
   std::string m_pathname;
@@ -44,8 +44,8 @@ private:
   CacheFileList m_lists[2];
 
 public:
-  FileListsCached(const std::string& rPathname);
-  virtual ~FileListsCached();
+  FileListsCache(const std::string& rPathname);
+  virtual ~FileListsCache();
   void run();
   
   bool getEntry(const CacheType type, const std::string& rNumber, std::string* pCallerName);
