@@ -251,9 +251,11 @@ require(["dijit/ConfirmDialog",
       options: [
         { label: "none", value: "", selected: true },
         { label: "all", value: "all" },
-        { label: "tel.search.ch", value: "tel_search_ch" },
-        { label: "dasschnelle.at", value: "dasschnelle_at" },
         { label: "dasoertliche.de", value: "dasoertliche_de" },
+        { label: "dasschnelle.at", value: "dasschnelle_at" },
+        { label: "pagesjaunes.fr", value: "pagesjaunes_fr" },
+        { label: "paginebianche.it", value: "paginebianche_it" },
+        { label: "tel.search.ch", value: "tel_search_ch" },
       ]
     });
     var deviceTextBox = new dijit.form.ValidationTextBox({
