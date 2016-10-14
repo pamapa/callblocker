@@ -23,6 +23,7 @@
 #include <pthread.h>
 
 #include "FileList.h"
+#include "Notify.h"
 
 
 enum class CacheType {
@@ -35,7 +36,7 @@ struct CacheFileList {
   bool saveNeeded;
 };
 
-class FileListsCached {
+class FileListsCached : public Notify {
 private:
   pthread_mutex_t m_mutexLock;
   std::string m_pathname;
@@ -47,9 +48,9 @@ public:
   virtual ~FileListsCached();
   void run();
   
-  void addEntry(const CacheType type, const std::string& rNumber, const std::string& rCallerName);
   bool getEntry(const CacheType type, const std::string& rNumber, std::string* pCallerName);
-  
+  void addEntry(const CacheType type, const std::string& rNumber, const std::string& rCallerName);
+
   void dump();
 
 private:

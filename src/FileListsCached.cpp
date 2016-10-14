@@ -22,6 +22,7 @@
 #include <string>
 #include <stdio.h>
 #include <string.h>
+#include <sys/inotify.h>
 
 #include "Logger.h"
 #include "Utils.h"
@@ -30,7 +31,7 @@
 #define MAX_AGE_IN_HOURS        (24 * 365)
 
 
-FileListsCached::FileListsCached(const std::string& rPathname) {
+FileListsCached::FileListsCached(const std::string& rPathname) : Notify(rPathname, IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) {
   Logger::debug("FileListsCached::FileListsCached()...");
   m_pathname = rPathname;
 
@@ -55,7 +56,17 @@ FileListsCached::~FileListsCached() {
 
 void FileListsCached::run() {
   for (size_t i = 0; i < sizeof(m_lists)/sizeof(m_lists[0]); i++) {
+    if (hasChanged()) {
+      Logger::info("reload %s", m_pathname.c_str());
+
+      pthread_mutex_lock(&m_mutexLock);
+      load();
+      m_lists[i].saveNeeded = true;
+      pthread_mutex_unlock(&m_mutexLock);
+    }
     if (m_lists[i].saveNeeded) {
+      Logger::info("save %s", m_pathname.c_str());
+
       pthread_mutex_lock(&m_mutexLock);
       m_lists[i].list->eraseAged(MAX_AGE_IN_HOURS);
       m_lists[i].list->save();
@@ -88,3 +99,13 @@ void FileListsCached::load() {
   m_lists[(size_t)CacheType::OnlineCheck].list->load(Utils::pathJoin(m_pathname, "onlinecheck.json"));
   pthread_mutex_unlock(&m_mutexLock);
 }
+
+void FileListsCached::dump() {
+  pthread_mutex_lock(&m_mutexLock);
+  for (size_t i = 0; i < sizeof(m_lists)/sizeof(m_lists[0]); i++) {
+    FileList* l = m_lists[i].list;
+    l->dump();
+  }
+  pthread_mutex_unlock(&m_mutexLock);
+}
+
