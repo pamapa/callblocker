@@ -29,7 +29,7 @@
 #include "AnalogPhone.h"
 
 
-#define LOOP_WAIT_TIME_USEC    (50 * 1000)  // 50 miliseconds
+#define LOOP_WAIT_TIME_USEC    (500 * 1000)  // 500 milliseconds
 
 
 static bool s_appRunning = true;
