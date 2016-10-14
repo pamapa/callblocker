@@ -112,7 +112,6 @@ static void Test_WithAged(std::string exePath) {
 
   delete(pCache);
 
-
   remove(Utils::pathJoin(tempPath, "onlinelookup.json").c_str());
   remove(Utils::pathJoin(tempPath, "onlinecheck.json").c_str());
   remove(tempPath);

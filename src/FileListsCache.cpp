@@ -43,6 +43,14 @@ FileListsCache::FileListsCache(const std::string& rPathname) : Notify(rPathname,
     m_lists[i].list = new FileList();
     m_lists[i].saveNeeded = false;
   }
+
+  // avoid useless warnings: create empty if files not exists
+  std::string lookup = Utils::pathJoin(m_pathname, "onlinelookup.json");
+  if (!Utils::pathExists(lookup)) m_lists[(size_t)CacheType::OnlineLookup].list->save(lookup);
+  std::string check = Utils::pathJoin(m_pathname, "onlinecheck.json");
+  if (!Utils::pathExists(check)) m_lists[(size_t)CacheType::OnlineCheck].list->save(check);
+  (void)hasChanged(); // avoid useless reload
+
   load();
 }
 
@@ -70,7 +78,7 @@ void FileListsCache::run() {
 
       pthread_mutex_lock(&m_mutexLock);
       m_lists[i].list->save();
-      (void)hasChanged(); // skip self notify of above save
+      (void)hasChanged(); // avoid useless reload
       m_lists[i].saveNeeded = false;
       pthread_mutex_unlock(&m_mutexLock);
     }

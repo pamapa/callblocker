@@ -47,7 +47,9 @@ public:
 
   void addEntry(const std::string& rNumber, const std::string& rName);
   bool eraseAged(size_t maxDays);
+
   bool save();
+  bool save(const std::string& filename);
 
   void dump();
 };
