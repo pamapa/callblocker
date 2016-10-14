@@ -24,22 +24,21 @@
 #include <syslog.h>
 
 
-#define USE_SYSLOG                  1
+bool Logger::s_useSyslog = false;
+int Logger::s_logLevel = LOG_INFO;
 
-
-static int s_logLevel = LOG_INFO;
-
-
-void Logger::start() {
-#if USE_SYSLOG
-  openlog("callblockerd", 0, LOG_USER);
-#endif
+void Logger::start(bool useSyslog) {
+  s_useSyslog = useSyslog;
+  s_logLevel = LOG_INFO;
+  if (s_useSyslog) {
+    openlog("callblockerd", 0, LOG_USER);
+  }
 }
 
 void Logger::stop() {
-#if USE_SYSLOG
-  closelog();
-#endif
+  if (s_useSyslog) {
+    closelog();
+  }
 }
 
 void Logger::setLogLevel(std::string level) {
@@ -94,24 +93,24 @@ void Logger::message(int priority, const char* format, va_list ap) {
 
   va_list ap2;
   va_copy(ap2, ap);
-#if USE_SYSLOG
-  vsyslog(priority, format, ap);
-#else
-  FILE* stream;
-  std::string fmt;
-  switch (priority) {
-    default:
-    case LOG_ERR:     stream = stderr; fmt = "ERROR:  ";  break;
-    case LOG_WARNING: stream = stderr; fmt = "WARN:   ";  break;
-    case LOG_NOTICE:  stream = stdout; fmt = "NOTICE: ";  break;
-    case LOG_INFO:    stream = stdout; fmt = "INFO:   ";  break;
-    case LOG_DEBUG:   stream = stdout; fmt = "DEBUG:  ";  break;
+  if (s_useSyslog) {
+    vsyslog(priority, format, ap);
+  } else {
+    FILE* stream;
+    std::string fmt;
+    switch (priority) {
+      default:
+      case LOG_ERR:     stream = stderr; fmt = "ERROR:  ";  break;
+      case LOG_WARNING: stream = stderr; fmt = "WARN:   ";  break;
+      case LOG_NOTICE:  stream = stdout; fmt = "NOTICE: ";  break;
+      case LOG_INFO:    stream = stdout; fmt = "INFO:   ";  break;
+      case LOG_DEBUG:   stream = stdout; fmt = "DEBUG:  ";  break;
+    }
+    fmt += format;
+    fmt += "\n";
+    (void)vfprintf(stream, fmt.c_str(), ap2);
+    (void)fflush(stream);
   }
-  fmt += format;
-  fmt += "\n";
-  (void)vfprintf(stream, fmt.c_str(), ap2);
-  (void)fflush(stream);
-#endif
   va_end(ap2);
 }
 

@@ -26,7 +26,7 @@
 
 class Logger {
 public:
-  static void start();
+  static void start(bool useSyslog);
   static void stop();
   static void setLogLevel(std::string level);
 
@@ -37,6 +37,9 @@ public:
   static void debug(const char* format, ...);
 
 private:
+  static bool s_useSyslog;
+  static int s_logLevel;
+
   static void message(int priority, const char* format, va_list ap);
 };
 

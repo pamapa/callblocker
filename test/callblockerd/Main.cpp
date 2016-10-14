@@ -29,7 +29,7 @@
 int main(int argc, char* argv[]) {
   printf("Executing unit_tests...\n");
 
-  Logger::start();
+  Logger::start(false);
 
 #if 0
   assert(0);
@@ -38,11 +38,11 @@ int main(int argc, char* argv[]) {
   std::string exePath = Utils::pathDirname(Utils::pathAbsname(argv[0]));
   //printf("exePath: %s\n", exePath.c_str());
 
-  Logger::setLogLevel("info");
+  Logger::setLogLevel("warn");
   Test_Utils_Run();
-  Logger::setLogLevel("info");
+  Logger::setLogLevel("warn");
   Test_Block_Run(exePath);
-  Logger::setLogLevel("info");
+  Logger::setLogLevel("debug");
   Test_FileListsCache_Run(exePath);
 
   Logger::stop();

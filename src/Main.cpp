@@ -56,7 +56,7 @@ private:
 
 public:
   Main() {
-    Logger::start();
+    Logger::start(true);
 
     m_pSettings = new Settings(SYSCONFDIR "/" PACKAGE_NAME);
     m_pBlock = new Block(m_pSettings);
