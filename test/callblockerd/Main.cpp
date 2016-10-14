@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
   Test_Utils_Run();
   Logger::setLogLevel("warn");
   Test_Block_Run(exePath);
-  Logger::setLogLevel("debug");
+  Logger::setLogLevel("warn");
   Test_FileListsCache_Run(exePath);
 
   Logger::stop();
