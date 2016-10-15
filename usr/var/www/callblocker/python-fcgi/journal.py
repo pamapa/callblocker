@@ -111,6 +111,7 @@ def handle_callerlog(environ, start_response, params):
         }
         try: tmp["NAME"] = obj.group(4).strip()
         except (IndexError, AttributeError): tmp["NAME"] = ""
+        tmp["NAME"] = tmp["NAME"].replace("\\'", "'") # unescape possible quotes
 
         tmp["WHAT"] = 0;
         try:
