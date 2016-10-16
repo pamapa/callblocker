@@ -89,8 +89,15 @@ For additional information see [here](http://redmine.lighttpd.net/projects/light
 ## Updating daemon and web interface on Linux
 You have prevoiusly installed the callblock application and would like to update it to the lastest version. Make a backup
 of your configuration (/etc/callblocker), the installation will not overwrite it, but you never know.
-Double check your [settings.json](/etc/callblocker/README.md). Hint:
-- v0.9.0: The prefix "from_" has been removed from "from_domain", "from_username" and "from password"
+
+In case you have still the installation git checkout:
+```bash
+cd callblocker
+git pull
+make clean all
+```
+
+Else you do not have the installation git checkout:
 ```bash
 git clone https://github.com/pamapa/callblocker.git
 cd callblocker
@@ -99,12 +106,19 @@ automake --add-missing --foreign
 autoconf
 ./configure --prefix=/usr --sysconfdir=/etc
 make all
+```
 
+Double check your [settings.json](/etc/callblocker/README.md). Hints:
+- v0.0.7: switched from php to python web backend
+- v0.9.0: prefix "from_" has been removed from "from_domain", "from_username" and "from password"
+
+```bash
 sudo systemctl stop callblockerd
 sudo make install
 sudo systemctl daemon-reload
 sudo systemctl start callblockerd
 ```
+
 Double check your [web configuration](#webInterface) and do:
 ```bash
 sudo systemctl restart lighttpd.service
@@ -126,7 +140,7 @@ drwxr-xr-x  root     root      /usr/var/www/callblocker                    # web
 ```
 
 
-## <a name="settingsJson"></a> Configuration file
+## Configuration file
 The documentation of the configuration file "settings.json" is located [here](/etc/callblocker/README.md).
 
 
@@ -153,25 +167,25 @@ There are two ways to connect the call blocker application with your phone syste
 
 
 ### Setup using Fritzbox with an IP-phone
-- Create in the Fritzbox a new IP-phone
-  - Open your web browser and navigate to the URL http://fritz.box
-  - In the menu "Telefonie -> Telefoniegeraete" click on "Neues Geraet einrichten"
-  - Choose "Telefon (mit und ohne Anrufbeantworter)" and click "Weiter"
-  - Choose "LAN/WLAN (IP-Telefon)", for name use for example "callblocker" and click "Weiter"
-  - Choose a password, remember it and click "Weiter"
-  - Choose "alle Anrufe annehmen" and click "Weiter"
-- Setup the IP-phone in the call blocker configuration (/etc/callblocker/setting.json):
-  - Edit the section sip -> accounts
+- create in the Fritzbox a new IP-phone
+  - open your web browser and navigate to the URL http://fritz.box
+  - in the menu "Telefonie -> Telefoniegeraete" click on "Neues Geraet einrichten"
+  - choose "Telefon (mit und ohne Anrufbeantworter)" and click "Weiter"
+  - choose "LAN/WLAN (IP-Telefon)", for name use for example "callblocker" and click "Weiter"
+  - choose a password, remember it and click "Weiter"
+  - choose "alle Anrufe annehmen" and click "Weiter"
+- setup the IP-phone in the call blocker configuration ([/etc/callblocker/setting.json](/etc/callblocker/README.md)):
+  - edit the section sip -> accounts
   - "domain":   "fritz.box"
   - "username": "your username"
   - "password": "your password"
-  - Make sure the account is enabled and the other fields are ok for you
+  - make sure the account is enabled and the other fields are ok for you
 
 
 ### Setup using an analog phone
 - Attach the USB modem to the Raspberry Pi
 - Use `dmesg` to find the device name `/dev/<name>`
-- Setup the Analog phone in the call blocker configuration (/etc/callblocker/setting.json):
+- Setup the Analog phone in the call blocker configuration ([/etc/callblocker/setting.json](/etc/callblocker/README.md)):
   - Edit the section analog -> phones
   - "device": "your device name"
   - Make sure the account is enabled and the other fields are ok for you
@@ -190,7 +204,7 @@ sudo ps aux | grep -E 'lighttpd|callblockerd' | grep -v 'grep' # shows: 2 lines
 sudo journalctl _SYSTEMD_UNIT=callblockerd.service
 ```
 - Increase log levels: "log_level" to "debug" and/or "pjsip_log_level" to 2. See documentation of
-   [configuration file](#settingsJson) for more info.
+   [configuration file](/etc/callblocker/README.md) for more info.
 ```bash
 sudo vi settings.json
 ```
