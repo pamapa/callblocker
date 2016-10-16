@@ -794,7 +794,7 @@ require(["dijit/ConfirmDialog",
 
         // Diagnostic
         { id: "diag", name: "Diagnostic", func: null,
-          children: [{_reference: "diag_cache"}, {_reference: "diag_logging"}]
+          children: [{_reference: "diag_cache"}, {_reference: "diag_logs"}]
         },
         { id: "diag_cache", name: "Cache", func: null,
           children:[
@@ -803,13 +803,13 @@ require(["dijit/ConfirmDialog",
         },
         { id: "diag_cache_onlinelookup", name: "Online Lookup", func: createOnlineLookuplist},
         { id: "diag_cache_onlinecheck", name: "Online Check", func: createOnlineChecklist},
-        { id: "diag_logging", name: "Logging", func: null,
+        { id: "diag_logs", name: "Logs", func: null,
           children:[
-            {_reference: "diag_logging_error_warn"}, {_reference: "diag_logging_all"}
+            {_reference: "diag_logs_error_warn"}, {_reference: "diag_logs_all"}
           ]
         },
-        { id: "diag_logging_error_warn", name: "Error and Warning", func: createJournalErrorWarnGrid},
-        { id: "diag_logging_all", name: "All", func: createJournalAllGrid}
+        { id: "diag_logs_error_warn", name: "Error and Warning", func: createJournalErrorWarnGrid},
+        { id: "diag_logs_all", name: "All", func: createJournalAllGrid}
       ]
     };
 
