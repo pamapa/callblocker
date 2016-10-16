@@ -97,7 +97,7 @@ git pull
 make clean all
 ```
 
-Else you do not have the installation git checkout:
+Else you do not have the installation git checkout anymore:
 ```bash
 git clone https://github.com/pamapa/callblocker.git
 cd callblocker
