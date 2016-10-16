@@ -86,6 +86,31 @@ sudo systemctl restart lighttpd.service
 For additional information see [here](http://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_ModFastCGI).
 
 
+## Updating daemon and web interface on Linux
+You have prevoiusly installed the callblock application and would like to update it to the lastest version. Make a backup
+of your configuration (/etc/callblocker), the installation will not overwrite it, but you never know.
+Double check your [settings.json](/etc/callblocker/README.md).
+Hint: Version 0.9.0: "from_" has been removed from "from_domain", "from_username" and "from password"
+```bash
+git clone https://github.com/pamapa/callblocker.git
+cd callblocker
+aclocal
+automake --add-missing --foreign
+autoconf
+./configure --prefix=/usr --sysconfdir=/etc
+make all
+
+sudo systemctl stop callblockerd
+sudo make install
+sudo systemctl daemon-reload
+sudo systemctl start callblockerd
+```
+Double check your [web configuration](#webInterface) and do:
+```bash
+sudo systemctl restart lighttpd.service
+```
+
+
 ## <a name="fileLayout"></a> File Layout
 When installed on Linux, the following file layout is used
 ```
