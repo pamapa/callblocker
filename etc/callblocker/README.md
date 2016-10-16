@@ -16,7 +16,7 @@ The settings file looks like this.
       "country_code":        "+41",
       "block_mode":          "logging_only",
       "block_anonymous_cid": false,
-      "block_invalid_cid":   false,
+      "block_invalid_cid":   true,
       "online_check":        "tellows_de",
       "online_lookup":       "tel_search_ch",
       "device":              "/dev/ttyACM0"
@@ -27,7 +27,7 @@ The settings file looks like this.
       "country_code":        "+41",
       "block_mode":          "whitelists_and_blacklists",
       "block_anonymous_cid": false,
-      "block_invalid_cid":   false,
+      "block_invalid_cid":   true,
       "online_check":        "tellows_de",
       "online_lookup":       "tel_search_ch",
       "domain":              "<your sip domain>",
