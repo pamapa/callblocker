@@ -89,8 +89,8 @@ For additional information see [here](http://redmine.lighttpd.net/projects/light
 ## Updating daemon and web interface on Linux
 You have prevoiusly installed the callblock application and would like to update it to the lastest version. Make a backup
 of your configuration (/etc/callblocker), the installation will not overwrite it, but you never know.
-Double check your [settings.json](/etc/callblocker/README.md).
-Hint: Version 0.9.0: "from_" has been removed from "from_domain", "from_username" and "from password"
+Double check your [settings.json](/etc/callblocker/README.md). Hint:
+- v0.9.0: The prefix "from_" has been removed from "from_domain", "from_username" and "from password"
 ```bash
 git clone https://github.com/pamapa/callblocker.git
 cd callblocker
