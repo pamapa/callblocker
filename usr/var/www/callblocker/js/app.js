@@ -850,7 +850,7 @@ require(["dijit/ConfirmDialog",
 
   var menuPane = new dijit.layout.ContentPane({
     region: "left",
-    style: "width: 180px",
+    style: "width: 190px",
     splitter:true,
     content: createTree()
   });
