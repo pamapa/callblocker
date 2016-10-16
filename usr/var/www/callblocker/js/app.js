@@ -808,7 +808,7 @@ require(["dijit/ConfirmDialog",
             {_reference: "diag_logging_error_warn"}, {_reference: "diag_logging_all"}
           ]
         },
-        { id: "diag_logging_error_warn", name: "Error/Warnings", func: createJournalErrorWarnGrid},
+        { id: "diag_logging_error_warn", name: "Error/Warning", func: createJournalErrorWarnGrid},
         { id: "diag_logging_all", name: "All", func: createJournalAllGrid}
       ]
     };
