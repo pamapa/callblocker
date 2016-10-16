@@ -709,7 +709,7 @@ require(["dijit/ConfirmDialog",
 
 
   // --------------------------------------------------------------------------
-  // Diagnostics
+  // Diagnostic
   // --------------------------------------------------------------------------
   function createJournalErrorWarnGrid() {
     return createJournalGrid(api_base.concat("/journal"));
@@ -792,19 +792,24 @@ require(["dijit/ConfirmDialog",
         { id: "config_whitelists", name:"Whitelists", func: createWhitelist},
         { id: "config_blacklists", name:"Blacklists", func: createBlacklist},
 
-        // Diagnostics
-        { id: "diag", name: "Diagnostics", func: null,
-          children: [{_reference: "cache"}, {_reference: "diag_error_warn"}, {_reference: "diag_all"}]
+        // Diagnostic
+        { id: "diag", name: "Diagnostic", func: null,
+          children: [{_reference: "diag_cache"}, {_reference: "diag_logging"}]
         },
-        { id: "cache", name: "Cache", func: null,
+        { id: "diag_cache", name: "Cache", func: null,
           children:[
-            {_reference:"cache_onlinelookup"}, {_reference:"cache_onlinecheck"}
+            {_reference: "diag_cache_onlinelookup"}, {_reference: "diag_cache_onlinecheck"}
           ]
         },
-        { id: "cache_onlinelookup", name: "OnlineLookup", func: createOnlineLookuplist},
-        { id: "cache_onlinecheck", name: "OnlineCheck", func: createOnlineChecklist},
-        { id: "diag_error_warn", name: "Error/Warnings", func: createJournalErrorWarnGrid},
-        { id: "diag_all", name: "All", func: createJournalAllGrid}
+        { id: "diag_cache_onlinelookup", name: "OnlineLookup", func: createOnlineLookuplist},
+        { id: "diag_cache_onlinecheck", name: "OnlineCheck", func: createOnlineChecklist},
+        { id: "diag_logging", name: "Logging", func: null,
+          children:[
+            {_reference: "diag_logging_error_warn"}, {_reference: "diag_logging_all"}
+          ]
+        },
+        { id: "diag_logging_error_warn", name: "Error/Warnings", func: createJournalErrorWarnGrid},
+        { id: "diag_logging_all", name: "All", func: createJournalAllGrid}
       ]
     };
 
