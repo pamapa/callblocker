@@ -801,14 +801,14 @@ require(["dijit/ConfirmDialog",
             {_reference: "diag_cache_onlinelookup"}, {_reference: "diag_cache_onlinecheck"}
           ]
         },
-        { id: "diag_cache_onlinelookup", name: "OnlineLookup", func: createOnlineLookuplist},
-        { id: "diag_cache_onlinecheck", name: "OnlineCheck", func: createOnlineChecklist},
+        { id: "diag_cache_onlinelookup", name: "Online Lookup", func: createOnlineLookuplist},
+        { id: "diag_cache_onlinecheck", name: "Online Check", func: createOnlineChecklist},
         { id: "diag_logging", name: "Logging", func: null,
           children:[
             {_reference: "diag_logging_error_warn"}, {_reference: "diag_logging_all"}
           ]
         },
-        { id: "diag_logging_error_warn", name: "Error/Warning", func: createJournalErrorWarnGrid},
+        { id: "diag_logging_error_warn", name: "Error and Warning", func: createJournalErrorWarnGrid},
         { id: "diag_logging_all", name: "All", func: createJournalAllGrid}
       ]
     };
