@@ -44,6 +44,8 @@ int main(int argc, char* argv[]) {
   Test_Block_Run(exePath);
   Logger::setLogLevel(LogLevel::WARN);
   Test_FileListsCache_Run(exePath);
+  Logger::setLogLevel(LogLevel::WARN);
+  Test_FileListsNotified_Run(exePath);
 
   Logger::stop();
 

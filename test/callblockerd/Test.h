@@ -26,6 +26,7 @@
 extern void Test_Utils_Run();
 extern void Test_Block_Run(std::string exePath);
 extern void Test_FileListsCache_Run(std::string exePath);
+extern void Test_FileListsNotified_Run(std::string exePath);
 
 #endif
 

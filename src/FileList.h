@@ -48,6 +48,7 @@ public:
 
   bool getEntry(const std::string& rNumber, std::string* pName);
   void addEntry(const std::string& rNumber, const std::string& rName);
+  void removeEntry(const std::string& rNumber);
 
   bool eraseAged(size_t maxDays);
 

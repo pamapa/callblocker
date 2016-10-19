@@ -19,8 +19,9 @@
 bin_PROGRAMS = unit_tests
 unit_tests_SOURCES = \
   Main.cpp \
-  Test_Utils.cpp Test_Block.cpp Test_FileListsCache.cpp
-    
+  Test_Utils.cpp Test_Block.cpp \
+  Test_FileListsCache.cpp Test_FileListsNotified.cpp
+
 unit_tests_LDADD = \
   ../../src/libcallblockerd.a
 

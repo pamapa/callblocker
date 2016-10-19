@@ -34,6 +34,7 @@
 FileList::FileList(const std::string& filename) {
   Logger::debug("FileList::FileList()... %s", filename.c_str());
   m_filename = filename;
+  m_name = Utils::pathBasename(m_filename);
 }
 
 FileList::~FileList() {
@@ -88,7 +89,7 @@ bool FileList::save() {
   }
   
   out << "{\n";
-  out << "  \"name\": \"" << Utils::pathBasename(m_filename) << "\",\n";
+  out << "  \"name\": \"" << m_name << "\",\n";
   out << "  \"entries\": [\n"; 
   for(size_t i = 0; i < m_entries.size(); i++) {
     struct FileListEntry* entry = &m_entries[i];
@@ -143,6 +144,18 @@ void FileList::addEntry(const std::string& rNumber, const std::string& rCallerNa
   add.date_created = std::chrono::system_clock::now();
 
   m_entries.push_back(add);
+}
+
+void FileList::removeEntry(const std::string& rNumber) {
+  m_entries.erase(std::remove_if(m_entries.begin(), m_entries.end(),
+                  [rNumber](FileListEntry e) {
+                    const char* s = e.number.c_str();
+                    if (strncmp(s, rNumber.c_str(), strlen(s)) == 0) {
+                      return true;
+                    }
+                    return false;
+                  }),
+                  m_entries.end());
 }
 
 bool FileList::eraseAged(size_t maxDays) {
