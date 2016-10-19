@@ -64,17 +64,10 @@ void Settings::clear() {
 bool Settings::load() {
   clear();
 
-  std::ifstream in(m_filename.c_str());
-  if (in.fail()) {
-    Logger::warn("loading file %s failed", m_filename.c_str());
+  struct json_object* root;
+  if (Utils::loadJson(m_filename, &root)) {
     return false;
   }
-
-  std::stringstream buffer;
-  buffer << in.rdbuf();
-  std::string str = buffer.str();
-
-  struct json_object* root = json_tokener_parse(str.c_str());
 
   std::string strLogLevel;
   (void)Utils::getObject(root, "log_level", true, m_filename, &strLogLevel, "info");

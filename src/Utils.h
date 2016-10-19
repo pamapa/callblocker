@@ -41,6 +41,7 @@ public:
   static bool fileCopy(const std::string& rFrom, const std::string& rTo);
 
   // json
+  static bool loadJson(const std::string& filename, struct json_object** pRoot);
   static bool getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const std::string& rLocation,
                         std::string* pRes, const std::string& rDefault);
   static bool getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const std::string& rLocation,

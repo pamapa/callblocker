@@ -46,18 +46,11 @@ bool FileList::load() {
   
   m_entries.clear();
 
-  std::ifstream in(m_filename);
-  if (in.fail()) {
-    Logger::warn("loading file %s failed", m_filename.c_str());
+  struct json_object* root;
+  if (Utils::loadJson(m_filename, &root)) {
     return false;
   }
 
-  std::stringstream buffer;
-  buffer << in.rdbuf();
-  std::string str = buffer.str();
-  in.close();
-
-  struct json_object* root = json_tokener_parse(str.c_str());
   if (!Utils::getObject(root, "name", true, m_filename, &m_name, "")) {
     return false;
   }

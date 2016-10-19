@@ -95,6 +95,22 @@ bool Utils::fileCopy(const std::string& rFrom, const std::string& rTo)
     return true;
 }
 
+bool Utils::loadJson(const std::string& filename, struct json_object** pRoot) {
+  std::ifstream in(filename);
+  if (in.fail()) {
+    Logger::warn("loading file %s failed", filename.c_str());
+    return false;
+  }
+
+  std::stringstream buffer;
+  buffer << in.rdbuf();
+  std::string str = buffer.str();
+  in.close();
+
+  *pRoot = json_tokener_parse(str.c_str());
+  return true;
+}
+
 bool Utils::getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const std::string& rLocation,
                       std::string* pRes, const std::string& rDefault) {
   struct json_object* n;
