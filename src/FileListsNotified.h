@@ -38,7 +38,7 @@ public:
   virtual ~FileListsNotified();
   void run();
 
-  bool isListed(const std::string& rNumber, std::string* pListName, std::string* pCallerName);
+  bool getEntry(const std::string& rNumber, std::string* pListName, std::string* pCallerName);
 
   void dump();
 

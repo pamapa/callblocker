@@ -89,7 +89,7 @@ std::string FileList::getName() {
   return m_name;
 }
 
-bool FileList::isListed(const std::string& rNumber, std::string* pName) {
+bool FileList::getEntry(const std::string& rNumber, std::string* pName) {
   for(size_t i = 0; i < m_entries.size(); i++) {
     struct FileListEntry* entry = &m_entries[i];
     const char* s = entry->number.c_str();
@@ -107,7 +107,7 @@ void FileList::addEntry(const std::string& rNumber, const std::string& rCallerNa
   Logger::debug("FileList::addEntry(rNumber='%s', rCallerName='%s') to file %s",
     rNumber.c_str(), rCallerName.c_str(), m_filename.c_str());
 
-  if (isListed(rNumber, NULL)) {
+  if (getEntry(rNumber, NULL)) {
     Logger::warn("internal error, entry '%s' already part of list", rNumber.c_str());
     return;
   }

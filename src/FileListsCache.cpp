@@ -95,7 +95,7 @@ void FileListsCache::addEntry(const CacheType type, const std::string& rNumber, 
 bool FileListsCache::getEntry(const CacheType type, const std::string& rNumber, std::string* pCallerName) {
   bool ret;
   pthread_mutex_lock(&m_mutexLock);
-  ret = m_lists[(size_t)type].list->isListed(rNumber, pCallerName);
+  ret = m_lists[(size_t)type].list->getEntry(rNumber, pCallerName);
   pthread_mutex_unlock(&m_mutexLock);
   return ret;
 }

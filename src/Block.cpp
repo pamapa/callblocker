@@ -180,12 +180,12 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
 
 bool Block::isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber,
                           std::string* pListName, std::string* pCallerName) {
-  return m_pWhitelists->isListed(rNumber, pListName, pCallerName);
+  return m_pWhitelists->getEntry(rNumber, pListName, pCallerName);
 }
 
 bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
                           std::string* pListName, std::string* pCallerName, std::string* pScore) {
-  if (m_pBlacklists->isListed(rNumber, pListName, pCallerName)) {
+  if (m_pBlacklists->getEntry(rNumber, pListName, pCallerName)) {
     return true;
   }
 

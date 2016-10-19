@@ -55,11 +55,11 @@ void FileListsNotified::run() {
   }
 }
 
-bool FileListsNotified::isListed(const std::string& rNumber, std::string* pListName, std::string* pCallerName) {
+bool FileListsNotified::getEntry(const std::string& rNumber, std::string* pListName, std::string* pCallerName) {
   bool ret = false;
   pthread_mutex_lock(&m_mutexLock);
   for(size_t i = 0; i < m_lists.size(); i++) {
-    if (m_lists[i]->isListed(rNumber, pCallerName)) {
+    if (m_lists[i]->getEntry(rNumber, pCallerName)) {
       *pListName = m_lists[i]->getName();
       ret = true;
       break;

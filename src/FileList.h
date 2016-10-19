@@ -43,9 +43,10 @@ public:
 
   bool load(const std::string& filename);
   std::string getName();
-  bool isListed(const std::string& rNumber, std::string* pName);
 
+  bool getEntry(const std::string& rNumber, std::string* pName);
   void addEntry(const std::string& rNumber, const std::string& rName);
+
   bool eraseAged(size_t maxDays);
 
   bool save();
