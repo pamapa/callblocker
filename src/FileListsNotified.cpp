@@ -26,6 +26,7 @@
 #include <sys/inotify.h>
 
 #include "Logger.h"
+#include "Utils.h"
 
 
 FileListsNotified::FileListsNotified(const std::string& rPathname) : Notify(rPathname, IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) {
@@ -82,9 +83,8 @@ void FileListsNotified::load() {
     if ((entry->d_type & DT_DIR) == 0) {
       size_t len = strlen(entry->d_name);
       if (len >= 5 && strcmp(entry->d_name + len - 5, ".json") == 0) {
-        // only reading .json files      
-        std::string filename = m_pathname + "/";
-        filename += entry->d_name;
+        // only reading .json files
+        std::string filename = Utils::pathJoin(m_pathname, entry->d_name);
         FileList* l = new FileList(filename);
         if (l->load()) {
           m_lists.push_back(l);

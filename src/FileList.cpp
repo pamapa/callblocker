@@ -47,7 +47,7 @@ bool FileList::load() {
   m_entries.clear();
 
   struct json_object* root;
-  if (Utils::loadJson(m_filename, &root)) {
+  if (!Utils::loadJson(m_filename, &root)) {
     return false;
   }
 

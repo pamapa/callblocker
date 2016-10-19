@@ -47,6 +47,7 @@ static void TestCase_logging_only(std::string exePath)
   std::string msg;
   // test number in blacklist
   assert(block->isBlocked(&settingsBase, "0449999999", &msg) == false);
+  //printf("msg: %s\n", msg.c_str());
   assert(msg.compare("Incoming call: number='+41449999999' name='Test single number' blacklist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+41449999999", &msg) == false);
   assert(msg.compare("Incoming call: number='+41449999999' name='Test single number' blacklist='main'") == 0);
