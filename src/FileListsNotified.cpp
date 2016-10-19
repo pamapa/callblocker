@@ -85,8 +85,8 @@ void FileListsNotified::load() {
         // only reading .json files      
         std::string filename = m_pathname + "/";
         filename += entry->d_name;
-        FileList* l = new FileList();
-        if (l->load(filename)) {
+        FileList* l = new FileList(filename);
+        if (l->load()) {
           m_lists.push_back(l);
         } else {
           delete l;

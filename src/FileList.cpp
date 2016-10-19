@@ -31,8 +31,9 @@
 #include "Utils.h"
 
 
-FileList::FileList() {
-  Logger::debug("FileList::FileList()...");
+FileList::FileList(const std::string& filename) {
+  Logger::debug("FileList::FileList()... %s", filename.c_str());
+  m_filename = filename;
 }
 
 FileList::~FileList() {
@@ -40,10 +41,9 @@ FileList::~FileList() {
   m_entries.clear();
 }
 
-bool FileList::load(const std::string& filename) {
-  Logger::debug("loading file %s", filename.c_str());
-  m_filename = filename;
-
+bool FileList::load() {
+  Logger::debug("loading file %s", m_filename.c_str());
+  
   m_entries.clear();
 
   std::ifstream in(m_filename);
@@ -82,6 +82,38 @@ bool FileList::load(const std::string& filename) {
       Logger::debug("no entries section found in json file %s", m_filename.c_str());
   }
   json_object_put(root); // free
+  return true;
+}
+
+bool FileList::save() {
+  Logger::debug("saving file %s", m_filename.c_str());
+  
+  std::ofstream out(m_filename);
+  if (out.fail()) {
+    Logger::warn("saving file %s failed", m_filename.c_str());
+    return false;
+  }
+  
+  out << "{\n";
+  out << "  \"name\": \"" << Utils::pathBasename(m_filename) << "\",\n";
+  out << "  \"entries\": [\n"; 
+  for(size_t i = 0; i < m_entries.size(); i++) {
+    struct FileListEntry* entry = &m_entries[i];
+    out << "      {\n";
+    out << "        \"number\": \"" << entry->number << "\",\n";
+    out << "        \"name\": \"" << entry->name << "\",\n";
+    out << "        \"date_created\": \"" << Utils::formatTime(entry->date_created) << "\"\n";
+    out << "      }";
+    if (i + 1 < m_entries.size()) {
+      out << ",\n";
+    } else {
+      out << "\n";
+    }
+  }
+  out << "  ]\n";
+  out << "}\n";
+  
+  out.close();
   return true;
 }
 
@@ -137,43 +169,6 @@ bool FileList::eraseAged(size_t maxDays) {
                   m_entries.end());
 
   return changed;
-}
-
-bool FileList::save() {
-  Logger::debug("saving file %s", m_filename.c_str());
-  
-  std::ofstream out(m_filename);
-  if (out.fail()) {
-    Logger::warn("saving file %s failed", m_filename.c_str());
-    return false;
-  }
-  
-  out << "{\n";
-  out << "  \"name\": \"" << Utils::pathBasename(m_filename) << "\",\n";
-  out << "  \"entries\": [\n"; 
-  for(size_t i = 0; i < m_entries.size(); i++) {
-    struct FileListEntry* entry = &m_entries[i];
-    out << "      {\n";
-    out << "        \"number\": \"" << entry->number << "\",\n";
-    out << "        \"name\": \"" << entry->name << "\",\n";
-    out << "        \"date_created\": \"" << Utils::formatTime(entry->date_created) << "\"\n";
-    out << "      }";
-    if (i + 1 < m_entries.size()) {
-      out << ",\n";
-    } else {
-      out << "\n";
-    }
-  }
-  out << "  ]\n";
-  out << "}\n";
-  
-  out.close();
-  return true;
-}
-
-bool FileList::save(const std::string& filename) {
-  m_filename = filename;
-  return save();
 }
 
 void FileList::dump() {

@@ -38,19 +38,18 @@ private:
   std::vector<FileListEntry> m_entries;
 
 public:
-  FileList();
+  FileList(const std::string& filename);
   virtual ~FileList();
 
-  bool load(const std::string& filename);
+  bool load();
+  bool save();
+
   std::string getName();
 
   bool getEntry(const std::string& rNumber, std::string* pName);
   void addEntry(const std::string& rNumber, const std::string& rName);
 
   bool eraseAged(size_t maxDays);
-
-  bool save();
-  bool save(const std::string& filename);
 
   void dump();
 };

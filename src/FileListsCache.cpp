@@ -39,17 +39,18 @@ FileListsCache::FileListsCache(const std::string& rPathname) : Notify(rPathname,
     Logger::warn("pthread_mutex_init failed");
   }
   
+  static const char* filenames[] = {"onlinelookup.json", "onlinecheck.json"};
   for (size_t i = 0; i < sizeof(m_lists)/sizeof(m_lists[0]); i++) {
-    m_lists[i].list = new FileList();
+    std::string fullname = Utils::pathJoin(m_pathname, filenames[i]);
+    m_lists[i].list = new FileList(fullname);
     m_lists[i].saveNeeded = false;
-  }
 
-  // avoid useless warnings: create empty if files not exists
-  std::string lookup = Utils::pathJoin(m_pathname, "onlinelookup.json");
-  if (!Utils::pathExists(lookup)) m_lists[(size_t)CacheType::OnlineLookup].list->save(lookup);
-  std::string check = Utils::pathJoin(m_pathname, "onlinecheck.json");
-  if (!Utils::pathExists(check)) m_lists[(size_t)CacheType::OnlineCheck].list->save(check);
-  (void)hasChanged(); // avoid useless reload
+    // avoid useless warnings: create empty if files not exists
+    if (!Utils::pathExists(fullname)) {
+      m_lists[i].list->save();
+    }
+  }
+  (void)hasChanged(); // avoid useless reload, because of above save
 
   load();
 }
@@ -103,8 +104,9 @@ bool FileListsCache::getEntry(const CacheType type, const std::string& rNumber, 
 void FileListsCache::load() {
   Logger::debug("loading directory %s", m_pathname.c_str());
 
-  m_lists[(size_t)CacheType::OnlineLookup].list->load(Utils::pathJoin(m_pathname, "onlinelookup.json"));
-  m_lists[(size_t)CacheType::OnlineCheck].list->load(Utils::pathJoin(m_pathname, "onlinecheck.json"));
+  for (size_t i = 0; i < sizeof(m_lists)/sizeof(m_lists[0]); i++) {
+    m_lists[i].list->load();
+  }
 }
 
 void FileListsCache::dump() {
