@@ -375,3 +375,40 @@ bool Utils::parseTime(const std::string& rStr, std::chrono::system_clock::time_p
   return true;
 }
 
+// TimerUtil
+TimerUtil::TimerUtil() {
+  m_active = false;
+  timerclear(&elapseTime);
+}
+
+void TimerUtil::restart(time_t elapseSec) {
+  struct timeval add;
+  timerclear(&add);
+  add.tv_sec = elapseSec;
+  getCurrent(&elapseTime);
+  timeradd(&elapseTime, &add, &elapseTime);
+  m_active = true;
+}
+
+void TimerUtil::stop(void) {
+  m_active = false;
+  timerclear(&elapseTime);
+}
+
+bool TimerUtil::isActive() {
+  return m_active;
+}
+
+bool TimerUtil::hasElapsed() {
+  struct timeval now;
+  getCurrent(&now);
+  return timercmp(&elapseTime, &now, <=) ? true : false;
+}
+
+void TimerUtil::getCurrent(struct timeval* res) {
+  struct timespec tp;
+  (void)clock_gettime(CLOCK_MONOTONIC, &tp);
+  res->tv_sec = tp.tv_sec;
+  res->tv_usec = tp.tv_nsec / 1000;
+}
+
