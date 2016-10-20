@@ -38,6 +38,7 @@ private:
   std::vector<FileListEntry> m_entries;
 
 public:
+  FileList(const std::string& filename, const std::string& name);
   FileList(const std::string& filename);
   virtual ~FileList();
 

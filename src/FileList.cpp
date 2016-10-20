@@ -31,10 +31,13 @@
 #include "Utils.h"
 
 
-FileList::FileList(const std::string& filename) {
+FileList::FileList(const std::string& filename, const std::string& name) {
   Logger::debug("FileList::FileList()... %s", filename.c_str());
   m_filename = filename;
-  m_name = Utils::pathBasename(m_filename);
+  m_name = name;
+}
+
+FileList::FileList(const std::string& filename) : FileList(filename, Utils::pathBasename(filename)) {
 }
 
 FileList::~FileList() {

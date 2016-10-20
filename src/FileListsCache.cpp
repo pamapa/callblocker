@@ -39,14 +39,14 @@ FileListsCache::FileListsCache(const std::string& rPathname) : Notify(rPathname,
     Logger::warn("pthread_mutex_init failed");
   }
   
-  static const char* filenames[] = {"onlinelookup.json", "onlinecheck.json"};
+  static const char* names[] = {"onlinelookup", "onlinecheck"};
   for (size_t i = 0; i < sizeof(m_lists)/sizeof(m_lists[0]); i++) {
-    std::string fullname = Utils::pathJoin(m_pathname, filenames[i]);
-    m_lists[i].list = new FileList(fullname);
+    std::string filename = Utils::pathJoin(m_pathname, names[i]) + ".json";
+    m_lists[i].list = new FileList(filename, names[i]);
     m_lists[i].saveNeeded = false;
 
     // avoid useless warnings: create empty if files not exists
-    if (!Utils::pathExists(fullname)) {
+    if (!Utils::pathExists(filename)) {
       m_lists[i].list->save();
     }
   }
