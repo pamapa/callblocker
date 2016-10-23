@@ -109,6 +109,7 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
   pj_status_t status = pjsua_call_set_user_data(call_id, this);
   if (status != PJ_SUCCESS) {
     Logger::error("pjsua_acc_set_user_data() failed (%s)", Utils::getPjStatusAsString(status).c_str());
+    return;
   }
 
   pjsua_call_info ci;
