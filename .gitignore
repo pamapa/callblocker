@@ -12,7 +12,7 @@ autom4te.cache
 
 .deps
 *.o
+src/callblockerd
 src/libcallblockerd.a
 usr/share/callblocker/*.pyc
 test/callblockerd/unit_tests
-
