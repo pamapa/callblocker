@@ -111,7 +111,7 @@ static void TestCase_makeNumberInternational()
     settingsBase.countryCode = tests[i].countryCode;
     std::string str = tests[i].number;
     bool valid;
-    Utils::makeNumberInternational(&settingsBase, &str, &valid);
+    Utils::makeNumberE164(&settingsBase, &str, &valid);
     if (str.compare(tests[i].expectedNumber) != 0)
     {
       printf("found '%s' expected '%s' for '%s'\n", str.c_str(), tests[i].expectedNumber.c_str(), tests[i].number.c_str());

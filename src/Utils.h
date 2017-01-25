@@ -62,7 +62,7 @@ public:
   static std::string escapeSqString(const std::string& rStr);
 
   // phone number
-  static void makeNumberInternational(const struct SettingBase* pSettings, std::string* pNumber, bool* pValid);
+  static void makeNumberE164(const struct SettingBase* pSettings, std::string* pNumber, bool* pValid);
   static void parseCallerID(std::string& rData, std::vector<std::pair<std::string, std::string> >* pResult);
 
   // time

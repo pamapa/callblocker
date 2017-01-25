@@ -58,7 +58,7 @@ bool Block::isBlocked(const struct SettingBase* pSettings, const std::string& rN
 
   std::string e164Number = rNumber;
   bool validNumber = true;
-  Utils::makeNumberInternational(pSettings, &e164Number, &validNumber);
+  Utils::makeNumberE164(pSettings, &e164Number, &validNumber);
 
   return isNumberBlocked(pSettings, e164Number, validNumber, pMsg);
 }

@@ -250,7 +250,7 @@ std::string Utils::escapeSqString(const std::string& rStr) {
 }
 
 // returns phone number in E.164 format
-void Utils::makeNumberInternational(const struct SettingBase* pSettings, std::string* pNumber, bool* pValid) {
+void Utils::makeNumberE164(const struct SettingBase* pSettings, std::string* pNumber, bool* pValid) {
   if (Utils::startsWith(*pNumber, "**")) {
     // it is an intern number
     *pValid = true;
