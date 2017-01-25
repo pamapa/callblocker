@@ -21,7 +21,7 @@ Fields    | Values                  | Description
 Fields          | Values       | Description
 --------------- | ------------ | ------------
 "name"          | `<string>`   | Name describing the number
-"number"        | `<\+[0-9]+>` | Number in international format (E.164). Use first part of number to match a whole area/region (e.g. +234).
+"number"        | `<\+[0-9]+>` | Number must be in international format (E.164). Use first part of number to match a whole area/region (e.g. +234).
 "date_created"  | `<date>`     | Date in UTC formatted like "%Y-%m-%d %H:%M:%S +0000"
 "date_modified" | `<date>`     | Date in UTC formatted like "%Y-%m-%d %H:%M:%S +0000"
 

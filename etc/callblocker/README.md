@@ -68,7 +68,7 @@ Fields                | Values       | Description
 "username"            | `<string>`   | Your SIP username
 "password"            | `<string>`   | Your SIP password
 "realm"               | `<string>`   | optional: allows to change the SIP realm. Default is same value as specified in "domain".
-"secure"              | `<string>`   | optional: allows to use SIPS instead of SIP. Default is false.
+"secure"              | true, false  | optional: allows to use SIPS instead of SIP. Default is false.
 
 
 ## "online_credentials" section
