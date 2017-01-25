@@ -251,13 +251,13 @@ std::string Utils::escapeSqString(const std::string& rStr) {
 
 // returns phone number in E.164 format
 void Utils::makeNumberInternational(const struct SettingBase* pSettings, std::string* pNumber, bool* pValid) {
-#if defined(HAVE_LIBPHONENUMBER)
   if (Utils::startsWith(*pNumber, "**")) {
     // it is an intern number
     *pValid = true;
     return;
   }
 
+#if defined(HAVE_LIBPHONENUMBER)
   // country code as interger
   std::string tmp = pSettings->countryCode;
   tmp.erase(0, 1); // remove '+'
@@ -280,45 +280,44 @@ void Utils::makeNumberInternational(const struct SettingBase* pSettings, std::st
   }
 #else
   std::string number;
-  if (Utils::startsWith(*pNumber, "00")) number = "+" + pNumber->substr(2);
+  // very simple: does not work for all countries (libphonenumber will do better job)
+  // see http://www.nationsonline.org/oneworld/international-calling-codes.htm
+  if (Utils::startsWith(*pNumber, "+")) number = *pNumber;
+  else if (Utils::startsWith(*pNumber, "00")) number = "+" + pNumber->substr(2);
   else if (Utils::startsWith(*pNumber, "0")) number = pSettings->countryCode + pNumber->substr(1);
-  else number = *pNumber;
+  else number = "+" + *pNumber;
 
   // minimal validity check
   bool valid = true;
-  if (Utils::startsWith(number, "+")) {
-    if (number.length() < (1+8) || (1+15) < number.length()) { // 1+: "+" prefix
-      // E.164: too short or too long
-      valid = false;
-    }
-
-    // unassigned (https://en.wikipedia.org/wiki/List_of_country_calling_codes)
-    static const char* unassignedCountryCodes[] {
-      // Zone 2    
-      "+210", "+214", "+215", "+217", "+219",
-      "+259",
-      "+28",
-      "+292", "+293", "+294", "+296",
-      // Zones 3-4
-      "+384",
-      "+422", "+424", "+425", "+426", "+427", "+428", "+429",
-      // Zone 6
-      "+693", "+694", "+695", "+696", "+697", "+698", "+699",
-      // Zone 8
-      "+801", "+802", "+803", "+804", "+805", "+806", "+807", "+809",
-      "+851", "+854", "+857", "+858", "+859",
-      "+871", "+872", "+873", "+874", "+884", "+885", "+887", "+889", "+89x",
-      // Zone 9
-      "+969", "+978", "+990", "+997", "+999"
-    };
-    for (size_t i = 0; valid && i < sizeof(unassignedCountryCodes)/sizeof(unassignedCountryCodes[0]); i++) {
-      if (Utils::startsWith(number, unassignedCountryCodes[i])) {
-        valid = false;
-        break;
-      }
-    }
-  } else if (!Utils::startsWith(number, "**")) {
+  if (number.length() < (1+8) || (1+15) < number.length()) { // 1+: "+" prefix
+    // E.164: too short or too long
     valid = false;
+  }
+
+  // unassigned (https://en.wikipedia.org/wiki/List_of_country_calling_codes)
+  static const char* unassignedCountryCodes[] {
+    // Zone 2    
+    "+210", "+214", "+215", "+217", "+219",
+    "+259",
+    "+28",
+    "+292", "+293", "+294", "+296",
+    // Zones 3-4
+    "+384",
+    "+422", "+424", "+425", "+426", "+427", "+428", "+429",
+    // Zone 6
+    "+693", "+694", "+695", "+696", "+697", "+698", "+699",
+    // Zone 8
+    "+801", "+802", "+803", "+804", "+805", "+806", "+807", "+809",
+    "+851", "+854", "+857", "+858", "+859",
+    "+871", "+872", "+873", "+874", "+884", "+885", "+887", "+889", "+89x",
+    // Zone 9
+    "+969", "+978", "+990", "+997", "+999"
+  };
+  for (size_t i = 0; valid && i < sizeof(unassignedCountryCodes)/sizeof(unassignedCountryCodes[0]); i++) {
+    if (Utils::startsWith(number, unassignedCountryCodes[i])) {
+      valid = false;
+      break;
+    }
   }
 
   if (valid) *pNumber = number;

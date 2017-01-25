@@ -82,48 +82,47 @@ static void TestCase_makeNumberInternational()
   SettingBase settingsBase;
   settingsBase.blockAnonymousCID = false;
   settingsBase.blockInvalidCID = false;
-  // CH
-  settingsBase.countryCode = "+41";
-  std::string str = "0441234567"; // local
-  bool valid;
-  Utils::makeNumberInternational(&settingsBase, &str, &valid);
-  assert(str.compare("+41441234567") == 0);
-  assert(valid);
-  
-  str = "+41791234567"; // already international
-  Utils::makeNumberInternational(&settingsBase, &str, &valid);
-  assert(str.compare("+41791234567") == 0);
-  assert(valid);
-  
-  str = "0041791234567"; // already international
-  Utils::makeNumberInternational(&settingsBase, &str, &valid);
-  assert(str.compare("+41791234567") == 0);
-  assert(valid);
 
-  str = "**600"; // intern, not public number
-  Utils::makeNumberInternational(&settingsBase, &str, &valid);
-  assert(str.compare("**600") == 0);
-  assert(valid);
+  static const struct
+  {
+    std::string countryCode;
+    std::string number;
+    std::string expectedNumber;
+    bool valid;
+  } tests[] =
+  {
+    // CH
+    { "+41", "+41791234567",        "+41791234567",        true  }, // already international (SIP phone case)
+    { "+41", "0041791234567",       "+41791234567",        true  }, // already international (Analog phone case)
+    { "+41", "0441234567",          "+41441234567",        true  }, // local
+    { "+41", "**600",               "**600",               true  }, // intern, not public number
+    { "+41", "+4144888",            "+4144888",            false }, // invalid: too short number
+    { "+41", "+493456789012345678", "+493456789012345678", false }, // invalid: too long number
+    { "+41", "+99986203236",        "+99986203236",        false }, // invalid: unassigned country code
+    { "+41", "+219225595",          "+219225595",          false }, // invalid: unassigned country code
+    
+    // US
+    { "+1", "+15403221123",         "+15403221123",        true  }, // already international (SIP phone case)
+    { "+1", "15403221123",          "+15403221123",        true  }  // already international (Analog phone case)
+  };
 
-  str = "+4144888"; // test invalid: too short number
-  Utils::makeNumberInternational(&settingsBase, &str, &valid);
-  assert(str.compare("+4144888") == 0);
-  assert(!valid);
-
-  str = "+493456789012345678"; // test invalid: too long number
-  Utils::makeNumberInternational(&settingsBase, &str, &valid);
-  assert(str.compare("+493456789012345678") == 0);
-  assert(!valid);
-
-  str = "+99986203236"; // test invalid: unassigned country code
-  Utils::makeNumberInternational(&settingsBase, &str, &valid);
-  assert(str.compare("+99986203236") == 0);
-  assert(!valid);
-
-  str = "+219225595"; // test invalid: unassigned country code
-  Utils::makeNumberInternational(&settingsBase, &str, &valid);
-  assert(str.compare("+219225595") == 0);
-  assert(!valid);
+  for (size_t i = 0; i < sizeof(tests)/sizeof(tests[0]); i++)
+  {
+    settingsBase.countryCode = tests[i].countryCode;
+    std::string str = tests[i].number;
+    bool valid;
+    Utils::makeNumberInternational(&settingsBase, &str, &valid);
+    if (str.compare(tests[i].expectedNumber) != 0)
+    {
+      printf("found '%s' expected '%s' for '%s'\n", str.c_str(), tests[i].expectedNumber.c_str(), tests[i].number.c_str());
+    }
+    assert(str.compare(tests[i].expectedNumber) == 0);
+    if (valid != tests[i].valid)
+    {
+      printf("valid different than expected %d for '%s'\n", tests[i].valid, tests[i].number.c_str());
+    }
+    assert(valid == tests[i].valid);
+  }
 }
 
 static void TestCase_parseCallerID()
