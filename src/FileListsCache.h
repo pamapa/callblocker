@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -21,6 +21,7 @@
 #define FILELISTS_CACHE_H
 
 #include <pthread.h>
+#include <chrono>
 
 #include "FileList.h"
 #include "Notify.h"
@@ -42,6 +43,8 @@ private:
   std::string m_pathname;
   
   CacheFileList m_lists[2];
+
+  std::chrono::time_point<std::chrono::steady_clock> m_nextEraseAgedTime;
 
 public:
   FileListsCache(const std::string& rPathname);

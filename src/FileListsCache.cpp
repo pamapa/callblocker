@@ -28,7 +28,8 @@
 #include "Utils.h"
 
 
-#define MAX_AGE_IN_DAYS        365
+#define MAX_AGE_IN_DAYS             365
+#define NEXT_ERASE_AGED_TIME_HOURS  8
 
 
 FileListsCache::FileListsCache(const std::string& rPathname) : Notify(rPathname, IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) {
@@ -53,6 +54,8 @@ FileListsCache::FileListsCache(const std::string& rPathname) : Notify(rPathname,
   (void)hasChanged(); // avoid useless reload, because of above save
 
   load();
+
+  m_nextEraseAgedTime = std::chrono::steady_clock::time_point::min();
 }
 
 FileListsCache::~FileListsCache() {
@@ -64,22 +67,33 @@ FileListsCache::~FileListsCache() {
 }
 
 void FileListsCache::run() {
+  bool doEraseAged = false;
+  std::chrono::time_point<std::chrono::steady_clock> now = std::chrono::steady_clock::now();
+  if (m_nextEraseAgedTime < now) {
+    m_nextEraseAgedTime = now + std::chrono::hours(NEXT_ERASE_AGED_TIME_HOURS);
+    doEraseAged = true;
+  }
+
   for (size_t i = 0; i < sizeof(m_lists)/sizeof(m_lists[0]); i++) {
     if (hasChanged()) {
       Logger::info("reload %lu %s", i, m_pathname.c_str());
-
-      pthread_mutex_lock(&m_mutexLock);
       load();
-      m_lists[i].saveNeeded = false;
+    }
+
+    if (doEraseAged)
+    {
+      pthread_mutex_lock(&m_mutexLock);
+      bool changed = m_lists[i].list->eraseAged(MAX_AGE_IN_DAYS);
+      m_lists[i].saveNeeded = changed;
       pthread_mutex_unlock(&m_mutexLock);
     }
 
-    if (m_lists[i].list->eraseAged(MAX_AGE_IN_DAYS) || m_lists[i].saveNeeded) {
+    if (m_lists[i].saveNeeded) {
       Logger::info("save %lu %s", i, m_pathname.c_str());
 
       pthread_mutex_lock(&m_mutexLock);
       m_lists[i].list->save();
-      (void)hasChanged(); // avoid useless reload
+      (void)hasChanged(); // avoid useless reload, because of above save
       m_lists[i].saveNeeded = false;
       pthread_mutex_unlock(&m_mutexLock);
     }
@@ -104,9 +118,12 @@ bool FileListsCache::getEntry(const CacheType type, const std::string& rNumber, 
 void FileListsCache::load() {
   Logger::debug("loading directory %s", m_pathname.c_str());
 
+  pthread_mutex_lock(&m_mutexLock);
   for (size_t i = 0; i < sizeof(m_lists)/sizeof(m_lists[0]); i++) {
     m_lists[i].list->load();
+    m_lists[i].saveNeeded = false;
   }
+  pthread_mutex_unlock(&m_mutexLock);
 }
 
 void FileListsCache::dump() {
