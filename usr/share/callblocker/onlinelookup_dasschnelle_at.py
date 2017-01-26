@@ -30,8 +30,9 @@ class OnlineLookupDasSchnelleAT(OnlineBase):
         return ["+43"]
 
     def handle_number(self, args, number):
+        number = "0" + number[3:]  # make number local
         url = "https://www.dasschnelle.at/ergebnisse?" + urllib.urlencode({"what": number}) + "&distance=0"
-        content = self.http_get(url)
+        content = self.http_get(url, allowed_codes=[410])
 
         #self.log.debug(content)
         soup = BeautifulSoup(content)

@@ -38,10 +38,17 @@ class OnlineBase(object):
         parser.add_argument('--debug', action="store_true")
         return parser
 
-    def http_get(self, url):
+    def http_get(self, url, allowed_codes=[]):
         self.log.debug("http_get: '%s'" % url)
-        data = urllib2.urlopen(url, timeout=5)
-        return data.read()
+        try:
+            resp = urllib2.urlopen(url, timeout=5)
+            data = resp.read()
+        except urllib2.HTTPError, e:
+            code = e.getcode()
+            if code not in allowed_codes:
+                raise
+            data = e.read()
+        return data
 
     # must be implemented in the inherited class
     def handle_number(self, args, number):
