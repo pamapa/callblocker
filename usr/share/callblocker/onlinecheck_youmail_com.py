@@ -42,12 +42,12 @@ class OnlineCheckYouMailCOM(OnlineBase):
         data = json.loads(content)
         self.log.debug(data)
 
-        level = 0  # = no spam
+        score = 0  # = no spam
         if "spamRisk" in data and "level" in data["spamRisk"]:
-          level = int(data["spamRisk"]["level"])
+          score = int(data["spamRisk"]["level"])
 
-        spam = False if level < args.spamscore else True
-        return self.onlinecheck_2_result(spam, level)
+        spam = False if score < args.spamscore else True
+        return self.onlinecheck_2_result(spam, score)
 
 
 #
