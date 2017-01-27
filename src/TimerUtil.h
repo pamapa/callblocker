@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -17,33 +17,28 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef ANALOGPHONE_H
-#define ANALOGPHONE_H
-
-#include <string>
-
-#include "Phone.h"
-#include "Modem.h"
-#include "TimerUtil.h"
+#ifndef TIMER_UTIL_H
+#define TIMER_UTIL_H
 
 
-class AnalogPhone : public Phone {
+#include <sys/time.h>
+
+
+class TimerUtil {
 private:
-  struct SettingAnalogPhone m_settings;
-
-  Modem m_modem;
-
-  TimerUtil m_ringTimer;
-  unsigned int m_numRings;
-  bool m_foundCID;
-
-  TimerUtil m_hangupTimer;
+  bool m_active;
+  struct timeval elapseTime;
 
 public:
-  AnalogPhone(Block* pBlock);
-  virtual ~AnalogPhone();
-  bool init(struct SettingAnalogPhone* pSettings);
-  void run();
+  TimerUtil();
+
+  void restart(time_t elapseSec);
+  void stop(void);
+  bool isActive();
+  bool hasElapsed();
+
+private:
+  static void getCurrent(struct timeval* res);
 };
 
 #endif

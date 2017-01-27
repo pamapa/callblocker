@@ -70,22 +70,5 @@ public:
   static bool parseTime(const std::string& rStr, std::chrono::system_clock::time_point* pRes);
 };
 
-class TimerUtil {
-private:
-  bool m_active;
-  struct timeval elapseTime;
-
-public:
-  TimerUtil();
-
-  void restart(time_t elapseSec);
-  void stop(void);
-  bool isActive();
-  bool hasElapsed();
-
-private:
-  static void getCurrent(struct timeval* res);
-};
-
 #endif
 
