@@ -89,7 +89,6 @@ Name                  | Site                           | Description
 ----                  | ----                           | -----------
 ""                    | N/A                            | No online check is done
 "phonespamfilter_com" | http://www.phonespamfilter.com | Free for non commercial use. Support for Astralia, France, New Zealand, United Kingdom and United States.
-"whocalled_us"        | http://whocalled.us            | Free, support for USA and Canada (+1).
 "tellows_de"          | http://tellows.de              | Not free, support for many countries all over the world.
 
 Developer hint: The online check name e.g. "tellows_de" leds to the python script name onlinecheck_tellows_de.py.
