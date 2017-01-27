@@ -89,9 +89,10 @@ Name                  | Site                           | Description
 ----                  | ----                           | -----------
 ""                    | N/A                            | No online check is done
 "phonespamfilter_com" | http://www.phonespamfilter.com | Free for non commercial use. Support for Astralia, France, New Zealand, United Kingdom and United States.
-"tellows_de"          | http://tellows.de              | Not free, support for many countries all over the world.
+"tellows_de"          | http://tellows.de              | Registration needed. Not free, support for many countries all over the world.
+"youmail_com"         | https://data.youmail.com       | Registration needed. Not free, support for USA and Canada (+1). Online caching not allowed.
 
-Developer hint: The online check name e.g. "tellows_de" leds to the python script name onlinecheck_tellows_de.py.
+Developer hint: The online check name e.g. "tellows_de" leads to the python script name onlinecheck_tellows_de.py.
 
 
 ## <a name="onlineLookup"></a> Online lookup option
@@ -108,4 +109,4 @@ Name                  | Site                           | Description
 "pagesjaunes_fr"      | http://www.pagesjaunes.fr      | France (+33). Free for non commercial use
 "paginebianche_it"    | http://www.paginebianche.it    | Italy (+39). Free for non commercial use
 
-Developer hint: The online lookup name e.g. "tel_search_ch" leds to the python script name onlinelookup_tel_search_ch.py.
+Developer hint: The online lookup name e.g. "tel_search_ch" leads to the python script name onlinelookup_tel_search_ch.py.
