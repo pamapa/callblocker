@@ -38,11 +38,12 @@ class OnlineBase(object):
         parser.add_argument('--debug', action="store_true")
         return parser
 
-    def http_get(self, url, allowed_codes=[]):
+    def http_get(self, url, add_headers={}, allowed_codes=[]):
         self.log.debug("http_get: '%s'" % url)
         try:
-            resp = urllib2.urlopen(url, timeout=5)
-            data = resp.read()
+            request = urllib2.Request(url, headers=add_headers)
+            response = urllib2.urlopen(request, timeout=5)
+            data = response.read()
         except urllib2.HTTPError, e:
             code = e.getcode()
             if code not in allowed_codes:
