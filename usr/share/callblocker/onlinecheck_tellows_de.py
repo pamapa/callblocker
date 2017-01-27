@@ -57,6 +57,6 @@ if __name__ == "__main__":
     parser = m.get_parser("Online check via www.tellows.de")
     parser.add_argument("--username", help="partner name", required=True)
     parser.add_argument("--password", help="api key", required=True)
-    parser.add_argument("--spamscore", help="score limit to mark as spam [0..9]", default=7)
+    parser.add_argument("--spamscore", help="score limit to mark as spam [1..9]", default=7)
     args = parser.parse_args()
     m.run(args)
