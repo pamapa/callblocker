@@ -59,7 +59,7 @@ def handle_journal(environ, start_response, params):
         entry = all[all_count - i - 1] # newest first
         try:
             jj = json.loads(entry)
-            prio = int(jj["priority"])
+            prio = int(jj["PRIORITY"])
             tmp = {
                 # // -6: usec -> sec => UTC time (substr because timestamp is too big for integer under 32bit
                 "date": datetime.utcfromtimestamp(int(jj["__REALTIME_TIMESTAMP"][0:-6])).strftime("%Y-%m-%d %H:%M:%S +0000"),
