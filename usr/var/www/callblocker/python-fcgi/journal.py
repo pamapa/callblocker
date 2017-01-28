@@ -30,129 +30,129 @@ CALLBLOCKER_JOURNALERRORWARN = ["journalctl", "_SYSTEMD_UNIT=callblockerd.servic
 
 
 def handle_journal(environ, start_response, params):
-  if "all" in params: cmd = CALLBLOCKER_JOURNALALL
-  else: cmd = CALLBLOCKER_JOURNALERRORWARN
-  p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-  out, err = p.communicate()
-  #print >> sys.stderr, 'err="%s"\n' % err
-  all = out.splitlines()
-  all_count = len(all)
-                               
-  # handle paging
-  start = int(params.get("start", "0"))
-  count = int(params.get("count", str(all_count)))
+    if "all" in params: cmd = CALLBLOCKER_JOURNALALL
+    else: cmd = CALLBLOCKER_JOURNALERRORWARN
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+    #print >> sys.stderr, 'err="%s"\n' % err
+    all = out.splitlines()
+    all_count = len(all)
 
-  def mapPriorityToName(prio):
-    if prio == 0: return "Emergency"
-    if prio == 1: return "Alert"
-    if prio == 2: return "Critical"
-    if prio == 3: return "Error"
-    if prio == 4: return "Warning"
-    if prio == 5: return "Notice"
-    if prio == 6: return "Information"
-    if prio == 7: return "Debug"
-    return "Unknown"
+    # handle paging
+    start = int(params.get("start", "0"))
+    count = int(params.get("count", str(all_count)))
 
-  items = []  
-  for i in range(start, all_count):
-    if i >= start + count: break
-    entry = all[all_count - i - 1] # newest first
-    try:
-      jj = json.loads(entry)
-      prio = int(jj["priority"])
-      tmp = {
-        # // -6: usec -> sec => UTC time (substr because timestamp is too big for integer under 32bit
-        "date": datetime.utcfromtimestamp(int(jj["__REALTIME_TIMESTAMP"][0:-6])).strftime("%Y-%m-%d %H:%M:%S +0000"),
-        "prio_id": prio,
-        "priority": mapPriorityToName(prio),
-        "message": jj["MESSAGE"]
-      }
-      items.append(tmp)
-    except ValueError:
-      pass
+    def mapPriorityToName(prio):
+        if prio == 0: return "Emergency"
+        if prio == 1: return "Alert"
+        if prio == 2: return "Critical"
+        if prio == 3: return "Error"
+        if prio == 4: return "Warning"
+        if prio == 5: return "Notice"
+        if prio == 6: return "Information"
+        if prio == 7: return "Debug"
+        return "Unknown"
 
-  headers = [
-    ('Content-Type',  'text/plain'),
-    ('Content-Range', 'items %d-%d/%d' % (start, start+count, all_count))
-  ]
-  start_response('200 OK', headers)
-  return [json.dumps({"numRows": all_count, "items": items})]
+    items = []
+    for i in range(start, all_count):
+        if i >= start + count: break
+        entry = all[all_count - i - 1] # newest first
+        try:
+            jj = json.loads(entry)
+            prio = int(jj["priority"])
+            tmp = {
+                # // -6: usec -> sec => UTC time (substr because timestamp is too big for integer under 32bit
+                "date": datetime.utcfromtimestamp(int(jj["__REALTIME_TIMESTAMP"][0:-6])).strftime("%Y-%m-%d %H:%M:%S +0000"),
+                "prio_id": prio,
+                "priority": mapPriorityToName(prio),
+                "message": jj["MESSAGE"]
+            }
+            items.append(tmp)
+        except ValueError:
+            pass
+
+    headers = [
+        ('Content-Type',  'text/plain'),
+        ('Content-Range', 'items %d-%d/%d' % (start, start+count, all_count))
+    ]
+    start_response('200 OK', headers)
+    return [json.dumps({"numRows": all_count, "items": items})]
 
 
 def handle_callerlog(environ, start_response, params):
-  p = subprocess.Popen(CALLBLOCKER_CALLLOGCMD,
-                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-  out, err = p.communicate()
-  #print >> sys.stderr, 'err="%s"\n' % err
-  all = out.splitlines()
-  all_count = len(all)
+    p = subprocess.Popen(CALLBLOCKER_CALLLOGCMD,
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+    #print >> sys.stderr, 'err="%s"\n' % err
+    all = out.splitlines()
+    all_count = len(all)
 
-  # handle paging
-  start = int(params.get("start", "0"))
-  count = int(params.get("count", str(all_count)))
+    # handle paging
+    start = int(params.get("start", "0"))
+    count = int(params.get("count", str(all_count)))
 
-  re_eq = r"'([^'\\]*(?:\\.[^'\\]*)*)'" # escaped quotes
-  pattern = re.compile(r"^Incoming call: (number="+re_eq+")?\s?(name="+re_eq+")?\s?" +
-                        "(blocked)?\s?" +
-                        "(invalid)?\s?" +
-                        "(whitelist="+re_eq+")?\s?(blacklist="+re_eq+")?\s?(score=([0-9]*))?$")
-  items = []  
-  for i in range(start, all_count):
-    if i >= start + count: break
-    entry = all[all_count - i - 1] # newest first
-    try:
-      jj = json.loads(entry)
-      obj = pattern.match(jj["MESSAGE"])
-      if obj:
-        tmp = {
-          "number": obj.group(2).strip(),
-          # // -6: usec -> sec => UTC time (substr because timestamp is too big for integer under 32bit
-          "date": datetime.utcfromtimestamp(int(jj["__REALTIME_TIMESTAMP"][0:-6])).strftime("%Y-%m-%d %H:%M:%S +0000")
-        }
-        tmp["name"] = ""
-        try: tmp["name"] = obj.group(4).strip()
-        except (IndexError, AttributeError): pass
-        tmp["name"] = tmp["name"].replace("\\'", "'") # unescape possible quotes
+    re_eq = r"'([^'\\]*(?:\\.[^'\\]*)*)'" # escaped quotes
+    pattern = re.compile(r"^Incoming call: (number="+re_eq+")?\s?(name="+re_eq+")?\s?" +
+                         "(blocked)?\s?" +
+                         "(invalid)?\s?" +
+                         "(whitelist="+re_eq+")?\s?(blacklist="+re_eq+")?\s?(score=([0-9]*))?$")
+    items = []
+    for i in range(start, all_count):
+        if i >= start + count: break
+        entry = all[all_count - i - 1] # newest first
+        try:
+            jj = json.loads(entry)
+            obj = pattern.match(jj["MESSAGE"])
+            if obj:
+                tmp = {
+                    "number": obj.group(2).strip(),
+                    # // -6: usec -> sec => UTC time (substr because timestamp is too big for integer under 32bit
+                    "date": datetime.utcfromtimestamp(int(jj["__REALTIME_TIMESTAMP"][0:-6])).strftime("%Y-%m-%d %H:%M:%S +0000")
+                }
+                tmp["name"] = ""
+                try: tmp["name"] = obj.group(4).strip()
+                except (IndexError, AttributeError): pass
+                tmp["name"] = tmp["name"].replace("\\'", "'") # unescape possible quotes
 
-        tmp["what"] = 0;
-        try:
-          obj.group(5).strip()
-          tmp["what"] = -1 # blocked
-        except (IndexError, AttributeError): pass
-        try:
-          obj.group(8).strip()
-          tmp["what"] = 1  # whitelisted
-        except (IndexError, AttributeError): pass
+                tmp["what"] = 0;
+                try:
+                    obj.group(5).strip()
+                    tmp["what"] = -1 # blocked
+                except (IndexError, AttributeError): pass
+                try:
+                    obj.group(8).strip()
+                    tmp["what"] = 1  # whitelisted
+                except (IndexError, AttributeError): pass
 
-        # human readable reason
-        tmp["reason"] = ""
-        try:
-          obj.group(6).strip() # invalid
-          tmp["reason"] = "invalid Caller ID"
-        except (IndexError, AttributeError): pass
-        try:
-          add = "whitelisted in '" + obj.group(8).strip() + "'" # whitelist
-          if len(tmp["reason"]) == 0: tmp["reason"] += add
-          else: tmp["reason"] += ", " + add
-        except (IndexError, AttributeError): pass
-        try:
-          add = "blacklisted in '" + obj.group(10).strip() + "'" # blacklist
-          if len(tmp["reason"]) == 0: tmp["reason"] += add
-          else: tmp["reason"] += ", " + add
-        except (IndexError, AttributeError): pass
-        try:
-          add = "with score '" + obj.group(12).strip() + "'" # score
-          if len(tmp["reason"]) == 0: tmp["reason"] += add
-          else: tmp["reason"] += " " + add
-        except (IndexError, AttributeError): pass
+                # human readable reason
+                tmp["reason"] = ""
+                try:
+                    obj.group(6).strip() # invalid
+                    tmp["reason"] = "invalid Caller ID"
+                except (IndexError, AttributeError): pass
+                try:
+                    add = "whitelisted in '" + obj.group(8).strip() + "'" # whitelist
+                    if len(tmp["reason"]) == 0: tmp["reason"] += add
+                    else: tmp["reason"] += ", " + add
+                except (IndexError, AttributeError): pass
+                try:
+                    add = "blacklisted in '" + obj.group(10).strip() + "'" # blacklist
+                    if len(tmp["reason"]) == 0: tmp["reason"] += add
+                    else: tmp["reason"] += ", " + add
+                except (IndexError, AttributeError): pass
+                try:
+                    add = "with score '" + obj.group(12).strip() + "'" # score
+                    if len(tmp["reason"]) == 0: tmp["reason"] += add
+                    else: tmp["reason"] += " " + add
+                except (IndexError, AttributeError): pass
 
-        items.append(tmp)
-    except ValueError:
-      pass
+                items.append(tmp)
+        except ValueError:
+            pass
 
-  headers = [
-    ('Content-Type',  'text/json'),
-    ('Content-Range', 'items %d-%d/%d' % (start, start+count, all_count))
-  ]
-  start_response('200 OK', headers)
-  return [json.dumps({"numRows": all_count, "items": items})]
+    headers = [
+        ('Content-Type',  'text/json'),
+        ('Content-Range', 'items %d-%d/%d' % (start, start+count, all_count))
+    ]
+    start_response('200 OK', headers)
+    return [json.dumps({"numRows": all_count, "items": items})]
