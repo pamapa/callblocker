@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -279,3 +279,38 @@ def handle_get_lists(environ, start_response, params):
   ]
   start_response('200 OK', headers)
   return [json.dumps({"identifier": "file", "label": "name", "numRows": all_count, "items": items})]
+
+
+def handle_get_online_scripts(environ, start_response, params):
+  kind = "lookup"
+  if "kind" in params:
+    kind = params["kind"]
+
+  script_prefix = "onlinecheck_"
+  if kind == "lookup":
+    script_prefix = "onlinelookup_"
+
+  all = []
+  for fname in os.listdir(config.CALLBLOCKER_DATADIR):
+    if fname.startswith(script_prefix) and fname.endswith(".py"):
+      name = fname[len(script_prefix):-3]
+      name = name.replace("_", ".")
+      all.append(name)
+  all_count = len(all)
+
+  # handle paging
+  start = int(params.get("start", "0"))
+  count = int(params.get("count", str(all_count)))
+
+  items = []
+  for i in range(start, all_count):
+    if i >= start + count: break
+    entry = all[i]
+    items.append(entry)
+
+  headers = [
+    ('Content-Type',  'text/json'),
+    ('Content-Range', 'items %d-%d/%d' % (start, start+count, all_count))
+  ]
+  start_response('200 OK', headers)
+  return [json.dumps({"numRows": all_count, "items": items})]

@@ -44,7 +44,9 @@ def application(environ, start_response):
     return settings.handle_get_list(environ, start_response, params)
   if path == "/get_lists":
     return settings.handle_get_lists(environ, start_response, params)
- 
+  if path == "/get_online_scripts":
+    return settings.handle_get_online_scripts(environ, start_response, params)
+
   if path == "/callerlog":
     return journal.handle_callerlog(environ, start_response, params)
   if path == "/journal":
