@@ -539,9 +539,29 @@ require(["dijit/ConfirmDialog",
     var numberTextBox = new dijit.form.ValidationTextBox({
       placeHolder: "Number",
       required: true,
-      pattern: "\\+[0-9]{4,15}",
-      invalidMessage: "Not a valid international number (+...)"
+      validator: function(value, constraints) {
+        var re = new RegExp("^\\+[0-9]{4,15}$");
+        if (!re.test(value)) {
+          this.invalidMessage = "Not a valid international number (E.164; e.g. +...)";
+          return false;
+        }
+
+        var alreadyInStore = false;
+        function onComplete(items, request) {
+            if(items.length !== 0) {
+              alreadyInStore = true;
+            }
+        }
+        grid.store.fetch({query: {"number": value}, onComplete: onComplete});
+        if (alreadyInStore) {
+          this.invalidMessage = "Number exists already";
+          return false;
+        }
+
+        return true;
+      }
     });
+
     var nameTextBox = new dijit.form.ValidationTextBox({
       placeHolder: "Name"
     });
@@ -574,7 +594,6 @@ require(["dijit/ConfirmDialog",
             onExecute: function() {
               if (numberTextBox.isValid() && nameTextBox.isValid()) {
                 grid.store.setValue(si, "date_modified", date2UTCString(new Date()));
-                grid.store.setValue(si, "number", numberTextBox.get("value"));
                 grid.store.setValue(si, "name", nameTextBox.get("value"));
                 grid.store.save();
               }
@@ -582,6 +601,7 @@ require(["dijit/ConfirmDialog",
           });
           // prepare dialog fields
           numberTextBox.set("value", grid.store.getValue(si, "number"));
+          numberTextBox.readOnly = true;
           nameTextBox.set("value", grid.store.getValue(si, "name"));
           myDialog.show();
         }
@@ -664,6 +684,7 @@ require(["dijit/ConfirmDialog",
         });
         // prepare dialog fields
         numberTextBox.set("value", "");
+        numberTextBox.readOnly = false;
         nameTextBox.set("value", "");
         myDialog.show();
       }

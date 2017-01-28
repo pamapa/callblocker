@@ -39,6 +39,18 @@ def _load_settings():
     return jj
 
 
+def _remove_duplicates(entries):
+    uniq = []
+    seen = set()
+    for entry in entries:
+        number = entry["number"]
+        # filter duplicates
+        if number not in seen:
+            uniq.append(entry)
+            seen.add(number)
+    return uniq
+
+
 def handle_phones(environ, start_response, params):
     jj = _load_settings()
 
@@ -142,12 +154,12 @@ def handle_get_list(environ, start_response, params):
         #print >> sys.stderr, 'POST data=%s\n' % post.getvalue('data')
         json_list = json.loads(post.getvalue('data'))
         with codecs.open(filename, "w", encoding="utf-8") as f:
-            json.dump({"name": json_list["label"], "entries": json_list["items"]}, f, indent=2, ensure_ascii=False)
+            json.dump({"name": json_list["label"], "entries": _remove_duplicates(json_list["items"])}, f, indent=2, ensure_ascii=False)
         return
 
     with open(filename) as f:
         jj = json.loads(f.read().decode("utf-8-sig"))
-    all = jj["entries"]
+    all = _remove_duplicates(jj["entries"])
     # sort entries by name
     all = sorted(all, key=lambda k: k['name'])
     all_count = len(all)
@@ -173,7 +185,7 @@ def handle_get_list(environ, start_response, params):
         ('Content-Range', 'items %d-%d/%d' % (start, start+count, all_count))
     ]
     start_response('200 OK', headers)
-    return [json.dumps({"label": label, "numRows": all_count, "items": items})]
+    return [json.dumps({"label": label, "identifier": "number", "numRows": all_count, "items": items})]
 
 
 def handle_get_lists(environ, start_response, params):
@@ -277,7 +289,7 @@ def handle_get_lists(environ, start_response, params):
         ('Content-Range', 'items %d-%d/%d' % (start, start+count, all_count))
     ]
     start_response('200 OK', headers)
-    return [json.dumps({"identifier": "file", "label": "name", "numRows": all_count, "items": items})]
+    return [json.dumps({"label": "name", "identifier": "file", "numRows": all_count, "items": items})]
 
 
 def handle_get_online_scripts(environ, start_response, params):
@@ -311,4 +323,4 @@ def handle_get_online_scripts(environ, start_response, params):
         ('Content-Range', 'items %d-%d/%d' % (start, start+count, all_count))
     ]
     start_response('200 OK', headers)
-    return [json.dumps({"identifier": "value", "label": "name", "numRows": all_count, "items": items})]
+    return [json.dumps({"label": "name", "identifier": "value", "numRows": all_count, "items": items})]
