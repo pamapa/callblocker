@@ -11,6 +11,7 @@ missing
 autom4te.cache
 
 .deps
+.idea
 *.o
 src/callblockerd
 src/libcallblockerd.a
