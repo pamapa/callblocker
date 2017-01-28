@@ -246,6 +246,7 @@ require(["dijit/ConfirmDialog",
         { label: "phonespamfilter.com", value: "phonespamfilter_com" },
         { label: "whocalled.us", value: "whocalled_us" },
         { label: "tellows.de", value: "tellows_de" },
+        { label: "youmail.com", value: "youmail_com" },
       ]
     });
     var onlineLookupSelect = new dijit.form.Select({
@@ -441,6 +442,7 @@ require(["dijit/ConfirmDialog",
       options: [
         { label: "tellows_de",   value: "tellows_de"},
         { label: "whocalled_us", value: "whocalled_us" },
+        { label: "youmail_com", value: "youmail_com" },
       ]
     });
     var usernameTextBox = new dijit.form.ValidationTextBox({
