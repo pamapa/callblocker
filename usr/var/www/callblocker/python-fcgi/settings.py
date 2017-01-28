@@ -292,9 +292,8 @@ def handle_get_online_scripts(environ, start_response, params):
     all = []
     for fname in os.listdir(config.CALLBLOCKER_DATADIR):
         if fname.startswith(script_prefix) and fname.endswith(".py"):
-            name = fname[len(script_prefix):-3]
-            name = name.replace("_", ".")
-            all.append(name)
+            script = fname[len(script_prefix):-3]
+            all.append({"name": script, "value": script})
     all_count = len(all)
 
     # handle paging
@@ -312,4 +311,4 @@ def handle_get_online_scripts(environ, start_response, params):
         ('Content-Range', 'items %d-%d/%d' % (start, start+count, all_count))
     ]
     start_response('200 OK', headers)
-    return [json.dumps({"numRows": all_count, "items": items})]
+    return [json.dumps({"identifier": "value", "label": "name", "numRows": all_count, "items": items})]

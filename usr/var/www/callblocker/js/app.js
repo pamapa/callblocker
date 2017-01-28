@@ -241,25 +241,19 @@ require(["dijit/ConfirmDialog",
       checked: false,
     });
     var onlineCheckSelect = new dijit.form.Select({
-      options: [
-        { label: "none", value: "", selected: true },
-        { label: "phonespamfilter.com", value: "phonespamfilter_com" },
-        { label: "whocalled.us", value: "whocalled_us" },
-        { label: "tellows.de", value: "tellows_de" },
-        { label: "youmail.com", value: "youmail_com" },
-      ]
+      store: new dojo.data.ItemFileReadStore({
+        url: api_base.concat("/get_online_scripts?kind=check")
+      })
     });
+    // add none and preselect
+    onlineCheckSelect.addOption([{ label: "none", value: "", selected: true }]);
     var onlineLookupSelect = new dijit.form.Select({
-      options: [
-        { label: "none", value: "", selected: true },
-        { label: "all", value: "all" },
-        { label: "dasoertliche.de", value: "dasoertliche_de" },
-        { label: "dasschnelle.at", value: "dasschnelle_at" },
-        { label: "pagesjaunes.fr", value: "pagesjaunes_fr" },
-        { label: "paginebianche.it", value: "paginebianche_it" },
-        { label: "tel.search.ch", value: "tel_search_ch" },
-      ]
+      store: new dojo.data.ItemFileReadStore({
+        url: api_base.concat("/get_online_scripts?kind=lookup")
+      })
     });
+    // add none and preselect
+    onlineLookupSelect.addOption([{ label: "none", value: "", selected: true }]);
     var deviceTextBox = new dijit.form.ValidationTextBox({
       placeHolder: "device",
       pattern: "/dev/.*",
@@ -367,11 +361,14 @@ require(["dijit/ConfirmDialog",
               grid.store.setValue(si, "enabled", enabledCheckBox.get("checked"));
               grid.store.setValue(si, "name", nameTextBox.get("value"));
               grid.store.setValue(si, "country_code", countryCodeTextBox.get("value"));
+
               grid.store.setValue(si, "block_mode", blockModeSelect.get("value"));
               grid.store.setValue(si, "block_anonymous_cid", blockAnonymousCIDCheckBox.get("checked"));
               grid.store.setValue(si, "block_invalid_cid", blockInvalidCIDCheckBox.get("checked"));
+
               grid.store.setValue(si, "online_check", onlineCheckSelect.get("value"));
               grid.store.setValue(si, "online_lookup", onlineLookupSelect.get("value"));
+
               grid.store.save();
             }
           });
@@ -439,11 +436,9 @@ require(["dijit/ConfirmDialog",
 
   function createOnlineCredentials(url) {
     var nameSelect = new dijit.form.Select({
-      options: [
-        { label: "tellows_de",   value: "tellows_de"},
-        { label: "whocalled_us", value: "whocalled_us" },
-        { label: "youmail_com", value: "youmail_com" },
-      ]
+      store: new dojo.data.ItemFileReadStore({
+        url: api_base.concat("/get_online_scripts?kind=check")
+      })
     });
     var usernameTextBox = new dijit.form.ValidationTextBox({
       placeHolder: "username",
