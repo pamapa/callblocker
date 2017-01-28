@@ -73,11 +73,11 @@ require(["dijit/ConfirmDialog",
       url: api_base.concat("/callerlog")
     });
     var structure = [
-      { name: "Date",   field: "DATE",   width: "180px", formatter: formatDate },
-      { name: "Number", field: "NUMBER", width: "110px"                        },
-      { name: "Name",   field: "NAME",   width: "600px"                        },
-      { name: "What",   field: "WHAT",   width: "50px",  hidden: true          },
-      { name: "Reason", field: "REASON", width: "300px"                        }
+      { name: "Date",   field: "date",   width: "180px", formatter: formatDate },
+      { name: "Number", field: "number", width: "110px"                        },
+      { name: "Name",   field: "name",   width: "600px"                        },
+      { name: "What",   field: "what",   width: "50px",  hidden: true          },
+      { name: "Reason", field: "reason", width: "300px"                        }
     ];
 
     var menu = new dijit.Menu();
@@ -88,7 +88,7 @@ require(["dijit/ConfirmDialog",
         dojo.forEach(items, function(si) {
           if (si !== null) {
             var dateStr = date2UTCString(new Date());
-            var newItem = { number: grid.store.getValue(si, "NUMBER"), name: grid.store.getValue(si, "NAME"),
+            var newItem = { number: grid.store.getValue(si, "number"), name: grid.store.getValue(si, "name"),
                             date_created: dateStr, date_modified: dateStr };
             listStore.newItem(newItem);
           }
@@ -139,10 +139,10 @@ require(["dijit/ConfirmDialog",
       url: url
     });
     var structure = [
-      { name: "Date",     field: "DATE",     width: "180px", formatter: formatDate },
-      { name: "PrioId",   field: "PRIO_ID",  width: "50px",  hidden: true          },
-      { name: "Priority", field: "PRIORITY", width: "70px"                         },
-      { name: "Message",  field: "MESSAGE",  width: "100%"                         }
+      { name: "Date",     field: "date",     width: "180px", formatter: formatDate },
+      { name: "PrioId",   field: "prio_id",  width: "50px",  hidden: true          },
+      { name: "Priority", field: "priority", width: "70px"                         },
+      { name: "Message",  field: "message",  width: "100%"                         }
     ];
     var grid = new dojox.grid.EnhancedGrid({
       //id: "myGridId",

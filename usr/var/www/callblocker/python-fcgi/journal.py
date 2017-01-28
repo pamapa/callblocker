@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -59,13 +59,13 @@ def handle_journal(environ, start_response, params):
     entry = all[all_count - i - 1] # newest first
     try:
       jj = json.loads(entry)
-      prio = int(jj["PRIORITY"])
+      prio = int(jj["priority"])
       tmp = {
         # // -6: usec -> sec => UTC time (substr because timestamp is too big for integer under 32bit
-        "DATE": datetime.utcfromtimestamp(int(jj["__REALTIME_TIMESTAMP"][0:-6])).strftime("%Y-%m-%d %H:%M:%S +0000"),
-        "PRIO_ID": prio,
-        "PRIORITY": mapPriorityToName(prio),
-        "MESSAGE": jj["MESSAGE"]
+        "date": datetime.utcfromtimestamp(int(jj["__REALTIME_TIMESTAMP"][0:-6])).strftime("%Y-%m-%d %H:%M:%S +0000"),
+        "prio_id": prio,
+        "priority": mapPriorityToName(prio),
+        "message": jj["MESSAGE"]
       }
       items.append(tmp)
     except ValueError:
@@ -105,44 +105,45 @@ def handle_callerlog(environ, start_response, params):
       obj = pattern.match(jj["MESSAGE"])
       if obj:
         tmp = {
-          "NUMBER": obj.group(2).strip(),
+          "number": obj.group(2).strip(),
           # // -6: usec -> sec => UTC time (substr because timestamp is too big for integer under 32bit
-          "DATE": datetime.utcfromtimestamp(int(jj["__REALTIME_TIMESTAMP"][0:-6])).strftime("%Y-%m-%d %H:%M:%S +0000")
+          "date": datetime.utcfromtimestamp(int(jj["__REALTIME_TIMESTAMP"][0:-6])).strftime("%Y-%m-%d %H:%M:%S +0000")
         }
-        try: tmp["NAME"] = obj.group(4).strip()
-        except (IndexError, AttributeError): tmp["NAME"] = ""
-        tmp["NAME"] = tmp["NAME"].replace("\\'", "'") # unescape possible quotes
+        tmp["name"] = ""
+        try: tmp["name"] = obj.group(4).strip()
+        except (IndexError, AttributeError): pass
+        tmp["name"] = tmp["name"].replace("\\'", "'") # unescape possible quotes
 
-        tmp["WHAT"] = 0;
+        tmp["what"] = 0;
         try:
           obj.group(5).strip()
-          tmp["WHAT"] = -1 # blocked
+          tmp["what"] = -1 # blocked
         except (IndexError, AttributeError): pass
         try:
           obj.group(8).strip()
-          tmp["WHAT"] = 1  # whitelisted
+          tmp["what"] = 1  # whitelisted
         except (IndexError, AttributeError): pass
 
         # human readable reason
-        tmp["REASON"] = ""
+        tmp["reason"] = ""
         try:
           obj.group(6).strip() # invalid
-          tmp["REASON"] = "invalid Caller ID"
+          tmp["reason"] = "invalid Caller ID"
         except (IndexError, AttributeError): pass
         try:
           add = "whitelisted in '" + obj.group(8).strip() + "'" # whitelist
-          if len(tmp["REASON"]) == 0: tmp["REASON"] += add
-          else: tmp["REASON"] += ", " + add
+          if len(tmp["reason"]) == 0: tmp["reason"] += add
+          else: tmp["reason"] += ", " + add
         except (IndexError, AttributeError): pass
         try:
           add = "blacklisted in '" + obj.group(10).strip() + "'" # blacklist
-          if len(tmp["REASON"]) == 0: tmp["REASON"] += add
-          else: tmp["REASON"] += ", " + add
+          if len(tmp["reason"]) == 0: tmp["reason"] += add
+          else: tmp["reason"] += ", " + add
         except (IndexError, AttributeError): pass
         try:
           add = "with score '" + obj.group(12).strip() + "'" # score
-          if len(tmp["REASON"]) == 0: tmp["REASON"] += add
-          else: tmp["REASON"] += " " + add
+          if len(tmp["reason"]) == 0: tmp["reason"] += add
+          else: tmp["reason"] += " " + add
         except (IndexError, AttributeError): pass
 
         items.append(tmp)
@@ -155,4 +156,3 @@ def handle_callerlog(environ, start_response, params):
   ]
   start_response('200 OK', headers)
   return [json.dumps({"numRows": all_count, "items": items})]
-
