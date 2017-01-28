@@ -119,7 +119,7 @@ require(["dijit/ConfirmDialog",
     dojo.connect(grid, 'onStyleRow', this, function (row) {
       var item = grid.getItem(row.index);
       if (item != null) {
-        switch(item.i.WHAT) {
+        switch(item.i.what) {
           case 1:
             row.customClasses = "whitelistRow";
             break;
@@ -156,9 +156,9 @@ require(["dijit/ConfirmDialog",
     dojo.connect(grid, 'onStyleRow', this, function (row) {
       var item = grid.getItem(row.index);
       if (item != null) {
-        if (item.i.PRIO_ID <= 3) {
+        if (item.i.prio_id <= 3) {
           row.customClasses = "errorRow";
-        } else if (item.i.PRIO_ID == 4) {
+        } else if (item.i.prio_id == 4) {
           row.customClasses = "warnRow";
         }
       }
