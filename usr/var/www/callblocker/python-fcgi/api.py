@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,43 +21,40 @@
 # dojo json exchange format see:
 # http://dojotoolkit.org/reference-guide/1.10/dojo/data/ItemFileReadStore.html#input-data-format
 
-import os, sys, json, re
 import urlparse
-from datetime import datetime
 
 import settings
 import journal
 
 
 def application(environ, start_response):
-  #print >> sys.stderr, 'environ="%s"\n' % environ
-  path = environ.get('PATH_INFO', '')
+    #print >> sys.stderr, 'environ="%s"\n' % environ
+    path = environ.get('PATH_INFO', '')
 
-  params = dict(urlparse.parse_qsl(environ.get('QUERY_STRING', '')))
-  #print >> sys.stderr, 'params="%s"\n' % params
-  
-  if path == "/phones":
-    return settings.handle_phones(environ, start_response, params)
-  if path == "/online_credentials":
-    return settings.handle_online_credentials(environ, start_response, params)
-  if path == "/get_list":
-    return settings.handle_get_list(environ, start_response, params)
-  if path == "/get_lists":
-    return settings.handle_get_lists(environ, start_response, params)
-  if path == "/get_online_scripts":
-    return settings.handle_get_online_scripts(environ, start_response, params)
+    params = dict(urlparse.parse_qsl(environ.get('QUERY_STRING', '')))
+    #print >> sys.stderr, 'params="%s"\n' % params
 
-  if path == "/callerlog":
-    return journal.handle_callerlog(environ, start_response, params)
-  if path == "/journal":
-    return journal.handle_journal(environ, start_response, params)
- 
-  # return error
-  start_response('404 NOT FOUND', [('Content-Type', 'text/plain')])
-  return ['Not Found']
+    if path == "/phones":
+        return settings.handle_phones(environ, start_response, params)
+    if path == "/online_credentials":
+        return settings.handle_online_credentials(environ, start_response, params)
+    if path == "/get_list":
+        return settings.handle_get_list(environ, start_response, params)
+    if path == "/get_lists":
+        return settings.handle_get_lists(environ, start_response, params)
+    if path == "/get_online_scripts":
+        return settings.handle_get_online_scripts(environ, start_response, params)
+
+    if path == "/callerlog":
+        return journal.handle_callerlog(environ, start_response, params)
+    if path == "/journal":
+        return journal.handle_journal(environ, start_response, params)
+
+    # return error
+    start_response('404 NOT FOUND', [('Content-Type', 'text/plain')])
+    return ['Not Found']
 
 
 if __name__ == '__main__':
-  from flup.server.fcgi import WSGIServer 
-  WSGIServer(application).run()
-
+    from flup.server.fcgi import WSGIServer
+    WSGIServer(application).run()
