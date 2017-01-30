@@ -546,16 +546,20 @@ require(["dijit/ConfirmDialog",
           return false;
         }
 
-        var alreadyInStore = false;
-        function onComplete(items, request) {
+        var items = grid.selection.getSelected();
+        if (items.length == 0 || value != grid.store.getValue(items[0], "number")) {
+          // not current selected entry
+          var alreadyInStore = false;
+          function onComplete(items, request) {
             if(items.length !== 0) {
               alreadyInStore = true;
             }
-        }
-        grid.store.fetch({query: {"number": value}, onComplete: onComplete});
-        if (alreadyInStore) {
-          this.invalidMessage = "Number exists already";
-          return false;
+          }
+          grid.store.fetch({query: {"number": value}, onComplete: onComplete});
+          if (alreadyInStore) {
+            this.invalidMessage = "Number exists already";
+            return false;
+          }
         }
 
         return true;
@@ -593,15 +597,25 @@ require(["dijit/ConfirmDialog",
             content: [numberTextBox.domNode, nameTextBox.domNode],
             onExecute: function() {
               if (numberTextBox.isValid() && nameTextBox.isValid()) {
-                grid.store.setValue(si, "date_modified", date2UTCString(new Date()));
-                grid.store.setValue(si, "name", nameTextBox.get("value"));
+                if (numberTextBox.get("value") == grid.store.getValue(si, "number"))
+                {
+                  grid.store.setValue(si, "date_modified", date2UTCString(new Date()));
+                  grid.store.setValue(si, "name", nameTextBox.get("value"));
+                }
+                else
+                {
+                  // number changed, needs special handling, because number is used as identifier
+                  var newItem = { number: numberTextBox.get("value"), name: nameTextBox.get("value"),
+                                  date_created: grid.store.getValue(si, "date_created"), date_modified: date2UTCString(new Date()) };
+                  grid.store.newItem(newItem);
+                  grid.store.deleteItem(si);
+                }
                 grid.store.save();
               }
             }
           });
           // prepare dialog fields
           numberTextBox.set("value", grid.store.getValue(si, "number"));
-          numberTextBox.readOnly = true;
           nameTextBox.set("value", grid.store.getValue(si, "name"));
           myDialog.show();
         }
@@ -684,7 +698,6 @@ require(["dijit/ConfirmDialog",
         });
         // prepare dialog fields
         numberTextBox.set("value", "");
-        numberTextBox.readOnly = false;
         nameTextBox.set("value", "");
         myDialog.show();
       }
