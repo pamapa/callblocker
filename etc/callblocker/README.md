@@ -42,9 +42,9 @@ The settings file looks like this.
       "password": "<your api key>"
     },
     {
-      "name":     "whocalled_us",
-      "username": "<your username>",
-      "password": "<your password>"
+      "name":     "youmail_com",
+      "username": "<your api key>",
+      "password": "<your api sid>"
     }
   ]
 }
