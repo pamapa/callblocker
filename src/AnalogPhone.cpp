@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -68,6 +68,8 @@ bool AnalogPhone::init(struct SettingAnalogPhone* pSettings) {
   if (!m_modem.sendCommand(AT_CID_STR)) {
     return false;
   }
+
+  Logger::info("AnalogPhone::init: successfully initialized device %s", pSettings->device.c_str());
   return true;
 }
 
