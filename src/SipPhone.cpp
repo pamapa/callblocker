@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -30,15 +30,6 @@
 // transport_srtp  ..Failed to initialize libsrtp: unsupported parameter
 //  pjsua_media.c  ..Error initializing SRTP library: unsupported parameter [status=259801]
 static bool s_Initialized = false;
-
-
-// TODO
-// -reconnect on failure
-// -reconnect once a day?
-// PHP:
-// ps -A | grep systemd-journal
-//  213 ?        00:00:00 systemd-journal
-// journalctl <executable full path> --output=short --lines=100
 
 
 SipPhone::SipPhone(Block* pBlock) : Phone(pBlock) {
