@@ -81,7 +81,8 @@ yarn install --modules-folder vendor
 sudo cp -r vendor /usr/var/www/callblocker/js/
 ```
 
-Prepare lighttpd:
+Prepare lighttpd, for additional information
+see [here](http://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_ModFastCGI):
 ```bash
 sudo usermod -a -G systemd-journal www-data
 sudo vi /etc/lighttpd/lighttpd.conf
@@ -102,7 +103,6 @@ sudo vi /etc/lighttpd/lighttpd.conf
 ```bash
 sudo systemctl restart lighttpd.service
 ```
-For additional information see [here](http://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_ModFastCGI).
 
 
 ## Updating daemon and web interface on Linux
