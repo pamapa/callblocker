@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 # callblocker - blocking unwanted calls from your home phone
 # Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
 #
@@ -35,7 +33,7 @@ def _load_settings():
             empty = {"log_level": "info", "pjsip_log_level": 0, "phones": []}
             json.dump(empty, f, indent=2, ensure_ascii=False)
     with open(SETTINGS_FILE) as f:
-        jj = json.loads(f.read().decode("utf-8-sig"))
+        jj = json.loads(f.read())
     return jj
 
 
@@ -158,7 +156,7 @@ def handle_get_list(environ, start_response, params):
         return
 
     with open(filename) as f:
-        jj = json.loads(f.read().decode("utf-8-sig"))
+        jj = json.loads(f.read())
     all = _remove_duplicates(jj["entries"])
     # sort entries by name
     all = sorted(all, key=lambda k: k['name'])
@@ -269,7 +267,7 @@ def handle_get_lists(environ, start_response, params):
     all = []
     for fname in files:
         with open(fname) as f:
-            jj = json.loads(f.read().decode("utf-8-sig"))
+            jj = json.loads(f.read())
         all.append({"name": jj["name"], "file": os.path.basename(fname)})
 
     all_count = len(all)

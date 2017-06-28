@@ -64,7 +64,7 @@ The web interface allows to view the caller log, change settings and diagnose pr
 
 Debian packages are required:
 ```bash
-sudo apt-get install lighttpd python-flup
+sudo apt-get install lighttpd python3-pip
 ```
 
 Yarn is required, install like described [here](https://yarnpkg.com/en/docs/install):
@@ -84,6 +84,7 @@ sudo cp -r vendor /usr/var/www/callblocker/js/
 Prepare lighttpd, for additional information
 see [here](http://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_ModFastCGI):
 ```bash
+sudo pip3 install flipflop
 sudo usermod -a -G systemd-journal www-data
 sudo vi /etc/lighttpd/lighttpd.conf
 ```

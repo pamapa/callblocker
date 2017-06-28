@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # callblocker - blocking unwanted calls from your home phone
 # Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
@@ -21,7 +21,7 @@
 # dojo json exchange format see:
 # http://dojotoolkit.org/reference-guide/1.10/dojo/data/ItemFileReadStore.html#input-data-format
 
-import urlparse
+import urllib
 
 import settings
 import journal
@@ -31,7 +31,7 @@ def application(environ, start_response):
     #print >> sys.stderr, 'environ="%s"\n' % environ
     path = environ.get('PATH_INFO', '')
 
-    params = dict(urlparse.parse_qsl(environ.get('QUERY_STRING', '')))
+    params = dict(urllib.parse.parse_qsl(environ.get('QUERY_STRING', '')))
     #print >> sys.stderr, 'params="%s"\n' % params
 
     if path == "/phones":
@@ -56,5 +56,5 @@ def application(environ, start_response):
 
 
 if __name__ == '__main__':
-    from flup.server.fcgi import WSGIServer
+    from flipflop import WSGIServer
     WSGIServer(application).run()
