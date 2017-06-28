@@ -29,8 +29,8 @@ The call blocker acts like a normal phone. No additional telephone switchboard (
 
 ## Hardware
 Supported (tested) server host systems
-- Raspberry Pi (running raspbian/jessie)
-- Debian GNU/Linux (running jessie)
+- Raspberry Pi (for raspbian/jessie use v0.10.x release)
+- Debian GNU/Linux (for jessie use v0.10.x release)
 
 Supported (tested) VoIP systems
 - Fritzbox 7390
@@ -62,8 +62,27 @@ sudo systemctl start callblockerd.service
 The installation of the web interface is optional, the callblock daemon works perfectly without it.
 The web interface allows to view the caller log, change settings and diagnose problems.
 
+Debian packages are required:
 ```bash
-sudo apt-get install lighttpd python-flup libjs-dojo-core libjs-dojo-dijit libjs-dojo-dojox
+sudo apt-get install lighttpd python-flup
+```
+
+Yarn is required, install like described [here](https://yarnpkg.com/en/docs/install):
+```bash
+wget -qO- https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -OK
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt-get update && sudo apt-get install yarn
+```
+
+Fetch (within checkout directory) and install vendor files:
+```bash
+cd usr/var/www/callblocker/js
+yarn install --modules-folder vendor
+sudo cp -r vendor /usr/var/www/callblocker/js/
+```
+
+Prepare lighttpd:
+```bash
 sudo usermod -a -G systemd-journal www-data
 sudo vi /etc/lighttpd/lighttpd.conf
 ```
@@ -246,4 +265,3 @@ sudo systemctl restart lighttpd.service
 # manual verify that journal is working
 sudo journalctl _SYSTEMD_UNIT=callblockerd.service
 ```
-

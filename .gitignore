@@ -16,4 +16,6 @@ autom4te.cache
 src/callblockerd
 src/libcallblockerd.a
 usr/share/callblocker/*.pyc
+usr/var/www/callblocker/js/vendor/*
+usr/var/www/callblocker/js/yarn.lock
 test/callblockerd/unit_tests

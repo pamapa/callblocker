@@ -1,6 +1,6 @@
-@import "javascript/dojo/resources/dojo.css";
-@import "javascript/dijit/themes/soria/soria.css";
-@import "javascript/dojox/grid/resources/soriaGrid.css";
+@import "js/vendor/dojo/resources/dojo.css";
+@import "js/vendor/dijit/themes/soria/soria.css";
+@import "js/vendor/dojox/grid/resources/soriaGrid.css";
 
 html, body {
   width: 100%;
