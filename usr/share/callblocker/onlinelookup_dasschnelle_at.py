@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
 # Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
@@ -18,9 +18,8 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-from __future__ import print_function
-import urllib
-from BeautifulSoup import BeautifulSoup
+import urllib.parse
+from bs4 import BeautifulSoup
 
 from online_base import OnlineBase
 
@@ -31,14 +30,14 @@ class OnlineLookupDasSchnelleAT(OnlineBase):
 
     def handle_number(self, args, number):
         number = "0" + number[3:]  # make number local
-        url = "https://www.dasschnelle.at/ergebnisse?" + urllib.urlencode({"what": number}) + "&distance=0"
+        url = "https://www.dasschnelle.at/ergebnisse?" + urllib.parse.urlencode({"what": number}) + "&distance=0"
         content = self.http_get(url, allowed_codes=[410])
 
         #self.log.debug(content)
-        soup = BeautifulSoup(content)
+        soup = BeautifulSoup(content, "lxml")
         #self.log.debug(soup)
 
-        caller_name = unicode("")
+        caller_name = ""
         entries = soup.findAll("article")
         for entry in entries:
             eintrag_name = entry.find("h3")
@@ -49,9 +48,9 @@ class OnlineLookupDasSchnelleAT(OnlineBase):
                     name = vorname + " " + name[:-2] # remove ', '
 
             if len(caller_name) == 0:
-                caller_name = unicode(name)
+                caller_name = name
             else:
-                caller_name += "; " + unicode(name)
+                caller_name += "; " + name
 
         return self.onlinelookup_2_result(caller_name)
 

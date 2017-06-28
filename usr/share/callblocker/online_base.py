@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # callblocker - blocking unwanted calls from your home phone
 # Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
 #
@@ -18,10 +16,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-from __future__ import print_function
 import sys, argparse
 import logging
-import urllib2
+import urllib.request
 import json
 
 
@@ -41,10 +38,10 @@ class OnlineBase(object):
     def http_get(self, url, add_headers={}, allowed_codes=[]):
         self.log.debug("http_get: '%s'" % url)
         try:
-            request = urllib2.Request(url, headers=add_headers)
-            response = urllib2.urlopen(request, timeout=5)
+            request = urllib.request.Request(url, headers=add_headers)
+            response = urllib.request.urlopen(request, timeout=5)
             data = response.read()
-        except urllib2.HTTPError, e:
+        except urllib.request.HTTPError as e:
             code = e.getcode()
             if code not in allowed_codes:
                 raise
@@ -60,8 +57,6 @@ class OnlineBase(object):
         return []
 
     def onlinelookup_2_result(self, caller_name):
-        if not isinstance(caller_name, unicode):
-            self.log.warn("caller_name must have type unicode")
         result = {
             "name": caller_name
         }
@@ -90,8 +85,8 @@ class OnlineBase(object):
         result = self.handle_number(args, args.number)
 
         # result in json format, if not found: empty fields
-        j = json.dumps(result, encoding="utf-8", ensure_ascii=False)
-        sys.stdout.write(j.encode("utf8"))
+        j = json.dumps(result, ensure_ascii=False)
+        sys.stdout.write(j)
         sys.stdout.write("\n")  # must be separate line, to avoid conversion of json into ascii
 
         # no error occurred

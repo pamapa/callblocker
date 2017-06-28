@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,9 +18,8 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-from __future__ import print_function
 import os, re
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 from collections import OrderedDict
 from datetime import datetime
 
@@ -63,7 +62,7 @@ class BlacklistKToastedSpamCOM(BlacklistBase):
 
     def _parse_page(self, content):
         ret = []
-        soup = BeautifulSoup(content)
+        soup = BeautifulSoup(content, "lxml")
         #self.log.debug(soup)
         number_list = soup.findAll("b")
         now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")

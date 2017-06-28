@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,9 +18,8 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-from __future__ import print_function
 import os, sys, re
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 from datetime import datetime
 from collections import OrderedDict
 
@@ -77,7 +76,7 @@ class BlacklistKTippCH(BlacklistBase):
         return ret
 
     def _extract_name(self, data):
-        s = unicode(data)
+        s = data
         s = s.replace("\n", "").replace("\r", "")
         s = re.sub(r'<[^>]*>', " ", s) # remove tags
         s = s.replace("&amp", "&")
@@ -110,7 +109,7 @@ class BlacklistKTippCH(BlacklistBase):
         now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
         for e in number_list:
             numbers = self._extract_numbers(e.strong.contents[0])
-            name = self._extract_name(e.p)
+            name = self._extract_name(str(e.p))
             for n in numbers:
                 ret.append({"number": n, "name": name, "date_created": now, "date_modified": now})
         #self.log.debug("parse_page done")
@@ -119,7 +118,7 @@ class BlacklistKTippCH(BlacklistBase):
     def _parse_pages(self, content):
         ret = []
 
-        soup = BeautifulSoup(content)
+        soup = BeautifulSoup(content, "lxml")
         tmp = str(soup.findAll("li")[-1])
         max_page_str = self._extract_str(tmp, "ajaxPagerWarnlisteLoadIndex(", ")", "Can't extract max pages")
         last_page = int(max_page_str)
@@ -131,7 +130,7 @@ class BlacklistKTippCH(BlacklistBase):
 
         for p in range(1, last_page+1):
             content = self._fetch_page(p)
-            soup = BeautifulSoup(content)
+            soup = BeautifulSoup(content, "lxml")
             #self.log.debug(soup)
             ret.extend(self._parse_page(soup))
         return ret
@@ -139,7 +138,7 @@ class BlacklistKTippCH(BlacklistBase):
     def get_result(self, args, last_update):
 
         content = self._fetch_page(0)
-        source_date = unicode(self._extract_str(content, "Letzte Aktualisierung:", "<", "Can't extract creation date"))
+        source_date = self._extract_str(content, "Letzte Aktualisierung:", "<", "Can't extract creation date")
         self.log.debug(source_date)
         if last_update == source_date:
             # we already have this version

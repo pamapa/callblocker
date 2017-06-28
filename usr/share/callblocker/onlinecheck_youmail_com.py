@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
 # Copyright (C) 2017-2017 Patrick Ammann <pammann@gmx.net>
@@ -18,7 +18,6 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-from __future__ import print_function
 import json
 
 from online_base import OnlineBase

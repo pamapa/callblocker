@@ -8,8 +8,9 @@ UNKNOWN_CID="{\"name\": \"\"}"
 
 echo "Executing onlinelookup tests..."
 
-#python $SCRIPT_PATH/onlinelookup_dasschnelle_at.py --number +436642503442 --debug
-#python $SCRIPT_PATH/onlinelookup_tel_search_ch.py --number +41265051361 --debug
+#$SCRIPT_PATH/onlinelookup_dasschnelle_at.py --number +436642503442 --debug
+#$SCRIPT_PATH/onlinelookup_tel_search_ch.py --number +41265051361 --debug
+#$SCRIPT_PATH/onlinelookup_dasoertliche_de.py --number +49897557354 --debug
 #exit
 
 echo "Execute onlinelookup_all.py tests..."
@@ -21,7 +22,7 @@ numbers='
   +49897557354
 '
 for number in $numbers; do
-  res=`python $SCRIPT_PATH/onlinelookup_all.py --number $number`
+  res=`$SCRIPT_PATH/onlinelookup_all.py --number $number`
   if [ $? -ne 0 ]; then
     echo "ERROR: script failed"
     exit -1
@@ -33,4 +34,3 @@ for number in $numbers; do
 done
 
 exit 0
-

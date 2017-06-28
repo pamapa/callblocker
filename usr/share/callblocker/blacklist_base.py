@@ -1,7 +1,5 @@
-#!/usr/bin/env python
-
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,10 +16,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-from __future__ import print_function
 import sys, argparse
 import logging
-import urllib2
+import urllib
 import json
 import codecs
 
@@ -44,8 +41,9 @@ class BlacklistBase(object):
 
     def http_get(self, url):
         self.log.debug("http_get: '%s'" % url)
-        data = urllib2.urlopen(url, timeout=30)
-        return data.read()
+        data = urllib.request.urlopen(url, timeout=30)
+        ret = data.read()
+        return str(ret)
 
     def minimize_name(self, name):
         if len(name) <= NAME_MAX_LENGTH:
@@ -113,7 +111,7 @@ class BlacklistBase(object):
         old_json = None
         try:
             with open(json_filename, "r") as f:
-                data = f.read().decode("utf-8-sig")
+                data = f.read()
             old_json = json.loads(data)
             last_update = old_json["last_update"]
             if last_update: self.log.debug("old last_update: %s" % last_update)

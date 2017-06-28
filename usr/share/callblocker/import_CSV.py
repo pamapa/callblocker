@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,7 +18,6 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-from __future__ import print_function
 import re
 import codecs, csv
 from datetime import datetime
@@ -26,39 +25,25 @@ from datetime import datetime
 from import_base import ImportBase
 
 
-class UTF8Recoder:
-    """
-    Iterator that reads an encoded stream and re-encodes the input to UTF-8
-    """
-    def __init__(self, f, encoding):
-        self.reader = codecs.getreader(encoding)(f)
-
-    def __iter__(self):
-        return self
-
-    def next(self):
-        return self.reader.next().encode("utf-8")
-
-class UnicodeDictReader:
+class FindEncodingDictReader:
     """
     A CSV reader which will iterate over lines in the CSV file "f",
     which is encoded in the given encoding.
     """
     def __init__(self, f, delimiter=',', dialect=csv.excel, encoding="utf-8"):
-        f = UTF8Recoder(f, encoding)
         self.reader = csv.DictReader(f, delimiter=delimiter, dialect=dialect)
 
-    def next(self):
-        row = self.reader.next()
+    def __next__(self):
+        row = self.reader.__next__()
         for key in row:
             if row[key] is not None:
               try:
-                row[key] = row[key].decode("utf-8")
+                row[key] = row[key]
               # Special case, sometimes the content gets reqd as a list
               except AttributeError:
                   newList = []
                   for item in row[key]:
-                      newList.append(item.decode("utf-8"))
+                      newList.append(item)
                   row[key] = newList
             else:
               row[key] = ''
@@ -95,12 +80,12 @@ class ImportCSV(ImportBase):
             next_encoding = all_encoding[encoding_index]
             self.log.debug("Trying %s" % next_encoding)
             csv_file = open(filename, "rt")
-            csv_reader = UnicodeDictReader(csv_file, delimiter=delimiter, encoding=next_encoding)
+            csv_reader = FindEncodingDictReader(csv_file, delimiter=delimiter, encoding=next_encoding)
             try:
                 for line in enumerate(csv_reader):
                     # Do nothing, just reading the whole file
                     encoding_index = encoding_index
-            except UnicodeDecodeError:
+            except:
                 csv_reader = None
             csv_file.close()
             encoding_index += 1
@@ -136,7 +121,7 @@ class ImportCSV(ImportBase):
 
     def _parse_csv(self, filename, delimiter, encoding):
         csv_file = open(filename, "rt")
-        csv_reader = UnicodeDictReader(csv_file, delimiter=delimiter, encoding=encoding)
+        csv_reader = FindEncodingDictReader(csv_file, delimiter=delimiter, encoding=encoding)
 
         date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
         #self.log.debug(date)

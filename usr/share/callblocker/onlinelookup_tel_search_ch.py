@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,9 +18,8 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-from __future__ import print_function
-import urllib
-from BeautifulSoup import BeautifulSoup
+import urllib.parse
+from bs4 import BeautifulSoup
 
 from online_base import OnlineBase
 
@@ -30,15 +29,15 @@ class OnlineLookupTelSearchCH(OnlineBase):
         return ["+41"]
 
     def handle_number(self, args, number):
-        url = "https://tel.search.ch/api/?" + urllib.urlencode({"was": number})
+        url = "https://tel.search.ch/api/?" + urllib.parse.urlencode({"was": number})
         content = self.http_get(url)
-        soup = BeautifulSoup(content)
+        soup = BeautifulSoup(content, "lxml")
         self.log.debug(soup)
 
-        caller_name = unicode("")
+        caller_name = ""
         entries = soup.findAll("entry")
         for entry in entries:
-            name = unicode(entry.title.contents[0])
+            name = entry.title.contents[0]
             # nachname, vorname -> vorname nachname
             arr = name.split(", ")
             if len(arr) == 2:

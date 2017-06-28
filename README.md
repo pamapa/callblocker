@@ -42,7 +42,7 @@ Supported (tested) analog modems
 ## Install daemon on Linux
 ```bash
 sudo apt-get install git make automake g++ libpjproject-dev libjson-c-dev
-sudo apt-get install python python-beautifulsoup python-ldap python-vobject
+sudo apt-get install python python3-bs4 python3-ldif3 python3-vobject
 git clone https://github.com/pamapa/callblocker.git
 cd callblocker
 aclocal

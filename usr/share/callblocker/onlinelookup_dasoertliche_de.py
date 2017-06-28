@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,8 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-from __future__ import print_function
-import urllib
+import urllib.parse
 
 from online_base import OnlineBase
 
@@ -29,18 +28,19 @@ class OnlineLookupDasOertlicheDE(OnlineBase):
         return ["+49"]
 
     def handle_number(self, args, number):
-        url = "http://www.dasoertliche.de/?form_name=search_inv&" + urllib.urlencode({"ph": number})
+        url = "http://www.dasoertliche.de/?form_name=search_inv&" + urllib.parse.urlencode({"ph": number})
         content = self.http_get(url)
+        content = content.decode()
         #self.log.debug(content)
 
-        caller_name = unicode("")
+        caller_name = ""
         # na: "Caller name"
         s = content.find("na:")
         if s != -1:
             e = content.find("\n", s)
-            if s != -1:
+            if e != -1:
                 name = content[s+3:e].strip()
-                caller_name = name[1:-1].decode("utf-8")
+                caller_name = name[1:-1]
 
         return self.onlinelookup_2_result(caller_name)
 
