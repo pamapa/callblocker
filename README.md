@@ -68,12 +68,12 @@ The web interface allows to view the caller log, change settings and diagnose pr
 
 Debian packages are required:
 ```bash
-sudo apt-get install lighttpd python3-pip
+sudo apt-get install lighttpd python3-pip apt-transport-https
 ```
 
 Yarn is required, install like described [here](https://yarnpkg.com/en/docs/install):
 ```bash
-wget -qO- https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -OK
+wget -qO- https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 sudo apt-get update && sudo apt-get install yarn
 ```

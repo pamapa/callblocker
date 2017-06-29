@@ -33,7 +33,7 @@ def handle_journal(environ, start_response, params):
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
     #print >> sys.stderr, 'err="%s"\n' % err
-    all = out.splitlines()
+    all = out.decode().splitlines()
     all_count = len(all)
 
     # handle paging

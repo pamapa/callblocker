@@ -19,7 +19,6 @@
 import os, sys, json
 import subprocess
 import cgi
-import codecs
 
 import config
 
@@ -29,7 +28,7 @@ SETTINGS_FILE = os.path.join(config.CALLBLOCKER_SYSCONFDIR, "settings.json")
 
 def _load_settings():
     if not os.path.exists(SETTINGS_FILE):
-        with codecs.open(SETTINGS_FILE, "w", encoding="utf-8") as f:
+        with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
             empty = {"log_level": "info", "pjsip_log_level": 0, "phones": []}
             json.dump(empty, f, indent=2, ensure_ascii=False)
     with open(SETTINGS_FILE) as f:
@@ -69,7 +68,7 @@ def handle_phones(environ, start_response, params):
                 phone.pop("realm", None)
                 phone.pop("secure", None)
         jj["phones"] = json_phones["items"]
-        with codecs.open(SETTINGS_FILE, "w", encoding="utf-8") as f:
+        with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
             json.dump(jj, f, indent=4, ensure_ascii=False)
         return
 
@@ -151,11 +150,11 @@ def handle_get_list(environ, start_response, params):
         post = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
         #print >> sys.stderr, 'POST data=%s\n' % post.getvalue('data')
         json_list = json.loads(post.getvalue('data'))
-        with codecs.open(filename, "w", encoding="utf-8") as f:
+        with open(filename, "w", encoding="utf-8") as f:
             json.dump({"name": json_list["label"], "entries": _remove_duplicates(json_list["items"])}, f, indent=2, ensure_ascii=False)
         return
 
-    with open(filename) as f:
+    with open(filename, encoding="utf-8") as f:
         jj = json.loads(f.read())
     all = _remove_duplicates(jj["entries"])
     # sort entries by name
@@ -220,7 +219,7 @@ def handle_get_lists(environ, start_response, params):
 
         def get_contry_code():
             with open(SETTINGS_FILE) as f:
-                jj = json.loads(f.read().decode("utf-8-sig"))
+                jj = json.loads(f.read())
             phones = jj["phones"]
             return phones[0]["country_code"]
 
@@ -260,13 +259,13 @@ def handle_get_lists(environ, start_response, params):
     # we need "main.json" to keep app.js simple
     mainfilename = os.path.join(base, "main.json")
     if not mainfilename in files:
-        with codecs.open(mainfilename, "w", encoding="utf-8") as f:
+        with open(mainfilename, "w", encoding="utf-8") as f:
             json.dump({"name": "main", "entries": []}, f, indent=2, ensure_ascii=False)
         files.append(mainfilename)
 
     all = []
     for fname in files:
-        with open(fname) as f:
+        with open(fname, encoding="utf-8") as f:
             jj = json.loads(f.read())
         all.append({"name": jj["name"], "file": os.path.basename(fname)})
 
