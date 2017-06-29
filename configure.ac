@@ -18,7 +18,7 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 AC_PREREQ(2.60)
-AC_INIT([callblocker], [0.10.5], [pammann@gmx.net])
+AC_INIT([callblocker], [0.11.0], [pammann@gmx.net])
 AM_INIT_AUTOMAKE()
 
 dnl Add support for libraries
@@ -39,7 +39,7 @@ AC_CHECK_LIB([pjmedia], pjmedia_null_port_create, , [AC_MSG_ERROR("Linking again
 AC_CHECK_LIB([pjsua], pjsua_init, , [AC_MSG_ERROR("Linking against pjsua failed.")])
 AC_CHECK_HEADERS([json-c/json.h])
 AC_CHECK_LIB([json-c], json_tokener_parse, , [AC_MSG_ERROR("Linking against json-c failed.")])
-dnl AC_CHECK_LIB([phonenumber], main, , [AC_MSG_ERROR("Linking against phonenumber failed.")])
+AC_CHECK_LIB([phonenumber], main, , [AC_MSG_ERROR("Linking against phonenumber failed.")])
 
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([etc/Makefile])
