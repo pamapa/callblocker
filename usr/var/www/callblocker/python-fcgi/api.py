@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
 # Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
