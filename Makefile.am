@@ -21,4 +21,6 @@ SUBDIRS = etc src usr test/callblockerd
 
 install-exec-hook:
 	chown -R www-data.www-data $(sysconfdir)/callblocker
+	chmod a+x $(datadir)/callblocker/*.py
+	chmod a-x $(datadir)/callblocker/*_base.py
 	chmod a+x $(localstatedir)/www/callblocker/python-fcgi/api.py
