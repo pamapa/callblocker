@@ -39,7 +39,7 @@ AC_CHECK_LIB([pjmedia], pjmedia_null_port_create, , [AC_MSG_ERROR("Linking again
 AC_CHECK_LIB([pjsua], pjsua_init, , [AC_MSG_ERROR("Linking against pjsua failed.")])
 AC_CHECK_HEADERS([json-c/json.h])
 AC_CHECK_LIB([json-c], json_tokener_parse, , [AC_MSG_ERROR("Linking against json-c failed.")])
-dnl AC_CHECK_LIB([phonenumber], main, , [AC_MSG_ERROR("Linking against phonenumber failed.")])
+AC_CHECK_LIB([phonenumber], main, , [AC_MSG_ERROR("Linking against phonenumber failed.")])
 
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([etc/Makefile])

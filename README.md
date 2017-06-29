@@ -45,7 +45,7 @@ Supported (tested) analog modems
 
 ## Install daemon on Linux
 ```bash
-sudo apt-get install git make automake g++ libpjproject-dev libjson-c-dev
+sudo apt-get install git make automake g++ libpjproject-dev libjson-c-dev libphonenumber-dev
 sudo apt-get install python3 python3-bs4 python3-ldif3 python3-vobject
 git clone https://github.com/pamapa/callblocker.git
 cd callblocker
