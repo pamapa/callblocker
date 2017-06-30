@@ -58,7 +58,7 @@ def handle_journal(environ, start_response, params):
         date = date.replace(tzinfo=tz_local)
 
         tmp = {
-            "date": date.strftime("%Y-%m-%d %H:%M:%S +0000"),
+            "date": date.strftime("%Y-%m-%d %H:%M:%S %z"),
             "prio_id": entry["PRIORITY"],
             "priority": mapPriorityToName(entry["PRIORITY"]),
             "message": entry["MESSAGE"]
@@ -115,7 +115,7 @@ def handle_callerlog(environ, start_response, params):
             date = date.replace(tzinfo=tz_local)
 
             tmp = {
-                "date": date.strftime("%Y-%m-%d %H:%M:%S +0000"),
+                "date": date.strftime("%Y-%m-%d %H:%M:%S %z"),
                 "number": obj.group(2).strip()
             }
             # name
