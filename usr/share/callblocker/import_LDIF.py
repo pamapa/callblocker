@@ -25,12 +25,17 @@ from datetime import datetime
 from import_base import ImportBase
 
 
-class MyLDIF(LDIFParser):
-    def __init__(self, input_file, log):
-        LDIFParser.__init__(self, input_file)
-        self.log = log
+class ImportLDIF(ImportBase):
+    def get_entries(self, args):
+        parser = LDIFParser(open(args.input, 'rb'))
+
         self.date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
         self.entries = []
+
+        for dn, entry in parser.parse():
+            self._handle(dn, entry)
+
+        return self.entries
 
     def _extract_number(self, data):
         n = re.sub(r"[^0-9\+]", "", data)
@@ -40,15 +45,15 @@ class MyLDIF(LDIFParser):
         fname = ""
         sname = ""
         cname = ""
-        if "givenName" in entry: fname = entry["givenName"][0].decode(encoding='UTF-8', errors='strict')
-        if "sn" in entry: sname = entry["sn"][0].decode(encoding='UTF-8', errors='strict')
-        if "cn" in entry: cname = entry["cn"][0].decode(encoding='UTF-8', errors='strict')
+        if "givenName" in entry: fname = entry["givenName"][0]
+        if "sn" in entry: sname = entry["sn"][0]
+        if "cn" in entry: cname = entry["cn"][0]
         if sname == "": name = cname
         elif fname == "": name = sname
         else: name = fname + " " + sname
         return name
 
-    def handle(self, dn, entry):
+    def _handle(self, dn, entry):
         self.log.debug(entry)
         name = self._get_entity_person(entry)
         if "mobile" in entry:
@@ -69,14 +74,6 @@ class MyLDIF(LDIFParser):
             if len(number) != 0:
                 self.entries.append({"number": number, "name": name + " (" + field_name + ")",
                                      "date_created": self.date, "date_modified": self.date})
-
-
-class ImportLDIF(ImportBase):
-    def get_entries(self, args):
-        parser = MyLDIF(open(args.input, "r"), self.log)
-        parser.parse()
-        return parser.entries
-
 
 # main
 #
