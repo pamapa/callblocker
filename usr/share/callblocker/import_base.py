@@ -20,7 +20,6 @@ import os, sys, argparse
 import logging
 from collections import OrderedDict
 import json
-import codecs
 
 
 class ImportBase(object):
@@ -105,7 +104,7 @@ class ImportBase(object):
         old_json = None
         try:
             with open(args.merge, "r") as f:
-                data = f.read().decode("utf-8-sig")
+                data = f.read()
             old_json = json.loads(data)
         except IOError:
             pass
@@ -120,7 +119,7 @@ class ImportBase(object):
         result["num_entries"] = len(entries)
         result["entries"] = entries
 
-        with codecs.open(args.merge, "w", encoding="utf-8") as f:
+        with open(args.merge, "w", encoding="utf-8") as f:
             json.dump(result, f, indent=2, ensure_ascii=False)
 
         # no error occurred

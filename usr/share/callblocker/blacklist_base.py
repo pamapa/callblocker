@@ -20,7 +20,6 @@ import sys, argparse
 import logging
 import urllib
 import json
-import codecs
 
 
 NAME_MAX_LENGTH = 200
@@ -123,7 +122,7 @@ class BlacklistBase(object):
         if old_json is not None and "entries" in old_json:
             result["entries"] = self.preserve_dates(result["entries"], old_json["entries"])
 
-        with codecs.open(json_filename, "w", encoding="utf-8") as f:
+        with open(json_filename, "w", encoding="utf-8") as f:
             json.dump(result, f, indent=2, ensure_ascii=False)
 
         # no error occurred

@@ -19,7 +19,7 @@
 #
 
 import re
-import codecs, csv
+import csv
 from datetime import datetime
 
 from import_base import ImportBase
