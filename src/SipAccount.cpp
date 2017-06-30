@@ -101,7 +101,7 @@ bool SipAccount::add(struct SettingSipAccount* pSettings) {
     return false;
   }
 
-  Logger::info("SipAccount::add: successfully registered account %s", id.c_str());
+  Logger::debug("SipAccount::add: successfully registered account %s", id.c_str());
   return true;
 }
 
