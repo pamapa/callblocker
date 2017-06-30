@@ -22,6 +22,8 @@
 #include <string>
 #include <sstream>
 #include <unistd.h>
+#include <sys/socket.h>
+
 #include <pjsua-lib/pjsua.h>
 
 #include "Logger.h"
@@ -64,8 +66,17 @@ bool SipAccount::add(struct SettingSipAccount* pSettings) {
   if (m_settings.secure) {
     schema = "sips:";
   }
+
+  // login id
   std::string id = schema + m_settings.username + "@" + m_settings.domain;
+
+  // connection uri
   std::string reg_uri = schema + m_settings.domain;
+  // force IPv4 address
+  std::string domain_ipv4;
+  if (Utils::resolveHostname(m_settings.domain, AF_INET, &domain_ipv4)) {
+    reg_uri = schema + domain_ipv4;
+  }
 
   // create and define account
   cfg.id = pj_str((char*)id.c_str());

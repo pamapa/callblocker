@@ -25,9 +25,14 @@
 #include <fstream>
 #include <iostream>
 #include <limits.h>
-#include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
+#include <netdb.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+
 #include <json-c/json.h>
 #include <pjsua-lib/pjsua.h>
 #if defined(HAVE_LIBPHONENUMBER)
@@ -371,5 +376,30 @@ bool Utils::parseTime(const std::string& rStr, std::chrono::system_clock::time_p
   }
   
   *pRes = std::chrono::system_clock::from_time_t(timegm(&tm_tmp));
+  return true;
+}
+
+bool Utils::resolveHostname(const std::string& rHostname, int ai_family, std::string* pRes) {
+  struct addrinfo hints, *servinfo;
+
+  (void)memset(&hints, 0, sizeof hints);
+  hints.ai_family = AF_INET;
+  hints.ai_socktype = SOCK_STREAM;
+
+  if (getaddrinfo(rHostname.c_str(), "http", &hints, &servinfo) != 0) {
+    Logger::warn("getaddrinfo: %s\n", strerror(errno));
+    return false;
+  }
+
+  if (servinfo == NULL) {
+    Logger::warn("no address found for: %s\n", rHostname.c_str());
+    return false;
+  }
+
+  std::string res;
+  struct sockaddr_in* h = (struct sockaddr_in*) servinfo->ai_addr;
+  res = inet_ntoa(h->sin_addr);
+
+  *pRes = res;
   return true;
 }

@@ -68,6 +68,10 @@ public:
   // time
   static std::string formatTime(const std::chrono::system_clock::time_point& rTp);
   static bool parseTime(const std::string& rStr, std::chrono::system_clock::time_point* pRes);
+
+  // ip
+  // ai_family: AF_UNSPEC (IPv4 or IPv6), AF_INET (force IPv4 address) or AF_INET6 (force IPv6)
+  static bool resolveHostname(const std::string& rHostname, int ai_family, std::string* pRes);
 };
 
 #endif
