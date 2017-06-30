@@ -17,7 +17,7 @@
 #
 
 import json, re
-from datetime import datetime
+from datetime import datetime, timezone
 from systemd import journal
 
 
