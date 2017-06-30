@@ -55,7 +55,7 @@ struct SettingSipAccount {
   std::string domain;
   std::string username;
   std::string password;
-  std::string realm;
+  std::string realm;          // default: same as domain
   bool secure;
 };
 
