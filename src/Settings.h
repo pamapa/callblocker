@@ -55,8 +55,9 @@ struct SettingSipAccount {
   std::string domain;
   std::string username;
   std::string password;
-  std::string realm;          // default: same as domain
+  std::string realm;
   bool secure;
+  bool forceIPv4;
 };
 
 struct SettingAnalogPhone {

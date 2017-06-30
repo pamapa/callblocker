@@ -72,9 +72,12 @@ bool SipAccount::add(struct SettingSipAccount* pSettings) {
 
   // connection uri
   std::string reg_uri = schema + m_settings.domain;
-  // force IPv4 address
-  std::string domain_ipv4;
-  if (Utils::resolveHostname(m_settings.domain, AF_INET, &domain_ipv4)) {
+  if (m_settings.forceIPv4) {
+    std::string domain_ipv4;
+    if (!Utils::resolveHostname(m_settings.domain, AF_INET, &domain_ipv4)) {
+      Logger::error("resolving hostname %s to IPv4 address failed", m_settings.domain.c_str());
+      return false;
+    }
     reg_uri = schema + domain_ipv4;
   }
 

@@ -69,6 +69,7 @@ Fields                | Values       | Description
 "password"            | `<string>`   | Your SIP password
 "realm"               | `<string>`   | optional: allows to change the SIP realm. Default is same value as specified in "domain".
 "secure"              | true, false  | optional: allows to use SIPS instead of SIP. Default is false.
+"forceIPv4"           | true, false  | optional: force IPv4 transport. Default is true.
 
 
 ## "online_credentials" section

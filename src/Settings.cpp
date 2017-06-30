@@ -126,6 +126,7 @@ bool Settings::load() {
         // optionals
         (void)Utils::getObject(entry, "realm", false, m_filename, &sip.realm, sip.domain);
         (void)Utils::getObject(entry, "secure", false, m_filename, &sip.secure, false);
+        (void)Utils::getObject(entry, "forceIPv4", false, m_filename, &sip.forceIPv4, true);
 
         m_sipAccounts.push_back(sip);
       }
