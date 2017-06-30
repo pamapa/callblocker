@@ -68,7 +68,7 @@ The web interface allows to view the caller log, change settings and diagnose pr
 
 Debian packages are required:
 ```bash
-sudo apt-get install lighttpd python3-pip apt-transport-https
+sudo apt-get install lighttpd python3-systemd python3-pip apt-transport-https
 ```
 
 Yarn is required, install like described [here](https://yarnpkg.com/en/docs/install):
@@ -135,6 +135,7 @@ make all
 Double check your [settings.json](/etc/callblocker/README.md). Hints:
 - v0.0.7: switched from php to python web backend
 - v0.9.0: prefix "from_" has been removed from "from_domain", "from_username" and "from password"
+- v0.11.0: moved from jessie to stretch, for jessie use the 0.10.x release
 
 ```bash
 sudo systemctl stop callblockerd
