@@ -86,6 +86,7 @@ bool SipPhone::init_pjsua() {
   // enable just 1 simultaneous call 
   ua_cfg.max_calls = 1; // TODO
   // callback configuration
+  ua_cfg.cb.on_reg_state2 = &SipAccount::onRegState2CB;
   ua_cfg.cb.on_call_state = &SipAccount::onCallStateCB;
   ua_cfg.cb.on_incoming_call = &SipAccount::onIncomingCallCB;
   //ua_cfg.cb.on_call_media_state = &SipAccount::onCallMediaStateCB;

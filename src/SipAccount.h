@@ -38,10 +38,12 @@ public:
   bool add(struct SettingSipAccount* pSettings);
 
   // callback -> class method call conversion
+  static void onRegState2CB(pjsua_acc_id acc_id, pjsua_reg_info *info);
   static void onIncomingCallCB(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata);
   static void onCallStateCB(pjsua_call_id call_id, pjsip_event* e);
   //static void onCallMediaStateCB(pjsua_call_id call_id);
 private:
+  void onRegState2CB(pjsua_reg_info *info);
   void onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata);
   void onCallState(pjsua_call_id call_id, pjsip_event* e);
   //void onCallMediaState(pjsua_call_id call_id);

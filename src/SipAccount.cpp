@@ -108,10 +108,25 @@ bool SipAccount::add(struct SettingSipAccount* pSettings) {
   return true;
 }
 
+void SipAccount::onRegState2CB(pjsua_acc_id acc_id, pjsua_reg_info *info) {
+  SipAccount* p = (SipAccount*)pjsua_acc_get_user_data(acc_id);
+  if (p == NULL) {
+    Logger::warn("onRegState2CB(acc_id=%d, ...) account not found", acc_id);
+    return;
+  }
+  p->onRegState2CB(info);
+}
+
+void SipAccount::onRegState2CB(pjsua_reg_info *info) {
+  if (info->cbparam->code != 200) {
+    Logger::warn("SIP registration on domain %s failed (code=%d)", m_settings.domain.c_str(), info->cbparam->code);
+  }
+}
+
 void SipAccount::onIncomingCallCB(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata) {
   SipAccount* p = (SipAccount*)pjsua_acc_get_user_data(acc_id);
   if (p == NULL) {
-    Logger::warn("onIncomingCallCB(acc_id=%d, call_id=%d) failed", acc_id, call_id);
+    Logger::warn("onIncomingCallCB(acc_id=%d, call_id=%d) account not found", acc_id, call_id);
     return;
   }
   p->onIncomingCall(call_id, rdata);
@@ -179,7 +194,7 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
 void SipAccount::onCallStateCB(pjsua_call_id call_id, pjsip_event* e) {
   SipAccount* p = (SipAccount*)pjsua_call_get_user_data(call_id);
   if (p == NULL) {
-    Logger::warn("onCallMediaStateCB(call_id=%d) failed", call_id);
+    Logger::warn("onCallMediaStateCB(call_id=%d) account not found", call_id);
     return;
   }
   p->onCallState(call_id, e);
