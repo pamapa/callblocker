@@ -39,7 +39,7 @@ class OnlineCheckTellowsDE(OnlineBase):
         if len(score_list) > 0:
             score = int(score_list[0].contents[0])
 
-        caller_name = unicode("")
+        caller_name = ""
         caller_types = soup.findAll("callertypes")
         if len(caller_types) > 0 and len(caller_types[0].caller.contents) > 0:
             caller_name = caller_types[0].caller.contents[0].contents[0]
