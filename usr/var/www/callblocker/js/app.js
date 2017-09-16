@@ -73,7 +73,7 @@ require(["dijit/ConfirmDialog",
       url: api_base.concat("/callerlog")
     });
     var structure = [
-      { name: "Date",   field: "date",   width: "190px", formatter: formatDate },
+      { name: "Date",   field: "date",   width: "200px", formatter: formatDate },
       { name: "Number", field: "number", width: "110px"                        },
       { name: "Name",   field: "name",   width: "600px"                        },
       { name: "What",   field: "what",   width: "50px",  hidden: true          },
@@ -139,7 +139,7 @@ require(["dijit/ConfirmDialog",
       url: url
     });
     var structure = [
-      { name: "Date",     field: "date",     width: "190px", formatter: formatDate },
+      { name: "Date",     field: "date",     width: "200px", formatter: formatDate },
       { name: "PrioId",   field: "prio_id",  width: "50px",  hidden: true          },
       { name: "Priority", field: "priority", width: "70px"                         },
       { name: "Message",  field: "message",  width: "100%"                         }
@@ -626,7 +626,7 @@ require(["dijit/ConfirmDialog",
     menu.addChild(editMenuItem);
 
     var structure = [
-      { name: "Date (modified)", field: "date_modified", width: "190px", formatter: formatDate },
+      { name: "Date (modified)", field: "date_modified", width: "200px", formatter: formatDate },
       { name: "Number",          field: "number",        width: "110px"                        },
       { name: "Name",            field: "name",          width: "600px"                        }
     ];
@@ -770,7 +770,7 @@ require(["dijit/ConfirmDialog",
     menu.addChild(deleteMenuItem);
 
     var structure = [
-      { name: "Date (created)", field: "date_created", width: "190px", formatter: formatDate },
+      { name: "Date (created)", field: "date_created", width: "200px", formatter: formatDate },
       { name: "Number",         field: "number",       width: "110px"                        },
       { name: "Name",           field: "name",         width: "600px"                        }
     ];
