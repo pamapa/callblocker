@@ -31,6 +31,7 @@ dnl Compiler defines
 CPPFLAGS="$CPPFLAGS -std=c++11 -DPJ_AUTOCONF=1"
 
 dnl Check for Libraries.
+AC_LANG_PUSH([C++])
 AC_CHECK_HEADERS([pjlib.h])
 AC_CHECK_HEADERS([pjsua-lib/pjsua.h])
 AC_CHECK_LIB([pj], pj_init, , [AC_MSG_ERROR("Linking against pj failed.")])
@@ -39,7 +40,9 @@ AC_CHECK_LIB([pjmedia], pjmedia_null_port_create, , [AC_MSG_ERROR("Linking again
 AC_CHECK_LIB([pjsua], pjsua_init, , [AC_MSG_ERROR("Linking against pjsua failed.")])
 AC_CHECK_HEADERS([json-c/json.h])
 AC_CHECK_LIB([json-c], json_tokener_parse, , [AC_MSG_ERROR("Linking against json-c failed.")])
+AC_CHECK_HEADERS([phonenumbers/phonenumberutil.h])
 AC_CHECK_LIB([phonenumber], main, , [AC_MSG_ERROR("Linking against phonenumber failed.")])
+AC_LANG_POP([C++])
 
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([etc/Makefile])
