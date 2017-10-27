@@ -895,7 +895,7 @@ require(["dijit/ConfirmDialog",
   var statusbarPane = new dijit.layout.ContentPane({
     region: "bottom",
     style: "text-align: center",
-    content: "v0.11.0"
+    content: "v0.11.1"
   });
   appLayout.addChild(statusbarPane);
   appLayout.placeAt(document.body);
