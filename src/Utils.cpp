@@ -187,6 +187,9 @@ bool Utils::getObject(struct json_object* objbase, const char* objname, bool log
 bool Utils::executeCommand(const std::string& rCmd, std::string* pRes) {
   Logger::debug("executing(%s)...", rCmd.c_str());
 
+  // Python3 scripts need this for sys.stdout.write with non ascii characters
+  (void)setenv("PYTHONIOENCODING", "utf-8")
+
   FILE* fp = popen(rCmd.c_str(), "r");
   if (fp == NULL) {
     Logger::warn("popen failed (%s)", strerror(errno));
