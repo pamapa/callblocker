@@ -185,12 +185,14 @@ bool Utils::getObject(struct json_object* objbase, const char* objname, bool log
 }
 
 bool Utils::executeCommand(const std::string& rCmd, std::string* pRes) {
-  Logger::debug("executing(%s)...", rCmd.c_str());
-
+  std::string cmd;
   // Python3 scripts need this for sys.stdout.write with non ascii characters
-  (void)setenv("PYTHONIOENCODING", "utf-8");
+  cmd = "PYTHONIOENCODING=\"utf-8\"";
+  cmd += " " + rCmd;
 
-  FILE* fp = popen(rCmd.c_str(), "r");
+  Logger::debug("executing(%s)...", cmd.c_str());
+
+  FILE* fp = popen(cmd.c_str(), "r");
   if (fp == NULL) {
     Logger::warn("popen failed (%s)", strerror(errno));
     return false;
@@ -205,7 +207,7 @@ bool Utils::executeCommand(const std::string& rCmd, std::string* pRes) {
 
   int status = pclose(fp);
   if (status != 0) {
-    Logger::warn("%s failed (%s)", rCmd.c_str(), res.c_str());
+    Logger::warn("%s failed (%s)", cmd.c_str(), res.c_str());
     return false;
   }
 
