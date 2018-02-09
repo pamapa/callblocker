@@ -19,6 +19,8 @@
 #
 
 import urllib.parse
+import io
+import csv
 
 from online_base import OnlineBase
 
@@ -35,13 +37,14 @@ class OnlineLookupDasOertlicheDE(OnlineBase):
 
         caller_name = ""
         # na: "Caller name"
-        s = content.find("na:")
+        s = content.find("var handlerData = [[")
         if s != -1:
             e = content.find("\n", s)
             if e != -1:
-                name = content[s+3:e].strip()
-                caller_name = name[1:-1]
-
+                caller_name_line = content[s+20:e-4].strip()
+                caller_name_array = next(csv.reader(io.StringIO(caller_name_line), quotechar='\'', skipinitialspace=True))
+                if len(caller_name_array) >= 14:
+                    caller_name = caller_name_array[14]
         return self.onlinelookup_2_result(caller_name)
 
 
