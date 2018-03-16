@@ -78,9 +78,9 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/source
 sudo apt-get update && sudo apt-get install yarn
 ```
 
-Fetch (within checkout directory) and install vendor files:
+Fetch (within the checkout directory) and install vendor files:
 ```bash
-cd usr/var/www/callblocker/js
+cd callblocker/usr/var/www/callblocker/js
 yarn install --modules-folder vendor
 sudo cp -r vendor /usr/var/www/callblocker/js/
 ```
@@ -151,17 +151,32 @@ sudo systemctl restart lighttpd.service
 
 
 ## <a name="fileLayout"></a> File Layout
-When installed on Linux, the following file layout is used
+When installed on Linux, the following file layout is used:
 ```
-drwxr-xr-x  www-data www-data  /etc/callblocker                            # configuration
--rw-r--r--  www-data www-data  /etc/callblocker/settings.json              # configuration file
-drwxr-xr-x  www-data www-data  /etc/callblocker/blacklists                 # put your blacklists here
-drwxr-xr-x  www-data www-data  /etc/callblocker/whitelists                 # put your whitelists here
-drwxr-xr-x  www-data www-data  /etc/callblocker/cache                      # used for caching online request
--rwxr-xr-x  root     root      /usr/bin/callblockerd                       # daemon
-drwxr-xr-x  root     root      /usr/share/callblocker                      # python helper scripts
-drwxr-xr-x  root     root      /usr/var/www/callblocker                    # web interface
--rwxr-xr-x  root     root      /usr/var/www/callblocker/python-fcgi/api.py # web api
+drwxr-xr-x www-data www-data /etc/callblocker                              # configuration
+-rw-r--r-- www-data www-data /etc/callblocker/settings.json                # configuration file
+drwxr-xr-x www-data www-data /etc/callblocker/blacklists                   # put your blacklists here
+drwxr-xr-x www-data www-data /etc/callblocker/whitelists                   # put your whitelists here
+drwxr-xr-x www-data www-data /etc/callblocker/cache                        # used for caching online request
+-rwxr-xr-x root     root     /usr/bin/callblockerd                         # daemon
+drwxr-xr-x root     root     /usr/share/callblocker                        # python helper scripts
+```
+When using the web interface:
+```
+drwxr-xr-x root     root     /usr/var/www/callblocker                      # web interface
+-rw-r--r-- root     root     /usr/var/www/callblocker/app.css              # css
+-rw-r--r-- root     root     /usr/var/www/callblocker/index.html           # start page
+-rw-r--r-- root     root     /usr/var/www/callblocker/js/app.js            # javascript
+drwxr-xr-x root     root     /usr/var/www/callblocker/js/vendor            # 3rd party libraries:
+drwxr-xr-x root     root     /usr/var/www/callblocker/js/vendor/dijit      # - dijit
+drwxr-xr-x root     root     /usr/var/www/callblocker/js/vendor/dojo       # - dojo
+drwxr-xr-x root     root     /usr/var/www/callblocker/js/vendor/dojox      # - dojox
+drwxr-xr-x root     root     /usr/var/www/callblocker/python-fcgi          # web backend
+-rwxr-xr-x root     root     /usr/var/www/callblocker/python-fcgi/api.py
+-rw-r--r-- root     root     /usr/var/www/callblocker/python-fcgi/config.py
+-rw-r--r-- root     root     /usr/var/www/callblocker/python-fcgi/journal2.py
+-rw-r--r-- root     root     /usr/var/www/callblocker/python-fcgi/journal.py
+-rw-r--r-- root     root     /usr/var/www/callblocker/python-fcgi/settings.py
 ```
 
 
