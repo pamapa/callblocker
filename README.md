@@ -71,18 +71,17 @@ Debian packages are required:
 sudo apt-get install lighttpd python3-systemd python3-pip apt-transport-https
 ```
 
-Yarn is required, install like described [here](https://yarnpkg.com/en/docs/install):
+nodejs is required, install like described [here](https://nodejs.org/en/download/package-manager/):
 ```bash
-wget -qO- https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-sudo apt-get update && sudo apt-get install yarn
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo apt-get install -y nodejs
 ```
 
 Fetch (within the checkout directory) and install vendor files:
 ```bash
 cd callblocker/usr/var/www/callblocker/js
-yarn install --modules-folder vendor
-sudo cp -r vendor /usr/var/www/callblocker/js/
+npm install
+sudo cp -r node_modules/ /usr/var/www/callblocker/js/vendor
 ```
 
 Prepare lighttpd, for additional information
