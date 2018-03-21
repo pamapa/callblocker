@@ -264,7 +264,7 @@ sudo chmod a+x /usr/var/www/callblocker/python-fcgi/api.py
 The web interface is running within lighttpd, this deamon is using "www-data" as user and group. Make
 sure that this process has access to the configuration file (see [file layout](#fileLayout)).
 ```bash
-sudo chmod -R www-data.www-data /etc/callblocker/
+sudo chown -R www-data.www-data /etc/callblocker/
 ```
 
 ### Symptom: Caller log and diagnostics stay empty within the web interface.
