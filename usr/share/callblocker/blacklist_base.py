@@ -1,5 +1,5 @@
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2018 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -40,7 +40,9 @@ class BlacklistBase(object):
 
     def http_get(self, url):
         self.log.debug("http_get: '%s'" % url)
-        data = urllib.request.urlopen(url, timeout=30)
+        headers = {"User-Agent": "Mozilla/5.0"}
+        req = urllib.request.Request(url, headers=headers)
+        data = urllib.request.urlopen(req, timeout=30)
         ret = data.read()
         return str(ret)
 
