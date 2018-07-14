@@ -83,7 +83,9 @@ class BlacklistKTippCH(BlacklistBase):
         s = s.replace("  ", " ")
         s = s.strip()
         if s.startswith("Firma: "): s = s[7:]
-        return self.minimize_name(s)
+        s = self.minimize_name(s)
+        self.log.debug("_extract_name() data:'%s' -> %s" % (data, s))
+        return s
 
     def _fetch_page(self, page_nr):
         print("fetch_page: " + str(page_nr))

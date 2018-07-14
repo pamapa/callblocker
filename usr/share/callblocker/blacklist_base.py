@@ -44,6 +44,7 @@ class BlacklistBase(object):
         req = urllib.request.Request(url, headers=headers)
         data = urllib.request.urlopen(req, timeout=30)
         ret = data.read()
+        ret = ret.decode("utf-8")
         return str(ret)
 
     def minimize_name(self, name):
