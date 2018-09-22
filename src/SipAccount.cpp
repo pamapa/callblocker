@@ -119,7 +119,8 @@ void SipAccount::onRegState2CB(pjsua_acc_id acc_id, pjsua_reg_info *info) {
 
 void SipAccount::onRegState2(pjsua_reg_info *info) {
   if (info->cbparam->code != 200) {
-    Logger::warn("SIP registration on domain %s failed (code=%d)", m_settings.domain.c_str(), info->cbparam->code);
+    Logger::warn("SIP %s on domain %s failed (code=%d)", info->renew ? "registration" : "unregistration",
+                 m_settings.domain.c_str(), info->cbparam->code);
   }
 }
 
@@ -194,7 +195,7 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
 void SipAccount::onCallStateCB(pjsua_call_id call_id, pjsip_event* e) {
   SipAccount* p = (SipAccount*)pjsua_call_get_user_data(call_id);
   if (p == NULL) {
-    Logger::warn("onCallMediaStateCB(call_id=%d) account not found", call_id);
+    Logger::warn("onCallStateCB(call_id=%d) account not found", call_id);
     return;
   }
   p->onCallState(call_id, e);
