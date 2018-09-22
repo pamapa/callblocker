@@ -118,9 +118,12 @@ void SipAccount::onRegState2CB(pjsua_acc_id acc_id, pjsua_reg_info *info) {
 }
 
 void SipAccount::onRegState2(pjsua_reg_info *info) {
-  if (info->cbparam->code != 200) {
-    Logger::warn("SIP %s on domain %s failed (code=%d)", info->renew ? "registration" : "unregistration",
-                 m_settings.domain.c_str(), info->cbparam->code);
+  if (info->cbparam->code == 200) {
+    Logger::info("successfully %s on domain '%s' with username '%s'", info->renew ? "registered" : "unregistered",
+                 m_settings.domain.c_str(), m_settings.username.c_str());
+  } else {
+    Logger::warn("%s on domain '%s' with username '%s' failed (code=%d)", info->renew ? "registration" : "unregistration",
+                 m_settings.domain.c_str(), m_settings.username.c_str(), info->cbparam->code);
   }
 }
 
