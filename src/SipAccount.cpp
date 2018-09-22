@@ -114,10 +114,10 @@ void SipAccount::onRegState2CB(pjsua_acc_id acc_id, pjsua_reg_info *info) {
     Logger::warn("onRegState2CB(acc_id=%d, ...) account not found", acc_id);
     return;
   }
-  p->onRegState2CB(info);
+  p->onRegState2(info);
 }
 
-void SipAccount::onRegState2CB(pjsua_reg_info *info) {
+void SipAccount::onRegState2(pjsua_reg_info *info) {
   if (info->cbparam->code != 200) {
     Logger::warn("SIP registration on domain %s failed (code=%d)", m_settings.domain.c_str(), info->cbparam->code);
   }
