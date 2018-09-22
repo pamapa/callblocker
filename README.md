@@ -243,9 +243,10 @@ sudo ps aux | grep -E 'lighttpd|callblockerd' | grep -v 'grep' # shows: 2 lines
 sudo journalctl _SYSTEMD_UNIT=callblockerd.service
 ```
 - increase log levels: "log_level" to "debug" and/or "pjsip_log_level" to 2. See documentation of
-   [configuration file](/etc/callblocker/README.md) for more info.
+   [configuration file](/etc/callblocker/README.md) for more info. And restart callblockerd.
 ```bash
 sudo vi settings.json
+sudo systemctl restart callblockerd.service
 ```
 
 ### Symptom: Web interface is not working.
