@@ -49,14 +49,20 @@ require(["dijit/ConfirmDialog",
 
   function formatDate(dateStr) {
     if (dateStr) {
-      dateStr = dateStr.replace(/-/g, "/");
+      // 2015-04-19 10:14:03 +0000
+      // coming from backend (settings.py and journal.py)
+
+      // convert to ISO 8601: 2015-04-19T10:14:03+0000
+      dateStr = dateStr.replace(" ", "T").replace(" ", "");
+
+      // localize date
       var date = new Date(dateStr); // RFC2822 or ISO 8601 date
       return dojo.date.locale.format(date, {formatLength: "long"});
     }
     return "";
   }
 
-  // convert to UTC: 2015-04-19 10:14:03.733 +0000
+  // convert to UTC: 2015-04-19 10:14:03 +0000
   function date2UTCString(date) {
     var str =
       date.getUTCFullYear()+"-"+(date.getUTCMonth()+1)+"-"+date.getUTCDate()+" "+
