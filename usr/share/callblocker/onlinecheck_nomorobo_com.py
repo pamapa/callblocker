@@ -41,7 +41,9 @@ class OnlineCheckNomorobo(OnlineBase):
             position = positions[0].get_text()
             self.log.debug("profile_position: " + position)
             if position.upper().find("DO NOT ANSWER") > -1:
-                score = 2
+                score = 2 # is spam
+            else
+                score = 1 # may be spam
 
         caller_name = ""
         titles = soup.findAll(class_="profile-title")
