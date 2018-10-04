@@ -39,7 +39,6 @@ class OnlineCheckNomorobo(OnlineBase):
         positions = soup.findAll(class_="profile-position")
         if len(positions) > 0:
             position = positions[0].get_text()
-            self.log.debug("profile_position: " + position)
             if position.upper().find("DO NOT ANSWER") > -1:
                 score = 2 # is spam
             else
@@ -49,9 +48,7 @@ class OnlineCheckNomorobo(OnlineBase):
         titles = soup.findAll(class_="profile-title")
         if len(titles) > 0:
             caller_name = titles[0].get_text()
-            self.log.debug("profile_title: " + caller_name)
             caller_name = caller_name.replace("\n", "").strip(" ")
-
 
         spam = False if score < args.spamscore else True
         return self.onlinecheck_2_result(spam, score, caller_name)
@@ -61,7 +58,7 @@ class OnlineCheckNomorobo(OnlineBase):
 #
 if __name__ == "__main__":
     m = OnlineCheckNomorobo()
-    parser = m.get_parser("Online check via nomorobo.com")
+    parser = m.get_parser("Online check via www.nomorobo.com")
     parser.add_argument("--spamscore", help="score limit to mark as spam [1..2]", default=2)
     args = parser.parse_args()
     m.run(args)
