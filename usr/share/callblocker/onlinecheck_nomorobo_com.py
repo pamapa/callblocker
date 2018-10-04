@@ -41,7 +41,7 @@ class OnlineCheckNomorobo(OnlineBase):
             position = positions[0].get_text()
             if position.upper().find("DO NOT ANSWER") > -1:
                 score = 2 # is spam
-            else
+            else:
                 score = 1 # may be spam
 
         caller_name = ""
