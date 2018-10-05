@@ -27,7 +27,7 @@ class OnlineCheckNomorobo(OnlineBase):
         return ["+1"]
 
     def handle_number(self, args, number):
-        number = '{}-{}-{}'.format(number[2:5], number[5:8], number[8:]) # make number local
+        number = '{}-{}-{}'.format(number[2:5], number[5:8], number[8:]) # make number local for US
         url = "https://www.nomorobo.com/lookup/%s" % number
         headers={}
         allowed_codes=[404] # allow not found response
@@ -40,15 +40,17 @@ class OnlineCheckNomorobo(OnlineBase):
         if len(positions) > 0:
             position = positions[0].get_text()
             if position.upper().find("DO NOT ANSWER") > -1:
-                score = 2 # is spam
+                score = 2 # = is spam
             else:
-                score = 1 # may be spam
+                score = 1 # = might be spam (caller is "Political", "Charity", or "Debt Collector")
 
         caller_name = ""
         titles = soup.findAll(class_="profile-title")
         if len(titles) > 0:
             caller_name = titles[0].get_text()
             caller_name = caller_name.replace("\n", "").strip(" ")
+            # TODO: if score == 1, check for "Political", "Charity", and/or "Debt Collector" 
+            # in the caller_name and adjust the score if appropriate 
 
         spam = False if score < args.spamscore else True
         return self.onlinecheck_2_result(spam, score, caller_name)
