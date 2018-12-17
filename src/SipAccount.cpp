@@ -164,7 +164,7 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
   }
 
   std::string msg;
-  bool block = m_pPhone->isBlocked(&m_settings.base, number, &msg);
+  bool block = m_pPhone->isBlocked(&m_settings.base, number, "", &msg);
   Logger::notice(msg.c_str());
 
 #if 0

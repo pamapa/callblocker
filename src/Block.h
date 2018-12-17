@@ -42,11 +42,11 @@ public:
   Block(Settings* pSettings);
   virtual ~Block();
   void run();
-  bool isBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg);
+  bool isBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const std::string& rName, std::string* pMsg);
 
 private:
   bool isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg);
-  bool isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber, std::string* pMsg);
+  bool isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber, const std::string& rName, std::string* pMsg);
 
   bool isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pName);
   bool isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,

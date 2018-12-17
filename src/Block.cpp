@@ -49,8 +49,8 @@ void Block::run() {
   m_pCache->run();
 }
 
-bool Block::isBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg) {
-  Logger::debug("Block::isBlocked(%s,number=%s)", Settings::toString(pSettings).c_str(), rNumber.c_str());
+bool Block::isBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const std::string& rName, std::string* pMsg) {
+  Logger::debug("Block::isBlocked(%s,number=%s,name=%s)", Settings::toString(pSettings).c_str(), rNumber.c_str(), rName.c_str());
 
   if (rNumber == BLOCK_ANONYMOUS_NUMBER_STR) {
     return isAnonymousNumberBlocked(pSettings, pMsg);
@@ -60,7 +60,7 @@ bool Block::isBlocked(const struct SettingBase* pSettings, const std::string& rN
   bool validNumber = true;
   Utils::makeNumberE164(pSettings, &e164Number, &validNumber);
 
-  return isNumberBlocked(pSettings, e164Number, validNumber, pMsg);
+  return isNumberBlocked(pSettings, e164Number, validNumber, rName, pMsg);
 }
 
 bool Block::isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg) {
@@ -91,9 +91,9 @@ bool Block::isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::s
   return block;
 }
 
-bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber, std::string* pMsg) {
+bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber, const std::string& rName, std::string* pMsg) {
   std::string listName = "";
-  std::string callerName = "";
+  std::string callerName = rName;
   std::string score = "";
   bool onWhitelist = false;
   bool onBlacklist = false;
