@@ -68,6 +68,7 @@ Fields                | Values       | Description
 "username"            | `<string>`   | Your SIP username
 "password"            | `<string>`   | Your SIP password
 "realm"               | `<string>`   | optional: allows to change the SIP realm. Default is same value as specified in "domain".
+"outbound_proxy"      | `<string>`   | optional: specify the URL of outbound proxies to visit for all outgoing requests. Example: "sip:192.168.0.1\;lr". Default is "" (no proxy).
 "secure"              | true, false  | optional: allows to use SIPS instead of SIP. Default is false.
 "forceIPv4"           | true, false  | optional: force IPv4 transport. Default is true.
 

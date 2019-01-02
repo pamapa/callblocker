@@ -56,6 +56,7 @@ struct SettingSipAccount {
   std::string username;
   std::string password;
   std::string realm;
+  std::string outboundProxy;
   bool secure;
   bool forceIPv4;
 };

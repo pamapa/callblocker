@@ -91,6 +91,13 @@ bool SipAccount::add(struct SettingSipAccount* pSettings) {
   cfg.cred_info[0].data_type = PJSIP_CRED_DATA_PLAIN_PASSWD;
   cfg.cred_info[0].data = pj_str((char*)m_settings.password.c_str());
 
+  // outbound proxy
+  if (!m_settings.outboundProxy.empty()) {
+    cfg.reg_use_proxy = 3;
+    cfg.proxy_cnt = 1;
+    cfg.proxy[0] = pj_str((char*)m_settings.outboundProxy.c_str());
+  }
+
   // add account
   pj_status_t status = pjsua_acc_add(&cfg, PJ_TRUE, &m_accId);
   if (status != PJ_SUCCESS) {

@@ -125,6 +125,7 @@ bool Settings::load() {
         }
         // optionals
         (void)Utils::getObject(entry, "realm", false, m_filename, &sip.realm, sip.domain);
+        (void)Utils::getObject(entry, "outbound_proxy", false, m_filename, &sip.outboundProxy, "");
         (void)Utils::getObject(entry, "secure", false, m_filename, &sip.secure, false);
         (void)Utils::getObject(entry, "forceIPv4", false, m_filename, &sip.forceIPv4, true);
 
@@ -216,7 +217,9 @@ std::string Settings::toString(const struct SettingSipAccount* pSip) {
       << ",d=" << pSip->domain
       << ",u=" << pSip->username
       << ",r=" << pSip->realm
-      << ",s=" << pSip->secure;
+      << ",op=" << pSip->outboundProxy
+      << ",s=" << pSip->secure
+      << ",ip4=" << pSip->forceIPv4;
   return oss.str();
 }
 
