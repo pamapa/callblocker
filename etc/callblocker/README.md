@@ -56,7 +56,7 @@ Fields                | Values       | Description
 ------                | ------       | -------
 "log_level"           | "error", "warn", "info" or "debug" | Logging level. Default is "info".
 "pjsip_log_level"     | 0-5          | Logging level of the pjsip library, for debugging proposes. Default is 0.
-"country_code"        | `"+<X[Y][Z]>"` | Your international country code (e.g. +33 for France)
+"country_code"        | `"+<X[Y][Z]>"` | Your international country code (e.g. +33 for France). This is used to map local numbers to international ones, which then are used for blocking.
 "block_mode"          | "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only" | "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists. (whitelists not used)
 "block_anonymous_cid" | true, false  | optional: block all calls that have an anonymous/unknown caller ID. Default is false.
 "block_invalid_cid"   | true, false  | optional: block all calls that have an invalid caller ID. Default is true.
@@ -64,7 +64,7 @@ Fields                | Values       | Description
 "online_lookup"       | [`<string>`](#onlineLookup) | optional: online lookup site, to see who is calling
 "online_cache"        | true, false  | optional: allows to cache online checks and lookups. Default is true.
 "device"              | `<string>`   | If present marks phone as analog one. You can get the device name with "dmesg". Usually its "/dev/ttyACM0".
-"domain"              | `<string>`   | Your SIP domain name
+"domain"              | `<string>`   | Your SIP host (domain) name. Example: "fritz.box"
 "username"            | `<string>`   | Your SIP username
 "password"            | `<string>`   | Your SIP password
 "realm"               | `<string>`   | optional: allows to change the SIP realm. Default is same value as specified in "domain".
