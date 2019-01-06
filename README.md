@@ -245,7 +245,7 @@ sudo journalctl _SYSTEMD_UNIT=callblockerd.service
 - increase log levels: "log_level" to "debug" and/or "pjsip_log_level" to 2. See documentation of
    [configuration file](/etc/callblocker/README.md) for more info. And restart callblockerd.
 ```bash
-sudo vi settings.json
+sudo vi /etc/callblocker/settings.json
 sudo systemctl restart callblockerd.service
 ```
 
