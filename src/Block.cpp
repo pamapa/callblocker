@@ -93,7 +93,7 @@ bool Block::isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::s
 
 bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber, const std::string& rName, std::string* pMsg) {
   std::string listName = "";
-  std::string callerName = rName;
+  std::string callerName = "";
   std::string score = "";
   bool onWhitelist = false;
   bool onBlacklist = false;
@@ -147,7 +147,12 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
       break;
   }
 
-  if (!onWhitelist && !onBlacklist) {
+  if (callerName.empty() && !rName.empty()) {
+    // use caller information from provider
+    callerName = rName;
+  }
+
+  if (!onWhitelist && !onBlacklist && callerName.empty()) {
     // online lookup caller name
     onlineLookup(pSettings, rNumber, validNumber, &callerName);
   }
@@ -155,7 +160,7 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
   // Incoming call number='x' name='y' [invalid] [blocked] [whitelist='w'] [blacklist='b'] [score=s]
   std::ostringstream oss;
   oss << "Incoming call: number='" << rNumber << "'";
-  if (callerName.length() != 0) {
+  if (!callerName.empty()) {
     oss << " name='" << Utils::escapeSqString(callerName) << "'";
   }
   if (block) {

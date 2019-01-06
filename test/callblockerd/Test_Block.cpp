@@ -74,6 +74,10 @@ static void TestCase_logging_only(std::string exePath)
   assert(block->isBlocked(&settingsBase, "+41441119999", "", &msg) == false);
   assert(msg.compare("Incoming call: number='+41441119999' name='Mr. Whitelist 2 in blacklist too' whitelist='main'") == 0);
 
+  // test: caller information from provider
+  assert(block->isBlocked(&settingsBase, "+12025808292", "Mr. Spamer", &msg) == false);
+  assert(msg.compare("Incoming call: number='+12025808292' name='Mr. Spamer'") == 0);
+
   // test anonymous
   settingsBase.blockAnonymousCID = false;
   assert(block->isBlocked(&settingsBase, "anonymous", "", &msg) == false);
@@ -140,6 +144,10 @@ static void TestCase_whitelists_only(std::string exePath)
   // test number in whitelist and blacklist
   assert(block->isBlocked(&settingsBase, "+41441119999", "", &msg) == false);
   assert(msg.compare("Incoming call: number='+41441119999' name='Mr. Whitelist 2 in blacklist too' whitelist='main'") == 0);
+
+  // test: caller information from provider
+  assert(block->isBlocked(&settingsBase, "+12025808292", "Mr. Spamer", &msg) == true);
+  assert(msg.compare("Incoming call: number='+12025808292' name='Mr. Spamer' blocked") == 0);
 
   // test anonymous
   settingsBase.blockAnonymousCID = false;
@@ -208,6 +216,10 @@ static void TestCase_whitelists_and_blacklists(std::string exePath)
   assert(block->isBlocked(&settingsBase, "+41441119999", "", &msg) == false);
   assert(msg.compare("Incoming call: number='+41441119999' name='Mr. Whitelist 2 in blacklist too' whitelist='main'") == 0);
 
+  // test: caller information from provider
+  assert(block->isBlocked(&settingsBase, "+12025808292", "Mr. Spamer", &msg) == false);
+  assert(msg.compare("Incoming call: number='+12025808292' name='Mr. Spamer'") == 0);
+
   // test anonymous
   settingsBase.blockAnonymousCID = false;
   assert(block->isBlocked(&settingsBase, "anonymous", "", &msg) == false);
@@ -274,6 +286,10 @@ static void TestCase_blacklists_only(std::string exePath)
   // test number in whitelist and blacklist
   assert(block->isBlocked(&settingsBase, "+41441119999", "", &msg) == true);
   assert(msg.compare("Incoming call: number='+41441119999' name='Mr. Whitelist 2 in blacklist too' blocked blacklist='main'") == 0);
+
+  // test: caller information from provider
+  assert(block->isBlocked(&settingsBase, "+12025808292", "Mr. Spamer", &msg) == false);
+  assert(msg.compare("Incoming call: number='+12025808292' name='Mr. Spamer'") == 0);
 
   // test anonymous
   settingsBase.blockAnonymousCID = false;
