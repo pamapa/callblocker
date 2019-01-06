@@ -128,7 +128,7 @@ static void TestCase_makeNumberInternational()
 static void TestCase_parseCallerID()
 {
   std::vector<std::pair<std::string, std::string>> result;
-  std::string str = "DATE=0306\nTIME=1517\nNMBR=0123456789\nNAME=aasd asdd\n";
+  std::string str = "DATE=0306\nTIME=1517\nNMBR=0123456789\nNAME=aasd asdd";
   Utils::parseCallerID(str, &result);
   assert(result.size() == 4);
   assert(result[0].first.compare("DATE") == 0);
@@ -159,6 +159,19 @@ static void TestCase_parseCallerID()
   assert(result[2].second.compare("") == 0);
   assert(result[3].first.compare("NAME") == 0);
   assert(result[3].second.compare("saas") == 0);
+  result.clear();
+
+  str = "DATE=0102\r\nTIME=1918\r\nNMBR=0123456789\r\nNAME=TOLL FREE CALL";
+  Utils::parseCallerID(str, &result);
+  assert(result.size() == 4);
+  assert(result[0].first.compare("DATE") == 0);
+  assert(result[0].second.compare("0102") == 0);
+  assert(result[1].first.compare("TIME") == 0);
+  assert(result[1].second.compare("1918") == 0);
+  assert(result[2].first.compare("NMBR") == 0);
+  assert(result[2].second.compare("0123456789") == 0);
+  assert(result[3].first.compare("NAME") == 0);
+  assert(result[3].second.compare("TOLL FREE CALL") == 0);
   result.clear();
 }
 
