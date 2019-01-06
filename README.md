@@ -113,7 +113,7 @@ sudo systemctl restart lighttpd.service
 You have prevoiusly installed the callblock application and would like to update it to the lastest version. Make a backup
 of your configuration (/etc/callblocker), the installation will not overwrite it, but you never know.
 
-In case you have still the installation git checkout:
+1. In case you have still the installation git checkout:
 ```bash
 cd callblocker
 git pull
@@ -131,7 +131,7 @@ autoconf
 make all
 ```
 
-Double check your [settings.json](/etc/callblocker/README.md). Hints:
+2. Double check your [settings.json](/etc/callblocker/README.md). Hints:
 - v0.0.7: switched from php to python web backend
 - v0.9.0: prefix "from_" has been removed from "from_domain", "from_username" and "from password"
 - v0.11.0: moved from jessie to stretch, for jessie use the 0.10.x release
@@ -143,7 +143,7 @@ sudo systemctl daemon-reload
 sudo systemctl start callblockerd
 ```
 
-Double check your [web configuration](#webInterface) and do:
+3. Double check your [web configuration](#webInterface) and do:
 ```bash
 sudo systemctl restart lighttpd.service
 ```
