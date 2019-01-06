@@ -158,7 +158,7 @@ bool Modem::sendCommand(std::string cmd) {
   
   std::string str = buffer;
   Utils::trim(&str);
-  Logger::debug("[%s] received '%s' tries=%d ret=%d", m_name.c_str(), str.c_str(), tries, ret);
+  Logger::debug("[%s] received '%s' tries=%d ret=%d", m_name.c_str(), Utils::escapeSqString(str).c_str(), tries, ret);
   return ret;
 }
 
@@ -179,7 +179,7 @@ bool Modem::getData(std::string* data) {
       std::string str = buffer;
       Utils::trim(&str);
       *data = str;
-      Logger::debug("[%s] received '%s'", m_name.c_str(), data->c_str());
+      Logger::debug("[%s] received '%s'", m_name.c_str(), Utils::escapeSqString(*data).c_str());
       res = true;
     }
   }
