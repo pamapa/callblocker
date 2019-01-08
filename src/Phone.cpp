@@ -32,7 +32,7 @@ Phone::~Phone() {
   m_pBlock = NULL;
 }
 
-bool Phone::isBlocked(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pMsg) {
-  return m_pBlock->isBlocked(pSettings, rNumber, pMsg);
+bool Phone::isBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const std::string& rName, std::string* pMsg) {
+  return m_pBlock->isBlocked(pSettings, rNumber, rName, pMsg);
 }
 

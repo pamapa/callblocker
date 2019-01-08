@@ -102,6 +102,9 @@ void AnalogPhone::run() {
       //Logger::debug("CID(orig): '%s'", data.c_str());
 
       bool block = false;
+      std::string number = "";
+      std::string name = "";
+
       std::vector<std::pair<std::string, std::string>> result;
       Utils::parseCallerID(data, &result);
       for (auto& it : result) {
@@ -111,20 +114,23 @@ void AnalogPhone::run() {
 
         if (key == "NMBR") {
           m_foundCID = true;
-          std::string number = value;
+          number = value;
 
           if (number == "PRIVATE") {
             // Caller ID information has been blocked by the user of the other end
             // see http://ads.usr.com/support/3453c/3453c-ug/dial_answer.html#IDfunctions
             number = BLOCK_ANONYMOUS_NUMBER_STR;
           }
-
-          std::string msg;
-          block = isBlocked(&m_settings.base, number, &msg);
-          Logger::notice(msg.c_str());
-          break;
+        } else if (key == "NAME") {
+          name = value;
         }
-      } // for    
+      } // for
+
+      if (m_foundCID) {
+          std::string msg;
+          block = isBlocked(&m_settings.base, number, name, &msg);
+          Logger::notice(msg.c_str());
+      }
 
       if (block) {
         m_modem.sendCommand(AT_PICKUP_STR); // pickup
