@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl callblocker - blocking unwanted calls from your home phone
-dnl Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
+dnl Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
 dnl
 dnl This program is free software; you can redistribute it and/or
 dnl modify it under the terms of the GNU General Public License
@@ -18,7 +18,7 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 AC_PREREQ(2.60)
-AC_INIT([callblocker], [0.11.1], [pammann@gmx.net])
+AC_INIT([callblocker], [0.12.0], [pammann@gmx.net])
 AM_INIT_AUTOMAKE()
 
 dnl Add support for libraries
