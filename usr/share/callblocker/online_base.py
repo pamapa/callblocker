@@ -36,7 +36,7 @@ class OnlineBase(object):
         return parser
 
     def http_get(self, url, add_headers={}, allowed_codes=[]):
-        self.log.debug("http_get: '%s'" % url)
+        self.log.debug("http_get('%s',%s,%s)" % (url, add_headers, allowed_codes))
         try:
             request = urllib.request.Request(url, headers=add_headers)
             response = urllib.request.urlopen(request, timeout=5)
