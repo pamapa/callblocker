@@ -15,7 +15,6 @@ echo "Executing onlinelookup tests..."
 
 echo "Execute onlinelookup_all.py tests..."
 numbers='
-  +33145537601
   +39885432087
   +41265051361
   +436642503442
