@@ -70,4 +70,4 @@ if __name__ == "__main__":
 
     # m.run would have exited
     base.log.debug("number '%s' is not supported" % args.number)
-    sys.exit(-1)
+    sys.exit(0)
