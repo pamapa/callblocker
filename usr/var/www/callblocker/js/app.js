@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -901,7 +901,7 @@ require(["dijit/ConfirmDialog",
   var statusbarPane = new dijit.layout.ContentPane({
     region: "bottom",
     style: "text-align: center",
-    content: "v0.12.1"
+    content: "v0.12.2"
   });
   appLayout.addChild(statusbarPane);
   appLayout.placeAt(document.body);
