@@ -219,16 +219,9 @@ void SipAccount::onCallState(pjsua_call_id call_id, pjsip_event* e) {
   pjsua_call_get_info(call_id, &ci);
 
   // NOTE: if the number is not blocked, we would not be here
-  std::string display, number;
-  if (!getNumber(&ci.remote_info, &display, &number)) {
-    Logger::warn("invalid URI received '%s'", pj_strbuf(&ci.remote_info));
-    return;
-  }
-
   std::string state = std::string(pj_strbuf(&ci.state_text), ci.state_text.slen);
-  Logger::debug("[%s] call state changed to %s", number.c_str(), state.c_str());
+  Logger::debug("call state changed to %s", state.c_str());
 
-#if 1
   if (ci.state == PJSIP_INV_STATE_CONFIRMED) {
     Logger::debug("hangup...");
     // code 0: pj takes care of hangup SIP status code
@@ -237,7 +230,6 @@ void SipAccount::onCallState(pjsua_call_id call_id, pjsip_event* e) {
       Logger::warn("pjsua_call_hangup() failed (%s)", Utils::getPjStatusAsString(status).c_str());
     }
   }
-#endif
 }
 
 #if 0
