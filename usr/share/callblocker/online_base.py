@@ -1,5 +1,5 @@
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,6 +20,7 @@ import sys, argparse
 import logging
 import urllib.request
 import json
+import socket
 
 
 class OnlineBase(object):
@@ -82,12 +83,16 @@ class OnlineBase(object):
             self.log.error("number '%s' is not supported '%s'" % (args.number, self.supported_country_codes()))
             sys.exit(-1)
 
-        result = self.handle_number(args, args.number)
+        try:
+            result = self.handle_number(args, args.number)
 
-        # result in json format, if not found: empty fields
-        j = json.dumps(result, ensure_ascii=False)
-        sys.stdout.write(j)
-        sys.stdout.write("\n")  # must be separate line, to avoid conversion of json into ascii
+            # result in json format, if not found: empty fields
+            j = json.dumps(result, ensure_ascii=False)
+            sys.stdout.write(j)
+            sys.stdout.write("\n")  # must be separate line, to avoid conversion of json into ascii
+        except socket.timeout as ex:
+            self.log.error("socket timeout (%s)" % ex)
+            sys.exit(-1)
 
         # no error occurred
         sys.exit(0)
