@@ -111,7 +111,7 @@ bool SipAccount::add(struct SettingSipAccount* pSettings) {
     return false;
   }
 
-  Logger::debug("SipAccount::add(): successfully added account %s", id.c_str());
+  Logger::debug("SipAccount::add(): added account with id='%s' and reg_uri='%s'", id.c_str(), reg_uri.c_str());
   return true;
 }
 
