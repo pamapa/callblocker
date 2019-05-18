@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -36,7 +36,7 @@
 
 
 Notify::Notify(const std::string& rPathname, uint32_t mask) {
-  Logger::debug("Notify::Notify(%s, %d)...", rPathname.c_str(), mask);
+  Logger::debug("Notify::Notify(%s, %d)", rPathname.c_str(), mask);
 
   m_FD = inotify_init();
   if (m_FD < 0) {
@@ -52,7 +52,7 @@ Notify::Notify(const std::string& rPathname, uint32_t mask) {
 }
 
 Notify::~Notify() {
-  Logger::debug("Notify::~Notify()...");
+  Logger::debug("Notify::~Notify()");
 
   if (m_WD > 0) {
     inotify_rm_watch(m_FD, m_WD);

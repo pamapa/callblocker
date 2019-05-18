@@ -123,7 +123,7 @@ bool FileList::getEntry(const std::string& rNumber, std::string* pName) {
     struct FileListEntry* entry = &m_entries[i];
     const char* s = entry->number.c_str();
     if (strncmp(s, rNumber.c_str(), strlen(s)) == 0) {
-      Logger::debug("FileList::isListed(number='%s') matched with '%s'/'%s' in file %s",
+      Logger::debug("FileList::getEntry(number='%s') matched with '%s'/'%s' in '%s'",
         rNumber.c_str(), s, entry->name.c_str(), m_filename.c_str());
       if (pName != NULL) *pName = entry->name;
       return true;
@@ -150,6 +150,8 @@ void FileList::addEntry(const std::string& rNumber, const std::string& rCallerNa
 }
 
 void FileList::removeEntry(const std::string& rNumber) {
+  Logger::debug("FileList::removeEntry(rNumber='%s') in '%s'", rNumber.c_str(), m_filename.c_str());
+
   m_entries.erase(std::remove_if(m_entries.begin(), m_entries.end(),
                   [rNumber](FileListEntry e) {
                     const char* s = e.number.c_str();
