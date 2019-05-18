@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -32,13 +32,13 @@
 
 
 SipAccount::SipAccount(SipPhone* pPhone) {
-  Logger::debug("SipAccount::SipAccount()...");
+  Logger::debug("SipAccount::SipAccount()");
   m_pPhone = pPhone;
   m_accId = -1;
 }
 
 SipAccount::~SipAccount() {
-  Logger::debug("SipAccount::~SipAccount()...");
+  Logger::debug("SipAccount::~SipAccount()");
   m_pPhone = NULL;
 
   if (m_accId == -1) {
@@ -55,7 +55,7 @@ SipAccount::~SipAccount() {
 }
 
 bool SipAccount::add(struct SettingSipAccount* pSettings) {
-  Logger::debug("SipAccount::add(%s)...", Settings::toString(pSettings).c_str());
+  Logger::debug("SipAccount::add(%s)", Settings::toString(pSettings).c_str());
   m_settings = *pSettings; // struct copy
 
   // prepare account configuration
@@ -111,7 +111,6 @@ bool SipAccount::add(struct SettingSipAccount* pSettings) {
     return false;
   }
 
-  Logger::debug("SipAccount::add: successfully registered account %s", id.c_str());
   return true;
 }
 
@@ -126,7 +125,7 @@ void SipAccount::onRegState2CB(pjsua_acc_id acc_id, pjsua_reg_info *info) {
 
 void SipAccount::onRegState2(pjsua_reg_info *info) {
   if (info->cbparam->code == 200) {
-    Logger::debug("successfully %s on domain '%s' with username '%s'", info->renew ? "registered" : "unregistered",
+    Logger::debug("SipAccount::onRegState2(): successfully %s on domain '%s' with username '%s'", info->renew ? "registered" : "unregistered",
                  m_settings.domain.c_str(), m_settings.username.c_str());
   } else {
     Logger::warn("%s on domain '%s' with username '%s' failed (code=%d)", info->renew ? "registration" : "unregistration",
@@ -220,10 +219,10 @@ void SipAccount::onCallState(pjsua_call_id call_id, pjsip_event* e) {
 
   // NOTE: if the number is not blocked, we would not be here
   std::string state = std::string(pj_strbuf(&ci.state_text), ci.state_text.slen);
-  Logger::debug("call state changed to %s", state.c_str());
+  Logger::debug("SipAccount::onCallState(): call state changed to %s", state.c_str());
 
   if (ci.state == PJSIP_INV_STATE_CONFIRMED) {
-    Logger::debug("hangup...");
+    Logger::debug("SipAccount::onCallState(): hangup...");
     // code 0: pj takes care of hangup SIP status code
     pj_status_t status = pjsua_call_hangup(call_id, 0, NULL, NULL);
     if (status != PJ_SUCCESS) {

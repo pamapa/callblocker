@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -33,7 +33,7 @@
 
 
 FileListsCache::FileListsCache(const std::string& rPathname) : Notify(rPathname, IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) {
-  Logger::debug("FileListsCache::FileListsCache()...");
+  Logger::debug("FileListsCache::FileListsCache(rPathname='%s')", rPathname.c_str());
   m_pathname = rPathname;
 
   if (pthread_mutex_init(&m_mutexLock, NULL) != 0) {
@@ -59,7 +59,7 @@ FileListsCache::FileListsCache(const std::string& rPathname) : Notify(rPathname,
 }
 
 FileListsCache::~FileListsCache() {
-  Logger::debug("FileListsCache::~FileListsCache()...");
+  Logger::debug("FileListsCache::~FileListsCache() of '%s'", m_pathname.c_str());
   
   for (size_t i = 0; i < sizeof(m_lists)/sizeof(m_lists[0]); i++) {
     delete(m_lists[i].list);
@@ -116,7 +116,7 @@ bool FileListsCache::getEntry(const CacheType type, const std::string& rNumber, 
 }
 
 void FileListsCache::load() {
-  Logger::debug("loading directory %s", m_pathname.c_str());
+  Logger::debug("FileListsCache::load() of '%s'", m_pathname.c_str());
 
   pthread_mutex_lock(&m_mutexLock);
   for (size_t i = 0; i < sizeof(m_lists)/sizeof(m_lists[0]); i++) {

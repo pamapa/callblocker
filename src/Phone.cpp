@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2015 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -23,12 +23,12 @@
 
 
 Phone::Phone(Block* pBlock) {
-  Logger::debug("Phone::Phone()...");
+  Logger::debug("Phone::Phone()");
   m_pBlock = pBlock;
 }
 
 Phone::~Phone() {
-  Logger::debug("Phone::~Phone()...");
+  Logger::debug("Phone::~Phone()");
   m_pBlock = NULL;
 }
 
