@@ -36,7 +36,7 @@
 
 
 Notify::Notify(const std::string& rPathname, uint32_t mask) {
-  Logger::debug("Notify::Notify(%s, %d)", rPathname.c_str(), mask);
+  Logger::debug("Notify::Notify('%s', %d)", rPathname.c_str(), mask);
 
   m_FD = inotify_init();
   if (m_FD < 0) {
