@@ -27,7 +27,7 @@
 
 
 Block::Block(Settings* pSettings) {
-  Logger::debug("Block::Block()...");
+  Logger::debug("Block::Block()");
   m_pSettings = pSettings;
 
   m_pWhitelists = new FileListsNotified(Utils::pathJoin(pSettings->getBasePath(), "whitelists"));
@@ -36,7 +36,7 @@ Block::Block(Settings* pSettings) {
 }
 
 Block::~Block() {
-  Logger::debug("Block::~Block()...");
+  Logger::debug("Block::~Block()");
 
   delete(m_pCache);
   delete(m_pBlacklists);
