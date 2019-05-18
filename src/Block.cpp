@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -195,45 +195,8 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
   }
 
   // online check if spam
-  if (pSettings->onlineCheck.length() != 0) {
-
-    if (pSettings->onlineCache) {
-      // in cache?
-      if (m_pCache->getEntry(CacheType::OnlineCheck, rNumber, pCallerName)) {
-        *pListName = "cache";
-        return true;
-      }
-    }
-
-    struct json_object* root;
-    if (checkOnline("onlinecheck_", pSettings->onlineCheck, rNumber, validNumber, &root)) {
-      bool spam;
-      if (!Utils::getObject(root, "spam", true, "script result", &spam, false)) {
-        return false;
-      }
-      if (spam) {
-        *pListName = pSettings->onlineCheck;
-        (void)Utils::getObject(root, "name", false, "script result", pCallerName, "");
-        int score;
-        if (Utils::getObject(root, "score", false, "script result", &score, 0)) {
-          *pScore = std::to_string(score);
-        }
-
-        if (pSettings->onlineCache) {
-          // it is spam -> add to cache
-          std::string cacheName = "from '" + pSettings->onlineCheck + "'";
-          if (pCallerName->length() != 0) {
-            cacheName += ": " + *pCallerName;
-          }
-          if (pScore->length() != 0) {
-            cacheName += " with score '" + *pScore + "'";
-          }
-          m_pCache->addEntry(CacheType::OnlineCheck, rNumber, cacheName);
-        }
-
-        return true;
-      }
-    }
+  if (onlineCheck(pSettings, rNumber, validNumber, pListName, pCallerName, pScore)) {
+    return true;
   }
 
   // no spam
@@ -243,29 +206,82 @@ bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string
 void Block::onlineLookup(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
                          std::string* pCallerName) {
   if (pSettings->onlineCache) {
-    // in cache?
+    // already in cache?
     if (m_pCache->getEntry(CacheType::OnlineLookup, rNumber, pCallerName)) {
       return;
     }
   }
 
-  if (pSettings->onlineLookup.length() != 0) {
-    struct json_object* root;
-    if (checkOnline("onlinelookup_", pSettings->onlineLookup, rNumber, validNumber, &root)) {
-      (void)Utils::getObject(root, "name", false, "script result", pCallerName, "");
+  if (pSettings->onlineLookup.length() == 0) {
+    return;
+  }
 
-      if (pSettings->onlineCache) {
-        if (pCallerName->length() != 0) {
-          // found CID -> add to cache
-          m_pCache->addEntry(CacheType::OnlineLookup, rNumber, *pCallerName);
-        }
-      }
+  struct json_object* root;
+  if (!executeScript("onlinelookup_", pSettings->onlineLookup, rNumber, validNumber, &root)) {
+    return;
+  }
+
+  (void)Utils::getObject(root, "name", false, "script result", pCallerName, "");
+
+  if (pSettings->onlineCache) {
+    if (pCallerName->length() != 0) {
+      // found CID -> add to cache
+      m_pCache->addEntry(CacheType::OnlineLookup, rNumber, *pCallerName);
     }
   }
 }
 
-bool Block::checkOnline(std::string prefix, std::string scriptBaseName, const std::string& rNumber, const bool validNumber,
-                        struct json_object** root) {
+bool Block::onlineCheck(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
+                        std::string* pListName, std::string* pCallerName, std::string* pScore) {
+  if (pSettings->onlineCache) {
+    // already in cache?
+    if (m_pCache->getEntry(CacheType::OnlineCheck, rNumber, pCallerName)) {
+      *pListName = "cache";
+      return true;
+    }
+  }
+
+  if (pSettings->onlineCheck.length() == 0) {
+    return false;
+  }
+
+  struct json_object* root;
+  if (!executeScript("onlinecheck_", pSettings->onlineCheck, rNumber, validNumber, &root)) {
+    return false;
+  }
+
+  bool spam;
+  if (!Utils::getObject(root, "spam", true, "script result", &spam, false)) {
+    return false;
+  }
+  if (!spam) {
+    return false;
+  }
+
+  *pListName = pSettings->onlineCheck;
+  (void)Utils::getObject(root, "name", false, "script result", pCallerName, "");
+  int score;
+  if (Utils::getObject(root, "score", false, "script result", &score, 0)) {
+    *pScore = std::to_string(score);
+  }
+
+  if (pSettings->onlineCache) {
+    // it is spam -> add to cache
+    std::string cacheName = "from '" + pSettings->onlineCheck + "'";
+    if (pCallerName->length() != 0) {
+      cacheName += ": " + *pCallerName;
+    }
+    if (pScore->length() != 0) {
+      cacheName += " with score '" + *pScore + "'";
+    }
+    m_pCache->addEntry(CacheType::OnlineCheck, rNumber, cacheName);
+  }
+
+  return true;
+}
+
+bool Block::executeScript(std::string prefix, std::string scriptBaseName, const std::string& rNumber, const bool validNumber,
+                          struct json_object** root) {
   if (Utils::startsWith(rNumber, "**")) {
     // it is an intern number, thus makes no sense to ask the world
     return false;
@@ -277,6 +293,7 @@ bool Block::checkOnline(std::string prefix, std::string scriptBaseName, const st
 
   std::string script = DATADIR "/callblocker/" + prefix + scriptBaseName + ".py";
   std::string parameters = "--number " + rNumber;
+  // optional credential parameters  
   std::vector<struct SettingOnlineCredential> creds = m_pSettings->getOnlineCredentials();
   for(size_t i = 0; i < creds.size(); i++) {
     struct SettingOnlineCredential* cred = &creds[i];

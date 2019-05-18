@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -54,9 +54,10 @@ private:
 
   void onlineLookup(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
                     std::string* pCallerName);
-
-  bool checkOnline(std::string prefix, std::string name, const std::string& rNumber, const bool validNumber,
-                   struct json_object** root);
+  bool onlineCheck(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
+                   std::string* pListName, std::string* pCallerName, std::string* pScore);
+  bool executeScript(std::string prefix, std::string name, const std::string& rNumber, const bool validNumber,
+                     struct json_object** root);
 };
 
 #endif
