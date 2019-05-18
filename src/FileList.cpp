@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -32,7 +32,7 @@
 
 
 FileList::FileList(const std::string& filename, const std::string& name) {
-  Logger::debug("FileList::FileList()... %s", filename.c_str());
+  Logger::debug("FileList::FileList(filename='%s', name='%s')", filename.c_str(), name.c_str());
   m_filename = filename;
   m_name = name;
 }
@@ -41,12 +41,12 @@ FileList::FileList(const std::string& filename) : FileList(filename, Utils::path
 }
 
 FileList::~FileList() {
-  Logger::debug("FileList::~FileList()... %s", m_filename.c_str());
+  Logger::debug("FileList::~FileList() of '%s'", m_filename.c_str());
   m_entries.clear();
 }
 
 bool FileList::load() {
-  Logger::debug("loading file %s", m_filename.c_str());
+  Logger::debug("FileList::load() of '%s'", m_filename.c_str());
   
   m_entries.clear();
 
@@ -83,7 +83,7 @@ bool FileList::load() {
 }
 
 bool FileList::save() {
-  Logger::debug("saving file %s", m_filename.c_str());
+  Logger::debug("FileList::save() of '%s'", m_filename.c_str());
   
   std::ofstream out(m_filename);
   if (out.fail()) {
@@ -133,7 +133,7 @@ bool FileList::getEntry(const std::string& rNumber, std::string* pName) {
 }
 
 void FileList::addEntry(const std::string& rNumber, const std::string& rCallerName) {
-  Logger::debug("FileList::addEntry(rNumber='%s', rCallerName='%s') to file %s",
+  Logger::debug("FileList::addEntry(rNumber='%s', rCallerName='%s') to '%s'",
     rNumber.c_str(), rCallerName.c_str(), m_filename.c_str());
 
   if (getEntry(rNumber, NULL)) {
@@ -162,7 +162,7 @@ void FileList::removeEntry(const std::string& rNumber) {
 }
 
 bool FileList::eraseAged(size_t maxDays) {
-  Logger::debug("erase age entries... %s", m_filename.c_str());
+  Logger::debug("FileList::eraseAged(maxDays=%zu) in '%s'", maxDays, m_filename.c_str());
   bool changed = false;
 
   std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
