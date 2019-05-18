@@ -41,7 +41,7 @@ FileListsNotified::FileListsNotified(const std::string& rPathname) : Notify(rPat
 }
 
 FileListsNotified::~FileListsNotified() {
-  Logger::debug("FileListsNotified::~FileListsNotified() of '%s'", rPathname.c_str());
+  Logger::debug("FileListsNotified::~FileListsNotified() of '%s'", m_pathname.c_str());
   clear();
 }
 
