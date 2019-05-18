@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -31,14 +31,14 @@
 
 
 Settings::Settings(const std::string& rPathname) : Notify(rPathname, IN_CLOSE_WRITE) {
-  Logger::debug("Settings::Settings()...");
+  Logger::debug("Settings::Settings(rPathname='%s')", rPathname.c_str());
   m_basePathname = rPathname;
   m_filename = rPathname + "/settings.json";
   load();
 }
 
 Settings::~Settings() {
-  Logger::debug("Settings::~Settings()...");
+  Logger::debug("Settings::~Settings() of '%s'", m_filename.c_str());
   clear();
 }
 
@@ -62,6 +62,7 @@ void Settings::clear() {
 }
 
 bool Settings::load() {
+  Logger::debug("Settings::load() of '%s'", m_filename.c_str());
   clear();
 
   struct json_object* root;
@@ -79,9 +80,6 @@ bool Settings::load() {
   else if (strLogLevel == "error")logLevel = LogLevel::ERROR;
   else Logger::warn("ignore invalid log_level %s", strLogLevel.c_str());
   (void)Logger::setLogLevel(logLevel);
-
-
-  Logger::debug("loading file %s", m_filename.c_str());
 
   int pjsip_log_level;
   if (Utils::getObject(root, "pjsip_log_level", false, m_filename, &pjsip_log_level, 0)) {

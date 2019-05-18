@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -30,7 +30,7 @@
 
 
 FileListsNotified::FileListsNotified(const std::string& rPathname) : Notify(rPathname, IN_CLOSE_WRITE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO) {
-  Logger::debug("FileListsNotified::FileListsNotified()...");
+  Logger::debug("FileListsNotified::FileListsNotified(rPathname='%s')", rPathname.c_str());
   m_pathname = rPathname;
 
   if (pthread_mutex_init(&m_mutexLock, NULL) != 0) {
@@ -41,7 +41,7 @@ FileListsNotified::FileListsNotified(const std::string& rPathname) : Notify(rPat
 }
 
 FileListsNotified::~FileListsNotified() {
-  Logger::debug("FileListsNotified::~FileListsNotified()...");
+  Logger::debug("FileListsNotified::~FileListsNotified() of '%s'", rPathname.c_str());
   clear();
 }
 
@@ -71,13 +71,13 @@ bool FileListsNotified::getEntry(const std::string& rNumber, std::string* pListN
 }
 
 void FileListsNotified::load() {
+  Logger::debug("FileListsNotified::load() of '%s'", m_pathname.c_str());
   DIR* dir = opendir(m_pathname.c_str());
   if (dir == NULL) {
     Logger::warn("open directory %s failed", m_pathname.c_str());
     return;
   }
 
-  Logger::debug("loading directory %s", m_pathname.c_str());
   struct dirent* entry = readdir(dir);
   while (entry != NULL) {
     if ((entry->d_type & DT_DIR) == 0) {
