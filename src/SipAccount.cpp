@@ -111,6 +111,7 @@ bool SipAccount::add(struct SettingSipAccount* pSettings) {
     return false;
   }
 
+  Logger::debug("SipAccount::add(): successfully added account %s", id.c_str());
   return true;
 }
 
@@ -124,10 +125,7 @@ void SipAccount::onRegState2CB(pjsua_acc_id acc_id, pjsua_reg_info *info) {
 }
 
 void SipAccount::onRegState2(pjsua_reg_info *info) {
-  if (info->cbparam->code == 200) {
-    Logger::debug("SipAccount::onRegState2(): successfully %s on domain '%s' with username '%s'", info->renew ? "registered" : "unregistered",
-                 m_settings.domain.c_str(), m_settings.username.c_str());
-  } else {
+  if (info->cbparam->code != 200) {
     Logger::warn("%s on domain '%s' with username '%s' failed (code=%d)", info->renew ? "registration" : "unregistration",
                  m_settings.domain.c_str(), m_settings.username.c_str(), info->cbparam->code);
   }
