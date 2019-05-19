@@ -141,7 +141,7 @@ void SipAccount::onIncomingCallCB(pjsua_acc_id acc_id, pjsua_call_id call_id, pj
 }
 
 void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
-  Logger::debug("SipAccount::onIncomingCall(call_id=%d)...", call_id);
+  Logger::debug("SipAccount::onIncomingCall(call_id=%d)", call_id);
   PJ_UNUSED_ARG(rdata);
 
   pj_status_t status = pjsua_call_set_user_data(call_id, this);
@@ -209,18 +209,17 @@ void SipAccount::onCallStateCB(pjsua_call_id call_id, pjsip_event* e) {
 }
 
 void SipAccount::onCallState(pjsua_call_id call_id, pjsip_event* e) {
-  Logger::debug("SipAccount::onCallState(call_id=%d)...", call_id);
   PJ_UNUSED_ARG(e);
 
   pjsua_call_info ci;
   pjsua_call_get_info(call_id, &ci);
 
-  // NOTE: if the number is not blocked, we would not be here
+  // NOTE: if the number is blocked or not, we land here
   std::string state = std::string(pj_strbuf(&ci.state_text), ci.state_text.slen);
-  Logger::debug("SipAccount::onCallState(): call state changed to %s", state.c_str());
+  Logger::debug("SipAccount::onCallState(call_id=%d): call state changed to %s", call_id, state.c_str());
 
   if (ci.state == PJSIP_INV_STATE_CONFIRMED) {
-    Logger::debug("SipAccount::onCallState(): hangup...");
+    Logger::debug("SipAccount::onCallState(call_id=%d): hangup", call_id);
     // code 0: pj takes care of hangup SIP status code
     pj_status_t status = pjsua_call_hangup(call_id, 0, NULL, NULL);
     if (status != PJ_SUCCESS) {
