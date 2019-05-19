@@ -50,7 +50,7 @@ void Block::run() {
 }
 
 bool Block::isBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const std::string& rName, std::string* pMsg) {
-  Logger::debug("Block::isBlocked(%s,number=%s,name=%s)", Settings::toString(pSettings).c_str(), rNumber.c_str(), rName.c_str());
+  Logger::debug("Block::isBlocked(pSettings='%s',rNumber='%s',rName='%s')", Settings::toString(pSettings).c_str(), rNumber.c_str(), rName.c_str());
 
   if (rNumber == BLOCK_ANONYMOUS_NUMBER_STR) {
     return isAnonymousNumberBlocked(pSettings, pMsg);
@@ -101,7 +101,8 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
   
   switch (pSettings->blockMode) {
     default:
-      Logger::warn("Invalid block mode %d", pSettings->blockMode);
+      Logger::warn("Invalid block mode %d, use LOGGING_ONLY", pSettings->blockMode);
+      // fall-through
     case LOGGING_ONLY:
       if (isWhiteListed(pSettings, rNumber, &listName, &callerName)) {
         onWhitelist = true;
