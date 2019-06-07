@@ -17,12 +17,8 @@ libcallblockerd_sources = [
 
 libcallblockerd = shared_library('libcallblockerd',
                                  libcallblockerd_sources,
-                                 dependencies: [dep_json, dep_pj, dep_pjsip, dep_pjsua, dep_phonenumber],
-                                 install : true)
+                                 dependencies: [dep_json, dep_pj, dep_pjsip, dep_pjsua, dep_phonenumber])
 
 callblockerd = executable('callblockerd', 'Main.cpp',
-                          link_with : libcallblockerd)
-
-
-#test('foolib test', testexe)
-
+                          link_with : libcallblockerd,
+                          install: true)

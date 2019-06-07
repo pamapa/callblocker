@@ -24,5 +24,5 @@ dep_pjsua = cc.find_library('pjsua')
 dep_phonenumber = cc.find_library('phonenumber')
 
 subdir('src')
+subdir('usr/share')
 subdir('test/callblockerd')
-

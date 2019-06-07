@@ -12,4 +12,3 @@ unit_tests = executable('unit_tests',
                         include_directories: incdir,
                         link_with : libcallblockerd)
 test('unit_tests', unit_tests)
-
