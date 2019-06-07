@@ -1,0 +1,28 @@
+project('callblocker', 'cpp',
+  version: '0.12.2',
+  license: 'GPL-2.0')
+
+# Grab necessary paths
+path_prefix = get_option('prefix')
+#path_bindir = join_paths(path_prefix, get_option('bindir'))
+path_sysconfdir = join_paths(path_prefix, get_option('sysconfdir'))
+path_datadir = join_paths(path_prefix, get_option('datadir'))
+
+add_global_arguments('-std=c++11', language : 'cpp')
+add_global_arguments('-DPACKAGE_NAME="@0@"'.format(meson.project_name()), language: 'cpp')
+add_global_arguments('-DVERSION="@0@"'.format(meson.project_version()), language: 'cpp')
+add_global_arguments('-DSYSCONFDIR="@0@"'.format(path_sysconfdir), language: 'cpp')
+add_global_arguments('-DDATADIR="@0@"'.format(path_datadir), language: 'cpp')
+
+add_global_arguments('-DPJ_AUTOCONF=1', language : 'cpp')
+
+cc = meson.get_compiler('cpp')
+dep_json = dependency('json-c')
+dep_pj = cc.find_library('pj')
+dep_pjsip = cc.find_library('pjsip')
+dep_pjsua = cc.find_library('pjsua')
+dep_phonenumber = cc.find_library('phonenumber')
+
+subdir('src')
+subdir('test/callblockerd')
+
