@@ -63,7 +63,9 @@ bool SipPhone::init() {
   if (!s_Initialized)
   {
     if (!init_pjsua()) return false;
+#if 0
     if (!init_pjmedia()) return false;
+#endif
     s_Initialized = true;
   }
 
@@ -143,8 +145,8 @@ bool SipPhone::init_pjsua() {
   return true;
 }
 
-bool SipPhone::init_pjmedia() {
 #if 0
+bool SipPhone::init_pjmedia() {
   Logger::debug("SipPhone::init_pjmedia...");
 #define CLOCK_RATE        8000
 #define CHANNEL_COUNT     1
@@ -161,7 +163,7 @@ bool SipPhone::init_pjmedia() {
     Logger::error("pjsua_conf_add_port() failed (%s)", Utils::getPjStatusAsString(status).c_str());
     return false;
   }
-#endif
   return true;
 }
+#endif
 
