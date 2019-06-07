@@ -223,6 +223,7 @@ void Block::onlineLookup(const struct SettingBase* pSettings, const std::string&
   }
 
   (void)Utils::getObject(root, "name", false, "script result", pCallerName, "");
+  json_object_put(root); // free
 
   if (pSettings->onlineCache) {
     if (pCallerName->length() != 0) {
@@ -253,9 +254,11 @@ bool Block::onlineCheck(const struct SettingBase* pSettings, const std::string& 
 
   bool spam;
   if (!Utils::getObject(root, "spam", true, "script result", &spam, false)) {
+    json_object_put(root); // free
     return false;
   }
   if (!spam) {
+    json_object_put(root); // free
     return false;
   }
 
@@ -265,6 +268,7 @@ bool Block::onlineCheck(const struct SettingBase* pSettings, const std::string& 
   if (Utils::getObject(root, "score", false, "script result", &score, 0)) {
     *pScore = std::to_string(score);
   }
+  json_object_put(root); // free
 
   if (pSettings->onlineCache) {
     // it is spam -> add to cache
@@ -282,7 +286,7 @@ bool Block::onlineCheck(const struct SettingBase* pSettings, const std::string& 
 }
 
 bool Block::executeScript(std::string prefix, std::string scriptBaseName, const std::string& rNumber, const bool validNumber,
-                          struct json_object** root) {
+                          struct json_object** pRoot) {
   Logger::debug("Block::executeScript(prefix='%s' ,scriptBaseName='%s', rNumber='%s', validNumber=%d)",
     prefix.c_str(), scriptBaseName.c_str(), rNumber.c_str(), validNumber);
 
@@ -314,7 +318,12 @@ bool Block::executeScript(std::string prefix, std::string scriptBaseName, const 
     return false; // script failed, error already logged
   }
 
-  *root = json_tokener_parse(res.c_str());
-  return true; // script executed successful
+  *pRoot = json_tokener_parse(res.c_str());
+  if (*pRoot == NULL) {
+    Logger::warn("Block::executeScript(): could not parse '%s' as json", res.c_str());
+    return false;
+  }
+
+  return true;
 }
 

@@ -103,7 +103,7 @@ bool Utils::fileCopy(const std::string& rFrom, const std::string& rTo)
 bool Utils::loadJson(const std::string& filename, struct json_object** pRoot) {
   std::ifstream in(filename);
   if (in.fail()) {
-    Logger::warn("loading file %s failed", filename.c_str());
+    Logger::warn("Utils::loadJson(%s): loading failed", filename.c_str());
     return false;
   }
 
@@ -113,6 +113,11 @@ bool Utils::loadJson(const std::string& filename, struct json_object** pRoot) {
   in.close();
 
   *pRoot = json_tokener_parse(str.c_str());
+  if (*pRoot == NULL) {
+    Logger::warn("Utils::loadJson(%s): parsing data failed", filename.c_str());
+    return false;
+  }
+
   return true;
 }
 
