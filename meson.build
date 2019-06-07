@@ -4,9 +4,9 @@ project('callblocker', 'cpp',
 
 # Grab necessary paths
 path_prefix = get_option('prefix')
-#path_bindir = join_paths(path_prefix, get_option('bindir'))
 path_sysconfdir = join_paths(path_prefix, get_option('sysconfdir'))
 path_datadir = join_paths(path_prefix, get_option('datadir'))
+path_localstatedir = join_paths(path_prefix, get_option('localstatedir'))
 
 add_global_arguments('-std=c++11', language : 'cpp')
 add_global_arguments('-DPACKAGE_NAME="@0@"'.format(meson.project_name()), language: 'cpp')
@@ -25,4 +25,5 @@ dep_phonenumber = cc.find_library('phonenumber')
 
 subdir('src')
 subdir('usr/share')
+subdir('usr/var/www')
 subdir('test/callblockerd')
