@@ -41,8 +41,9 @@ public:
   static bool pathExists(const std::string& rPath);
   static bool fileCopy(const std::string& rFrom, const std::string& rTo);
 
-  // json
+  // json (call json_object_put for free)
   static bool loadJson(const std::string& filename, struct json_object** pRoot);
+  static bool parseJson(const std::string& str, struct json_object** pRoot);
   static bool getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const std::string& rLocation,
                         std::string* pRes, const std::string& rDefault);
   static bool getObject(struct json_object* objbase, const char* objname, bool logNotFoundError, const std::string& rLocation,

@@ -184,6 +184,21 @@ static void TestCase_time()
   assert(original == reparsed);
 }
 
+static void TestCase_parseJson()
+{
+  struct json_object* root;
+  assert(Utils::parseJson("{\"spam\": true, \"score\": 8, \"name\": \"Aggressive Werbung öäüéàè$£\"}", &root) == true);
+  bool spam;
+  assert(Utils::getObject(root, "spam", true, "unit test", &spam, false) == true);
+  assert(spam == true);
+  std::string name;
+  assert(Utils::getObject(root, "name", false, "unit test", &name, "") == true);
+  assert(name.compare("Aggressive Werbung öäüéàè$£") == 0);
+  int score;
+  assert(Utils::getObject(root, "score", false, "unit test", &score, 0) == true);
+  assert(score == 8);
+}
+
 void Test_Utils_Run()
 {
   printf("Test_Utils_Run...\n");
@@ -193,5 +208,6 @@ void Test_Utils_Run()
   TestCase_makeNumberInternational();
   TestCase_parseCallerID();
   TestCase_time();
+  TestCase_parseJson();
 }
 

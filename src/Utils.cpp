@@ -112,12 +112,15 @@ bool Utils::loadJson(const std::string& filename, struct json_object** pRoot) {
   std::string str = buffer.str();
   in.close();
 
+  return Utils::parseJson(str, pRoot);
+}
+
+bool Utils::parseJson(const std::string& str, struct json_object** pRoot) {
   *pRoot = json_tokener_parse(str.c_str());
   if (*pRoot == NULL) {
-    Logger::warn("Utils::loadJson(%s): parsing data failed", filename.c_str());
+    Logger::warn("Utils::parseJson(%s): could not parse", str.c_str());
     return false;
   }
-
   return true;
 }
 

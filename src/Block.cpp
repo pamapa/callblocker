@@ -209,6 +209,7 @@ void Block::onlineLookup(const struct SettingBase* pSettings, const std::string&
   if (pSettings->onlineCache) {
     // already in cache?
     if (m_pCache->getEntry(CacheType::OnlineLookup, rNumber, pCallerName)) {
+      Logger::debug("Block::onlineLookup: found entry '%s' in cache -> '%s'", rNumber.c_str(), pCallerName->c_str());
       return;
     }
   }
@@ -238,6 +239,7 @@ bool Block::onlineCheck(const struct SettingBase* pSettings, const std::string& 
   if (pSettings->onlineCache) {
     // already in cache?
     if (m_pCache->getEntry(CacheType::OnlineCheck, rNumber, pCallerName)) {
+      Logger::debug("Block::onlineCheck: found entry '%s' in cache -> its spam", rNumber.c_str());
       *pListName = "cache";
       return true;
     }
@@ -249,18 +251,22 @@ bool Block::onlineCheck(const struct SettingBase* pSettings, const std::string& 
 
   struct json_object* root;
   if (!executeScript("onlinecheck_", pSettings->onlineCheck, rNumber, validNumber, &root)) {
+    // error already logged
     return false;
   }
 
   bool spam;
   if (!Utils::getObject(root, "spam", true, "script result", &spam, false)) {
+    // error already logged
     json_object_put(root); // free
     return false;
   }
   if (!spam) {
+    Logger::debug("Block::onlineCheck: '%s' is no spam", rNumber.c_str());
     json_object_put(root); // free
     return false;
   }
+  Logger::debug("Block::onlineCheck: '%s' is spam", rNumber.c_str());
 
   *pListName = pSettings->onlineCheck;
   (void)Utils::getObject(root, "name", false, "script result", pCallerName, "");
@@ -271,7 +277,7 @@ bool Block::onlineCheck(const struct SettingBase* pSettings, const std::string& 
   json_object_put(root); // free
 
   if (pSettings->onlineCache) {
-    // it is spam -> add to cache
+    Logger::debug("Block::onlineCheck: '%s' is spam -> add to cache", rNumber.c_str());
     std::string cacheName = "from '" + pSettings->onlineCheck + "'";
     if (pCallerName->length() != 0) {
       cacheName += ": " + *pCallerName;
@@ -318,12 +324,6 @@ bool Block::executeScript(std::string prefix, std::string scriptBaseName, const 
     return false; // script failed, error already logged
   }
 
-  *pRoot = json_tokener_parse(res.c_str());
-  if (*pRoot == NULL) {
-    Logger::warn("Block::executeScript(): could not parse '%s' as json", res.c_str());
-    return false;
-  }
-
-  return true;
+  return Utils::parseJson(res, pRoot);
 }
 
