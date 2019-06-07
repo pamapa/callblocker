@@ -2,7 +2,7 @@ project('callblocker', 'cpp',
   version: '0.12.2',
   license: 'GPL-2.0')
 
-# Grab necessary paths
+# grab necessary paths
 path_prefix = get_option('prefix')
 path_sysconfdir = join_paths(path_prefix, get_option('sysconfdir'))
 path_datadir = join_paths(path_prefix, get_option('datadir'))
