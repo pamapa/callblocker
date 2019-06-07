@@ -216,7 +216,7 @@ bool Utils::executeCommand(const std::string& rCmd, std::string* pRes) {
     return false;
   }
 
-  Logger::debug("result: %s", res.c_str());
+  Logger::debug("result: '%s'", res.c_str());
   *pRes = res;
   return true;
 }
