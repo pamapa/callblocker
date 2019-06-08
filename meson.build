@@ -1,6 +1,9 @@
-project('callblocker', 'cpp',
+project(
+  'callblocker', 'cpp',
   version: '0.12.2',
-  license: 'GPL-2.0')
+  license: 'GPL-2.0',
+  meson_version: '>= 0.50.0'
+)
 
 # grab necessary paths
 path_prefix = get_option('prefix')
@@ -18,11 +21,9 @@ add_global_arguments('-DPJ_AUTOCONF=1', language : 'cpp')
 
 cc = meson.get_compiler('cpp')
 dep_json = dependency('json-c')
-dep_pj = cc.find_library('pj')
-dep_pjsip = cc.find_library('pjsip')
-dep_pjsua = cc.find_library('pjsua')
 dep_phonenumber = cc.find_library('phonenumber')
 
+subdir('third-party/pjproject')
 subdir('src')
 subdir('usr/share')
 subdir('usr/var/www')

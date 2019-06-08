@@ -15,10 +15,15 @@ libcallblockerd_sources = [
   'Modem.cpp'
 ]
 
-libcallblockerd = shared_library('libcallblockerd',
-                                 libcallblockerd_sources,
-                                 dependencies: [dep_json, dep_pj, dep_pjsip, dep_pjsua, dep_phonenumber])
+libcallblockerd = static_library(
+  'callblockerd',
+  libcallblockerd_sources,
+  dependencies: [dep_json, dep_phonenumber, dep_pjproject]
+)
 
-callblockerd = executable('callblockerd', 'Main.cpp',
-                          link_with : libcallblockerd,
-                          install: true)
+callblockerd = executable(
+  'callblockerd', 'Main.cpp',
+  link_with : libcallblockerd,
+  dependencies: [dep_json, dep_phonenumber, dep_pjproject],
+  install: true
+)
