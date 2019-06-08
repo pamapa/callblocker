@@ -67,7 +67,7 @@ sudo apt-get install python3 python3-bs4 python3-ldif3 python3-vobject
 sudo pip3 install meson
 git clone https://github.com/pamapa/callblocker.git
 cd callblocker
-meson --prefix=/usr --sysconfdir=/etc builddir
+/usr/local/bin/meson --prefix=/usr --sysconfdir=/etc builddir
 cd builddir
 sudo ninja install
 ```
