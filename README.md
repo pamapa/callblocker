@@ -44,9 +44,12 @@ Supported (tested) analog modems
 
 
 ## Install daemon on Linux
+### via Automake
 ```bash
-sudo apt-get install git make automake g++ libpjproject-dev libjson-c-dev libphonenumber-dev
+sudo apt-get install make automake
+sudo apt-get install git g++ libpjproject-dev libjson-c-dev libphonenumber-dev
 sudo apt-get install python3 python3-bs4 python3-ldif3 python3-vobject
+
 git clone https://github.com/pamapa/callblocker.git
 cd callblocker
 aclocal
@@ -55,12 +58,26 @@ autoconf
 ./configure --prefix=/usr --sysconfdir=/etc
 make all
 sudo make install
+```
+### via meson/ninja
+```bash
+sudo apt-get install ninja
+sudo apt-get install git g++ libpjproject-dev libjson-c-dev libphonenumber-dev
+sudo apt-get install python3 python3-bs4 python3-ldif3 python3-vobject
+sudo pip3 install meson
+git clone https://github.com/pamapa/callblocker.git
+cd callblocker
+meson --prefix=/usr --sysconfdir=/etc builddir
+cd builddir
+sudo ninja install
+```
+### adapt your config
+```bash
 cd /etc/callblocker
 sudo mv tpl_settings.json settings.json
 sudo vi settings.json
 sudo systemctl start callblockerd.service
 ```
-
 
 ## <a name="webInterface"></a> Install web interface on Linux
 The installation of the web interface is optional, the callblock daemon works perfectly without it.
