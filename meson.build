@@ -25,7 +25,7 @@ dep_phonenumber = cc.find_library('phonenumber')
 # for pjproject
 dep_pthread = cc.find_library('pthread')
 dep_uuid = cc.find_library('libuuid')
-dep_openssl = dependency('openssl')
+dep_ssl = dependency('openssl')
 
 subdir('third-party/pjproject')
 subdir('src')
