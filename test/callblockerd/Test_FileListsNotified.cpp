@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -56,12 +56,12 @@ static void removeEntry(std::string filename, const std::string& rNumber) {
   delete(pNotified);
 }
 
-static void Test_WithExistingOne(std::string exePath) {
+static void Test_WithExistingOne(std::string etcPath) {
   char tmpl[] = "/tmp/testcallblockerd.XXXXXX";
   char* tempPath = mkdtemp(tmpl);
   assert(tempPath != NULL);  
   //printf("tempPath: %s\n", tempPath);
-  std::string listPath = Utils::pathJoin(exePath, "data/etc/whitelists");
+  std::string listPath = Utils::pathJoin(etcPath, "whitelists");
 
   // start with existing one
   assert(Utils::fileCopy(Utils::pathJoin(listPath, "main.json"), Utils::pathJoin(tempPath, "main.json")));
@@ -96,9 +96,10 @@ static void Test_WithExistingOne(std::string exePath) {
   remove(tempPath);
 }
 
-void Test_FileListsNotified_Run(std::string exePath) {
+void Test_FileListsNotified_Run(std::string etcPath) {
   printf("Test_FileListsNotified_Run...\n");
+  Logger::setLogLevel(LogLevel::WARN);
 
-  Test_WithExistingOne(exePath);
+  Test_WithExistingOne(etcPath);
 }
 

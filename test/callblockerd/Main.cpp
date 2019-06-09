@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -29,23 +29,26 @@
 int main(int argc, char* argv[]) {
   printf("Executing unit_tests...\n");
 
+  if (argc != 2) {
+    printf("USAGE: unit_tests <source root path>");
+    return 1;
+  }
+
   Logger::start(false);
 
 #if 0
   assert(0);
 #endif
 
-  std::string exePath = Utils::pathDirname(Utils::pathAbsname(argv[0]));
-  //printf("exePath: %s\n", exePath.c_str());
+  Logger::warn("SOURCE_ROOT: %s\n", argv[1]);
 
-  Logger::setLogLevel(LogLevel::WARN);
+  std::string etcPath = Utils::pathJoin(argv[1], "/test/callblockerd/data/etc");
+  Logger::warn("etcPath: %s\n", etcPath.c_str());
+
   Test_Utils_Run();
-  Logger::setLogLevel(LogLevel::WARN);
-  Test_Block_Run(exePath);
-  Logger::setLogLevel(LogLevel::WARN);
-  Test_FileListsCache_Run(exePath);
-  Logger::setLogLevel(LogLevel::WARN);
-  Test_FileListsNotified_Run(exePath);
+  Test_Block_Run(etcPath);
+  Test_FileListsCache_Run(etcPath);
+  Test_FileListsNotified_Run(etcPath);
 
   Logger::stop();
 

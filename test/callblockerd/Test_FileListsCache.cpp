@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -38,7 +38,7 @@ static void checkEntry(FileListsCache* pCache, const CacheType type,
   }
 }
 
-static void Test_Empty(std::string exePath) {
+static void Test_Empty(std::string etcPath) {
   char tmpl[] = "/tmp/testcallblockerd.XXXXXX";
   char* tempPath = mkdtemp(tmpl);
   assert(tempPath != NULL);  
@@ -76,13 +76,13 @@ static void Test_Empty(std::string exePath) {
   remove(tempPath);
 }
 
-static void Test_WithAged(std::string exePath) {
+static void Test_WithAged(std::string etcPath) {
 
   char tmpl[] = "/tmp/testcallblockerd.XXXXXX";
   char* tempPath = mkdtemp(tmpl);
   assert(tempPath != NULL);  
   //printf("tempPath: %s\n", tempPath);
-  std::string cachePath = Utils::pathJoin(exePath, "data/etc/cache");
+  std::string cachePath = Utils::pathJoin(etcPath, "cache");
 
   // procondtion: already contains some old entries
   assert(Utils::fileCopy(Utils::pathJoin(cachePath, "onlinelookup.json"), Utils::pathJoin(tempPath, "onlinelookup.json")));
@@ -117,10 +117,11 @@ static void Test_WithAged(std::string exePath) {
   remove(tempPath);
 }
 
-void Test_FileListsCache_Run(std::string exePath) {
+void Test_FileListsCache_Run(std::string etcPath) {
   printf("Test_FileListsCache_Run...\n");
+  Logger::setLogLevel(LogLevel::WARN);
 
-  Test_Empty(exePath);
-  Test_WithAged(exePath);
+  Test_Empty(etcPath);
+  Test_WithAged(etcPath);
 }
 

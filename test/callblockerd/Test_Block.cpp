@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -28,14 +28,14 @@
 
 #include "Settings.h"
 #include "Utils.h"
+#include "Logger.h"
 #include "Block.h"
 
 
-static void TestCase_logging_only(std::string exePath)
+static void TestCase_logging_only(std::string etcPath)
 {
-  std::string etc = Utils::pathJoin(exePath, "data/etc");
-  //printf("etc: %s\n", etc.c_str());
-  Settings* settings = new Settings(etc);
+  //printf("etc: %s\n", etcPath.c_str());
+  Settings* settings = new Settings(etcPath);
   Block* block = new Block(settings);
 
   SettingBase settingsBase;
@@ -103,11 +103,10 @@ static void TestCase_logging_only(std::string exePath)
   assert(msg.compare("Incoming call: number='+493456789012345678' invalid") == 0);
 }
 
-static void TestCase_whitelists_only(std::string exePath)
+static void TestCase_whitelists_only(std::string etcPath)
 {
-  std::string etc = Utils::pathJoin(exePath, "data/etc");
-  //printf("etc: %s\n", etc.c_str());
-  Settings* settings = new Settings(etc);
+  //printf("etc: %s\n", etcPath.c_str());
+  Settings* settings = new Settings(etcPath);
   Block* block = new Block(settings);
 
   SettingBase settingsBase;
@@ -174,11 +173,10 @@ static void TestCase_whitelists_only(std::string exePath)
   assert(msg.compare("Incoming call: number='+493456789012345678' blocked invalid") == 0);
 }
 
-static void TestCase_whitelists_and_blacklists(std::string exePath)
+static void TestCase_whitelists_and_blacklists(std::string etcPath)
 {
-  std::string etc = Utils::pathJoin(exePath, "data/etc");
-  //printf("etc: %s\n", etc.c_str());
-  Settings* settings = new Settings(etc);
+  //printf("etc: %s\n", etcPath.c_str());
+  Settings* settings = new Settings(etcPath);
   Block* block = new Block(settings);
 
   SettingBase settingsBase;
@@ -245,11 +243,10 @@ static void TestCase_whitelists_and_blacklists(std::string exePath)
   assert(msg.compare("Incoming call: number='+493456789012345678' blocked invalid") == 0);
 }
 
-static void TestCase_blacklists_only(std::string exePath)
+static void TestCase_blacklists_only(std::string etcPath)
 {
-  std::string etc = Utils::pathJoin(exePath, "data/etc");
-  //printf("etc: %s\n", etc.c_str());
-  Settings* settings = new Settings(etc);
+  //printf("etc: %s\n", etcPath.c_str());
+  Settings* settings = new Settings(etcPath);
   Block* block = new Block(settings);
 
   SettingBase settingsBase;
@@ -316,13 +313,14 @@ static void TestCase_blacklists_only(std::string exePath)
   assert(msg.compare("Incoming call: number='+493456789012345678' blocked invalid") == 0);
 }
 
-void Test_Block_Run(std::string exePath)
+void Test_Block_Run(std::string etcPath)
 {
   printf("Test_Block_Run...\n");
-  
-  TestCase_logging_only(exePath);
-  TestCase_whitelists_only(exePath);
-  TestCase_whitelists_and_blacklists(exePath);
-  TestCase_blacklists_only(exePath);
+  Logger::setLogLevel(LogLevel::WARN);
+
+  TestCase_logging_only(etcPath);
+  TestCase_whitelists_only(etcPath);
+  TestCase_whitelists_and_blacklists(etcPath);
+  TestCase_blacklists_only(etcPath);
 }
 

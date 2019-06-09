@@ -6,9 +6,18 @@ unit_tests_sources = [
   'Test_FileListsNotified.cpp'
 ]
 
-incdir = include_directories('../../src')
-unit_tests = executable('unit_tests',
-                        unit_tests_sources,
-                        include_directories: incdir,
-                        link_with : libcallblockerd)
-test('unit_tests', unit_tests)
+incdir = include_directories(
+  '../../src'
+)
+unit_tests = executable(
+  'unit_tests',
+  unit_tests_sources,
+  include_directories: incdir,
+  link_with : libcallblockerd
+)
+test(
+  'unit_tests',
+  unit_tests,
+  args: [meson.source_root()]
+)
+
