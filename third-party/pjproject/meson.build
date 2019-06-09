@@ -22,7 +22,7 @@ pj_target_name = 'x86_64-unknown-linux-gnu'
 
 dep_pjproject = declare_dependency(
   include_directories: inc_pj,
-  dependencies: deps_pjproject,
+  dependencies: deps_for_pjproject,
   link_args: [
     '@0@/pjlib/lib/libpj-@1@.a'.format(pj_path, pj_target_name),
     '@0@/pjsip/lib/libpjsip-simple-@1@.a'.format(pj_path, pj_target_name),
