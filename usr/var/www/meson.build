@@ -20,8 +20,7 @@ if get_option('web-interface')
 
   install_subdir(
     'callblocker',
-    exclude_files: ['package.json', 'Makefile', 'Makefile.am', 'Makefile.in'],
+    exclude_files: ['package.json', 'package-lock.json'],
     install_dir: join_paths(path_localstatedir, 'www')
   )
 endif
-
