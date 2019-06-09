@@ -134,6 +134,17 @@ bool SipPhone::init_pjsua() {
     return false;
   }
 
+  // log supported codecs
+  std::string codecs = "";
+  pjsua_codec_info c[32];
+  unsigned i, count = PJ_ARRAY_SIZE(c);
+  pjsua_enum_codecs(c, &count);
+  for (i = 0; i < count; ++i) {
+    std::string codec = std::string(c[i].codec_id.ptr, c[i].codec_id.slen);
+    codecs += "'" + codec + "' ";
+  }
+  Logger::debug("List of supported codecs (count=%i): %s", count, codecs.c_str());
+
 #if 0
   m_Pool = pjsua_pool_create("SipPhone.cpp", 128, 128);
   if (m_Pool == NULL) {
