@@ -22,7 +22,7 @@ pj_target_name = 'x86_64-unknown-linux-gnu'
 
 dep_pjproject = declare_dependency(
   include_directories: inc_pj,
-  dependencies: [dep_pthread, dep_uuid, dep_ssl],
+  dependencies: deps_pjproject,
   link_args: [
     '@0@/pjlib/lib/libpj-@1@.a'.format(pj_path, pj_target_name),
     '@0@/pjsip/lib/libpjsip-simple-@1@.a'.format(pj_path, pj_target_name),
@@ -34,7 +34,6 @@ dep_pjproject = declare_dependency(
     '@0@/pjmedia/lib/libpjmedia-audiodev-@1@.a'.format(pj_path, pj_target_name),
     '@0@/pjmedia/lib/libpjmedia-codec-@1@.a'.format(pj_path, pj_target_name),
     '@0@/pjnath/lib/libpjnath-@1@.a'.format(pj_path, pj_target_name),
-    '@0@/third_party/lib/libresample-@1@.a'.format(pj_path, pj_target_name),
     '@0@/third_party/lib/libsrtp-@1@.a'.format(pj_path, pj_target_name)
   ]
 )

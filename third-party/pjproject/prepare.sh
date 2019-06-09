@@ -31,25 +31,21 @@ fi
 CONFIG_OPTS="--prefix=/opt/pjproject \
   --disable-speex-codec \
   --disable-speex-aec \
-  --disable-bcg729 \
   --disable-gsm-codec \
   --disable-ilbc-codec \
-  --disable-l16-codec \
-  --disable-g711-codec \
-  --disable-g722-codec \
   --disable-g7221-codec \
+  --disable-ipp \
+  --disable-sound \
+  --disable-ext-sound \
   --disable-opencore-amr \
   --disable-silk \
   --disable-opus \
+  --disable-sdl \
   --disable-video \
   --disable-v4l2 \
-  --disable-sound \
-  --disable-ext-sound \
-  --disable-sdl \
   --disable-libyuv \
   --disable-ffmpeg \
   --disable-openh264 \
-  --disable-ipp \
   --disable-libwebrtc \
   --without-external-pa \
   --without-external-srtp \

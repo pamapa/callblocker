@@ -22,10 +22,11 @@ add_global_arguments('-DPJ_AUTOCONF=1', language : 'cpp')
 cc = meson.get_compiler('cpp')
 dep_json = dependency('json-c')
 dep_phonenumber = cc.find_library('phonenumber')
-# for pjproject
-dep_pthread = cc.find_library('pthread')
-dep_uuid = cc.find_library('libuuid')
-dep_ssl = dependency('openssl')
+deps_pjproject = [
+  cc.find_library('pthread'),
+  cc.find_library('libuuid'),
+  dependency('openssl')
+]
 
 subdir('third-party/pjproject')
 subdir('src')
