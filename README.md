@@ -58,7 +58,7 @@ sudo apt-get install -y nodejs
 git clone https://github.com/pamapa/callblocker.git
 cd callblocker
 # for no web-interface: add below: -Dweb-interface=false
-/usr/local/bin/meson --prefix=/usr --sysconfdir=/etc build
+/usr/local/bin/meson --prefix=/usr --sysconfdir=/etc --localstatedir=/usr/var build
 cd build
 sudo ninja install
 ```
@@ -127,7 +127,7 @@ Else you do not have the installation git checkout anymore:
 git clone https://github.com/pamapa/callblocker.git
 cd callblocker
 # for no web-interface: add below: -Dweb-interface=false
-/usr/local/bin/meson --prefix=/usr --sysconfdir=/etc build
+/usr/local/bin/meson --prefix=/usr --sysconfdir=/etc --localstatedir=/usr/var build
 cd build
 sudo ninja install
 ```
