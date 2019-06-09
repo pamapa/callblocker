@@ -47,7 +47,7 @@ Supported (tested) analog modems
 ```bash
 sudo apt-get install ninja
 sudo apt-get install git g++ libjson-c-dev libphonenumber-dev
-sudo apt-get install uuid-dev libssl-dev
+sudo apt-get install pkg-config uuid-dev libssl-dev
 sudo apt-get install python3 python3-bs4 python3-ldif3 python3-vobject
 sudo pip3 install meson
 
