@@ -13,10 +13,10 @@ if get_option('web-interface')
   endif
 
   # patch version in js file
-  app_js = join_paths(path_js, 'app.js')
-  message('set version @0@ in @1@'.format(meson.project_version(), app_js))
-  run_command('sh', '-c',
-              'sed -i \'s/content: "v.*"/content: "v@0@"/g\' @1@'.format(meson.project_version(), app_js))
+  #app_js = join_paths(path_js, 'app.js')
+  #message('set version @0@ in @1@'.format(meson.project_version(), app_js))
+  #run_command('sh', '-c',
+  #            'sed -i \'s/content: "v.*"/content: "v@0@"/g\' @1@'.format(meson.project_version(), app_js))
 
   install_subdir(
     'callblocker',
