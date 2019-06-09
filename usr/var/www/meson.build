@@ -20,7 +20,7 @@ if get_option('web-interface')
 
   install_subdir(
     'callblocker',
-    exclude_files: ['package.json', 'package-lock.json'],
+    exclude_files: ['js/package.json', 'js/package-lock.json', 'js/vendor/package-lock.json'],
     install_dir: join_paths(path_localstatedir, 'www')
   )
 endif

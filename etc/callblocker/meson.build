@@ -5,13 +5,10 @@ install_data(['tpl_settings.json', 'README.md'],
 # create directories and install README.md
 install_subdir('blacklists',
                install_mode: ['rw-r--r--', 'www-data', 'www-data'],
-               exclude_files: ['Makefile', 'Makefile.am', 'Makefile.in'],
                install_dir: join_paths(path_sysconfdir, 'callblocker'))
 install_subdir('whitelists',
                install_mode: ['rw-r--r--', 'www-data', 'www-data'],
-               exclude_files: ['Makefile', 'Makefile.am', 'Makefile.in'],
                install_dir: join_paths(path_sysconfdir, 'callblocker'))
 install_subdir('cache',
                install_mode: ['rw-r--r--', 'www-data', 'www-data'],
-               exclude_files: ['Makefile', 'Makefile.am', 'Makefile.in'],
                install_dir: join_paths(path_sysconfdir, 'callblocker'))
