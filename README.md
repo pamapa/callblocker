@@ -43,32 +43,23 @@ Supported (tested) analog modems
 - USRobotics 5637
 
 
-## Install daemon on Linux
-### via Automake
+## Install on Linux
 ```bash
-sudo apt-get install make automake
-sudo apt-get install git g++ libpjproject-dev libjson-c-dev libphonenumber-dev
+sudo apt-get install ninja
+sudo apt-get install git g++ libjson-c-dev libphonenumber-dev
+sudo apt-get install uuid-dev libssl-dev
 sudo apt-get install python3 python3-bs4 python3-ldif3 python3-vobject
+sudo pip3 install meson
+
+# web-interface: npm is required for build (see below)
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo apt-get install -y nodejs
 
 git clone https://github.com/pamapa/callblocker.git
 cd callblocker
-aclocal
-automake --add-missing --foreign
-autoconf
-./configure --prefix=/usr --sysconfdir=/etc
-make all
-sudo make install
-```
-### via meson/ninja
-```bash
-sudo apt-get install ninja
-sudo apt-get install git g++ libpjproject-dev libjson-c-dev libphonenumber-dev
-sudo apt-get install python3 python3-bs4 python3-ldif3 python3-vobject
-sudo pip3 install meson
-git clone https://github.com/pamapa/callblocker.git
-cd callblocker
-/usr/local/bin/meson --prefix=/usr --sysconfdir=/etc builddir
-cd builddir
+# for no web-interface: add below: -Dweb-interface=false
+/usr/local/bin/meson --prefix=/usr --sysconfdir=/etc build
+cd build
 sudo ninja install
 ```
 ### adapt your config
@@ -92,13 +83,6 @@ nodejs is required, install like described [here](https://nodejs.org/en/download
 ```bash
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install -y nodejs
-```
-
-Fetch (within the checkout directory) and install vendor files:
-```bash
-cd callblocker/usr/var/www/callblocker/js
-npm install
-sudo cp -r node_modules/ /usr/var/www/callblocker/js/vendor
 ```
 
 Prepare lighttpd, for additional information
@@ -134,28 +118,29 @@ of your configuration (/etc/callblocker), the installation will not overwrite it
 ```bash
 cd callblocker
 git pull
-make clean all
+cd build
+sudo ninja install
 ```
 
 Else you do not have the installation git checkout anymore:
 ```bash
 git clone https://github.com/pamapa/callblocker.git
 cd callblocker
-aclocal
-automake --add-missing --foreign
-autoconf
-./configure --prefix=/usr --sysconfdir=/etc
-make all
+# for no web-interface: add below: -Dweb-interface=false
+/usr/local/bin/meson --prefix=/usr --sysconfdir=/etc build
+cd build
+sudo ninja install
 ```
 
 2. Double check your [settings.json](/etc/callblocker/README.md). Hints:
 - v0.0.7: switched from php to python web backend
 - v0.9.0: prefix "from_" has been removed from "from_domain", "from_username" and "from password"
 - v0.11.0: moved from jessie to stretch, for jessie use the 0.10.x release
+- v0.13.0: switched from automake to meson/ninja and make use of locally pjproject 2.8
 
 ```bash
 sudo systemctl stop callblockerd
-sudo make install
+sudo ninja install
 sudo systemctl daemon-reload
 sudo systemctl start callblockerd
 ```
