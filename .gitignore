@@ -1,16 +1,3 @@
-Makefile
-Makefile.in
-aclocal.m4
-compile
-config.log
-config.status
-configure
-depcomp
-install-sh
-missing
-autom4te.cache
-
-.deps
 .idea
 *.o
 src/callblockerd
@@ -19,3 +6,5 @@ usr/share/callblocker/*.pyc
 usr/var/www/callblocker/js/vendor/*
 usr/var/www/callblocker/js/yarn.lock
 test/callblockerd/unit_tests
+third-party/pjproject/pjproject-2.8.tar.bz2
+third-party/pjproject/pjproject-2.8
