@@ -1,0 +1,7 @@
+option(
+  'web-interface',
+  type: 'boolean',
+  value: true,
+  description: 'build and install web-interface'
+)
+

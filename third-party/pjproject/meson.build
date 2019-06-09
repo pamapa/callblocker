@@ -1,6 +1,3 @@
-dep_pthread = cc.find_library('pthread')
-dep_uuid = cc.find_library('libuuid')
-
 # Debian will no longer package pjproject
 # see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=925263
 #dep_pj = cc.find_library('libpj')
@@ -25,7 +22,7 @@ pj_target_name = 'x86_64-unknown-linux-gnu'
 
 dep_pjproject = declare_dependency(
   include_directories: inc_pj,
-  dependencies: [dep_pthread, dep_uuid],
+  dependencies: [dep_pthread, dep_uuid, dep_openssl],
   link_args: [
     '@0@/pjlib/lib/libpj-@1@.a'.format(pj_path, pj_target_name),
     '@0@/pjsip/lib/libpjsip-simple-@1@.a'.format(pj_path, pj_target_name),
