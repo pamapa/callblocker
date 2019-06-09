@@ -2,7 +2,7 @@ project(
   'callblocker', 'cpp',
   version: '0.12.2',
   license: 'GPL-2.0',
-  meson_version: '>= 0.50.0'
+  meson_version: '>= 0.49.0'
 )
 
 # grab necessary paths
