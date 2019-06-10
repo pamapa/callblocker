@@ -49,6 +49,7 @@ sudo apt-get install ninja
 sudo apt-get install git g++ libjson-c-dev libphonenumber-dev
 sudo apt-get install pkg-config uuid-dev libssl-dev
 sudo apt-get install python3 python3-bs4 python3-ldif3 python3-vobject
+sudo apt-get install python3-pip apt-transport-https
 sudo pip3 install meson
 
 # web-interface: npm is required for build (see below)
@@ -76,7 +77,7 @@ The web interface allows to view the caller log, change settings and diagnose pr
 
 Debian packages are required:
 ```bash
-sudo apt-get install lighttpd python3-systemd python3-pip apt-transport-https
+sudo apt-get install lighttpd python3-systemd
 ```
 
 nodejs is required, install like described [here](https://nodejs.org/en/download/package-manager/):
