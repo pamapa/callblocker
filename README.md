@@ -162,6 +162,7 @@ drwxr-xr-x www-data www-data /etc/callblocker/whitelists                   # put
 drwxr-xr-x www-data www-data /etc/callblocker/cache                        # used for caching online request
 -rwxr-xr-x root     root     /usr/bin/callblockerd                         # daemon
 drwxr-xr-x root     root     /usr/share/callblocker                        # python helper scripts
+-rw-r--r-- root     root     /etc/systemd/system/callblockerd.service      # systemd service file
 ```
 When using the web interface:
 ```
