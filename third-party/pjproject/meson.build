@@ -24,7 +24,7 @@ pj_path = join_paths(meson.source_root(), 'third-party/pjproject/pjproject-2.8')
 # on amd64: 'x86_64-unknown-linux-gnu'
 dpkg_architecture = find_program('dpkg-architecture')
 deb_host_gnu_system = run_command(dpkg_architecture, '-qDEB_HOST_GNU_SYSTEM').stdout().strip()
-pj_target_name = host_machine.cpu_family() + '-unknown-' + deb_host_gnu_system
+pj_target_name = host_machine.cpu() + '-unknown-' + deb_host_gnu_system
 
 dep_pjproject = declare_dependency(
   include_directories: inc_pj,
