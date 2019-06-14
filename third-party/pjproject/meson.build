@@ -18,7 +18,13 @@ inc_pj = include_directories(
 )
 
 pj_path = join_paths(meson.source_root(), 'third-party/pjproject/pjproject-2.8')
-pj_target_name = 'x86_64-unknown-linux-gnu'
+
+# similar as here: https://github.com/endlessm/systemd/blob/master/meson.build
+# on armhf: 'armv7l-unknown-linux-gnueabihf' or 'armv6l-unknown-linux-gnueabihf'
+# on amd64: 'x86_64-unknown-linux-gnu'
+dpkg_architecture = find_program('dpkg-architecture')
+deb_host_gnu_system = run_command(dpkg_architecture, '-qDEB_HOST_GNU_SYSTEM').stdout().strip()
+pj_target_name = host_machine.cpu_family() + '-unknown-' + deb_host_gnu_system
 
 dep_pjproject = declare_dependency(
   include_directories: inc_pj,

@@ -45,7 +45,7 @@ Supported (tested) analog modems
 
 ## Install on Linux
 ```bash
-sudo apt-get install ninja-build
+sudo apt-get install ninja-build dpkg_architecture
 sudo apt-get install git g++ libjson-c-dev libphonenumber-dev
 sudo apt-get install pkg-config uuid-dev libssl-dev
 sudo apt-get install python3 python3-bs4 python3-ldif3 python3-vobject
