@@ -17,8 +17,6 @@ add_global_arguments('-DVERSION="@0@"'.format(meson.project_version()), language
 add_global_arguments('-DSYSCONFDIR="@0@"'.format(path_sysconfdir), language: 'cpp')
 add_global_arguments('-DDATADIR="@0@"'.format(path_datadir), language: 'cpp')
 
-add_global_arguments('-DPJ_AUTOCONF=1', language : 'cpp')
-
 cc = meson.get_compiler('cpp')
 dep_json = dependency('json-c')
 dep_phonenumber = cc.find_library('phonenumber')
@@ -27,6 +25,11 @@ deps_for_pjproject = [
   cc.find_library('libuuid'),
   dependency('openssl')
 ]
+
+add_global_arguments('-DPJ_AUTOCONF=1', language : 'cpp')
+if dep_phonenumber.found()
+  add_global_arguments('-DHAVE_LIBPHONENUMBER=1', language : 'cpp')
+endif
 
 subdir('third-party/pjproject')
 subdir('src')
