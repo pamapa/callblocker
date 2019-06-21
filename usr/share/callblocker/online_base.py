@@ -92,7 +92,7 @@ class OnlineBase(object):
             sys.stdout.write("\n")  # must be separate line, to avoid conversion of json into ascii
         except socket.timeout as ex:
             self.log.error("socket timeout (%s)" % ex)
-            sys.exit(-1)
+            sys.exit(-2)
 
         # no error occurred
         sys.exit(0)
