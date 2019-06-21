@@ -40,7 +40,7 @@ class OnlineBase(object):
         self.log.debug("http_get('%s',%s,%s)" % (url, add_headers, allowed_codes))
         try:
             request = urllib.request.Request(url, headers=add_headers)
-            response = urllib.request.urlopen(request, timeout=2)
+            response = urllib.request.urlopen(request, timeout=3)
             data = response.read()
         except urllib.request.HTTPError as e:
             code = e.getcode()
