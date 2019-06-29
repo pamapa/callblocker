@@ -40,6 +40,7 @@ dep_pjproject = declare_dependency(
     '@0@/pjmedia/lib/libpjmedia-audiodev-@1@.a'.format(pj_path, pj_target_name),
     '@0@/pjmedia/lib/libpjmedia-codec-@1@.a'.format(pj_path, pj_target_name),
     '@0@/pjnath/lib/libpjnath-@1@.a'.format(pj_path, pj_target_name),
-    '@0@/third_party/lib/libsrtp-@1@.a'.format(pj_path, pj_target_name)
+    '@0@/third_party/lib/libsrtp-@1@.a'.format(pj_path, pj_target_name),
+    '@0@/third_party/lib/libresample-@1@.a'.format(pj_path, pj_target_name)
   ]
 )

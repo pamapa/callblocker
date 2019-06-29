@@ -49,7 +49,6 @@ CONFIG_OPTS="--prefix=/opt/pjproject \
   --disable-libwebrtc \
   --without-external-pa \
   --without-external-srtp \
-  --disable-resample \
   --enable-ssl"
 # Linux  
 CONFIG_OPTS+="--enable-epoll"
