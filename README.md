@@ -30,11 +30,13 @@ The call blocker acts like a normal phone. No additional telephone switchboard (
 ## Hardware
 Supported (tested) server host systems
 - Raspberry Pi
-  - raspbian/jessie (use v0.10.x release)
   - raspbian/stretch (use master branch)
+  - raspbian/buster (use master branch)
+  - raspbian/jessie (use v0.10.x release)
 - Debian GNU/Linux
-  - jessie (use v0.10.x release)
+  - buster (use master branch)
   - stretch (use master branch)
+  - jessie (use v0.10.x release)
 
 Supported (tested) VoIP systems
 - Fritzbox 7390
