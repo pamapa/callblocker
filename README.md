@@ -102,7 +102,7 @@ sudo vi /etc/lighttpd/lighttpd.conf
    fastcgi.server              = (
         ".py" => (
                 "callblocker-fcgi" => (
-                        "bin-path" => "/usr/var/www/callblocker/python-fcgi/app_lighttpd.py",
+                        "bin-path" => "/usr/var/www/callblocker/python-fcgi/api.py",
                         "socket" => "/var/run/lighttpd/fastcgi.python.socket")
         )
    )
