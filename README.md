@@ -79,7 +79,7 @@ The web interface allows to view the caller log, change settings and diagnose pr
 
 Debian packages are required:
 ```bash
-sudo apt-get install lighttpd python3-systemd
+sudo apt-get install lighttpd python3-systemd python3-setuptools
 ```
 
 nodejs is required, install like described [here](https://nodejs.org/en/download/package-manager/):

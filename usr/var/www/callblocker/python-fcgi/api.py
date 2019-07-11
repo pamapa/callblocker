@@ -24,7 +24,7 @@
 import urllib
 
 import settings
-import journal
+import logs
 
 
 def application(environ, start_response):
@@ -46,9 +46,9 @@ def application(environ, start_response):
         return settings.handle_get_online_scripts(environ, start_response, params)
 
     if path == "/callerlog":
-        return journal.handle_callerlog(environ, start_response, params)
+        return logs.handle_callerlog(environ, start_response, params)
     if path == "/journal":
-        return journal.handle_journal(environ, start_response, params)
+        return logs.handle_journal(environ, start_response, params)
 
     # return error
     start_response('404 NOT FOUND', [('Content-Type', 'text/plain')])
