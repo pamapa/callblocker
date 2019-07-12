@@ -4,11 +4,9 @@ if get_option('web-interface')
   # fetch js/vendor files
   path_js = join_paths(meson.source_root(), 'usr/var/www/callblocker/js')
   res = run_command('sh', '-c',
-                    'cd @0@/usr/var/www/callblocker/js && npm --prefix ./vendor install'.format(meson.source_root())
+                    'cd @0@/usr/var/www/callblocker/js && npm install && rm -rf ./vendor && mv ./node_modules ./vendor'.format(meson.source_root())
   )
-  if res.returncode() == 0
-    message('npm install...')
-  else
+  if res.returncode() != 0
     error('npm failed with @0@'.format(res.stderr()))
   endif
 
