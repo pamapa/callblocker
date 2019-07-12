@@ -21,17 +21,17 @@
 // https://github.com/OpenNTF/dojo-webpack-plugin-sample
 
 define([
-	"dojo/ready",
-	"dojo/parser",
-	"js/app",
-	"dojo/has!webpack?dojo-webpack-plugin/amd/dojoES6Promise",
+  "dojo/ready",
+  "dojo/parser",
+  "js/app",
+  "dojo/has!webpack?dojo-webpack-plugin/amd/dojoES6Promise",
   "css!dojo/resources/dojo.css",
-	"css!dijit/themes/soria/soria.css",
+  "css!dijit/themes/soria/soria.css",
   "css!dojox/grid/resources/soriaGrid.css",
-	"css!app.css"
+  "css!theme/app.css"
 ], function(ready, parser) {
-	ready(function() {
-		parser.parse();
-	});
-	return {};
+  ready(function() {
+    parser.parse();
+  });
+  return {};
 });
