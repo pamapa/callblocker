@@ -1,24 +1,32 @@
 if get_option('web-interface')
-  message('build web-interface...')
-
-  # fetch js/vendor files
-  path_js = join_paths(meson.source_root(), 'usr/var/www/callblocker/js')
-  res = run_command('sh', '-c',
-                    'cd @0@/usr/var/www/callblocker/js && npm install && rm -rf ./vendor && mv ./node_modules ./vendor'.format(meson.source_root())
-  )
-  if res.returncode() != 0
-    error('npm failed with @0@'.format(res.stderr()))
+  if get_option('web-interface-build')
+    message('build web-interface...')
+    path_package_json = join_paths(meson.source_root(), 'usr/var/www/callblocker')
+    # fetch js files
+    res = run_command('sh', '-c',
+                      'cd @0@ && npm install'.format(path_package_json)
+    )
+    if res.returncode() != 0
+      error('npm install failed with @0@'.format(res.stderr()))
+    endif
+    # patch version in js file
+    app_js = join_paths(path_package_json, 'js/app.js')
+    message('set version @0@ in @1@'.format(meson.project_version(), app_js))
+    run_command('sh', '-c',
+                'sed -i \'s/content: "v.*"/content: "v@0@"/g\' @1@'.format(meson.project_version(), app_js))
+    # build bundle
+    res = run_command('sh', '-c',
+                      'cd @0@ && npm run build'.format(path_package_json)
+    )
+    if res.returncode() != 0
+      error('npm run build failed with @0@'.format(res.stderr()))
+    endif
   endif
-
-  # patch version in js file
-  #app_js = join_paths(path_js, 'app.js')
-  #message('set version @0@ in @1@'.format(meson.project_version(), app_js))
-  #run_command('sh', '-c',
-  #            'sed -i \'s/content: "v.*"/content: "v@0@"/g\' @1@'.format(meson.project_version(), app_js))
 
   install_subdir(
     'callblocker',
-    exclude_files: ['js/package.json', 'js/package-lock.json', 'js/vendor/package-lock.json'],
+    exclude_files: ['package.json', 'package-lock.json', 'webpack.config.js'],
+    exclude_directories: ['js', 'node_modules'],
     install_dir: join_paths(path_localstatedir, 'www')
   )
 endif
