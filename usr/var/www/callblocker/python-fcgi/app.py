@@ -54,12 +54,7 @@ def get_list():
     return wsgi_handler(settings.handle_get_list)
 @app.route(api_base + "/get_lists")
 def get_lists():
-    return wsgi_handler(settings.handle_phones)
-    (environ, params) = get_environ_and_params()
-    data = settings.handle_get_lists(environ, start_response, params)
-    resp = flask.make_response(data[0])
-    resp.headers = g_headers
-    return resp
+    return wsgi_handler(settings.handle_get_lists)
 @app.route(api_base + "/get_online_scripts")
 def get_online_scripts():
     return wsgi_handler(settings.handle_get_online_scripts)
