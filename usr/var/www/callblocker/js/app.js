@@ -47,7 +47,7 @@ require(["dijit/ConfirmDialog",
 
   var api_base = "python-fcgi/api.py";
 
-  function formatDate(dateStr) {
+  function dateFormatter(dateStr) {
     if (dateStr) {
       // 2015-04-19 10:14:03 +0000
       // coming from backend (settings.py and journal.py)
@@ -57,10 +57,11 @@ require(["dijit/ConfirmDialog",
 
       // localize date
       var date = new Date(dateStr); // RFC2822 or ISO 8601 date
-      return dojo.date.locale.format(date, {formatLength: "long"});
+      return dojo.date.locale.format(date, {formatLength: "short"});
     }
     return "";
   }
+  var dateWidth= "100px";
 
   // convert to UTC: 2015-04-19 10:14:03 +0000
   function date2UTCString(date) {
@@ -79,11 +80,11 @@ require(["dijit/ConfirmDialog",
       url: api_base.concat("/callerlog")
     });
     var structure = [
-      { name: "Date",   field: "date",   width: "200px", formatter: formatDate },
-      { name: "Number", field: "number", width: "110px"                        },
-      { name: "Name",   field: "name",   width: "600px"                        },
-      { name: "What",   field: "what",   width: "50px",  hidden: true          },
-      { name: "Reason", field: "reason", width: "300px"                        }
+      { name: "Date",   field: "date",   width: dateWidth, formatter: dateFormatter },
+      { name: "Number", field: "number", width: "110px"                             },
+      { name: "Name",   field: "name",   width: "600px"                             },
+      { name: "What",   field: "what",   width: "50px",  hidden: true               },
+      { name: "Reason", field: "reason", width: "300px"                             }
     ];
 
     var menu = new dijit.Menu();
@@ -145,10 +146,10 @@ require(["dijit/ConfirmDialog",
       url: url
     });
     var structure = [
-      { name: "Date",     field: "date",     width: "200px", formatter: formatDate },
-      { name: "PrioId",   field: "prio_id",  width: "50px",  hidden: true          },
-      { name: "Priority", field: "priority", width: "70px"                         },
-      { name: "Message",  field: "message",  width: "100%"                         }
+      { name: "Date",     field: "date",     width: dateWidth, formatter: dateFormatter },
+      { name: "PrioId",   field: "prio_id",  width: "50px",  hidden: true               },
+      { name: "Priority", field: "priority", width: "70px"                              },
+      { name: "Message",  field: "message",  width: "100%"                              }
     ];
     var grid = new dojox.grid.EnhancedGrid({
       //id: "myGridId",
@@ -632,9 +633,9 @@ require(["dijit/ConfirmDialog",
     menu.addChild(editMenuItem);
 
     var structure = [
-      { name: "Date (modified)", field: "date_modified", width: "200px", formatter: formatDate },
-      { name: "Number",          field: "number",        width: "110px"                        },
-      { name: "Name",            field: "name",          width: "600px"                        }
+      { name: "Date (modified)", field: "date_modified", width: dateWidth, formatter: dateFormatter },
+      { name: "Number",          field: "number",        width: "110px"                             },
+      { name: "Name",            field: "name",          width: "600px"                             }
     ];
     var grid = new dojox.grid.EnhancedGrid({
       //store: added later (see dojo.connect(listSelect...))
@@ -776,9 +777,9 @@ require(["dijit/ConfirmDialog",
     menu.addChild(deleteMenuItem);
 
     var structure = [
-      { name: "Date (created)", field: "date_created", width: "200px", formatter: formatDate },
-      { name: "Number",         field: "number",       width: "110px"                        },
-      { name: "Name",           field: "name",         width: "600px"                        }
+      { name: "Date (created)", field: "date_created", width: dateWidth, formatter: dateFormatter },
+      { name: "Number",         field: "number",       width: "110px"                             },
+      { name: "Name",           field: "name",         width: "600px"                             }
     ];
     var cacheStore = createListStore(api_base.concat("/get_list?dirname=cache&", url_param));
     var grid = new dojox.grid.EnhancedGrid({
