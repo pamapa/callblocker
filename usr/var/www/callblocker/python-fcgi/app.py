@@ -34,12 +34,13 @@ api_base = "/python-fcgi/api.py"
 def wsgi_handler(func):
     environ = flask.request.environ
     params = dict(urllib.parse.parse_qsl(environ.get("QUERY_STRING", "")))
-    g_headers = None
+    headers = None
     def start_response(a, h):
-        g_headers = h
+        nonlocal headers
+        headers = h
     data = func(environ, start_response, params)
     resp = flask.make_response(data[0])
-    resp.headers = g_headers
+    resp.headers = headers
     return resp
 
 @app.route(api_base + "/phones")
