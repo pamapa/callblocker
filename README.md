@@ -30,8 +30,8 @@ The call blocker acts like a normal phone. No additional telephone switchboard (
 ## Hardware
 Supported (tested) server host systems
 - Raspberry Pi
-  - raspbian/stretch (use master branch)
   - raspbian/buster (use master branch)
+  - raspbian/stretch (use master branch)
   - raspbian/jessie (use v0.10.x release)
 - Debian GNU/Linux
   - buster (use master branch)
