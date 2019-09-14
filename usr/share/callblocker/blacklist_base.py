@@ -99,6 +99,8 @@ class BlacklistBase(object):
             if x not in seen:
                 uniq.append(r)
                 seen.add(x)
+            else:
+                self.log.debug("Skip duplicate number:" + str(r))
         self.log.debug("cleanup_entries done (num=%s)" % len(uniq))
         return uniq
 
