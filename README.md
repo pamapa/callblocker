@@ -42,7 +42,8 @@ Supported (tested) VoIP systems
 - Fritzbox 7390
 
 Supported (tested) analog modems
-- USRobotics 5637
+- USRobotics: USR5637 56K USB Faxmodem
+- Zoom: V.92 56K USB Mini External Modem Model 3095
 
 
 ## Install on Linux
