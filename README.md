@@ -66,7 +66,7 @@ cd callblocker
 cd build
 sudo ninja install
 ```
-### adapt your config
+### Adapt your config
 ```bash
 cd /etc/callblocker
 sudo mv tpl_settings.json settings.json
