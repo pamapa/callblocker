@@ -39,11 +39,11 @@ Supported (tested) server host systems
   - jessie (use v0.10.x release)
 
 Supported (tested) VoIP systems
-- Fritzbox 7390
+- Fritzbox 7390, 5490
 
 Supported (tested) analog modems
-- USRobotics: USR5637 56K USB Faxmodem
-- Zoom: V.92 56K USB Mini External Modem Model 3095
+- USRobotics: USR5637 (56K USB Faxmodem)
+- Zoom: Model 3095 (V.92 56K USB Mini External Modem)
 
 
 ## Install on Linux
