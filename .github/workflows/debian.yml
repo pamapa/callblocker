@@ -43,4 +43,12 @@ jobs:
     - name: Build package
       run: |
         dpkg-buildpackage -b -uc
+        mkdir -p artifacts
+        cp ../callblocker_* artifacts
+
+    - name: Archive Debian package artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: debian
+        path: artifacts
 
