@@ -28,7 +28,7 @@ module.exports = (env, argv) => {
   const isDevMode = !!(env||{}).dev;
 	return {
 		context: __dirname,
-		entry: "js/bootstrap",
+		entry: "src/bootstrap",
 		output: {
 			path: path.join(__dirname, "dist"),
 			publicPath: "dist/",
@@ -49,8 +49,15 @@ module.exports = (env, argv) => {
 		  }]
 		},
 		plugins: [
+      // public/index.html
+      new CopyWebpackPlugin([{
+				from: "public",
+				to: "."
+			}]),
+
+      // JavaScript
 			new DojoWebpackPlugin({
-				loaderConfig: require("./js/loaderConfig"),
+				loaderConfig: require("./src/loaderConfig"),
 				environment: {dojoRoot: "dist"},	// used at run time for non-packed resources (e.g. blank.gif)
 				buildEnvironment: {dojoRoot: "node_modules"}, // used at build time
 				locales: ["en"],

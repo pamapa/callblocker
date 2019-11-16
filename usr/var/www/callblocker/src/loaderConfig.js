@@ -41,7 +41,7 @@ function getConfig(env) {
 		],
 
 		paths: {
-			js: "js"/*,
+			js: "src"/*,
 			theme: "theme",
 			// With the webpack build, the css loader plugin is replaced by a webpack loader
 			// via webpack.config.js, so the following are used only by the unpacked app.
@@ -50,7 +50,7 @@ function getConfig(env) {
 			lesspp: "//cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min",*/
 		},
 
-		deps: ["js/bootstrap"],
+		deps: ["src/bootstrap"],
 
 		async: true,
 

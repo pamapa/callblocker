@@ -23,12 +23,12 @@
 define([
   "dojo/ready",
   "dojo/parser",
-  "js/app",
+  "src/app",
   "dojo/has!webpack?dojo-webpack-plugin/amd/dojoES6Promise",
   "css!dojo/resources/dojo.css",
   "css!dijit/themes/soria/soria.css",
   "css!dojox/grid/resources/soriaGrid.css",
-  "css!theme/app.css"
+  "css!src/app.css"
 ], function(ready, parser) {
   ready(function() {
     parser.parse();
