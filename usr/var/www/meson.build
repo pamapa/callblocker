@@ -26,7 +26,7 @@ if get_option('web-interface')
   install_subdir(
     'callblocker',
     exclude_files: ['package.json', 'package-lock.json', 'webpack.config.js'],
-    exclude_directories: ['js', 'theme', 'node_modules'],
+    exclude_directories: ['node_modules', 'src'],
     install_dir: join_paths(path_localstatedir, 'www')
   )
 endif

@@ -49,12 +49,6 @@ module.exports = (env, argv) => {
 		  }]
 		},
 		plugins: [
-      // public/index.html
-      new CopyWebpackPlugin([{
-				from: "public",
-				to: "."
-			}]),
-
       // JavaScript
 			new DojoWebpackPlugin({
 				loaderConfig: require("./src/loaderConfig"),
