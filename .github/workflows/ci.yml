@@ -40,3 +40,11 @@ jobs:
         /usr/local/bin/meson --prefix=/usr --sysconfdir=/etc --localstatedir=/usr/var build
         cd build && ninja
 
+    - name: Unit test
+      run: |
+        cd build && ninja test
+
+    - name: Release
+      run: |
+        cd build && ninja install
+
