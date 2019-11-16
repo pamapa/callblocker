@@ -1,0 +1,16 @@
+#!/usr/bin/make -f
+# inspired by: https://gitlab.gnome.org/GNOME/shotwell
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+include /usr/share/dpkg/pkg-info.mk
+
+%:
+	dh $@ --parallel --buildsystem=meson
+
+override_dh_auto_configure:
+	dh_auto_configure -- \
+		--prefix=/usr --sysconfdir=/etc --localstatedir=/usr/var \
+		-Dweb-interface-build=true
+

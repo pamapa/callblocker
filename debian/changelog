@@ -1,0 +1,5 @@
+callblocker (0.13.3-1) buster; urgency=medium
+
+  * Initial packaging work with dpkg-buildpackage.
+
+ -- Patrick Ammann <pammann@gmx.net>  Sat, 16 Nov 2019 15:47:38 +0100
