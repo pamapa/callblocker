@@ -27,8 +27,9 @@ jobs:
       run: |
         npm run build
 
-    - name: Test
-      working-directory: usr/var/www/callblocker
-      run: |
-        npm test
+    - name: Archive webpack/bundle artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: dist
+          path: usr/var/www/callblocker/dist
 
