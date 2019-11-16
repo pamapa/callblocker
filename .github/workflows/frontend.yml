@@ -10,6 +10,7 @@ jobs:
         node-version: [10.x, 12.x]
     steps:
     - uses: actions/checkout@v1
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
@@ -28,8 +29,8 @@ jobs:
         npm run build
 
     - name: Archive webpack/bundle artifacts
-        uses: actions/upload-artifact@v1
-        with:
-          name: dist
-          path: usr/var/www/callblocker/dist
+      uses: actions/upload-artifact@v1
+      with:
+        name: dist
+        path: usr/var/www/callblocker/dist
 
