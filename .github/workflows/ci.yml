@@ -1,0 +1,21 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    # docker executor
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Use Debian buster
+      uses: docker://debian:buster-slim
+      env:
+        CI: true
+
+    - name: Install dependencies for callblockerd
+    run: |
+      apt-get update
+
