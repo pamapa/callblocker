@@ -16,6 +16,6 @@ jobs:
         CI: true
 
     - name: Install dependencies for callblockerd
-    run: |
-      apt-get update
+      run: |
+        apt-get update
 
