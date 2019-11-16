@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - name: Install dependencies for callblockerd
+    - name: Install build dependencies for Linux daemon 'callblockerd'
       run: |
         apt-get update
         apt-get install --no-install-recommends -y \
@@ -23,5 +23,19 @@ jobs:
           ninja-build g++ \
           libjson-c-dev libphonenumber-dev uuid-dev libssl-dev \
           python3 python3-bs4 python3-ldif3 python3-vobject python3-pip
-        pip3 install meson
+        sudo pip3 install meson
+
+    - name: Install build dependencies for Web interface
+      run: |
+        apt-get install --no-install-recommends -y \
+          wget
+        wget -qO- https://deb.nodesource.com/setup_12.x | bash -
+        apt-get update
+        apt-get install --no-install-recommends -y \
+          nodejs
+
+    - name: Build
+      run: |
+        /usr/local/bin/meson --prefix=/usr --sysconfdir=/etc --localstatedir=/usr/var build
+        cd build && ninja
 
