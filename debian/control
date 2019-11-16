@@ -19,10 +19,14 @@ Homepage: https://github.com/pamapa/callblocker
 Package: callblocker
 Architecture: any
 Depends:
-  python3,
-  python3-bs4,
-  python3-ldif3,
-  python3-vobject,
-  python3-systemd
+ libjson-c,
+ libphonenumber,
+ uuid,
+ libssl,
+ python3,
+ python3-bs4,
+ python3-ldif3,
+ python3-vobject,
+ python3-systemd
 Description: Linux call blocker, blocks unwanted calls from your home phone
 

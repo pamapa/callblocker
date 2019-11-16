@@ -4,10 +4,4 @@ option(
   value: true,
   description: 'install web-interface'
 )
-option(
-  'web-interface-build',
-  type: 'boolean',
-  value: false,
-  description: 'build web-interface'
-)
 
