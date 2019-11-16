@@ -22,8 +22,9 @@ jobs:
           dpkg-dev pkg-config \
           ninja-build g++ \
           libjson-c-dev libphonenumber-dev uuid-dev libssl-dev \
-          python3 python3-bs4 python3-ldif3 python3-vobject python3-pip
-        sudo pip3 install meson
+          python3 python3-bs4 python3-ldif3 python3-vobject \
+          python3-pip python3-setuptools
+        pip3 install meson
 
     - name: Install build dependencies for Web interface
       run: |
@@ -34,7 +35,7 @@ jobs:
         apt-get install --no-install-recommends -y \
           nodejs
 
-    - name: Build
+    - name: Build all
       run: |
         /usr/local/bin/meson --prefix=/usr --sysconfdir=/etc --localstatedir=/usr/var build
         cd build && ninja
