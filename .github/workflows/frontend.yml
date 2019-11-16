@@ -1,0 +1,39 @@
+name: Frontend
+
+on: [push]
+
+jobs:
+  build:
+    # docker executor
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+      env:
+        CI: true
+
+    - name: Install dependencies
+      working-directory: usr/var/www/callblocker
+      run: |
+        npm install
+
+    - name: Build
+      working-directory: usr/var/www/callblocker
+      run: |
+        npm run build
+
+    - name: Archive webpack/bundle artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: dist
+        path: usr/var/www/callblocker/dist
+
