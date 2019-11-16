@@ -37,7 +37,7 @@ jobs:
     # TODO: use /usr/local here
     - name: Build all
       run: |
-        /usr/local/bin/meson --prefix=/usr --sysconfdir=/etc --localstatedir=/usr/var -Dweb-interface-build=true build
+        meson --prefix=/usr --sysconfdir=/etc --localstatedir=/usr/var -Dweb-interface-build=true build
         cd build && ninja
 
     - name: Unit test
