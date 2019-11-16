@@ -7,16 +7,15 @@ jobs:
     # docker executor
     runs-on: ubuntu-latest
 
+    container:
+      image: debian:buster-slim
+      env:
+        DEBIAN_FRONTEND: noninteractive
+
     steps:
     - uses: actions/checkout@v1
 
-    - name: Use Debian buster
-      uses: docker://debian:buster-slim
-      env:
-        CI: true
-        DEBIAN_FRONTEND: noninteractive
-
     - name: Install dependencies for callblockerd
       run: |
-        sudo apt-get update
+        apt-get update
 
