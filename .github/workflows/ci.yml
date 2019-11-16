@@ -14,8 +14,9 @@ jobs:
       uses: docker://debian:buster-slim
       env:
         CI: true
+        DEBIAN_FRONTEND: noninteractive
 
     - name: Install dependencies for callblockerd
       run: |
-        apt-get update
+        sudo apt-get update
 
