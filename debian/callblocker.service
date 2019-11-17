@@ -1,0 +1,11 @@
+[Unit]
+Description=callblocker
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/callblockerd
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+

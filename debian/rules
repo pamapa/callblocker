@@ -1,0 +1,19 @@
+#!/usr/bin/make -f
+# inspired by: https://gitlab.gnome.org/GNOME/shotwell
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+%:
+	dh $@ --parallel --buildsystem=meson --with=systemd
+
+override_dh_auto_configure:
+	dh_auto_configure -- \
+		--localstatedir=/usr/var \
+		-Dinstall-custom=false -Dweb-interface=true
+
+# allow access from Web interface
+override_dh_fixperms:
+	dh_fixperms
+	find debian/callblocker/etc/callblocker -exec chown www-data:www-data {} +
+

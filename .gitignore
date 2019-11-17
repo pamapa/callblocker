@@ -1,5 +1,14 @@
 .idea
 *.o
+
+build/
+debian/.debhelper/
+debian/callblocker.debhelper.log
+debian/callblocker.substvars
+debian/callblocker/
+debian/files
+obj-*-linux-gnu/
+
 src/callblockerd
 src/libcallblockerd.a
 usr/share/callblocker/*.pyc
@@ -8,3 +17,4 @@ usr/var/www/callblocker/js/yarn.lock
 test/callblockerd/unit_tests
 third-party/pjproject/pjproject-2.8.tar.bz2
 third-party/pjproject/pjproject-2.8
+

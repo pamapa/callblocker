@@ -31,11 +31,11 @@ The call blocker acts like a normal phone. No additional telephone switchboard (
 Supported (tested) server host systems
 - Raspberry Pi
   - raspbian/buster (use master branch)
-  - raspbian/stretch (use master branch)
+  - raspbian/stretch (use v0.13.x release)
   - raspbian/jessie (use v0.10.x release)
 - Debian GNU/Linux
   - buster (use master branch)
-  - stretch (use master branch)
+  - stretch (use v0.13.x release)
   - jessie (use v0.10.x release)
 
 Supported (tested) VoIP systems
@@ -46,47 +46,27 @@ Supported (tested) analog modems
 - Zoom: Model 3095 (V.92 56K USB Mini External Modem)
 
 
-## Install on Linux
-```bash
-sudo apt-get install \
-  dpkg-dev pkg-config apt-transport-https wget coreutils \
-  ninja-build dpkg-dev git g++ \
-  libjson-c-dev libphonenumber-dev uuid-dev libssl-dev \
-  python3 python3-bs4 python3-ldif3 python3-vobject python3-pip
-sudo pip3 install meson
+## Install
 
-# web-interface: npm is required for build (see below)
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-sudo apt-get install -y nodejs
+### via Debian package
+Download provided Debian package matching your OS.
 
-git clone https://github.com/pamapa/callblocker.git
-cd callblocker
-# for no web-interface: add below: -Dweb-interface=false
-/usr/local/bin/meson --prefix=/usr --sysconfdir=/etc --localstatedir=/usr/var build
-cd build
-sudo ninja install
-```
-### Adapt your config
 ```bash
-cd /etc/callblocker
-sudo mv tpl_settings.json settings.json
-sudo vi settings.json
-sudo systemctl start callblockerd.service
+apt install ./callblocker_*.deb
 ```
+
+### via manual building
+Follow [this instructions](/doc/development.md).
+
 
 ## <a name="webInterface"></a> Install web interface on Linux
-The installation of the web interface is optional, the callblock daemon works perfectly without it.
-The web interface allows to view the caller log, change settings and diagnose problems.
+The installation of the web interface is optional, the callblocker daemon works perfectly without it.
+The web interface allows to view the caller log, change settings and diagnose problems. This instruction
+explain howto setup it up with lighttpd, its also possible to configure it via apache.
 
-Debian packages are required:
+Additional Debian packages are required:
 ```bash
 sudo apt-get install lighttpd python3-systemd python3-setuptools python3-wheel
-```
-
-nodejs is required, install like described [here](https://nodejs.org/en/download/package-manager/):
-```bash
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-sudo apt-get install -y nodejs
 ```
 
 Prepare lighttpd, for additional information
@@ -114,103 +94,16 @@ sudo systemctl restart lighttpd.service
 ```
 
 
-## Updating daemon and web interface on Linux
-You have prevoiusly installed the callblock application and would like to update it to the lastest version. Make a backup
-of your configuration (/etc/callblocker), the installation will not overwrite it, but you never know.
-
-1. In case you have still the installation git checkout:
-```bash
-cd callblocker
-git pull
-cd build
-sudo ninja install
-```
-
-Else you do not have the installation git checkout anymore:
-```bash
-git clone https://github.com/pamapa/callblocker.git
-cd callblocker
-# for no web-interface: add below: -Dweb-interface=false
-/usr/local/bin/meson --prefix=/usr --sysconfdir=/etc --localstatedir=/usr/var build
-cd build
-sudo ninja install
-```
-
-2. Double check your [settings.json](/etc/callblocker/README.md). Hints:
-- v0.0.7: switched from php to python web backend
-- v0.9.0: prefix "from_" has been removed from "from_domain", "from_username" and "from password"
-- v0.11.0: moved from jessie to stretch, for jessie use the 0.10.x release
-- v0.13.0: switched from automake to meson/ninja and make use of static local pjproject 2.8
-
-```bash
-sudo systemctl stop callblockerd
-sudo ninja install
-sudo systemctl daemon-reload
-sudo systemctl start callblockerd
-```
-
-3. Double check your [web configuration](#webInterface) and do:
-```bash
-sudo systemctl restart lighttpd.service
-```
-
-
-## <a name="fileLayout"></a> File Layout
-When installed on Linux, the following file layout is used:
-```
-drwxr-xr-x www-data www-data /etc/callblocker                              # configuration
--rw-r--r-- www-data www-data /etc/callblocker/settings.json                # configuration file
-drwxr-xr-x www-data www-data /etc/callblocker/blacklists                   # put your blacklists here
-drwxr-xr-x www-data www-data /etc/callblocker/whitelists                   # put your whitelists here
-drwxr-xr-x www-data www-data /etc/callblocker/cache                        # used for caching online request
--rwxr-xr-x root     root     /usr/bin/callblockerd                         # daemon
-drwxr-xr-x root     root     /usr/share/callblocker                        # python helper scripts
--rw-r--r-- root     root     /etc/systemd/system/callblockerd.service      # systemd service file
-```
-When using the web interface:
-```
-drwxr-xr-x root     root     /usr/var/www/callblocker                      # web interface
--rw-r--r-- root     root     /usr/var/www/callblocker/app.css              # css
--rw-r--r-- root     root     /usr/var/www/callblocker/index.html           # start page
--rw-r--r-- root     root     /usr/var/www/callblocker/js/app.js            # javascript
-drwxr-xr-x root     root     /usr/var/www/callblocker/js/vendor            # 3rd party libraries:
-drwxr-xr-x root     root     /usr/var/www/callblocker/js/vendor/dijit      # - dijit
-drwxr-xr-x root     root     /usr/var/www/callblocker/js/vendor/dojo       # - dojo
-drwxr-xr-x root     root     /usr/var/www/callblocker/js/vendor/dojox      # - dojox
-drwxr-xr-x root     root     /usr/var/www/callblocker/python-fcgi          # web backend
--rwxr-xr-x root     root     /usr/var/www/callblocker/python-fcgi/api.py
--rw-r--r-- root     root     /usr/var/www/callblocker/python-fcgi/config.py
--rw-r--r-- root     root     /usr/var/www/callblocker/python-fcgi/journal2.py
--rw-r--r-- root     root     /usr/var/www/callblocker/python-fcgi/journal.py
--rw-r--r-- root     root     /usr/var/www/callblocker/python-fcgi/settings.py
-```
-
-
-## Configuration file
-The documentation of the configuration file "settings.json" is located [here](/etc/callblocker/README.md).
-
-
-## Offline blacklists
-Through the web interface you have the possibility to maintain your own blacklist. Additionally there is the
-possibility to download automatically an extern maintained blacklist for later offline usage. You will need to
-setup a cronjob for this task to download the blacklist periodically.
-
-Currently the following blacklists are supported:
-
-Name                         | Site                       | Description
-----                         | ----                       | -----------
-blacklist_toastedspam_com.py | http://www.toastedspam.com | Mostly USA and Canada (+1)
-blacklist_ktipp_ch.py        | https://www.ktipp.ch       | Switzerland (+41)
-
-The following cronjob will download each day the blacklist provided by ktipp_ch:
-```bash
-0 0 * * * /usr/share/callblocker/blacklist_ktipp_ch.py --output /etc/callblocker/blacklists/ >/dev/null 2>&1
-```
-
-
 ## Setup
 There are two ways to connect the call blocker application with your phone system, depending if it is VoIP or analog. 
 
+### Prepare your settings file
+```bash
+cd /etc/callblocker
+sudo mv tpl_settings.json settings.json
+sudo vi settings.json
+sudo systemctl start callblockerd.service
+```
 
 ### Setup using Fritzbox with an IP-phone
 - create in the Fritzbox a new IP-phone
@@ -237,59 +130,28 @@ There are two ways to connect the call blocker application with your phone syste
   - make sure the account is enabled and the other fields are ok for you
 
 
+## Configuration file
+The documentation of the configuration file "settings.json" is located [here](/etc/callblocker/README.md).
+
+
+## Offline blacklists
+Through the web interface you have the possibility to maintain your own blacklist. Additionally there is the
+possibility to download automatically an extern maintained blacklist for later offline usage. You will need to
+setup a cronjob for this task to download the blacklist periodically.
+
+Currently the following blacklists are supported:
+
+Name                         | Site                       | Description
+----                         | ----                       | -----------
+blacklist_toastedspam_com.py | http://www.toastedspam.com | Mostly USA and Canada (+1)
+blacklist_ktipp_ch.py        | https://www.ktipp.ch       | Switzerland (+41)
+
+The following cronjob will download each day the blacklist provided by ktipp_ch:
+```bash
+0 0 * * * /usr/share/callblocker/blacklist_ktipp_ch.py --output /etc/callblocker/blacklists/ >/dev/null 2>&1
+```
+
+
 ## Troubleshooting
+See [this instructions](/doc/troubleshooting.md).
 
-### Symptom: It is unspecific not working.
-- double check all installed files, with its locations and permissions. See [file layout](#fileLayout)
-- make sure lighttpd and callblockerd are running.<br>
-```bash
-sudo ps aux | grep -E 'lighttpd|callblockerd' | grep -v 'grep' # shows: 2 lines
-```
-- check for possible errors/warning.<br>
-```bash
-sudo journalctl _SYSTEMD_UNIT=callblockerd.service
-```
-- increase log levels: "log_level" to "debug" and/or "pjsip_log_level" to 2. See documentation of
-   [configuration file](/etc/callblocker/README.md) for more info. And restart callblockerd.
-```bash
-sudo vi /etc/callblocker/settings.json
-sudo systemctl restart callblockerd.service
-```
-
-### Symptom: Web interface is not working.
-The web interface is running within lighttpd, double check the [web configuration](#webInterface) of this deamon.
-- also look into the seperate log file:
-```bash
-sudo cat /var/log/lighttpd/error.log
-sudo journalctl -xn _SYSTEMD_UNIT=lighttpd.service
-```
-- make sure the python file api.py has correct execution rights
-```bash
-sudo chmod a+x /usr/var/www/callblocker/python-fcgi/api.py
-```
-
-### Symptom: Configuration done within the web interface is not saved persistent.
-The web interface is running within lighttpd, this deamon is using "www-data" as user and group. Make
-sure that this process has access to the configuration file (see [file layout](#fileLayout)).
-```bash
-sudo chown -R www-data.www-data /etc/callblocker/
-```
-
-### Symptom: Caller log and diagnostics stay empty within the web interface.
-Make sure journal is active and working and the web interface has access to the journal.The web interface
-depends on functionality provided by systemd journal. 
-```bash
-# switch to systemd journal
-sudo apt-get purge rsyslog logrotate libestr0 liblogging-stdlog0 liblognorm1
-sudo vi /etc/systemd/journald.conf: #Storage=auto -> Storage=auto
-sudo rm -rf /var/log/* # optional, you will lose all existing log entries (old format)
-sudo mkdir /var/log/journal
-sudo reboot # required to finished the switch
-
-# allow web interface access the journal
-sudo usermod -a -G systemd-journal www-data
-sudo systemctl restart lighttpd.service
-
-# manual verify that journal is working
-sudo journalctl _SYSTEMD_UNIT=callblockerd.service
-```

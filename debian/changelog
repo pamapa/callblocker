@@ -1,0 +1,6 @@
+callblocker (0.14.0-1) buster; urgency=medium
+
+  * Initial packaging work.
+
+ -- Patrick Ammann <pammann@gmx.net>  Sat, 16 Nov 2019 15:47:38 +0100
+

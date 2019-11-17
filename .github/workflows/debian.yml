@@ -1,14 +1,22 @@
-name: CI
+name: Debian
 
 on: [push]
 
 jobs:
   build:
+    name: Build for ${{ matrix.arch }} / ${{ matrix.debian-version }}
+
     # docker executor
     runs-on: ubuntu-latest
 
+    # TODO: arch: arm32v7
+    strategy:
+      matrix:
+        arch: [amd64]
+        debian-version: [buster]
+
     container:
-      image: debian:buster-slim
+      image: ${{ matrix.arch }}/debian:${{ matrix.debian-version }}-slim
       env:
         DEBIAN_FRONTEND: noninteractive
 
@@ -19,12 +27,13 @@ jobs:
       run: |
         apt-get update
         apt-get install --no-install-recommends -y \
+          debhelper build-essential \
           dpkg-dev pkg-config \
           ninja-build g++ \
           libjson-c-dev libphonenumber-dev uuid-dev libssl-dev \
           meson
 
-    - name: Install build dependencies for Web interface
+    - name: Install build dependencies for web-interface
       run: |
         apt-get install --no-install-recommends -y \
           ca-certificates wget
@@ -33,17 +42,15 @@ jobs:
         apt-get install --no-install-recommends -y \
           nodejs
 
-    # TODO: use /usr/local here
-    - name: Build all
+    - name: Build package
       run: |
-        meson --prefix=/usr --sysconfdir=/etc --localstatedir=/usr/var -Dweb-interface-build=true build
-        cd build && ninja
+        dpkg-buildpackage -b -uc
+        mkdir -p artifacts
+        cp ../callblocker_* artifacts
 
-    - name: Unit test
-      run: |
-        cd build && ninja test
-
-    - name: Release
-      run: |
-        cd build && ninja install
+    - name: Archive Debian package artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: debian
+        path: artifacts
 
