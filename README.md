@@ -97,6 +97,13 @@ sudo systemctl restart lighttpd.service
 ## Setup
 There are two ways to connect the call blocker application with your phone system, depending if it is VoIP or analog. 
 
+### Prepare your settings file
+```bash
+cd /etc/callblocker
+sudo mv tpl_settings.json settings.json
+sudo vi settings.json
+sudo systemctl start callblockerd.service
+```
 
 ### Setup using Fritzbox with an IP-phone
 - create in the Fritzbox a new IP-phone
@@ -121,14 +128,6 @@ There are two ways to connect the call blocker application with your phone syste
   - edit the section analog -> phones
   - "device": "your device name"
   - make sure the account is enabled and the other fields are ok for you
-
-### Adapt your config
-```bash
-cd /etc/callblocker
-sudo mv tpl_settings.json settings.json
-sudo vi settings.json
-sudo systemctl start callblockerd.service
-```
 
 
 ## Configuration file
