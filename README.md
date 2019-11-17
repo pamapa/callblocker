@@ -51,13 +51,13 @@ Supported (tested) analog modems
 ### via Debian package
 Download provided Debian package matching your OS.
 
-Work in progress: not finished yet! Use 'via manual build and installing' for now.
+Work in progress: not finished yet! Use 'via manual build' for now.
 
 ```bash
 apt install ./callblocker_*.deb
 ```
 
-### via manual build and installing
+### via manual build
 Follow [this instructions](/doc/development.md).
 
 
