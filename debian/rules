@@ -17,5 +17,5 @@ override_dh_auto_configure:
 # allow access from Web interface
 override_dh_fixperms:
 	dh_fixperms
-	find /etc/callblocker -exec chown www-data.www-data {} +
+	find debian/etc/callblocker -exec chown www-data.www-data {} +
 
