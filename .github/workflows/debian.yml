@@ -4,6 +4,8 @@ on: [push]
 
 jobs:
   build:
+    name: Build using ${{ matrix.arch }} / ${{ matrix.debian-version }}
+
     # docker executor
     runs-on: ubuntu-latest
 
