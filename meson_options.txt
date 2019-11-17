@@ -2,6 +2,12 @@ option(
   'web-interface',
   type: 'boolean',
   value: true,
-  description: 'install web-interface'
+  description: 'build and install web-interface'
+)
+option(
+  'install-custom',
+  type: 'boolean',
+  value: true,
+  description: 'install custom, otherwise install via Debian package'
 )
 
