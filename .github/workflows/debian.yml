@@ -9,10 +9,9 @@ jobs:
     # docker executor
     runs-on: ubuntu-latest
 
-    # TODO: arch: arm32v7
     strategy:
       matrix:
-        arch: [amd64]
+        arch: [amd64, arm32v7, i386]
         debian-version: [buster]
 
     container:
