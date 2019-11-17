@@ -14,3 +14,8 @@ override_dh_auto_configure:
 		--localstatedir=/usr/var \
 		-Dweb-interface-build=true
 
+# allow access from Web interface
+override_dh_fixperms:
+	dh_fixperms
+	find /etc/callblocker -exec chown www-data.www-data {} +
+
