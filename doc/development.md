@@ -3,7 +3,7 @@ In case the provided Debian packages do not work, you can manually
 build everything by your own.
 
 
-## Checkout project source code
+## Download project source code
 ```bash
 git clone https://github.com/pamapa/callblocker.git
 cd callblocker

@@ -48,14 +48,14 @@ Supported (tested) analog modems
 
 ## Install
 
-### Debian package
+### via Debian package
 Download provided Debian package matching your OS.
 
 ```bash
 apt install ./callblocker_*.deb
 ```
 
-### Manual
+### via manual building
 Follow [this instructions](/doc/development.md).
 
 
