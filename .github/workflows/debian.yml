@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        arch: [amd64, i386]
+        arch: [amd64]
         debian-version: [buster]
 
     container:
