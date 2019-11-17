@@ -2,9 +2,9 @@
 /etc/callblocker/blacklists
 /etc/callblocker/whitelists
 /etc/callblocker/cache
+/etc/systemd/system
 /usr/bin
 /usr/share/callblocker
-/etc/systemd/system
 /usr/var/www/callblocker
 /usr/var/www/callblocker/dist
 /usr/var/www/callblocker/python-fcgi
