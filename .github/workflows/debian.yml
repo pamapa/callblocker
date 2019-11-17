@@ -33,7 +33,7 @@ jobs:
           libjson-c-dev libphonenumber-dev uuid-dev libssl-dev \
           meson
 
-    - name: Install build dependencies for Web interface
+    - name: Install build dependencies for web-interface
       run: |
         apt-get install --no-install-recommends -y \
           ca-certificates wget

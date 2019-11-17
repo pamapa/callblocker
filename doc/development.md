@@ -3,7 +3,14 @@ In case the provided Debian packages do not work, you can manually
 build everything by your own.
 
 
-## Building
+## Checkout project source code
+```bash
+git clone https://github.com/pamapa/callblocker.git
+cd callblocker
+```
+
+
+## Install build dependencies
 ```bash
 sudo apt-get install \
   dpkg-dev pkg-config apt-transport-https wget coreutils \
@@ -15,29 +22,25 @@ sudo apt-get install \
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 sudo apt-get update
 sudo apt-get install -y nodejs
+```
 
-git clone https://github.com/pamapa/callblocker.git
-cd callblocker
 
+## Build and install
+
+### via 'ninja install'
+```bash
 # for no web-interface: add below: -Dweb-interface=false
 meson --prefix=/usr --sysconfdir=/etc --localstatedir=/usr/var build
 
 cd build
 ninja
-```
-
-## Installing
-```bash
-cd build
 sudo ninja install
 ```
 
-### Adapt your config
+### via selfmade 'Debian package'
 ```bash
-cd /etc/callblocker
-sudo mv tpl_settings.json settings.json
-sudo vi settings.json
-sudo systemctl start callblockerd.service
+dpkg-buildpackage -b -uc
+sudo apt install ../callblocker_*.deb
 ```
 
 

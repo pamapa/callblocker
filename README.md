@@ -60,7 +60,7 @@ Follow [this instructions](/doc/development.md).
 
 
 ## <a name="webInterface"></a> Install web interface on Linux
-The installation of the web interface is optional, the callblock daemon works perfectly without it.
+The installation of the web interface is optional, the callblocker daemon works perfectly without it.
 The web interface allows to view the caller log, change settings and diagnose problems. This instruction
 explain howto setup it up with lighttpd, its also possible to configure it via apache.
 
