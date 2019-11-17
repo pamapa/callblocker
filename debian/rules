@@ -12,10 +12,10 @@ include /usr/share/dpkg/pkg-info.mk
 override_dh_auto_configure:
 	dh_auto_configure -- \
 		--localstatedir=/usr/var \
-		-Dweb-interface-build=true
+		-Dweb-interface=true
 
 # allow access from Web interface
 override_dh_fixperms:
 	dh_fixperms
-	find debian/etc/callblocker -exec chown www-data.www-data {} +
+	find debian/callblocker/etc/callblocker -exec chown www-data.www-data {} +
 
