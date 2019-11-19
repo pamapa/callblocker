@@ -44,7 +44,7 @@ jobs:
     - name: Build package
       run: |
         CONFIG_SITE=/etc/dpkg-cross/cross-config.armhf DEB_BUILD_OPTIONS=nocheck \
-          dpkg-buildpackage -b -uc -aarmhf -Pcross,nocheck
+          dpkg-buildpackage -b -uc -aarmhf -rfakeroot -Pcross,nocheck
         mkdir -p artifacts
         cp ../callblocker_* artifacts
 
