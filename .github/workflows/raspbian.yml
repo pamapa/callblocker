@@ -28,9 +28,9 @@ jobs:
         apt-get install --no-install-recommends -y \
           debhelper build-essential crossbuild-essential-armhf \
           dpkg-dev pkg-config \
-          ninja-build g++ \
-          libjson-c-dev libphonenumber-dev:armhf uuid-dev:armhf libssl-dev:armhf \
-          meson
+          ninja-build meson \
+          g++-arm-linux-gnueabihf \
+          libjson-c-dev:armhf libphonenumber-dev:armhf uuid-dev:armhf libssl-dev:armhf
 
     - name: Install build dependencies for web-interface
       run: |

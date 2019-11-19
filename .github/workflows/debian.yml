@@ -28,9 +28,9 @@ jobs:
         apt-get install --no-install-recommends -y \
           debhelper build-essential \
           dpkg-dev pkg-config \
-          ninja-build g++ \
-          libjson-c-dev libphonenumber-dev uuid-dev libssl-dev \
-          meson
+          ninja-build meson \
+          g++ \
+          libjson-c-dev libphonenumber-dev uuid-dev libssl-dev
 
     - name: Install build dependencies for web-interface
       run: |
