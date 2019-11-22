@@ -28,7 +28,7 @@ jobs:
         apt-get install --no-install-recommends -y \
           debhelper build-essential \
           dpkg-dev pkg-config \
-          ninja-build meson \
+          ninja-build \
           python3-pip python3-setuptools \
           g++ gcc \
           libjson-c-dev libphonenumber-dev uuid-dev libssl-dev
@@ -45,6 +45,7 @@ jobs:
 
     - name: Build package
       run: |
+        export PATH=/usr/local/bin:$PATH
         dpkg-buildpackage -b -uc
         mkdir -p artifacts
         cp ../callblocker_* artifacts

@@ -29,7 +29,7 @@ jobs:
           debhelper build-essential crossbuild-essential-armhf \
           dpkg-dev pkg-config \
           python3-pip python3-setuptools \
-          ninja-build meson \
+          ninja-build \
           g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf \
           libjson-c-dev:armhf libphonenumber-dev:armhf uuid-dev:armhf libssl-dev:armhf
         pip3 install meson
@@ -53,6 +53,7 @@ jobs:
 
     - name: Build package
       run: |
+        export PATH=/usr/local/bin:$PATH
         export CONFIG_SITE=/etc/dpkg-cross/cross-config.armhf
         dpkg-buildpackage -b -uc -a armhf -d
         mkdir -p artifacts
