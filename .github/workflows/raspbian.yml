@@ -41,6 +41,15 @@ jobs:
         apt-get install --no-install-recommends -y \
           nodejs
 
+    - name: Build pjproject
+      run: |
+        cd third-party/pjproject
+        export CONFIG_SITE=/etc/dpkg-cross/cross-config.armhf
+        export CC=arm-linux-gnueabihf-gcc
+        export LD=arm-linux-gnueabihf-ld
+        export PJPROJECT_CONFIGURE_OPTS=--host=arm-linux-gnueabi
+        ./prepare.sh
+
     - name: Build package
       run: |
         CONFIG_SITE=/etc/dpkg-cross/cross-config.armhf
