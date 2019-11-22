@@ -2,7 +2,7 @@ project(
   'callblocker', 'cpp',
   version: '0.14.0',
   license: 'GPL-2.0',
-  meson_version: '>= 0.49.0'
+  meson_version: '>= 0.50.0'
 )
 
 # grab necessary paths
@@ -38,4 +38,3 @@ subdir('usr/var/www')
 subdir('etc/callblocker')
 subdir('etc/systemd/system')
 subdir('test/callblockerd')
-

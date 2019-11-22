@@ -1,7 +1,20 @@
 if get_option('pjproject-build')
   message('pjproject: download and build locally...')
+
+  env_pj = environment()
+  if meson.is_cross_build()
+    message('cross build for @0@'.format(host_machine.cpu_family()))
+    if host_machine.cpu_family() == 'arm'
+      env_pj.set('PJPROJECT_CONFIGURE_OPTS', '--host=arm-linux-gnueabihf --target=arm7hlf-unknown-linux-gnueabihf')
+      env_pj.set('CROSS_COMPILE', 'arm-linux-gnueabihf-')
+    else
+      error('cross build to this cpu family not supported')
+    endif
+  endif
+
   res = run_command('sh', '-c',
-    'cd @0@/third-party/pjproject && ./prepare.sh'.format(meson.source_root())
+    'cd @0@/third-party/pjproject && ./prepare.sh'.format(meson.source_root()),
+    env: env_pj
   )
   if res.returncode() != 0
     error('third-party/pjproject prepare.sh failed with @0@'.format(res.stderr()))
