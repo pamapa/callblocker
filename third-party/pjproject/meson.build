@@ -10,7 +10,7 @@ if get_option('pjproject-build')
 
   env_pj = environment()
   if meson.is_cross_build()
-    message('pjproject: cross build for @0@'.format(host_machine.cpu_family()))
+    message('pjproject: cross build for @0@'.format(pj_target_name))
     if host_machine.cpu_family() == 'arm'
       env_pj.set('PJPROJECT_CONFIGURE_OPTS', '--host=arm-linux-gnueabihf --target=@0@'.format(pj_target_name))
       env_pj.set('CROSS_COMPILE', 'arm-linux-gnueabihf-')

@@ -12,14 +12,18 @@ cd callblocker
 
 ## Install build dependencies
 ```bash
-sudo apt-get install \
-  dpkg-dev pkg-config apt-transport-https wget coreutils \
-  ninja-build dpkg-dev git g++ \
+sudo apt-get install --no-install-recommends -y \
+  debhelper build-essential wget git \
+  dpkg-dev pkg-config \
+  ninja-build meson \
+  g++ gcc \
   libjson-c-dev libphonenumber-dev uuid-dev libssl-dev \
-  python3 python3-bs4 python3-ldif3 python3-vobject
+  python3 python3-bs4 python3-ldif3 python3-vobject \
+  python3-pip python3-setuptools
+pip3 install meson
 
 # for web-interface (not needed in case of -Dweb-interface=false)
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+wget -qO- https://deb.nodesource.com/setup_12.x | bash -
 sudo apt-get update
 sudo apt-get install -y nodejs
 ```
