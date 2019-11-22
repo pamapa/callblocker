@@ -28,7 +28,7 @@ fi
 
 # configuration
 # even though we're not installing pjproject, we're setting prefix to /opt/pjproject to be safe
-PJPROJECT_CONFIGURE_OPTS=" --prefix=/opt/pjproject \
+PJPROJECT_CONFIGURE_OPTS+=" --prefix=/opt/pjproject \
   --disable-speex-codec \
   --disable-speex-aec \
   --disable-gsm-codec \
