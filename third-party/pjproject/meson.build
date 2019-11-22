@@ -1,15 +1,11 @@
-# Debian will no longer package pjproject
-# see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=925263
-#dep_pj = cc.find_library('libpj')
-#dep_pjsip = cc.find_library('pjsip')
-#dep_pjsua = cc.find_library('pjsua')
-
-message('pjproject: download and build locally...')
-res = run_command('sh', '-c',
-  'cd @0@/third-party/pjproject && ./prepare.sh'.format(meson.source_root())
-)
-if res.returncode() != 0
-  error('third-party/pjproject prepare.sh failed with @0@'.format(res.stderr()))
+if get_option('pjproject-build')
+  message('pjproject: download and build locally...')
+  res = run_command('sh', '-c',
+    'cd @0@/third-party/pjproject && ./prepare.sh'.format(meson.source_root())
+  )
+  if res.returncode() != 0
+    error('third-party/pjproject prepare.sh failed with @0@'.format(res.stderr()))
+  endif
 endif
 
 inc_pj = include_directories(

@@ -5,6 +5,18 @@ option(
   description: 'build and install web-interface'
 )
 option(
+  'web-interface-build',
+  type: 'boolean',
+  value: true,
+  description: 'build web-interface, otherwise must be built before'
+)
+option(
+  'pjproject-build',
+  type: 'boolean',
+  value: true,
+  description: 'build pjproject, otherwise must be built before'
+)
+option(
   'install-custom',
   type: 'boolean',
   value: true,
