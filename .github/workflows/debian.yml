@@ -33,6 +33,8 @@ jobs:
           g++ gcc \
           libjson-c-dev libphonenumber-dev uuid-dev libssl-dev
         pip3 install meson
+        meson -v
+        whereis meson
 
     - name: Install build dependencies for web-interface
       run: |
