@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
 
   Logger::warn("SOURCE_ROOT: %s\n", argv[1]);
 
-  std::string etcPath = Utils::pathJoin(argv[1], "/test/callblockerd/data/etc");
+  std::string etcPath = Utils::pathJoin(argv[1], "/tests/callblockerd/data/etc");
   Logger::warn("etcPath: %s\n", etcPath.c_str());
 
   Test_Utils_Run();
