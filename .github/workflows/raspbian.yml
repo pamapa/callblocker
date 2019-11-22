@@ -45,18 +45,17 @@ jobs:
       run: |
         cd third-party/pjproject
         export CONFIG_SITE=/etc/dpkg-cross/cross-config.armhf
-        export CC=arm-linux-gnueabihf-gcc
-        export AR=arm-linux-gnueabihf-ar
-        export LD=arm-linux-gnueabihf-ld
-        export RANLIB=arm-linux-gnueabihf-ranlib
-        export PJPROJECT_CONFIGURE_OPTS=--host=arm-linux-gnueabi
+        export CROSS_COMPILE=arm-linux-gnueabihf-
+        export PJPROJECT_CONFIGURE_OPTS=--host=arm-linux-gnueabihf
         ./prepare.sh
 
     - name: Build package
       run: |
+        echo "1"
+        echo $CONFIG_SITE
+        echo "2"
         CONFIG_SITE=/etc/dpkg-cross/cross-config.armhf
         DEB_BUILD_OPTIONS=nocheck
-        CC=arm-linux-gnueabihf-gcc
         dpkg-buildpackage -b -uc -aarmhf -Pcross,nocheck
         mkdir -p artifacts
         cp ../callblocker_* artifacts
