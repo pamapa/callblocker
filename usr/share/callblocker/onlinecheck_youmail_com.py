@@ -28,16 +28,16 @@ class OnlineCheckYouMailCOM(OnlineBase):
         return ["+1"]
 
     def handle_number(self, args, number):
-        number = number[2:]  # make number local
+        # number = number[2:]  # make number local 
         url = "https://dataapi.youmail.com/api/v2/phone/%s?format=json" % number
         headers = {
-          "User-Agent": "Private User",
-          "DataApiKey": args.username,
-          "DataApiSid": args.password
+          "User-Agent": "CallBlocker",
+          "DataApiSid": args.username,
+          "DataApiKey": args.password
         }
-        content = self.http_get(url, add_headers=headers)
+        content = self.http_get(url, add_headers=headers, allowed_codes=[10000, 10100])
 
-        data = json.loads(content)
+        data = json.loads(content.decode('utf-8', 'ignore'))
         self.log.debug(data)
 
         score = 0  # = no spam
@@ -54,8 +54,8 @@ class OnlineCheckYouMailCOM(OnlineBase):
 if __name__ == "__main__":
     m = OnlineCheckYouMailCOM()
     parser = m.get_parser("Online check via data.youmail.com")
-    parser.add_argument("--username", help="api key", required=True)
-    parser.add_argument("--password", help="api sid", required=True)
+    parser.add_argument("--username", help="api sid", required=True)
+    parser.add_argument("--password", help="api key", required=True)
     parser.add_argument("--spamscore", help="score limit to mark as spam [1..2]", default=2)
     args = parser.parse_args()
     m.run(args)
