@@ -58,7 +58,7 @@ apt install ./callblocker_*.deb
 ```
 
 ### via manual build
-Follow [this instructions](/doc/development.md).
+Follow [this instructions](/docs/development.md).
 
 
 ## <a name="webInterface"></a> Install web interface on Linux
@@ -155,5 +155,5 @@ The following cronjob will download each day the blacklist provided by ktipp_ch:
 
 
 ## Troubleshooting
-See [this instructions](/doc/troubleshooting.md).
+See [this instructions](/docs/troubleshooting.md).
 
