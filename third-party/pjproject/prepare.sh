@@ -28,7 +28,7 @@ fi
 
 # configuration
 # even though we're not installing pjproject, we're setting prefix to /opt/pjproject to be safe
-CONFIG_OPTS="--prefix=/opt/pjproject \
+PJPROJECT_CONFIGURE_OPTS=" --prefix=/opt/pjproject \
   --disable-speex-codec \
   --disable-speex-aec \
   --disable-gsm-codec \
@@ -51,9 +51,9 @@ CONFIG_OPTS="--prefix=/opt/pjproject \
   --without-external-srtp \
   --enable-ssl"
 # Linux  
-CONFIG_OPTS+="--enable-epoll"
+PJPROJECT_CONFIGURE_OPTS+=" --enable-epoll"
 
 # build
 cd $UNPACK_DIR
-./configure $CONFIG_OPTS
+./configure $PJPROJECT_CONFIGURE_OPTS
 make all

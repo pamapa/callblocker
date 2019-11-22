@@ -17,12 +17,12 @@ add_global_arguments('-DVERSION="@0@"'.format(meson.project_version()), language
 add_global_arguments('-DSYSCONFDIR="@0@"'.format(path_sysconfdir), language: 'cpp')
 add_global_arguments('-DDATADIR="@0@"'.format(path_datadir), language: 'cpp')
 
-cc = meson.get_compiler('cpp')
+cpp = meson.get_compiler('cpp')
 dep_json = dependency('json-c')
-dep_phonenumber = cc.find_library('phonenumber')
+dep_phonenumber = cpp.find_library('phonenumber')
 deps_for_pjproject = [
-  cc.find_library('pthread'),
-  cc.find_library('libuuid'),
+  cpp.find_library('pthread'),
+  cpp.find_library('libuuid'),
   dependency('openssl')
 ]
 
