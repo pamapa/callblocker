@@ -28,7 +28,7 @@ jobs:
         apt-get install --no-install-recommends -y \
           debhelper build-essential \
           dpkg-dev pkg-config \
-          ninja-build \
+          ninja-build meson \
           python3-pip python3-setuptools \
           g++ gcc \
           libjson-c-dev libphonenumber-dev uuid-dev libssl-dev
