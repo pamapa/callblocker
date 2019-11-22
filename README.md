@@ -1,4 +1,9 @@
 # callblocker
+
+![](https://github.com/pamapa/callblocker/workflows/Frontend/badge.svg)
+![](https://github.com/pamapa/callblocker/workflows/Debian/badge.svg)
+![](https://github.com/pamapa/callblocker/workflows/Raspbian/badge.svg)
+
 Blocks unwanted calls from your home phone, such as telemarketing, junk, spam, scam, etc.
 
 The call blocker acts like a normal phone. No additional telephone switchboard (like FreePBX or Asterisk) is needed. When a telemarketer is calling, the call blocker picks up the phone and automatically hangs up after a few seconds. Like this the call is blocked. It's designed to run on devices with small footprints, such as a Raspberry Pi. When the call blocker is not running (e.g. hardware broke) your home phone is still working by design. Also it has the ability to check against online and offline phone spam lists.
