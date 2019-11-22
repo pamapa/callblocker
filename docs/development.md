@@ -20,7 +20,7 @@ sudo apt-get install --no-install-recommends -y \
   libjson-c-dev libphonenumber-dev uuid-dev libssl-dev \
   python3 python3-bs4 python3-ldif3 python3-vobject \
   python3-pip python3-setuptools
-pip3 install meson
+sudo pip3 install meson==0.50.1
 
 # for web-interface (not needed in case of -Dweb-interface=false)
 wget -qO- https://deb.nodesource.com/setup_12.x | bash -
