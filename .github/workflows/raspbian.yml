@@ -29,7 +29,7 @@ jobs:
           debhelper build-essential crossbuild-essential-armhf \
           dpkg-dev pkg-config \
           ninja-build meson \
-          g++-arm-linux-gnueabihf \
+          g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf \
           libjson-c-dev:armhf libphonenumber-dev:armhf uuid-dev:armhf libssl-dev:armhf
 
     - name: Install build dependencies for web-interface
@@ -46,7 +46,9 @@ jobs:
         cd third-party/pjproject
         export CONFIG_SITE=/etc/dpkg-cross/cross-config.armhf
         export CC=arm-linux-gnueabihf-gcc
+        export AR=arm-linux-gnueabihf-ar
         export LD=arm-linux-gnueabihf-ld
+        export RANLIB=arm-linux-gnueabihf-ranlib
         export PJPROJECT_CONFIGURE_OPTS=--host=arm-linux-gnueabi
         ./prepare.sh
 
