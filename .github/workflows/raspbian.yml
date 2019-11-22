@@ -32,7 +32,8 @@ jobs:
           ninja-build meson \
           g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf \
           libjson-c-dev:armhf libphonenumber-dev:armhf uuid-dev:armhf libssl-dev:armhf
-        pip3 install meson
+        pip3 install meson==0.50.1
+        meson -v
 
     - name: Install build dependencies for web-interface
       run: |
@@ -53,7 +54,6 @@ jobs:
 
     - name: Build package
       run: |
-        export PATH=/usr/local/bin:$PATH
         export CONFIG_SITE=/etc/dpkg-cross/cross-config.armhf
         dpkg-buildpackage -b -uc -a armhf -d
         mkdir -p artifacts

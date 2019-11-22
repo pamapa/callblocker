@@ -46,7 +46,6 @@ jobs:
 
     - name: Build package
       run: |
-        export PATH=/usr/local/bin:$PATH
         dpkg-buildpackage -b -uc
         mkdir -p artifacts
         cp ../callblocker_* artifacts
