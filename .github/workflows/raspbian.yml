@@ -1,6 +1,12 @@
 name: Raspbian
 
-on: [push]
+on:
+  push:
+    branches:    
+      - master
+      - 'releases/**'
+    tags:        
+      - v*
 
 jobs:
   build:
