@@ -2,10 +2,10 @@ name: Raspbian
 
 on:
   push:
-    branches:    
+    branches:
       - master
       - 'releases/**'
-    tags:        
+    tags:
       - v*
 
 jobs:
@@ -39,7 +39,7 @@ jobs:
           ninja-build meson \
           g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf \
           libjson-c-dev:armhf libphonenumber-dev:armhf uuid-dev:armhf libssl-dev:armhf
-        pip3 install meson==0.50.1
+        pip3 install "meson>=0.50.1"
         meson -v
 
     - name: Install build dependencies for web-interface
@@ -67,6 +67,6 @@ jobs:
     - name: Archive Raspbian package artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: raspbian
+        name: raspbian_${{ matrix.debian-version }}
         path: artifacts
 

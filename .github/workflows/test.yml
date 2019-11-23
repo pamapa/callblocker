@@ -32,7 +32,7 @@ jobs:
           python3-pip python3-setuptools python3-wheel \
           g++ gcc \
           libjson-c-dev libphonenumber-dev uuid-dev libssl-dev
-        pip3 install meson==0.50.1
+        pip3 install "meson>=0.50.1"
         meson -v
 
     - name: Execute unit tests

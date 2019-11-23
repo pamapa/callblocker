@@ -1,13 +1,12 @@
 name: Ubuntu
 
-on: [push]
-#on:
-#  push:
-#    branches:    
-#      - master
-#      - 'releases/**'
-#    tags:        
-#      - v*
+on:
+  push:
+    branches:
+      - master
+      - 'releases/**'
+    tags:
+      - v*
 
 jobs:
   build:
@@ -52,9 +51,6 @@ jobs:
 
     - name: Build package
       run: |
-        echo $PATH
-        meson -v
-        ls /usr/local/bin
         dpkg-buildpackage -b -uc
         mkdir -p artifacts
         cp ../callblocker_* artifacts

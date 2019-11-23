@@ -2,10 +2,10 @@ name: Debian
 
 on:
   push:
-    branches:    
+    branches:
       - master
       - 'releases/**'
-    tags:        
+    tags:
       - v*
 
 jobs:
@@ -39,7 +39,7 @@ jobs:
           python3-pip python3-setuptools python3-wheel \
           g++ gcc \
           libjson-c-dev libphonenumber-dev uuid-dev libssl-dev
-        pip3 install meson==0.50.1
+        pip3 install "meson>=0.50.1"
         meson -v
 
     - name: Install build dependencies for web-interface
@@ -58,6 +58,6 @@ jobs:
     - name: Archive Debian package artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: debian
+        name: debian_${{ matrix.debian-version }}
         path: artifacts
 
