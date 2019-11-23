@@ -52,6 +52,9 @@ jobs:
 
     - name: Build package
       run: |
+        echo $PATH
+        meson -v
+        ls /usr/local/bin
         dpkg-buildpackage -b -uc
         mkdir -p artifacts
         cp ../callblocker_* artifacts
