@@ -42,7 +42,7 @@ ninja
 sudo ninja install
 ```
 
-### via selfmade 'Debian package'
+### via 'selfmade Debian package'
 ```bash
 dpkg-buildpackage -b -uc
 sudo apt install ../callblocker_*.deb

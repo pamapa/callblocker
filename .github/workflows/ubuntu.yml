@@ -1,4 +1,4 @@
-name: Debian
+name: Ubuntu
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build for ${{ matrix.arch }} / ${{ matrix.debian-version }}
+    name: Build for ${{ matrix.arch }} / ${{ matrix.ubuntu-version }}
 
     # docker executor
     runs-on: ubuntu-latest
@@ -18,10 +18,10 @@ jobs:
     strategy:
       matrix:
         arch: [amd64]
-        debian-version: [buster]
+        ubuntu-version: [18.04]
 
     container:
-      image: ${{ matrix.arch }}/debian:${{ matrix.debian-version }}-slim
+      image: ${{ matrix.arch }}/ubuntu:${{ matrix.ubuntu-version }}
       env:
         DEBIAN_FRONTEND: noninteractive
 
@@ -55,9 +55,9 @@ jobs:
         mkdir -p artifacts
         cp ../callblocker_* artifacts
 
-    - name: Archive Debian package artifacts
+    - name: Archive Ubuntu package artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: debian_${{ matrix.debian-version }}
+        name: ubuntu_${{ matrix.ubuntu-version }}
         path: artifacts
 
