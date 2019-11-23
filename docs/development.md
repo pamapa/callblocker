@@ -13,8 +13,9 @@ cd callblocker
 ## Install build dependencies
 ```bash
 sudo apt-get install --no-install-recommends -y \
-  debhelper build-essential wget git \
+  debhelper build-essential git \
   dpkg-dev pkg-config \
+  ca-certificates wget \
   ninja-build meson \
   g++ gcc \
   libjson-c-dev libphonenumber-dev uuid-dev libssl-dev \

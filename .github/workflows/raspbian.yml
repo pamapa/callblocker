@@ -1,6 +1,12 @@
 name: Raspbian
 
-on: [push]
+on:
+  push:
+    branches:    
+      - master
+      - 'releases/**'
+    tags:        
+      - v*
 
 jobs:
   build:
@@ -27,6 +33,7 @@ jobs:
         apt-get update
         apt-get install --no-install-recommends -y \
           debhelper build-essential crossbuild-essential-armhf \
+          ca-certificates wget \
           dpkg-dev pkg-config \
           python3-pip python3-setuptools \
           ninja-build meson \
@@ -37,8 +44,6 @@ jobs:
 
     - name: Install build dependencies for web-interface
       run: |
-        apt-get install --no-install-recommends -y \
-          ca-certificates wget
         wget -qO- https://deb.nodesource.com/setup_12.x | bash -
         apt-get update
         apt-get install --no-install-recommends -y \
