@@ -1,0 +1,42 @@
+name: Test
+
+on: [push]
+
+jobs:
+  build:
+    name: Test for ${{ matrix.arch }} / ${{ matrix.debian-version }}
+
+    # docker executor
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        arch: [amd64]
+        debian-version: [buster]
+
+    container:
+      image: ${{ matrix.arch }}/debian:${{ matrix.debian-version }}-slim
+      env:
+        DEBIAN_FRONTEND: noninteractive
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Install build dependencies for tests
+      run: |
+        apt-get update
+        apt-get install --no-install-recommends -y \
+          dpkg-dev pkg-config \
+          ninja-build meson \
+          python3-pip python3-setuptools python3-wheel \
+          g++ gcc \
+          libjson-c-dev libphonenumber-dev uuid-dev libssl-dev
+        pip3 install meson==0.50.1
+        meson -v
+
+    - name: Execute unit tests
+      run: |
+        meson -Dweb-interface=false build
+        cd build
+        ninja test
+
