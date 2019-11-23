@@ -1,5 +1,6 @@
 # callblocker
 
+![](https://github.com/pamapa/callblocker/workflows/Test/badge.svg)
 ![](https://github.com/pamapa/callblocker/workflows/Frontend/badge.svg)
 ![](https://github.com/pamapa/callblocker/workflows/Debian/badge.svg)
 ![](https://github.com/pamapa/callblocker/workflows/Raspbian/badge.svg)
