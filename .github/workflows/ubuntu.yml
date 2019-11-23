@@ -31,8 +31,8 @@ jobs:
 
     - name: Install build dependencies for Linux daemon 'callblockerd'
       run: |
-        apt-get update
-        apt-get install --no-install-recommends -y \
+        sudo apt-get update
+        sudo apt-get install --no-install-recommends -y \
           debhelper build-essential \
           dpkg-dev pkg-config \
           ca-certificates wget \
@@ -40,14 +40,14 @@ jobs:
           python3-pip python3-setuptools python3-wheel \
           g++ gcc \
           libjson-c-dev libphonenumber-dev uuid-dev libssl-dev
-        pip3 install meson>=0.50.1
+        sudo pip3 install meson>=0.50.1
         meson -v
 
     - name: Install build dependencies for web-interface
       run: |
-        wget -qO- https://deb.nodesource.com/setup_12.x | bash -
-        apt-get update
-        apt-get install --no-install-recommends -y \
+        sudo wget -qO- https://deb.nodesource.com/setup_12.x | bash -
+        sudo apt-get update
+        sudo apt-get install --no-install-recommends -y \
           nodejs
 
     - name: Build package
