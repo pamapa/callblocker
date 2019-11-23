@@ -1,0 +1,64 @@
+name: Ubuntu
+
+on: [push]
+#on:
+#  push:
+#    branches:    
+#      - master
+#      - 'releases/**'
+#    tags:        
+#      - v*
+
+jobs:
+  build:
+    name: Build for ${{ matrix.arch }} / ${{ matrix.debian-version }}
+
+    # docker executor
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        arch: [amd64]
+        ubuntu-version: [18.04]
+
+    container:
+      image: ${{ matrix.arch }}/ubuntu:${{ matrix.ubuntu-version }}-slim
+      env:
+        DEBIAN_FRONTEND: noninteractive
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Install build dependencies for Linux daemon 'callblockerd'
+      run: |
+        apt-get update
+        apt-get install --no-install-recommends -y \
+          debhelper build-essential \
+          dpkg-dev pkg-config \
+          ca-certificates wget \
+          ninja-build meson \
+          python3-pip python3-setuptools python3-wheel \
+          g++ gcc \
+          libjson-c-dev libphonenumber-dev uuid-dev libssl-dev
+        pip3 install meson>=0.50.1
+        meson -v
+
+    - name: Install build dependencies for web-interface
+      run: |
+        wget -qO- https://deb.nodesource.com/setup_12.x | bash -
+        apt-get update
+        apt-get install --no-install-recommends -y \
+          nodejs
+
+    - name: Build package
+      run: |
+        dpkg-buildpackage -b -uc
+        mkdir -p artifacts
+        cp ../callblocker_* artifacts
+
+    - name: Archive Ubuntu package artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: ubuntu_${{ matrix.ubuntu-version }}
+        path: artifacts
+
