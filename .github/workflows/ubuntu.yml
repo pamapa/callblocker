@@ -22,7 +22,7 @@ jobs:
         ubuntu-version: [18.04]
 
     container:
-      image: ${{ matrix.arch }}/ubuntu:${{ matrix.ubuntu-version }}-slim
+      image: ${{ matrix.arch }}/ubuntu:${{ matrix.ubuntu-version }}
       env:
         DEBIAN_FRONTEND: noninteractive
 
