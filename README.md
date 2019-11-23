@@ -69,9 +69,9 @@ Follow [this instructions](/docs/development.md).
 
 
 ## <a name="webInterface"></a> Setup web interface on Linux
-The installation of the web interface is optional, the callblocker daemon works perfectly without it.
-The web interface allows to view the caller log, change settings and diagnose problems. This instruction
-explain howto setup it up with lighttpd, its also possible to configure it via apache.
+The configuration of the web interface is optional, the callblocker daemon works perfectly without it.
+The web interface allows to view the caller log, change settings and diagnose problems. This instructions
+explain howto make it work with lighttpd, its also possible to configure it via apache.
 
 Additional Debian packages are required:
 ```bash
