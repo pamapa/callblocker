@@ -4,6 +4,7 @@
 ![](https://github.com/pamapa/callblocker/workflows/Frontend/badge.svg)
 ![](https://github.com/pamapa/callblocker/workflows/Debian/badge.svg)
 ![](https://github.com/pamapa/callblocker/workflows/Raspbian/badge.svg)
+![](https://github.com/pamapa/callblocker/workflows/Ubuntu/badge.svg)
 
 Blocks unwanted calls from your home phone, such as telemarketing, junk, spam, scam, etc.
 
