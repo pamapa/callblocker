@@ -27,6 +27,7 @@ jobs:
         apt-get update
         apt-get install --no-install-recommends -y \
           dpkg-dev pkg-config \
+          ca-certificates wget \
           ninja-build meson \
           python3-pip python3-setuptools python3-wheel \
           g++ gcc \

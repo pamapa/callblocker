@@ -28,6 +28,7 @@ jobs:
         apt-get install --no-install-recommends -y \
           debhelper build-essential \
           dpkg-dev pkg-config \
+          ca-certificates wget \
           ninja-build meson \
           python3-pip python3-setuptools python3-wheel \
           g++ gcc \
@@ -37,8 +38,6 @@ jobs:
 
     - name: Install build dependencies for web-interface
       run: |
-        apt-get install --no-install-recommends -y \
-          ca-certificates wget
         wget -qO- https://deb.nodesource.com/setup_12.x | bash -
         apt-get update
         apt-get install --no-install-recommends -y \
