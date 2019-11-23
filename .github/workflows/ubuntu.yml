@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build for ${{ matrix.arch }} / ${{ matrix.debian-version }}
+    name: Build for ${{ matrix.arch }} / ${{ matrix.ubuntu-version }}
 
     # docker executor
     runs-on: ubuntu-latest
