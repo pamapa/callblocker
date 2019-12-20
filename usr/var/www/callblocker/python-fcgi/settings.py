@@ -1,5 +1,5 @@
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,6 +19,7 @@
 import os, sys, json
 import subprocess
 import cgi
+from datetime import datetime, timezone
 
 import config
 
@@ -36,11 +37,27 @@ def _load_settings():
     return jj
 
 
+# fix wrong padded dates (came from old app.js/date2UTCString: e.g. 2015-4-9 10:14:3 +0000)
+def _fix_date_string(date_str):
+    try:
+        date = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S %z")
+    except:
+       date = datetime.now()
+    return date.strftime("%Y-%m-%d %H:%M:%S %z")
+
+
 def _remove_duplicates(entries):
     uniq = []
     seen = set()
     for entry in entries:
         number = entry["number"]
+
+        # fix wrong padded dates
+        if "date_modified" in entry:
+            entry["date_modified"] = _fix_date_string(entry["date_modified"])
+        if "date_created" in entry:
+            entry["date_created"] = _fix_date_string(entry["date_created"])
+
         # filter duplicates
         if number not in seen:
             uniq.append(entry)

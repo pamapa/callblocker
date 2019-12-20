@@ -65,9 +65,11 @@ require(["dijit/ConfirmDialog",
 
   // convert to UTC: 2015-04-19 10:14:03 +0000
   function date2UTCString(date) {
+    function pad(number) { if (number < 10) { return '0' + number; } return number; }
+
     var str =
-      date.getUTCFullYear()+"-"+(date.getUTCMonth()+1)+"-"+date.getUTCDate()+" "+
-      date.getUTCHours()+":"+date.getUTCMinutes()+":"+date.getUTCSeconds()+" +0000";
+      date.getUTCFullYear() + "-" + pad(date.getUTCMonth() + 1) + "-" + pad(date.getUTCDate()) + " " +
+      pad(date.getUTCHours()) + ":" + pad(date.getUTCMinutes()) + ":" + pad(date.getUTCSeconds()) + " +0000";
     return str;
   };
 
