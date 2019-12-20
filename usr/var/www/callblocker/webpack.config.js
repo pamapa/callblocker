@@ -87,6 +87,8 @@ module.exports = (env, argv) => {
           parallel: true,
           sourceMap: false,
           terserOptions: {
+            compress: true,
+            mangle: true,
             output: {
               comments: false
             }
