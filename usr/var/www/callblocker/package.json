@@ -4,21 +4,23 @@
     "type": "git",
     "url": "git+https://github.com:pamapa/callblocker.git"
   },
-  "devDependencies": {
-    "copy-webpack-plugin": "^5.1.1",
+  "dependencies": {
     "css-loader": "3.0.0",
     "dijit": "~1.14.0",
     "dojo": "~1.14.6",
     "dojo-util": "~1.14.0",
-    "dojo-webpack-plugin": "2.8.5",
     "dojox": "~1.14.6",
     "less": "2.7.1",
     "less-loader": "4.1.0",
     "style-loader": "0.20.3",
+    "url-loader": "1.0.1"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^5.1.1",
+    "dojo-webpack-plugin": "2.8.5",
     "terser-webpack-plugin": "^2.3.1",
-    "url-loader": "1.0.1",
-    "webpack": "4.29.5",
-    "webpack-cli": "3.1.0"
+    "webpack": "~4.42.0",
+    "webpack-cli": "~3.3.11"
   },
   "scripts": {
     "build": "webpack",
