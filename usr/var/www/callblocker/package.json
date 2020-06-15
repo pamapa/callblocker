@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "css-loader": "3.0.0",
-    "dijit": "~1.14.0",
+    "dijit": "~1.14.7",
     "dojo": "~1.14.6",
     "dojo-util": "~1.14.0",
     "dojox": "~1.14.6",
