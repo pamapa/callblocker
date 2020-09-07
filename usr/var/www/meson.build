@@ -13,7 +13,7 @@ if get_option('web-interface')
     app_js = join_paths(path_package_json, 'src/app.js')
     message('set version @0@ in @1@'.format(meson.project_version(), app_js))
     run_command('sh', '-c',
-                'sed -i \'s/content: "v.*"/content: "v@0@"/g\' @1@'.format(meson.project_version(), app_js))
+                'sed -i \'s/appVersion = "v.*"/appVersion = "v@0@"/g\' @1@'.format(meson.project_version(), app_js))
     # build bundle
     res = run_command('sh', '-c',
                       'cd @0@ && npm run build'.format(path_package_json)

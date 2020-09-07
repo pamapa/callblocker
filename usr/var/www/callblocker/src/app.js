@@ -45,6 +45,7 @@ require(["dijit/ConfirmDialog",
          "dijit/layout/BorderContainer",
         ], function(ConfirmDialog, domConstruct) { // workaround
 
+  var appVersion = "v0.15.0";
   var api_base = "python-fcgi/api.py";
 
   function dateFormatter(dateStr) {
@@ -884,7 +885,7 @@ require(["dijit/ConfirmDialog",
   var headerPane = new dijit.layout.ContentPane({
     region: "top",
     style: "text-align: center",
-    content: "<b>callblocker</b>"
+    content: `<b>callblocker</b> - ${appVersion}`
   });
   appLayout.addChild(headerPane);
 
@@ -901,12 +902,6 @@ require(["dijit/ConfirmDialog",
   });
   appLayout.addChild(mainPane);
 
-  var statusbarPane = new dijit.layout.ContentPane({
-    region: "bottom",
-    style: "text-align: center",
-    content: "v0.15.0"
-  });
-  appLayout.addChild(statusbarPane);
   appLayout.placeAt(document.body);
   appLayout.startup();
 });
