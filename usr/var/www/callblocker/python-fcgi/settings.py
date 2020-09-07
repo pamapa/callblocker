@@ -163,7 +163,7 @@ def handle_get_list(environ, start_response, params):
         if filename in ["main.json", "onlinelookup.json", "onlinecheck.json"]:
             # to keep app.js simple: create empty
             with open(fullname, "w", encoding="utf-8") as f:
-                json.dump({"name": "main", "entries": []}, f, indent=2, ensure_ascii=False)
+                json.dump({"name": os.path.splitext(fullname)[0], "entries": []}, f, indent=2, ensure_ascii=False)
         else:
             start_response('404 NOT FOUND', [('Content-Type', 'text/plain')])
             return ['Not Found']
