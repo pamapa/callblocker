@@ -31,7 +31,7 @@ sudo chmod a+x /usr/var/www/callblocker/python-fcgi/api.py
 
 ## Symptom: Configuration done within the web interface is not saved persistent.
 The web interface is running within lighttpd, this deamon is using "www-data" as user and group. Make
-sure that this process has access to the configuration file (see [file layout](/doc/development.md#fileLayout)).
+sure that this process has access to the configuration file (see [file layout](/docs/development.md#fileLayout)).
 ```bash
 sudo chown -R www-data.www-data /etc/callblocker/
 ```
