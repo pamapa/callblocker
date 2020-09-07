@@ -170,7 +170,7 @@ bool FileList::eraseAged(size_t maxDays) {
   std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
   m_entries.erase(std::remove_if(m_entries.begin(), m_entries.end(),
                   [maxDays, &changed, now](FileListEntry e) {
-                    size_t hours = std::chrono::duration_cast<std::chrono::hours>(now.time_since_epoch() - e.date_created.time_since_epoch()).count();
+                    size_t hours = std::chrono::duration_cast<std::chrono::hours>(now - e.date_created).count();
                     if (hours > maxDays * 24) {
                       changed = true;
                       return true;
