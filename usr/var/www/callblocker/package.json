@@ -16,11 +16,11 @@
     "url-loader": "1.0.1"
   },
   "devDependencies": {
-    "copy-webpack-plugin": "^5.1.1",
-    "dojo-webpack-plugin": "2.8.5",
-    "terser-webpack-plugin": "^2.3.1",
-    "webpack": "~4.42.0",
-    "webpack-cli": "~3.3.11"
+    "copy-webpack-plugin": "~5.1.2",
+    "dojo-webpack-plugin": "~2.8.17",
+    "terser-webpack-plugin": "~2.3.8",
+    "webpack": "~4.44.1",
+    "webpack-cli": "~3.3.12"
   },
   "scripts": {
     "build": "webpack",
