@@ -96,7 +96,7 @@ sudo vi /etc/lighttpd/lighttpd.conf
         )
    )
 ```
-- make sure the lighttpd daemon has access to callblock settings
+- make sure the lighttpd daemon has write access to callblocker settings
 ```bash
 sudo usermod -a -G systemd-journal www-data
 sudo chown -R www-data.www-data /etc/callblocker/
