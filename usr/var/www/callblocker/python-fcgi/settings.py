@@ -285,7 +285,7 @@ def handle_get_lists(environ, start_response, params):
     # to keep app.js simple
     main_fullname = os.path.join(base, "main.json")
     if not main_fullname in files:
-        _create_empty_list(fullname, "main")
+        _create_empty_list(main_fullname, "main")
         files.append(main_fullname)
 
     all = []
