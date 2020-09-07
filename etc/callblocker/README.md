@@ -87,14 +87,15 @@ used sites may this phone number. Good strategies to do so are:
 ## <a name="onlineCheck"></a> Online check option
 This option selects the online check site to verify the number from the incoming call. If the number is listed as spam, the callblocker will block it.
 
-Name                  | Site                           | Description
-----                  | ----                           | -----------
-""                    | N/A                            | No online check is done
-"phonespamfilter_com" | http://www.phonespamfilter.com | Free for non commercial use. Support for Astralia, France, New Zealand, United Kingdom and United States.
-"tellows_de"          | http://tellows.de              | Registration needed. Not free, support for many countries all over the world.
-"youmail_com"         | https://data.youmail.com       | Registration needed. Not free, support for USA and Canada (+1). Online caching not allowed.
+Name                  | Site                            | Description
+----                  | ----                            | -----------
+""                    | N/A                             | No online check is done
+"tellows_de"          | https://tellows.de              | Registration needed, not free. Support for many countries all over the world.
+"nomorobo_com"        | https://www.nomorobo.com        | Free protection for all of your VoIP landlines. Support for USA and Canada (+1).
+"phonespamfilter_com" | https://www.phonespamfilter.com | Free for non commercial use. Support for Astralia, France, New Zealand, United Kingdom and United States.
+"youmail_com"         | https://data.youmail.com        | Registration needed, not free. Support for USA and Canada (+1). Online caching not allowed.
 
-Developer hint: The online check name e.g. "tellows_de" leads to the python script name onlinecheck_tellows_de.py.
+Developer hint: The online check name e.g. "tellows_de" leads to the python script name `onlinecheck_tellows_de.py`.
 
 
 ## <a name="onlineLookup"></a> Online lookup option
@@ -105,10 +106,9 @@ Name                  | Site                           | Description
 ----                  | ----                           | -----------
 ""                    | N/A                            | No online lookup is done
 "all"                 | Automatic select               | Depending on the country code, it will automatically select one of the below
-"dasoertliche_de"     | http://www.dasoertliche.de     | Germany (+49). Free for non commercial use
+"dasoertliche_de"     | https://www.dasoertliche.de    | Germany (+49). Free for non commercial use
 "dasschnelle_at"      | https://www.dasschnelle.at     | Austria (+43). Free for non commercial use
 "tel_search_ch"       | https://tel.search.ch          | Switzerland (+41). Free for non commercial use
-"pagesjaunes_fr"      | http://www.pagesjaunes.fr      | France (+33). Free for non commercial use
-"paginebianche_it"    | http://www.paginebianche.it    | Italy (+39). Free for non commercial use
+"paginebianche_it"    | https://www.paginebianche.it   | Italy (+39). Free for non commercial use
 
-Developer hint: The online lookup name e.g. "tel_search_ch" leads to the python script name onlinelookup_tel_search_ch.py.
+Developer hint: The online lookup name e.g. "tel_search_ch" leads to the python script name `onlinelookup_tel_search_ch.py`.
