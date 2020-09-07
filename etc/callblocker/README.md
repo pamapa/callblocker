@@ -91,7 +91,7 @@ Name                  | Site                            | Description
 ----                  | ----                            | -----------
 ""                    | N/A                             | No online check is done
 "tellows_de"          | https://tellows.de              | Registration needed, not free. Support for many countries all over the world.
-"nomorobo_com"        | https://www.nomorobo.com        | Free protection for all of your VoIP landlines. Support for USA and Canada (+1).
+"nomorobo_com"        | https://www.nomorobo.com        | Free for all of your VoIP landlines. Support for USA and Canada (+1).
 "phonespamfilter_com" | https://www.phonespamfilter.com | Free for non commercial use. Support for Astralia, France, New Zealand, United Kingdom and United States.
 "youmail_com"         | https://data.youmail.com        | Registration needed, not free. Support for USA and Canada (+1). Online caching not allowed.
 
