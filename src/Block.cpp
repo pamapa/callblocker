@@ -285,14 +285,13 @@ bool Block::onlineCheck(const struct SettingBase* pSettings, const std::string& 
 
 bool Block::executeScript(std::string prefix, std::string scriptBaseName, const std::string& rNumber, const bool validNumber,
                           struct json_object** pRoot) {
+  Logger::debug("Block::executeScript(prefix='%s' ,scriptBaseName='%s', rNumber='%s', validNumber=%d)",
+    prefix.c_str(), scriptBaseName.c_str(), rNumber.c_str(), validNumber);
+
   if (scriptBaseName.length() == 0) {
     // not enabled
     return false;
   }
-
-  Logger::debug("Block::executeScript(prefix='%s' ,scriptBaseName='%s', rNumber='%s', validNumber=%d)",
-    prefix.c_str(), scriptBaseName.c_str(), rNumber.c_str(), validNumber);
-
   if (Utils::startsWith(rNumber, "**")) {
     Logger::debug("Block::executeScript: is an intern number, thus makes no sense to ask the world");
     return false;
