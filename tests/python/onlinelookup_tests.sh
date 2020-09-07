@@ -11,6 +11,7 @@ echo "Executing onlinelookup tests..."
 #$SCRIPT_PATH/onlinelookup_dasschnelle_at.py --number +436642503442 --debug
 #$SCRIPT_PATH/onlinelookup_tel_search_ch.py --number +41265051361 --debug
 #$SCRIPT_PATH/onlinelookup_dasoertliche_de.py --number +49897557354 --debug
+#$SCRIPT_PATH/onlinelookup_paginebianche_it.py --number +3918442823 --debug
 #exit
 
 echo "Execute onlinelookup_all.py tests..."
@@ -19,6 +20,7 @@ numbers='
   +41265051361
   +436642503442
   +49897557354
+  +3918442823
 '
 for number in $numbers; do
   res=`$SCRIPT_PATH/onlinelookup_all.py --number $number`

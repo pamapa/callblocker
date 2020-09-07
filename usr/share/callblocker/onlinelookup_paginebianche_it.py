@@ -29,16 +29,27 @@ class OnlineLookupPagineBiancheIT(OnlineBase):
 
     def handle_number(self, args, number):
         number = "0" + number[3:] # make number local
-        url = "http://www.paginebianche.it/eng/ricerca-da-numero?qs=%s" % number
+        url = "https://www.paginebianche.it/deu/cerca-da-numero?qs=%s" % number
         content = self.http_get(url)
+
+        #self.log.debug(content)
         soup = BeautifulSoup(content, "lxml")
-        self.log.debug(soup)
+        #self.log.debug(soup)
 
-        caller_name = ""
-        entry = soup.find("h2", {"class": "rgs"})
-        if entry:
-            caller_name = entry.a.contents[0].strip().title()
+        caller_names = []
+        entries = soup.findAll("div", {"class": "item"})
+        for entry in entries:
+            #self.log.debug(entry)
+            title = soup.find("h2", {"class": "rgs"})
+            if not title:
+                self.log.error("div without h2 found")
+                continue
 
+            name = entry.a.contents[0]
+            name = name.strip().title()
+            caller_names.append(name)
+
+        caller_name = "; ".join(caller_names)
         return self.onlinelookup_2_result(caller_name)
 
 
