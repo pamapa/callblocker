@@ -12,24 +12,25 @@ The call blocker acts like a normal phone. No additional telephone switchboard (
 
 
 ## Features
-- supports VoIP systems and analog modems
-- automatically blocks unwanted incoming calls
+- supporting VoIP systems and analog modems
+- blocking automatically unwanted incoming calls
 - logging of all incoming calls, including caller name lookups
-- import your addressbook as allowlist or blocklist
-- different kind of blocking modes
+- import your addressbook as allow or block list
+- different kind of modes
   - logging only
-  - number blocking using blocklists only
-  - number blocking using blocklists and avoid blocking, if number is in allowlist
-  - number has to be in allowlist, all other numbers are blocked
+  - block number via lists
+  - block number via lists but avoid blocking, iff number is in allow lists
+  - block number if not in allow lists
 - different kind of ways to verify incoming calls
+  - support of online spam check sites, for spam verification
   - user maintained offline blocklist
   - extern maintained offline blocklists (downloaded from the Internet and stored offline)
-  - support of online spam check sites, for spam verification
   - detect anonymous and invalid numbers
   - support range of numbers matching whole areas/regions
 - different kind of ways to get caller name of incoming calls
-  - using allowlists and blocklists as offline lookup for caller name
   - support of online lookup sites, to find out who is calling
+  - support CID information coming from analog modem, iff supported from provider
+  - using allow and block lists as offline lookup for caller name
 - online request caching
 - nice web interface
 
