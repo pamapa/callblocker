@@ -28,7 +28,7 @@ for number in $numbers; do
   fi
   echo $res
   if [ "$res" == "$UNKNOWN_CID" ]; then
-    echo "ERROR: did not find"
+    echo "ERROR: did not find: $number"
   fi
 done
 

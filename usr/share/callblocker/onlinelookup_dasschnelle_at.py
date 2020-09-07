@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -37,21 +37,21 @@ class OnlineLookupDasSchnelleAT(OnlineBase):
         soup = BeautifulSoup(content, "lxml")
         #self.log.debug(soup)
 
-        caller_name = ""
+        caller_names = []
         entries = soup.findAll("article")
         for entry in entries:
-            eintrag_name = entry.find("h3")
-            if eintrag_name:
-                name = eintrag_name.a.contents[0]
-                if eintrag_name.span:
-                    vorname = eintrag_name.span.contents[0]
-                    name = vorname + " " + name[:-2] # remove ', '
+            #self.log.debug(entry)
+            eintrag_name = entry.find("h2")
+            if not eintrag_name:
+                self.log.error("article without h2 found")
+                continue
 
-            if len(caller_name) == 0:
-                caller_name = name
-            else:
-                caller_name += "; " + name
+            name = eintrag_name.a.contents[0]
+            name = name.strip()
 
+            caller_names.append(name)
+
+        caller_name = "; ".join(caller_names)
         return self.onlinelookup_2_result(caller_name)
 
 
