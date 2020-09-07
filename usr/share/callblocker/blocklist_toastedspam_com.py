@@ -23,10 +23,10 @@ from bs4 import BeautifulSoup
 from collections import OrderedDict
 from datetime import datetime
 
-from blacklist_base import BlacklistBase
+from blocklist_base import BlocklistBase
 
 
-class BlacklistKToastedSpamCOM(BlacklistBase):
+class BlocklistKToastedSpamCOM(BlocklistBase):
 
     def _extract_number(self, data):
         n = re.sub(r"[^0-9\+]", "", data)
@@ -80,7 +80,7 @@ class BlacklistKToastedSpamCOM(BlacklistBase):
         entries = self.cleanup_entries(entries, country_code="+1")
 
         result = OrderedDict()
-        result["name"] = "toastedspam.com blacklist"
+        result["name"] = "toastedspam.com blocklist"
         result["origin"] = "http://www.toastedspam.com/phonelist.cgi"
         result["parsed_by"] = "callblocker script: %s" % os.path.basename(__file__)
         result["num_entries"] = len(entries)
@@ -92,8 +92,8 @@ class BlacklistKToastedSpamCOM(BlacklistBase):
 # main
 #
 if __name__ == "__main__":
-    m = BlacklistKToastedSpamCOM()
-    parser = m.get_parser("Fetch blacklist provided by toastedspam.com")
+    m = BlocklistKToastedSpamCOM()
+    parser = m.get_parser("Fetch blocklist provided by toastedspam.com")
     args = parser.parse_args()
-    json_filename = args.output + "/blacklist_toastedspam_com.json"
+    json_filename = args.output + "/blocklist_toastedspam_com.json"
     m.run(args, json_filename)

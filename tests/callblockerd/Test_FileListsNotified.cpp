@@ -61,24 +61,24 @@ static void Test_WithExistingOne(std::string etcPath) {
   char* tempPath = mkdtemp(tmpl);
   assert(tempPath != NULL);  
   //printf("tempPath: %s\n", tempPath);
-  std::string listPath = Utils::pathJoin(etcPath, "whitelists");
+  std::string listPath = Utils::pathJoin(etcPath, "allowlists");
 
   // start with existing one
   assert(Utils::fileCopy(Utils::pathJoin(listPath, "main.json"), Utils::pathJoin(tempPath, "main.json")));
 
   FileListsNotified* pNotified = new FileListsNotified(tempPath);
   //pNotified->dump();
-  checkEntry(pNotified, "+41441112233", true, "main", "Mr. Whitelist 1");
-  checkEntry(pNotified, "+41441119999", true, "main", "Mr. Whitelist 2 in blacklist too");
-  checkEntry(pNotified, "+4144222",     true, "main", "Mr. Whitelist 3 too small");
+  checkEntry(pNotified, "+41441112233", true, "main", "Mr. X 1");
+  checkEntry(pNotified, "+41441119999", true, "main", "Mr. X 2 in blocklist too");
+  checkEntry(pNotified, "+4144222",     true, "main", "Mr. X 3 too small");
 
   // simulate "extern" append (what pyhon would do)
   addEntry(Utils::pathJoin(tempPath, "main.json"), "+11111111111", "Add Entry 1");
   pNotified->run();
   //pNotified->dump();
-  checkEntry(pNotified, "+41441112233", true, "main", "Mr. Whitelist 1");
-  checkEntry(pNotified, "+41441119999", true, "main", "Mr. Whitelist 2 in blacklist too");
-  checkEntry(pNotified, "+4144222",     true, "main", "Mr. Whitelist 3 too small");
+  checkEntry(pNotified, "+41441112233", true, "main", "Mr. X 1");
+  checkEntry(pNotified, "+41441119999", true, "main", "Mr. X 2 in blocklist too");
+  checkEntry(pNotified, "+4144222",     true, "main", "Mr. X 3 too small");
   checkEntry(pNotified, "+11111111111", true, "main", "Add Entry 1");
   
   // simulate "extern" remove (what pyhon would do)
@@ -86,8 +86,8 @@ static void Test_WithExistingOne(std::string etcPath) {
   pNotified->run();
   //pNotified->dump();
   checkEntry(pNotified, "+41441112233", false, "", "");
-  checkEntry(pNotified, "+41441119999", true, "main", "Mr. Whitelist 2 in blacklist too");
-  checkEntry(pNotified, "+4144222",     true, "main", "Mr. Whitelist 3 too small");
+  checkEntry(pNotified, "+41441119999", true, "main", "Mr. X 2 in blocklist too");
+  checkEntry(pNotified, "+4144222",     true, "main", "Mr. X 3 too small");
   checkEntry(pNotified, "+11111111111", true, "main", "Add Entry 1");
   
   delete(pNotified);

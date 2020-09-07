@@ -1,6 +1,6 @@
 /etc/callblocker
-/etc/callblocker/blacklists
-/etc/callblocker/whitelists
+/etc/callblocker/blocklists
+/etc/callblocker/allowlists
 /etc/callblocker/cache
 /etc/systemd/system
 /usr/bin

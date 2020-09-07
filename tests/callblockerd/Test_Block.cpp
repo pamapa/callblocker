@@ -45,34 +45,34 @@ static void TestCase_logging_only(std::string etcPath)
   // CH
   settingsBase.countryCode = "+41";
   std::string msg;
-  // test number in blacklist
+  // test number in blocklist
   assert(block->isBlocked(&settingsBase, "0449999999", "", &msg) == false);
   //printf("msg: %s\n", msg.c_str());
-  assert(msg.compare("Incoming call: number='+41449999999' name='Test single number' blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41449999999' name='Test single number' blocklist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+41449999999", "", &msg) == false);
-  assert(msg.compare("Incoming call: number='+41449999999' name='Test single number' blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41449999999' name='Test single number' blocklist='main'") == 0);
 
-  // test range in blacklist
+  // test range in blocklist
   assert(block->isBlocked(&settingsBase, "0448881111", "", &msg) == false);
-  assert(msg.compare("Incoming call: number='+41448881111' name='Test range 1' blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41448881111' name='Test range 1' blocklist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+41448881111", "", &msg) == false);
-  assert(msg.compare("Incoming call: number='+41448881111' name='Test range 1' blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41448881111' name='Test range 1' blocklist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "0448881234", "", &msg) == false);
-  assert(msg.compare("Incoming call: number='+41448881234' name='Test range 1' blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41448881234' name='Test range 1' blocklist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+23412312312", "", &msg) == false);
-  assert(msg.compare("Incoming call: number='+23412312312' name='Test range 2' blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+23412312312' name='Test range 2' blocklist='main'") == 0);
 
-  // test number in whitelist
+  // test number in allowlist
   assert(block->isBlocked(&settingsBase, "0441112233", "", &msg) == false);
-  assert(msg.compare("Incoming call: number='+41441112233' name='Mr. Whitelist 1' whitelist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41441112233' name='Mr. X 1' allowlist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+41441112233", "", &msg) == false);
-  assert(msg.compare("Incoming call: number='+41441112233' name='Mr. Whitelist 1' whitelist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41441112233' name='Mr. X 1' allowlist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+4144222", "", &msg) == false);
-  assert(msg.compare("Incoming call: number='+4144222' name='Mr. Whitelist 3 too small' invalid whitelist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+4144222' name='Mr. X 3 too small' invalid allowlist='main'") == 0);
 
-  // test number in whitelist and blacklist
+  // test number in allowlist and blocklist
   assert(block->isBlocked(&settingsBase, "+41441119999", "", &msg) == false);
-  assert(msg.compare("Incoming call: number='+41441119999' name='Mr. Whitelist 2 in blacklist too' whitelist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41441119999' name='Mr. X 2 in blocklist too' allowlist='main'") == 0);
 
   // test: caller information from provider
   assert(block->isBlocked(&settingsBase, "+12025808292", "Mr. Spamer", &msg) == false);
@@ -103,7 +103,7 @@ static void TestCase_logging_only(std::string etcPath)
   assert(msg.compare("Incoming call: number='+493456789012345678' invalid") == 0);
 }
 
-static void TestCase_whitelists_only(std::string etcPath)
+static void TestCase_allowlists_only(std::string etcPath)
 {
   //printf("etc: %s\n", etcPath.c_str());
   Settings* settings = new Settings(etcPath);
@@ -112,17 +112,17 @@ static void TestCase_whitelists_only(std::string etcPath)
   SettingBase settingsBase;
   settingsBase.blockAnonymousCID = false;
   settingsBase.blockInvalidCID = false;
-  settingsBase.blockMode = WHITELISTS_ONLY;
+  settingsBase.blockMode = ALLOWLISTS_ONLY;
   // CH
   settingsBase.countryCode = "+41";
   std::string msg;
-  // test number in blacklist
+  // test number in blocklist
   assert(block->isBlocked(&settingsBase, "0449999999", "", &msg) == true);
   assert(msg.compare("Incoming call: number='+41449999999' blocked") == 0);
   assert(block->isBlocked(&settingsBase, "+41449999999", "", &msg) == true);
   assert(msg.compare("Incoming call: number='+41449999999' blocked") == 0);
 
-  // test range in blacklist
+  // test range in blocklist
   assert(block->isBlocked(&settingsBase, "0448881111", "", &msg) == true);
   assert(msg.compare("Incoming call: number='+41448881111' blocked") == 0);
   assert(block->isBlocked(&settingsBase, "+41448881111", "", &msg) == true);
@@ -132,17 +132,17 @@ static void TestCase_whitelists_only(std::string etcPath)
   assert(block->isBlocked(&settingsBase, "+23412312312", "", &msg) == true);
   assert(msg.compare("Incoming call: number='+23412312312' blocked") == 0);
 
-  // test number in whitelist
+  // test number in allowlist
   assert(block->isBlocked(&settingsBase, "0441112233", "", &msg) == false);
-  assert(msg.compare("Incoming call: number='+41441112233' name='Mr. Whitelist 1' whitelist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41441112233' name='Mr. X 1' allowlist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+41441112233", "", &msg) == false);
-  assert(msg.compare("Incoming call: number='+41441112233' name='Mr. Whitelist 1' whitelist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41441112233' name='Mr. X 1' allowlist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+4144222", "", &msg) == false);
-  assert(msg.compare("Incoming call: number='+4144222' name='Mr. Whitelist 3 too small' invalid whitelist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+4144222' name='Mr. X 3 too small' invalid allowlist='main'") == 0);
 
-  // test number in whitelist and blacklist
+  // test number in allowlist and blocklist
   assert(block->isBlocked(&settingsBase, "+41441119999", "", &msg) == false);
-  assert(msg.compare("Incoming call: number='+41441119999' name='Mr. Whitelist 2 in blacklist too' whitelist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41441119999' name='Mr. X 2 in blocklist too' allowlist='main'") == 0);
 
   // test: caller information from provider
   assert(block->isBlocked(&settingsBase, "+12025808292", "Mr. Spamer", &msg) == true);
@@ -173,7 +173,7 @@ static void TestCase_whitelists_only(std::string etcPath)
   assert(msg.compare("Incoming call: number='+493456789012345678' blocked invalid") == 0);
 }
 
-static void TestCase_whitelists_and_blacklists(std::string etcPath)
+static void TestCase_allowlists_and_blocklists(std::string etcPath)
 {
   //printf("etc: %s\n", etcPath.c_str());
   Settings* settings = new Settings(etcPath);
@@ -182,37 +182,37 @@ static void TestCase_whitelists_and_blacklists(std::string etcPath)
   SettingBase settingsBase;
   settingsBase.blockAnonymousCID = false;
   settingsBase.blockInvalidCID = false;
-  settingsBase.blockMode = WHITELISTS_AND_BLACKLISTS;
+  settingsBase.blockMode = ALLOWLISTS_AND_BLOCKLISTS;
   // CH
   settingsBase.countryCode = "+41";
   std::string msg;
-  // test number in blacklist
+  // test number in blocklist
   assert(block->isBlocked(&settingsBase, "0449999999", "", &msg) == true);
-  assert(msg.compare("Incoming call: number='+41449999999' name='Test single number' blocked blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41449999999' name='Test single number' blocked blocklist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+41449999999", "", &msg) == true);
-  assert(msg.compare("Incoming call: number='+41449999999' name='Test single number' blocked blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41449999999' name='Test single number' blocked blocklist='main'") == 0);
 
-  // test number in range in blacklist
+  // test number in range in blocklist
   assert(block->isBlocked(&settingsBase, "0448881111", "", &msg) == true);
-  assert(msg.compare("Incoming call: number='+41448881111' name='Test range 1' blocked blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41448881111' name='Test range 1' blocked blocklist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+41448881111", "", &msg) == true);
-  assert(msg.compare("Incoming call: number='+41448881111' name='Test range 1' blocked blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41448881111' name='Test range 1' blocked blocklist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "0448881234", "", &msg) == true);
-  assert(msg.compare("Incoming call: number='+41448881234' name='Test range 1' blocked blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41448881234' name='Test range 1' blocked blocklist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+23412312312", "", &msg) == true);
-  assert(msg.compare("Incoming call: number='+23412312312' name='Test range 2' blocked blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+23412312312' name='Test range 2' blocked blocklist='main'") == 0);
 
-  // test number in whitelist
+  // test number in allowlist
   assert(block->isBlocked(&settingsBase, "0441112233", "", &msg) == false);
-  assert(msg.compare("Incoming call: number='+41441112233' name='Mr. Whitelist 1' whitelist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41441112233' name='Mr. X 1' allowlist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+41441112233", "", &msg) == false);
-  assert(msg.compare("Incoming call: number='+41441112233' name='Mr. Whitelist 1' whitelist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41441112233' name='Mr. X 1' allowlist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+4144222", "", &msg) == false);
-  assert(msg.compare("Incoming call: number='+4144222' name='Mr. Whitelist 3 too small' invalid whitelist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+4144222' name='Mr. X 3 too small' invalid allowlist='main'") == 0);
 
-  // test number in whitelist and blacklist
+  // test number in allowlist and blocklist
   assert(block->isBlocked(&settingsBase, "+41441119999", "", &msg) == false);
-  assert(msg.compare("Incoming call: number='+41441119999' name='Mr. Whitelist 2 in blacklist too' whitelist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41441119999' name='Mr. X 2 in blocklist too' allowlist='main'") == 0);
 
   // test: caller information from provider
   assert(block->isBlocked(&settingsBase, "+12025808292", "Mr. Spamer", &msg) == false);
@@ -243,7 +243,7 @@ static void TestCase_whitelists_and_blacklists(std::string etcPath)
   assert(msg.compare("Incoming call: number='+493456789012345678' blocked invalid") == 0);
 }
 
-static void TestCase_blacklists_only(std::string etcPath)
+static void TestCase_blocklists_only(std::string etcPath)
 {
   //printf("etc: %s\n", etcPath.c_str());
   Settings* settings = new Settings(etcPath);
@@ -252,27 +252,27 @@ static void TestCase_blacklists_only(std::string etcPath)
   SettingBase settingsBase;
   settingsBase.blockAnonymousCID = false;
   settingsBase.blockInvalidCID = false;
-  settingsBase.blockMode = BLACKLISTS_ONLY;
+  settingsBase.blockMode = BLOCKLISTS_ONLY;
   // CH
   settingsBase.countryCode = "+41";
   std::string msg;
-  // test number in blacklist
+  // test number in blocklist
   assert(block->isBlocked(&settingsBase, "0449999999", "", &msg) == true);
-  assert(msg.compare("Incoming call: number='+41449999999' name='Test single number' blocked blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41449999999' name='Test single number' blocked blocklist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+41449999999", "", &msg) == true);
-  assert(msg.compare("Incoming call: number='+41449999999' name='Test single number' blocked blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41449999999' name='Test single number' blocked blocklist='main'") == 0);
 
-  // test range in blacklist
+  // test range in blocklist
   assert(block->isBlocked(&settingsBase, "0448881111", "", &msg) == true);
-  assert(msg.compare("Incoming call: number='+41448881111' name='Test range 1' blocked blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41448881111' name='Test range 1' blocked blocklist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+41448881111", "", &msg) == true);
-  assert(msg.compare("Incoming call: number='+41448881111' name='Test range 1' blocked blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41448881111' name='Test range 1' blocked blocklist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "0448881234", "", &msg) == true);
-  assert(msg.compare("Incoming call: number='+41448881234' name='Test range 1' blocked blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41448881234' name='Test range 1' blocked blocklist='main'") == 0);
   assert(block->isBlocked(&settingsBase, "+23412312312", "", &msg) == true);
-  assert(msg.compare("Incoming call: number='+23412312312' name='Test range 2' blocked blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+23412312312' name='Test range 2' blocked blocklist='main'") == 0);
 
-  // test number in whitelist
+  // test number in allowlist
   assert(block->isBlocked(&settingsBase, "0441112233", "", &msg) == false);
   assert(msg.compare("Incoming call: number='+41441112233'") == 0);
   assert(block->isBlocked(&settingsBase, "+41441112233", "", &msg) == false);
@@ -280,9 +280,9 @@ static void TestCase_blacklists_only(std::string etcPath)
   assert(block->isBlocked(&settingsBase, "+4144222", "", &msg) == false);
   assert(msg.compare("Incoming call: number='+4144222' invalid") == 0);
 
-  // test number in whitelist and blacklist
+  // test number in allowlist and blocklist
   assert(block->isBlocked(&settingsBase, "+41441119999", "", &msg) == true);
-  assert(msg.compare("Incoming call: number='+41441119999' name='Mr. Whitelist 2 in blacklist too' blocked blacklist='main'") == 0);
+  assert(msg.compare("Incoming call: number='+41441119999' name='Mr. X 2 in blocklist too' blocked blocklist='main'") == 0);
 
   // test: caller information from provider
   assert(block->isBlocked(&settingsBase, "+12025808292", "Mr. Spamer", &msg) == false);
@@ -319,8 +319,8 @@ void Test_Block_Run(std::string etcPath)
   Logger::setLogLevel(LogLevel::WARN);
 
   TestCase_logging_only(etcPath);
-  TestCase_whitelists_only(etcPath);
-  TestCase_whitelists_and_blacklists(etcPath);
-  TestCase_blacklists_only(etcPath);
+  TestCase_allowlists_only(etcPath);
+  TestCase_allowlists_and_blocklists(etcPath);
+  TestCase_blocklists_only(etcPath);
 }
 

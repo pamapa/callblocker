@@ -1,0 +1,45 @@
+{
+    "log_level": "debug",
+    "pjsip_log_level": 4,
+    "phones": [
+        {
+                "enabled": false,
+                "name": "Analog Home Phone",
+                "country_code": "+41",
+                "block_mode": "logging_only",
+                "block_anonymous_cid": false,
+                "online_check": "tellows_de",
+                "online_lookup": "tel_search_ch",
+                "device": "\/dev\/ttyACM0"
+        },
+        {
+                "enabled": true,
+                "name": "SIP Home Phone",
+                "country_code": "+41",
+                "block_mode": "allowlists_and_blocklists",
+                "block_anonymous_cid": false,
+                "online_check": "tellows_de",
+                "online_lookup": "tel_search_ch",
+                "domain": "fritz.box",
+                "username": "callblocker",
+                "password": "callblocker12"
+         }
+    ],
+    "online_credentials": [
+        {
+            "name": "tellows_de",
+            "username": "test",
+            "password": "test123"
+        },
+        {
+            "name": "whocalled_us",
+            "username": "<your name>",
+            "password": "<your pass>"
+        },
+        {
+            "name": "tellows_de",
+            "username": "1",
+            "password": "2"
+        }
+    ]
+}

@@ -12,5 +12,5 @@
     ]
 }
 ```
-The fields are described [here](/etc/callblocker/blacklists/README.md).
+The fields are described [here](/etc/callblocker/blocklists/README.md).
 

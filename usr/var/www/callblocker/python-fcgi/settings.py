@@ -148,10 +148,10 @@ def handle_online_credentials(environ, start_response, params):
 
 
 def handle_get_list(environ, start_response, params):
-    dirname = "blacklists"
+    dirname = "blocklists"
     if "dirname" in params:
         dirname = params["dirname"]
-        if dirname != "blacklists" and dirname != "whitelists" and dirname != "cache":
+        if dirname != "blocklists" and dirname != "allowlists" and dirname != "cache":
             start_response('404 NOT FOUND', [('Content-Type', 'text/plain')])
             return ['Not Found']
 
@@ -203,10 +203,10 @@ def handle_get_list(environ, start_response, params):
 
 
 def handle_get_lists(environ, start_response, params):
-    dirname = "blacklists"
+    dirname = "blocklists"
     if "dirname" in params:
         dirname = params["dirname"]
-        if dirname != "blacklists" and dirname != "whitelists":
+        if dirname != "blocklists" and dirname != "allowlists":
             start_response('404 NOT FOUND', [('Content-Type', 'text/plain')])
             return ['Not Found']
 

@@ -25,7 +25,7 @@ The settings file looks like this.
       "enabled":             false,
       "name":                "SIP Home Phone",
       "country_code":        "+41",
-      "block_mode":          "whitelists_and_blacklists",
+      "block_mode":          "allowlists_and_blocklists",
       "block_anonymous_cid": false,
       "block_invalid_cid":   true,
       "online_check":        "tellows_de",
@@ -57,7 +57,7 @@ Fields                | Values       | Description
 "log_level"           | "error", "warn", "info" or "debug" | Logging level. Default is "info".
 "pjsip_log_level"     | 0-5          | Logging level of the pjsip library, for debugging proposes. Default is 0.
 "country_code"        | `"+<X[Y][Z]>"` | Your international country code (e.g. +33 for France). This is used to map local numbers to international ones, which then are used for blocking.
-"block_mode"          | "logging_only", "whitelists_only", "whitelists_and_blacklists" or "blacklists_only" | "logging_only": number is never blocked, only logged what it would do. "whitelists_only": number has to be in a whitelists (blacklists not used). "whitelists_and_blacklists": number is blocked, when in a blacklists and NOT in a whitelists (default). "blacklists_only": number is blocked, when in a blacklists. (whitelists not used)
+"block_mode"          | "logging_only", "allowlists_only", "allowlists_and_blocklists" or "blocklists_only" | "logging_only": number is never blocked, only logged what it would do. "allowlists_only": number has to be in a allowlists (blocklists not used). "allowlists_and_blocklists": number is blocked, when in a blocklists and NOT in a allowlists (default). "blocklists_only": number is blocked, when in a blocklists. (allowlists not used)
 "block_anonymous_cid" | true, false  | optional: block all calls that have an anonymous/unknown caller ID. Default is false.
 "block_invalid_cid"   | true, false  | optional: block all calls that have an invalid caller ID. Default is true.
 "online_check"        | [`<string>`](#onlineCheck)  | optional: online check site to verify if number is spam
@@ -80,8 +80,8 @@ In this section you can define credentials, which are needed by some [online che
 ## Privacy
 Try to avoid as many online checks and lookups as possible. Each time the phone number gets through the internet and the
 used sites may this phone number. Good strategies to do so are:
-- use whitelist of your known good phone numbers (importing your address book)
-- use offline blacklist
+- use allowlist of your known good phone numbers (importing your address book)
+- use offline blocklist
 
 
 ## <a name="onlineCheck"></a> Online check option

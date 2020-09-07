@@ -25,7 +25,7 @@ import json
 NAME_MAX_LENGTH = 200
 
 
-class BlacklistBase(object):
+class BlocklistBase(object):
 
     def __init__(self):
         logging.basicConfig()

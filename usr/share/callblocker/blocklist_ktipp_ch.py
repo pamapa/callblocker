@@ -23,10 +23,10 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from collections import OrderedDict
 
-from blacklist_base import BlacklistBase
+from blocklist_base import BlocklistBase
 
 
-class BlacklistKTippCH(BlacklistBase):
+class BlocklistKTippCH(BlocklistBase):
 
     def _extract_number(self, data):
         n = re.sub(r"[^0-9\+]","", data)
@@ -101,7 +101,7 @@ class BlacklistKTippCH(BlacklistBase):
         entries = self.cleanup_entries(entries, country_code="+41")
 
         result = OrderedDict()
-        result["name"] = "ktipp.ch blacklist"
+        result["name"] = "ktipp.ch blocklist"
         result["origin"] = "https://www.ktipp.ch/service/warnlisten/detail/warnliste/unerwuenschte-oder-laestige-telefonanrufe/"
         result["parsed_by"] = "callblocker script: %s" % os.path.basename(__file__)
         result["last_update"] = current_update
@@ -114,8 +114,8 @@ class BlacklistKTippCH(BlacklistBase):
 # main
 #
 if __name__ == "__main__":
-    m = BlacklistKTippCH()
-    parser = m.get_parser("Fetch blacklist provided by ktipp.ch")
+    m = BlocklistKTippCH()
+    parser = m.get_parser("Fetch blocklist provided by ktipp.ch")
     args = parser.parse_args()
-    json_filename = args.output + "/blacklist_ktipp_ch.json"
+    json_filename = args.output + "/blocklist_ktipp_ch.json"
     m.run(args, json_filename)

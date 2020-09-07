@@ -34,8 +34,8 @@
 class Block {
 private:
   Settings* m_pSettings;
-  FileListsNotified* m_pWhitelists;
-  FileListsNotified* m_pBlacklists;
+  FileListsNotified* m_pAllowlists;
+  FileListsNotified* m_pBlocklists;
   FileListsCache* m_pCache;
 
 public:
@@ -48,8 +48,8 @@ private:
   bool isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg);
   bool isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber, const std::string& rName, std::string* pMsg);
 
-  bool isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pName);
-  bool isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
+  bool isAllowListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pName);
+  bool isBlocklisted(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
                      std::string* pListName, std::string* pName, std::string* pScore);
 
   void onlineLookup(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,

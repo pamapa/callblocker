@@ -182,9 +182,9 @@ bool Settings::getBase(struct json_object* objbase, struct SettingBase* res) {
     return false;
   }
   if (tmp == "logging_only") res->blockMode = LOGGING_ONLY;
-  else if (tmp == "whitelists_only") res->blockMode = WHITELISTS_ONLY;
-  else if (tmp == "whitelists_and_blacklists") res->blockMode = WHITELISTS_AND_BLACKLISTS;
-  else if (tmp == "blacklists_only") res->blockMode = BLACKLISTS_ONLY;
+  else if (tmp == "allowlists_only") res->blockMode = ALLOWLISTS_ONLY;
+  else if (tmp == "allowlists_and_blocklists") res->blockMode = ALLOWLISTS_AND_BLOCKLISTS;
+  else if (tmp == "blocklists_only") res->blockMode = BLOCKLISTS_ONLY;
   else {
     Logger::warn("unknown block_mode '%s' in settings file %s", tmp.c_str(), m_filename.c_str());
     return false;

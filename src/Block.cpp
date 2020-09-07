@@ -30,8 +30,8 @@ Block::Block(Settings* pSettings) {
   Logger::debug("Block::Block()");
   m_pSettings = pSettings;
 
-  m_pWhitelists = new FileListsNotified(Utils::pathJoin(pSettings->getBasePath(), "whitelists"));
-  m_pBlacklists = new FileListsNotified(Utils::pathJoin(pSettings->getBasePath(), "blacklists"));
+  m_pAllowlists = new FileListsNotified(Utils::pathJoin(pSettings->getBasePath(), "allowlists"));
+  m_pBlocklists = new FileListsNotified(Utils::pathJoin(pSettings->getBasePath(), "blocklists"));
   m_pCache = new FileListsCache(Utils::pathJoin(pSettings->getBasePath(), "cache"));
 }
 
@@ -39,13 +39,13 @@ Block::~Block() {
   Logger::debug("Block::~Block()");
 
   delete(m_pCache);
-  delete(m_pBlacklists);
-  delete(m_pWhitelists);
+  delete(m_pBlocklists);
+  delete(m_pAllowlists);
 }
 
 void Block::run() {
-  m_pWhitelists->run();
-  m_pBlacklists->run();
+  m_pAllowlists->run();
+  m_pBlocklists->run();
   m_pCache->run();
 }
 
@@ -71,11 +71,11 @@ bool Block::isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::s
     case LOGGING_ONLY:
       block = false;
       break;
-    case WHITELISTS_ONLY:
+    case ALLOWLISTS_ONLY:
       block = true;
       break;
-    case WHITELISTS_AND_BLACKLISTS:
-    case BLACKLISTS_ONLY:
+    case ALLOWLISTS_AND_BLOCKLISTS:
+    case BLOCKLISTS_ONLY:
       block = pSettings->blockAnonymousCID;
       break;
   }
@@ -95,8 +95,8 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
   std::string listName = "";
   std::string callerName = "";
   std::string score = "";
-  bool onWhitelist = false;
-  bool onBlacklist = false;
+  bool onAllowlist = false;
+  bool onBlocklist = false;
   bool block = false;
   
   switch (pSettings->blockMode) {
@@ -104,29 +104,29 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
       Logger::warn("Invalid block mode %d, use LOGGING_ONLY", pSettings->blockMode);
       // fall-through
     case LOGGING_ONLY:
-      if (isWhiteListed(pSettings, rNumber, &listName, &callerName)) {
-        onWhitelist = true;
+      if (isAllowListed(pSettings, rNumber, &listName, &callerName)) {
+        onAllowlist = true;
         break;
       }
-      if (isBlacklisted(pSettings, rNumber, validNumber, &listName, &callerName, &score)) {
-        onBlacklist = true;
+      if (isBlocklisted(pSettings, rNumber, validNumber, &listName, &callerName, &score)) {
+        onBlocklist = true;
         break;
       }
       break;
-    case WHITELISTS_ONLY:
-      if (isWhiteListed(pSettings, rNumber, &listName, &callerName)) {
-        onWhitelist = true;
+    case ALLOWLISTS_ONLY:
+      if (isAllowListed(pSettings, rNumber, &listName, &callerName)) {
+        onAllowlist = true;
         break;
       }
       block = true;
       break;
-    case WHITELISTS_AND_BLACKLISTS:
-      if (isWhiteListed(pSettings, rNumber, &listName, &callerName)) {
-        onWhitelist = true;
+    case ALLOWLISTS_AND_BLOCKLISTS:
+      if (isAllowListed(pSettings, rNumber, &listName, &callerName)) {
+        onAllowlist = true;
         break;
       }
-      if (isBlacklisted(pSettings, rNumber, validNumber, &listName, &callerName, &score)) {
-        onBlacklist = true;
+      if (isBlocklisted(pSettings, rNumber, validNumber, &listName, &callerName, &score)) {
+        onBlocklist = true;
         block = true;
         break;
       }
@@ -135,9 +135,9 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
         break;
       }
       break;
-    case BLACKLISTS_ONLY:
-      if (isBlacklisted(pSettings, rNumber, validNumber, &listName, &callerName, &score)) {
-        onBlacklist = true;
+    case BLOCKLISTS_ONLY:
+      if (isBlocklisted(pSettings, rNumber, validNumber, &listName, &callerName, &score)) {
+        onBlocklist = true;
         block = true;
         break;
       }
@@ -153,12 +153,12 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
     callerName = rName;
   }
 
-  if (!onWhitelist && !onBlacklist && callerName.empty()) {
+  if (!onAllowlist && !onBlocklist && callerName.empty()) {
     // online lookup caller name
     onlineLookup(pSettings, rNumber, validNumber, &callerName);
   }
 
-  // Incoming call number='x' name='y' [invalid] [blocked] [whitelist='w'] [blacklist='b'] [score=s]
+  // Incoming call number='x' name='y' [invalid] [blocked] [allowlist='w'] [blocklist='b'] [score=s]
   std::ostringstream oss;
   oss << "Incoming call: number='" << rNumber << "'";
   if (!callerName.empty()) {
@@ -170,11 +170,11 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
   if (!validNumber) {
     oss << " invalid";
   }
-  if (onWhitelist) {
-    oss << " whitelist='" << listName << "'";
+  if (onAllowlist) {
+    oss << " allowlist='" << listName << "'";
   }
-  if (onBlacklist) {
-    oss << " blacklist='" << listName << "'";
+  if (onBlocklist) {
+    oss << " blocklist='" << listName << "'";
   }
   if (score.length() != 0) {
     oss << " score=" << score;
@@ -184,14 +184,14 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
   return block;
 }
 
-bool Block::isWhiteListed(const struct SettingBase* pSettings, const std::string& rNumber,
+bool Block::isAllowListed(const struct SettingBase* pSettings, const std::string& rNumber,
                           std::string* pListName, std::string* pCallerName) {
-  return m_pWhitelists->getEntry(rNumber, pListName, pCallerName);
+  return m_pAllowlists->getEntry(rNumber, pListName, pCallerName);
 }
 
-bool Block::isBlacklisted(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
+bool Block::isBlocklisted(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
                           std::string* pListName, std::string* pCallerName, std::string* pScore) {
-  if (m_pBlacklists->getEntry(rNumber, pListName, pCallerName)) {
+  if (m_pBlocklists->getEntry(rNumber, pListName, pCallerName)) {
     return true;
   }
 

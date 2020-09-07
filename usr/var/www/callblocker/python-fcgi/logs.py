@@ -99,7 +99,9 @@ def handle_callerlog(environ, start_response, params):
     pattern = re.compile(r"^Incoming call: (number="+re_eq+")?\s?(name="+re_eq+")?\s?" +
                          "(blocked)?\s?" +
                          "(invalid)?\s?" +
-                         "(whitelist="+re_eq+")?\s?(blacklist="+re_eq+")?\s?(score=([0-9]*))?$")
+                         "(allowlist="+re_eq+")?\s?(blocklist="+re_eq+")?\s?" +
+                         "(whitelist="+re_eq+")?\s?(blacklist="+re_eq+")?\s?" + # backward compatibility
+                         "(score=([0-9]*))?$")
 
     items = []
     i = start
@@ -131,7 +133,11 @@ def handle_callerlog(environ, start_response, params):
             except (IndexError, AttributeError): pass
             try:
                 obj.group(8).strip()
-                tmp["what"] = 1  # whitelisted
+                tmp["what"] = 1  # allowlisted
+            except (IndexError, AttributeError): pass
+            try:
+                obj.group(12).strip()
+                tmp["what"] = 1  # whitelisted (backward compatibility)
             except (IndexError, AttributeError): pass
             # human readable reason
             tmp["reason"] = ""
@@ -140,17 +146,27 @@ def handle_callerlog(environ, start_response, params):
                 tmp["reason"] = "invalid Caller ID"
             except (IndexError, AttributeError): pass
             try:
-                add = "whitelisted in '" + obj.group(8).strip() + "'" # whitelist
+                add = "allowlisted in '" + obj.group(8).strip() + "'" # allowlist
                 if len(tmp["reason"]) == 0: tmp["reason"] += add
                 else: tmp["reason"] += ", " + add
             except (IndexError, AttributeError): pass
             try:
-                add = "blacklisted in '" + obj.group(10).strip() + "'" # blacklist
+                add = "blocklisted in '" + obj.group(10).strip() + "'" # blocklist
                 if len(tmp["reason"]) == 0: tmp["reason"] += add
                 else: tmp["reason"] += ", " + add
             except (IndexError, AttributeError): pass
             try:
-                add = "with score '" + obj.group(12).strip() + "'" # score
+                add = "allowlisted in '" + obj.group(12).strip() + "'" # whitelist (backward compatibility)
+                if len(tmp["reason"]) == 0: tmp["reason"] += add
+                else: tmp["reason"] += ", " + add
+            except (IndexError, AttributeError): pass
+            try:
+                add = "blocklisted in '" + obj.group(14).strip() + "'" # blacklist (backward compatibility)
+                if len(tmp["reason"]) == 0: tmp["reason"] += add
+                else: tmp["reason"] += ", " + add
+            except (IndexError, AttributeError): pass
+            try:
+                add = "with score '" + obj.group(16).strip() + "'" # score
                 if len(tmp["reason"]) == 0: tmp["reason"] += add
                 else: tmp["reason"] += " " + add
             except (IndexError, AttributeError): pass

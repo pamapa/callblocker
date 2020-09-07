@@ -32,9 +32,9 @@ struct json_object; // avoids inclusion of <json-c/json.h>
 
 enum SettingBlockMode {
   LOGGING_ONLY = 0,             // number is never blocked, only logged what it would do
-  WHITELISTS_ONLY,              // number is blocked, when NOT in a whitelists (blacklists not used at all)
-  WHITELISTS_AND_BLACKLISTS,    // number is blocked, when in a blacklists and NOT in a whitelists
-  BLACKLISTS_ONLY               // number is blocked, when in a blacklists (whitelists not used at all)
+  ALLOWLISTS_ONLY,              // number is blocked, when NOT in a allowlists (blocklists not used at all)
+  ALLOWLISTS_AND_BLOCKLISTS,    // number is blocked, when in a blocklists and NOT in a allowlists
+  BLOCKLISTS_ONLY               // number is blocked, when in a blocklists (allowlists not used at all)
 };
 
 struct SettingBase {

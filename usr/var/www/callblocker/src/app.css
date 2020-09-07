@@ -9,7 +9,7 @@ html, body {
   *font-size: 81.25%;
 }
 
-.whitelistRow .dojoxGridCell {
+.allowlistRow .dojoxGridCell {
     background-color: LightGreen;
 }
 .blockedRow .dojoxGridCell {

@@ -15,20 +15,20 @@ The call blocker acts like a normal phone. No additional telephone switchboard (
 - supports VoIP systems and analog modems
 - automatically blocks unwanted incoming calls
 - logging of all incoming calls, including caller name lookups
-- import your addressbook as whitelist or blacklist
+- import your addressbook as allowlist or blocklist
 - different kind of blocking modes
   - logging only
-  - number blocking using blacklists only
-  - number blocking using blacklists and avoid blocking, if number is in whitelist
-  - number has to be in whitelist, all other numbers are blocked
+  - number blocking using blocklists only
+  - number blocking using blocklists and avoid blocking, if number is in allowlist
+  - number has to be in allowlist, all other numbers are blocked
 - different kind of ways to verify incoming calls
-  - user maintained offline blacklist
-  - extern maintained offline blacklists (downloaded from the Internet and stored offline)
+  - user maintained offline blocklist
+  - extern maintained offline blocklists (downloaded from the Internet and stored offline)
   - support of online spam check sites, for spam verification
   - detect anonymous and invalid numbers
   - support range of numbers matching whole areas/regions
 - different kind of ways to get caller name of incoming calls
-  - using whitelists and blacklists as offline lookup for caller name
+  - using allowlists and blocklists as offline lookup for caller name
   - support of online lookup sites, to find out who is calling
 - online request caching
 - nice web interface
@@ -143,21 +143,21 @@ sudo systemctl start callblockerd.service
 The documentation of the configuration file "settings.json" is located [here](/etc/callblocker/README.md).
 
 
-## Offline blacklists
-Through the web interface you have the possibility to maintain your own blacklist. Additionally there is the
-possibility to download automatically an extern maintained blacklist for later offline usage. You will need to
-setup a cronjob for this task to download the blacklist periodically.
+## Offline blocklists
+Through the web interface you have the possibility to maintain your own blocklist. Additionally there is the
+possibility to download automatically an extern maintained blocklist for later offline usage. You will need to
+setup a cronjob for this task to download the blocklist periodically.
 
-Currently the following blacklists are supported:
+Currently the following blocklists are supported:
 
 Name                         | Site                       | Description
 ----                         | ----                       | -----------
-blacklist_toastedspam_com.py | http://www.toastedspam.com | Mostly USA and Canada (+1)
-blacklist_ktipp_ch.py        | https://www.ktipp.ch       | Switzerland (+41)
+blocklist_toastedspam_com.py | http://www.toastedspam.com | Mostly USA and Canada (+1)
+blocklist_ktipp_ch.py        | https://www.ktipp.ch       | Switzerland (+41)
 
-The following cronjob will download each day the blacklist provided by ktipp_ch:
+The following cronjob will download each day the blocklist provided by ktipp_ch:
 ```bash
-0 0 * * * /usr/share/callblocker/blacklist_ktipp_ch.py --output /etc/callblocker/blacklists/ >/dev/null 2>&1
+0 0 * * * /usr/share/callblocker/blocklist_ktipp_ch.py --output /etc/callblocker/blocklists/ >/dev/null 2>&1
 ```
 
 

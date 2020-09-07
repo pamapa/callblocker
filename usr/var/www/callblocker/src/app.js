@@ -105,16 +105,16 @@ require(["dijit/ConfirmDialog",
         listStore.save();
       } 
     }
-    var addToWhitelistMenuItem = new dijit.MenuItem({
-      label: "Add to whitelist",
-      onClick: function() { onClickAddToList(api_base.concat("/get_list?dirname=whitelists")); }
+    var addToAllowlistMenuItem = new dijit.MenuItem({
+      label: "Add to allowlist",
+      onClick: function() { onClickAddToList(api_base.concat("/get_list?dirname=allowlists")); }
     });
-    var addToBlacklistMenuItem = new dijit.MenuItem({
-      label: "Add to blacklist",
-      onClick: function() { onClickAddToList(api_base.concat("/get_list?dirname=blacklists")); }
+    var addToBlocklistMenuItem = new dijit.MenuItem({
+      label: "Add to blocklist",
+      onClick: function() { onClickAddToList(api_base.concat("/get_list?dirname=blocklists")); }
     });
-    menu.addChild(addToWhitelistMenuItem);
-    menu.addChild(addToBlacklistMenuItem);
+    menu.addChild(addToAllowlistMenuItem);
+    menu.addChild(addToBlocklistMenuItem);
 
     var grid = new dojox.grid.EnhancedGrid({
       store: store,
@@ -130,7 +130,7 @@ require(["dijit/ConfirmDialog",
       if (item != null) {
         switch(item.i.what) {
           case 1:
-            row.customClasses = "whitelistRow";
+            row.customClasses = "allowlistRow";
             break;
           case -1:
             row.customClasses = "blockedRow";
@@ -228,9 +228,9 @@ require(["dijit/ConfirmDialog",
     var blockModeSelect = new dijit.form.Select({
       options: [
         { label: "logging only", value: "logging_only", selected: true },
-        { label: "whitelists only", value: "whitelists_only" },
-        { label: "whitelists and blacklists", value: "whitelists_and_blacklists" },
-        { label: "blacklists only", value: "blacklists_only" }
+        { label: "allowlists only", value: "allowlists_only" },
+        { label: "allowlists and blocklists", value: "allowlists_and_blocklists" },
+        { label: "blocklists only", value: "blocklists_only" }
       ]
     });
     function selectBlockMode(mode) {
@@ -739,12 +739,12 @@ require(["dijit/ConfirmDialog",
     ]
   }
 
-  function createWhitelist() {
-    return createListX("dirname=whitelists");
+  function createAllowlist() {
+    return createListX("dirname=allowlists");
   }
 
-  function createBlacklist() {
-    return createListX("dirname=blacklists");
+  function createBlocklist() {
+    return createListX("dirname=blocklists");
   }
 
 
@@ -824,13 +824,13 @@ require(["dijit/ConfirmDialog",
         { id: "config", name: "Configuration", func: null,
           children: [
             {_reference: "config_phone"}, {_reference: "config_onlinecreds"},
-            {_reference: "config_whitelists"}, {_reference: "config_blacklists"}
+            {_reference: "config_allowlists"}, {_reference: "config_blocklists"}
           ] 
         },
         { id: "config_phone", name:"Phone", func:createPhone},
         { id: "config_onlinecreds", name:"Online Credentials", func: createOnlineCredentials},
-        { id: "config_whitelists", name:"Whitelists", func: createWhitelist},
-        { id: "config_blacklists", name:"Blacklists", func: createBlacklist},
+        { id: "config_allowlists", name:"Allowlists", func: createAllowlist},
+        { id: "config_blocklists", name:"Blocklists", func: createBlocklist},
 
         // Diagnostic
         { id: "diag", name: "Diagnostic", func: null,
