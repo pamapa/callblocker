@@ -158,20 +158,25 @@ def handle_get_list(environ, start_response, params):
     filename = "main.json"
     if "filename" in params:
         filename = os.path.basename(params["filename"])
-    filename = os.path.join(config.CALLBLOCKER_SYSCONFDIR, dirname, filename)
-    if not os.path.exists(filename):
-        start_response('404 NOT FOUND', [('Content-Type', 'text/plain')])
-        return ['Not Found']
+    fullname = os.path.join(config.CALLBLOCKER_SYSCONFDIR, dirname, filename)
+    if not os.path.exists(fullname):
+        if filename in ["main.json", "onlinelookup.json", "onlinecheck.json"]:
+            # to keep app.js simple: create empty
+            with open(fullname, "w", encoding="utf-8") as f:
+                json.dump({"name": "main", "entries": []}, f, indent=2, ensure_ascii=False)
+        else:
+            start_response('404 NOT FOUND', [('Content-Type', 'text/plain')])
+            return ['Not Found']
 
     if environ.get('REQUEST_METHOD', '') == "POST":
         post = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
         #print >> sys.stderr, 'POST data=%s\n' % post.getvalue('data')
         json_list = json.loads(post.getvalue('data'))
-        with open(filename, "w", encoding="utf-8") as f:
+        with open(fullname, "w", encoding="utf-8") as f:
             json.dump({"name": json_list["label"], "entries": _remove_duplicates(json_list["items"])}, f, indent=2, ensure_ascii=False)
         return
 
-    with open(filename, encoding="utf-8") as f:
+    with open(fullname, encoding="utf-8") as f:
         jj = json.loads(f.read())
     all = _remove_duplicates(jj["entries"])
     # sort entries by name
@@ -192,7 +197,7 @@ def handle_get_list(environ, start_response, params):
     if "name" in jj:
         label = jj["name"]
     else:
-        label = os.path.splitext(filename)[0]
+        label = os.path.splitext(fullname)[0]
 
     headers = [
         ('Content-Type',  'text/json'),
@@ -273,12 +278,10 @@ def handle_get_lists(environ, start_response, params):
         if os.path.isfile(fullname) and os.path.splitext(fname)[1] == ".json":
             files.append(fullname)
 
-    # we need "main.json" to keep app.js simple
-    mainfilename = os.path.join(base, "main.json")
-    if not mainfilename in files:
-        with open(mainfilename, "w", encoding="utf-8") as f:
-            json.dump({"name": "main", "entries": []}, f, indent=2, ensure_ascii=False)
-        files.append(mainfilename)
+    # to keep app.js simple
+    main_fullname = os.path.join(base, "main.json")
+    if not main_fullname in files:
+        files.append(main_fullname)
 
     all = []
     for fname in files:
