@@ -66,8 +66,11 @@ def _remove_duplicates(entries):
 
 
 def _create_empty_list(fullname, name):
-    with open(fullname, "w", encoding="utf-8") as f:
-        json.dump({"name": name, "entries": []}, f, indent=2, ensure_ascii=False)
+    try:
+        with open(fullname, "w", encoding="utf-8") as f:
+            json.dump({"name": name, "entries": []}, f, indent=2, ensure_ascii=False)
+    except OSError as ex:
+        print("Ca't create empty list file (fullname=%s, ex=%s)" % (fullname, ex), file=sys.stderr)
 
 
 def handle_phones(environ, start_response, params):
@@ -75,7 +78,7 @@ def handle_phones(environ, start_response, params):
 
     if environ.get('REQUEST_METHOD', '') == "POST":
         post = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
-        #print >> sys.stderr, 'POST data=%s\n' % post.getvalue('data')
+        #print("POST data=%s\n" % post.getvalue("'data"), file=sys.stderr)
         json_phones = json.loads(post.getvalue('data'))
         # Analog vs. SIP: remove "device" or others
         for phone in json_phones["items"]:
@@ -122,7 +125,7 @@ def handle_online_credentials(environ, start_response, params):
 
     if environ.get('REQUEST_METHOD', '') == "POST":
         post = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
-        #print >> sys.stderr, 'POST data=%s\n' % post.getvalue('data')
+        #print("POST data=%s\n" % post.getvalue("data"), file=sys.stderr)
         json_creds = json.loads(post.getvalue('data'))
         jj["online_credentials"] = json_creds["items"]
         with open(SETTINGS_FILE, 'w') as f:
@@ -174,7 +177,7 @@ def handle_get_list(environ, start_response, params):
 
     if environ.get('REQUEST_METHOD', '') == "POST":
         post = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
-        #print >> sys.stderr, 'POST data=%s\n' % post.getvalue('data')
+        #print("POST data=%s\n" % post.getvalue("'data"), file=sys.stderr)
         json_list = json.loads(post.getvalue('data'))
         with open(fullname, "w", encoding="utf-8") as f:
             json.dump({"name": json_list["label"], "entries": _remove_duplicates(json_list["items"])}, f, indent=2, ensure_ascii=False)
@@ -221,7 +224,7 @@ def handle_get_lists(environ, start_response, params):
 
     if environ.get('REQUEST_METHOD', '') == "POST":
         post = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ, keep_blank_values=True)
-        print >> sys.stderr, 'POST merge=%s\n' % post.getvalue('merge')
+        #print("POST merge=%s\n" % post.getvalue("merge"), file=sys.stderr)
 
         # only import of addressbook supported
         if "import" not in params or params["import"] != "addressbook":
@@ -231,7 +234,7 @@ def handle_get_lists(environ, start_response, params):
         merge_name = os.path.basename(post.getvalue('merge'))
         tmp_name = os.path.join("/tmp", post['uploadedfile'].filename)
         tmp_file = post['uploadedfile'].file
-        print >> sys.stderr, 'POST tmp_name=%s\n' % tmp_name
+        #print("POST tmp_name=%s\n" % tmp_name, file=sys.stderr)
 
         cmd = []
         extention = os.path.splitext(post.getvalue('name'))[1].lower()
@@ -241,7 +244,7 @@ def handle_get_lists(environ, start_response, params):
             cmd = [os.path.join(config.CALLBLOCKER_DATADIR, "import_LDIF.py")]
         elif extention == ".vcf":
             cmd = [os.path.join(config.CALLBLOCKER_DATADIR, "import_VCF.py")]
-        print >> sys.stderr, 'cmd=%s\n' % cmd
+        #print("cmd=%s\n" % cmd, file=sys.stderr)
 
         def get_contry_code():
             with open(SETTINGS_FILE) as f:
@@ -257,13 +260,12 @@ def handle_get_lists(environ, start_response, params):
             try:
                 with open(tmp_name, 'wb') as f:
                     f.write(tmp_file.read())
-                print >> sys.stderr, 'execute: %s\n' % cmd
+                #print("execute: %s\n" % cmd, file=sys.stderr)
                 p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err = p.communicate()
                 exitCode = p.returncode
                 if exitCode != 0:
-                    print >> sys.stderr, 'out="%s"\n' % out
-                    print >> sys.stderr, 'err="%s"\n' % err
+                    print("command failed (cmd='%s',out='%s',err='%s'\n" % (cmd, out, err), file=sys.stderr)
             finally:
                 os.remove(tmp_name)
 

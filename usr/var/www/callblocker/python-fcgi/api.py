@@ -28,11 +28,11 @@ import logs
 
 
 def application(environ, start_response):
-    #print >> sys.stderr, 'environ="%s"\n' % environ
+    #print("environ='%s'\n" % environ, file=sys.stderr)
     path = environ.get('PATH_INFO', '')
 
     params = dict(urllib.parse.parse_qsl(environ.get('QUERY_STRING', '')))
-    #print >> sys.stderr, 'params="%s"\n' % params
+    #print("params='%s'\n" % params, file=sys.stderr)
 
     if path == "/phones":
         return settings.handle_phones(environ, start_response, params)
