@@ -309,7 +309,7 @@ bool Block::executeScript(std::string prefix, std::string scriptBaseName, const 
   std::string parameters = "--number " + rNumber;
   // optional credential parameters  
   std::vector<struct SettingOnlineCredential> creds = m_pSettings->getOnlineCredentials();
-  for(size_t i = 0; i < creds.size(); i++) {
+  for (size_t i = 0; i < creds.size(); i++) {
     struct SettingOnlineCredential* cred = &creds[i];
     if (cred->name == scriptBaseName) {
       for (std::map<std::string,std::string>::iterator it = cred->data.begin(); it != cred->data.end(); ++it) {

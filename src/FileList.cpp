@@ -94,7 +94,7 @@ bool FileList::save() {
   out << "{\n";
   out << "  \"name\": \"" << m_name << "\",\n";
   out << "  \"entries\": [\n"; 
-  for(size_t i = 0; i < m_entries.size(); i++) {
+  for (size_t i = 0; i < m_entries.size(); i++) {
     struct FileListEntry* entry = &m_entries[i];
     out << "      {\n";
     out << "        \"number\": \"" << entry->number << "\",\n";
@@ -119,7 +119,7 @@ std::string FileList::getName() {
 }
 
 bool FileList::getEntry(const std::string& rNumber, std::string* pName) {
-  for(size_t i = 0; i < m_entries.size(); i++) {
+  for (size_t i = 0; i < m_entries.size(); i++) {
     struct FileListEntry* entry = &m_entries[i];
     const char* s = entry->number.c_str();
     if (strncmp(s, rNumber.c_str(), strlen(s)) == 0) {
@@ -184,7 +184,7 @@ bool FileList::eraseAged(size_t maxDays) {
 
 void FileList::dump() {
   printf("Name='%s': [\n", m_name.c_str());
-  for(size_t i = 0; i < m_entries.size(); i++) {
+  for (size_t i = 0; i < m_entries.size(); i++) {
     struct FileListEntry* entry = &m_entries[i];
     printf("  '%s', '%s', %s\n", entry->name.c_str(), entry->number.c_str(), Utils::formatTime(entry->date_created).c_str());
   }

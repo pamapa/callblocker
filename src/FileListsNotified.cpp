@@ -59,7 +59,7 @@ void FileListsNotified::run() {
 bool FileListsNotified::getEntry(const std::string& rNumber, std::string* pListName, std::string* pCallerName) {
   bool ret = false;
   pthread_mutex_lock(&m_mutexLock);
-  for(size_t i = 0; i < m_lists.size(); i++) {
+  for (size_t i = 0; i < m_lists.size(); i++) {
     if (m_lists[i]->getEntry(rNumber, pCallerName)) {
       *pListName = m_lists[i]->getName();
       ret = true;
@@ -99,7 +99,7 @@ void FileListsNotified::load() {
 }
 
 void FileListsNotified::clear() {
-  for(size_t i = 0; i < m_lists.size(); i++) {
+  for (size_t i = 0; i < m_lists.size(); i++) {
     delete m_lists[i];
   }
   m_lists.clear();
@@ -107,7 +107,7 @@ void FileListsNotified::clear() {
 
 void FileListsNotified::dump() {
   pthread_mutex_lock(&m_mutexLock);
-  for(size_t i = 0; i < m_lists.size(); i++) {
+  for (size_t i = 0; i < m_lists.size(); i++) {
     FileList* l = m_lists[i];
     l->dump();
   }

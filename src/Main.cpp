@@ -84,7 +84,7 @@ public:
         s_appReloadConfig = false;
       }
 
-      for(size_t i = 0; i < m_analogPhones.size(); i++) {
+      for (size_t i = 0; i < m_analogPhones.size(); i++) {
         m_analogPhones[i]->run();
       }
 
@@ -94,14 +94,14 @@ public:
 
 private:
   void remove() {
-    //  Analog
-    for(size_t i = 0; i < m_analogPhones.size(); i++) {
+    // Analog
+    for (size_t i = 0; i < m_analogPhones.size(); i++) {
       delete m_analogPhones[i];
     }
     m_analogPhones.clear();
 
     // SIP
-    for(size_t i = 0; i < m_sipAccounts.size(); i++) {
+    for (size_t i = 0; i < m_sipAccounts.size(); i++) {
       delete m_sipAccounts[i];
     }
     m_sipAccounts.clear();
@@ -114,7 +114,7 @@ private:
   void add() {
     // Analog
     std::vector<struct SettingAnalogPhone> analogPhones = m_pSettings->getAnalogPhones();
-    for(size_t i = 0; i < analogPhones.size(); i++) {
+    for (size_t i = 0; i < analogPhones.size(); i++) {
       AnalogPhone* tmp = new AnalogPhone(m_pBlock);
       if (tmp->init(&analogPhones[i])) m_analogPhones.push_back(tmp);
       else delete tmp;
@@ -122,7 +122,7 @@ private:
 
     // SIP
     std::vector<struct SettingSipAccount> accounts = m_pSettings->getSipAccounts();
-    for(size_t i = 0; i < accounts.size(); i++) {
+    for (size_t i = 0; i < accounts.size(); i++) {
       if (m_pSipPhone == NULL) {
         m_pSipPhone = new SipPhone(m_pBlock);
         if (!m_pSipPhone->init()) {
