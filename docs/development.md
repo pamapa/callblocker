@@ -77,7 +77,7 @@ sudo ninja install
 - v0.11.0: moved from jessie to stretch, for jessie use the 0.10.x release
 - v0.13.0: switched from automake to meson/ninja and make use of static local pjproject 2.8
 - v0.14.0: moved from stretch to buster, start providing Debian packages
-- v0.15.0: renamed blacklists to blocklists and whitelists to allowlists, you will need to adapt settings.json + rename subfolders in /etc/callblocker/
+- v0.15.0: renamed blacklists to blocklists and whitelists to allowlists, you will need to adapt settings.json + rename subfolders in /etc/callblocker/. See [#68](https://github.com/pamapa/callblocker/issues/68)
 
 ```bash
 sudo systemctl stop callblockerd
