@@ -65,6 +65,11 @@ def _remove_duplicates(entries):
     return uniq
 
 
+def _create_empty_list(fullname, name):
+    with open(fullname, "w", encoding="utf-8") as f:
+        json.dump({"name": name, "entries": []}, f, indent=2, ensure_ascii=False)
+
+
 def handle_phones(environ, start_response, params):
     jj = _load_settings()
 
@@ -162,8 +167,7 @@ def handle_get_list(environ, start_response, params):
     if not os.path.exists(fullname):
         if filename in ["main.json", "onlinelookup.json", "onlinecheck.json"]:
             # to keep app.js simple: create empty
-            with open(fullname, "w", encoding="utf-8") as f:
-                json.dump({"name": os.path.splitext(fullname)[0], "entries": []}, f, indent=2, ensure_ascii=False)
+            _create_empty_list(fullname, os.path.splitext(fullname)[0])
         else:
             start_response('404 NOT FOUND', [('Content-Type', 'text/plain')])
             return ['Not Found']
@@ -281,6 +285,7 @@ def handle_get_lists(environ, start_response, params):
     # to keep app.js simple
     main_fullname = os.path.join(base, "main.json")
     if not main_fullname in files:
+        _create_empty_list(fullname, "main")
         files.append(main_fullname)
 
     all = []
