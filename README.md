@@ -29,7 +29,7 @@ The call blocker acts like a normal phone. No additional telephone switchboard (
   - support range of numbers matching whole areas/regions
 - different kind of ways to get caller name of incoming calls
   - support of online lookup sites, to find out who is calling
-  - support CID information coming from analog modem, iff supported from provider
+  - support CID information coming from analog modem, iff supported from the landline provider
   - using allow and block lists as offline lookup for caller name
 - online request caching
 - nice web interface
