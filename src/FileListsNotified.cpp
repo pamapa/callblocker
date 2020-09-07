@@ -37,14 +37,6 @@ FileListsNotified::FileListsNotified(const std::string& rPathname) : Notify(rPat
     Logger::warn("pthread_mutex_init failed");
   }
 
-  // main.json: to keep app.js simple
-  std::string filename = Utils::pathJoin(m_pathname, "main") + ".json";
-  if (!Utils::pathExists(filename)) {
-    FileList* l = new FileList(filename, "main");
-    l->save();
-    delete l;
-  }
-
   load();
 }
 
