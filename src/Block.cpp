@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -214,10 +214,6 @@ void Block::onlineLookup(const struct SettingBase* pSettings, const std::string&
     }
   }
 
-  if (pSettings->onlineLookup.length() == 0) {
-    return;
-  }
-
   struct json_object* root;
   if (!executeScript("onlinelookup_", pSettings->onlineLookup, rNumber, validNumber, &root)) {
     return;
@@ -243,10 +239,6 @@ bool Block::onlineCheck(const struct SettingBase* pSettings, const std::string& 
       *pListName = "cache";
       return true;
     }
-  }
-
-  if (pSettings->onlineCheck.length() == 0) {
-    return false;
   }
 
   struct json_object* root;
@@ -293,15 +285,20 @@ bool Block::onlineCheck(const struct SettingBase* pSettings, const std::string& 
 
 bool Block::executeScript(std::string prefix, std::string scriptBaseName, const std::string& rNumber, const bool validNumber,
                           struct json_object** pRoot) {
+  if (scriptBaseName.length() == 0) {
+    // not enabled
+    return false;
+  }
+
   Logger::debug("Block::executeScript(prefix='%s' ,scriptBaseName='%s', rNumber='%s', validNumber=%d)",
     prefix.c_str(), scriptBaseName.c_str(), rNumber.c_str(), validNumber);
 
   if (Utils::startsWith(rNumber, "**")) {
-    // it is an intern number, thus makes no sense to ask the world
+    Logger::debug("Block::executeScript: is an intern number, thus makes no sense to ask the world");
     return false;
   }
   if (!validNumber) {
-    // number is invalid, thus makes no sense to ask the world
+    Logger::debug("Block::executeScript: number is invalid, thus makes no sense to ask the world");
     return false;
   }
 
@@ -326,4 +323,3 @@ bool Block::executeScript(std::string prefix, std::string scriptBaseName, const 
 
   return Utils::parseJson(res, pRoot);
 }
-
