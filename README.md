@@ -82,7 +82,6 @@ Prepare lighttpd, for additional information
 see [here](http://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_ModFastCGI):
 ```bash
 sudo pip3 install flipflop
-sudo usermod -a -G systemd-journal www-data
 sudo vi /etc/lighttpd/lighttpd.conf
 ```
 - in the upper part you find the section 'server.modules='. Please add the module "mod_fastcgi" to it.
@@ -96,6 +95,11 @@ sudo vi /etc/lighttpd/lighttpd.conf
                         "socket" => "/var/run/lighttpd/fastcgi.python.socket")
         )
    )
+```
+- make sure the lighttpd daemon has access to callblock settings
+```bash
+sudo usermod -a -G systemd-journal www-data
+sudo chown -R www-data.www-data /etc/callblocker/
 ```
 - make sure the python file api.py has correct execution rights and restart lighttpd daemon.
 ```bash
