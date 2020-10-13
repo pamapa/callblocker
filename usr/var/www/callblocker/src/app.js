@@ -67,12 +67,19 @@ require(["dijit/ConfirmDialog",
   // convert to UTC: 2015-04-19 10:14:03 +0000
   function date2UTCString(date) {
     function pad(number) { if (number < 10) { return '0' + number; } return number; }
-
     var str =
       date.getUTCFullYear() + "-" + pad(date.getUTCMonth() + 1) + "-" + pad(date.getUTCDate()) + " " +
       pad(date.getUTCHours()) + ":" + pad(date.getUTCMinutes()) + ":" + pad(date.getUTCSeconds()) + " +0000";
     return str;
-  };
+  }
+
+  // make a random UUID v4
+  function uuid4() {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
 
 
   // --------------------------------------------------------------------------
@@ -97,8 +104,10 @@ require(["dijit/ConfirmDialog",
         var listStore = createListStore(url);
         dojo.forEach(items, function(si) {
           if (si !== null) {
+            var number = grid.store.getValue(si, "number");
+            var name = grid.store.getValue(si, "name");
             var dateStr = date2UTCString(new Date());
-            var newItem = { number: grid.store.getValue(si, "number"), name: grid.store.getValue(si, "name"),
+            var newItem = { id: uuid4(), number, name,
                             date_created: dateStr, date_modified: dateStr };
             listStore.newItem(newItem);
           }
@@ -181,7 +190,7 @@ require(["dijit/ConfirmDialog",
   // Configuration
   // --------------------------------------------------------------------------
   function createListStore(url) {
-    // console.log("createListStore: ", url);
+    //console.log("createListStore: ", url);
     var store = new dojo.data.ItemFileWriteStore({
       url: url
     });
@@ -427,8 +436,8 @@ require(["dijit/ConfirmDialog",
       style:"height:100%; width:100%;",
     });
 
-    var addNewEntryButton = new dijit.form.Button({
-      label: "Add new entry",
+    var addNewPhoneButton = new dijit.form.Button({
+      label: "Add new phone",
       onClick: function() {
         var newItem = {enabled: false, name: "New Phone"};
         grid.store.newItem(newItem);
@@ -441,7 +450,7 @@ require(["dijit/ConfirmDialog",
     grid.layout.setColumnVisibility(8, false);
     grid.layout.setColumnVisibility(9, false);
 */
-    return [addNewEntryButton.domNode, domConstruct.create("br"), grid.domNode]
+    return [addNewPhoneButton.domNode, domConstruct.create("br"), grid.domNode]
   }
 
   function createOnlineCredentials(url) {
@@ -524,11 +533,11 @@ require(["dijit/ConfirmDialog",
       style: "height:100%; width:100%;"
     });
 
-    var addNewEntryButton = new dijit.form.Button({
-      label: "Add new entry",
+    var addNewCredentialButton = new dijit.form.Button({
+      label: "Add new credential",
       onClick: function() {
         var myDialog = new ConfirmDialog({
-          title: "Add new entry",
+          title: "Add new credential",
           content: [nameSelect.domNode, usernameTextBox.domNode, passwordTextBox.domNode],
           onExecute:function() {
             if (usernameTextBox.isValid() && passwordTextBox.isValid()) {
@@ -542,7 +551,7 @@ require(["dijit/ConfirmDialog",
       }
     });
 
-    return [addNewEntryButton.domNode, domConstruct.create("br"), grid.domNode]
+    return [addNewCredentialButton.domNode, domConstruct.create("br"), grid.domNode]
   }
 
   function createListX(url_param) {
@@ -557,19 +566,21 @@ require(["dijit/ConfirmDialog",
         }
 
         var items = grid.selection.getSelected();
-        if (items.length == 0 || value != grid.store.getValue(items[0], "number")) {
-          // not current selected entry
-          var alreadyInStore = false;
-          function onComplete(items, request) {
-            if(items.length !== 0) {
-              alreadyInStore = true;
-            }
+        if (items.length !== 0 && value == grid.store.getValue(items[0], "number")) {
+          // edit current selected entry, it is already in store...
+          return true;
+        }
+
+        var alreadyInStore = false;
+        function onComplete(items, request) {
+          if (items.length !== 0) {
+            alreadyInStore = true;
           }
-          grid.store.fetch({query: {"number": value}, onComplete: onComplete});
-          if (alreadyInStore) {
-            this.invalidMessage = "Number exists already";
-            return false;
-          }
+        }
+        grid.store.fetch({query: {"number": value}, onComplete: onComplete});
+        if (alreadyInStore) {
+          this.invalidMessage = "Number exists already";
+          return false;
         }
 
         return true;
@@ -577,7 +588,39 @@ require(["dijit/ConfirmDialog",
     });
 
     var nameTextBox = new dijit.form.ValidationTextBox({
-      placeHolder: "Name"
+      placeHolder: "Name",
+      required: true
+    });
+
+    // without number
+    var nameOnlyTextBox = new dijit.form.ValidationTextBox({
+      placeHolder: "Name",
+      required: true,
+      validator: function(value, constraints) {
+        var items = grid.selection.getSelected();
+        if (items.length !== 0 && value == grid.store.getValue(items[0], "name")) {
+          // edit current selected entry, it is already in store...
+          return true;
+        }
+
+        var alreadyInStore = false;
+        function onComplete(items, request) {
+          if (items.length !== 0) {
+            alreadyInStore = true;
+          }
+        }
+
+        // escape all query wildcard special chars
+        value = value.replace(/[*?]/g, '\\$&'); // $& means the whole matched string
+
+        grid.store.fetch({query: {"name": value}, onComplete: onComplete});
+        if (alreadyInStore) {
+          this.invalidMessage = "Name exists already";
+          return false;
+        }
+
+        return true;
+      }
     });
 
     var menu = new dijit.Menu();
@@ -602,24 +645,18 @@ require(["dijit/ConfirmDialog",
         var items = grid.selection.getSelected();
         if (items.length) {
           var si = items[0];
+          var withNumber = grid.store.getValue(si, "number");
           var myDialog = new ConfirmDialog({
-            title: "Edit entry",
-            content: [numberTextBox.domNode, nameTextBox.domNode],
+            title: withNumber ? "Edit number or name" :
+              "Edit name (? matches any single character and * matches any string including empty string, e.g. SPAM*)",
+            content: withNumber ? [numberTextBox.domNode, nameTextBox.domNode] : [nameOnlyTextBox.domNode],
             onExecute: function() {
-              if (numberTextBox.isValid() && nameTextBox.isValid()) {
-                if (numberTextBox.get("value") == grid.store.getValue(si, "number"))
-                {
-                  grid.store.setValue(si, "date_modified", date2UTCString(new Date()));
-                  grid.store.setValue(si, "name", nameTextBox.get("value"));
-                }
-                else
-                {
-                  // number changed, needs special handling, because number is used as identifier
-                  var newItem = { number: numberTextBox.get("value"), name: nameTextBox.get("value"),
-                                  date_created: grid.store.getValue(si, "date_created"), date_modified: date2UTCString(new Date()) };
-                  grid.store.newItem(newItem);
-                  grid.store.deleteItem(si);
-                }
+              if ((withNumber && numberTextBox.isValid() && nameTextBox.isValid()) || nameOnlyTextBox.isValid()) {
+                var number = withNumber ? numberTextBox.get("value") : "";
+                var name = withNumber ? nameTextBox.get("value") : nameOnlyTextBox.get("value");
+                grid.store.setValue(si, "date_modified", date2UTCString(new Date()));
+                grid.store.setValue(si, "number", number);
+                grid.store.setValue(si, "name", name);
                 grid.store.save();
               }
             }
@@ -627,6 +664,7 @@ require(["dijit/ConfirmDialog",
           // prepare dialog fields
           numberTextBox.set("value", grid.store.getValue(si, "number"));
           nameTextBox.set("value", grid.store.getValue(si, "name"));
+          nameOnlyTextBox.set("value", grid.store.getValue(si, "name"));
           myDialog.show();
         }
       },
@@ -671,35 +709,40 @@ require(["dijit/ConfirmDialog",
         // allow editing
         deleteMenuItem.setDisabled(false);
         editMenuItem.setDisabled(false);
-        addNewEntryButton.setDisabled(false);
+        addNewByNumberButton.setDisabled(false);
+        addNewByNameButton.setDisabled(false);
         importAddressbookUploader.setDisabled(false);
       } else if (evt == "import.json") {
         // only allow delete and import
         deleteMenuItem.setDisabled(false);
         editMenuItem.setDisabled(true);
-        addNewEntryButton.setDisabled(true);
+        addNewByNumberButton.setDisabled(true);
+        addNewByNameButton.setDisabled(true);
         importAddressbookUploader.setDisabled(false);
       } else {
         // disallow editing
         deleteMenuItem.setDisabled(true);
         editMenuItem.setDisabled(true);
-        addNewEntryButton.setDisabled(true);
+        addNewByNumberButton.setDisabled(true);
+        addNewByNameButton.setDisabled(true);
         importAddressbookUploader.setDisabled(true);
       }
     });
     // pre select main
     listSelect.set("value", "main.json");
 
-    var addNewEntryButton = new dijit.form.Button({
-      label: "Add new entry",
+    var addNewByNumberButton = new dijit.form.Button({
+      label: "Add new number",
       onClick: function() {
         var myDialog = new ConfirmDialog({
-          title: "Add new entry",
+          title: "Add new number and name",
           content: [numberTextBox.domNode, nameTextBox.domNode],
           onExecute: function() {
             if (numberTextBox.isValid() && nameTextBox.isValid()) {
+              var number = numberTextBox.get("value");
+              var name = nameTextBox.get("value");
               var dateStr = date2UTCString(new Date());
-              var newItem = { number: numberTextBox.get("value"), name: nameTextBox.get("value"),
+              var newItem = { id: uuid4(), number, name,
                               date_created: dateStr, date_modified: dateStr };
               grid.store.newItem(newItem);
               grid.store.save();
@@ -709,6 +752,30 @@ require(["dijit/ConfirmDialog",
         // prepare dialog fields
         numberTextBox.set("value", "");
         nameTextBox.set("value", "");
+        myDialog.show();
+      }
+    });
+
+    var addNewByNameButton = new dijit.form.Button({
+      label: "Add new name",
+      onClick: function() {
+        var myDialog = new ConfirmDialog({
+          title: "Add new name (? matches any single character and * matches any string including empty string, e.g. SPAM*)",
+          content: [nameOnlyTextBox.domNode],
+          onExecute: function() {
+            if (nameOnlyTextBox.isValid()) {
+              var dateStr = date2UTCString(new Date());
+              var number = "";
+              var name = nameOnlyTextBox.get("value");
+              var newItem = { id: uuid4(), number, name,
+                              date_created: dateStr, date_modified: dateStr };
+              grid.store.newItem(newItem);
+              grid.store.save();
+            }
+          }
+        });
+        // prepare dialog fields
+        nameOnlyTextBox.set("value", "");
         myDialog.show();
       }
     });
@@ -731,13 +798,17 @@ require(["dijit/ConfirmDialog",
       grid.setStore(createListStore(api_base.concat("/get_list?", url_param, "&filename=", listSelect.get("value"))));
     });
 
-    return [
+    var ret = [
       listSelect.domNode,
-      addNewEntryButton.domNode,
+      addNewByNumberButton.domNode,
       importAddressbookUploader.domNode,
       domConstruct.create("br"),
       grid.domNode
     ]
+    if (url_param === "dirname=blocklists") {
+      ret.splice(2, 0, addNewByNameButton.domNode);
+    }
+    return ret
   }
 
   function createAllowlist() {

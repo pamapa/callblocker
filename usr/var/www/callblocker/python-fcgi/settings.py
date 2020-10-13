@@ -1,5 +1,5 @@
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-import os, sys, json
+import os, sys, json, uuid
 import subprocess
 import cgi
 from datetime import datetime, timezone
@@ -50,7 +50,8 @@ def _remove_duplicates(entries):
     uniq = []
     seen = set()
     for entry in entries:
-        number = entry["number"]
+        # number can be empty
+        numberOrName = entry["number"] if entry["number"] else entry["name"]
 
         # fix wrong padded dates
         if "date_modified" in entry:
@@ -59,9 +60,9 @@ def _remove_duplicates(entries):
             entry["date_created"] = _fix_date_string(entry["date_created"])
 
         # filter duplicates
-        if number not in seen:
+        if numberOrName not in seen:
             uniq.append(entry)
-            seen.add(number)
+            seen.add(numberOrName)
     return uniq
 
 
@@ -95,7 +96,8 @@ def handle_phones(environ, start_response, params):
         jj["phones"] = json_phones["items"]
         with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
             json.dump(jj, f, indent=4, ensure_ascii=False)
-        return
+        start_response('200 OK', [('Content-Type', 'text/plain')])
+        return []
 
     all = []
     if "phones" in jj:
@@ -130,7 +132,8 @@ def handle_online_credentials(environ, start_response, params):
         jj["online_credentials"] = json_creds["items"]
         with open(SETTINGS_FILE, 'w') as f:
             json.dump(jj, f, indent=4)
-        return
+        start_response('200 OK', [('Content-Type', 'text/plain')])
+        return []
 
     all = []
     if "online_credentials" in jj:
@@ -180,8 +183,13 @@ def handle_get_list(environ, start_response, params):
         #print("POST data=%s\n" % post.getvalue("'data"), file=sys.stderr)
         json_list = json.loads(post.getvalue('data'))
         with open(fullname, "w", encoding="utf-8") as f:
-            json.dump({"name": json_list["label"], "entries": _remove_duplicates(json_list["items"])}, f, indent=2, ensure_ascii=False)
-        return
+            entries = _remove_duplicates(json_list["items"])
+            # remove unique dojo store identifier
+            for entry in entries:
+                del entry["id"]
+            json.dump({"name": json_list["label"], "entries": entries}, f, indent=2, ensure_ascii=False)
+        start_response('200 OK', [('Content-Type', 'text/plain')])
+        return []
 
     with open(fullname, encoding="utf-8") as f:
         jj = json.loads(f.read())
@@ -198,6 +206,8 @@ def handle_get_list(environ, start_response, params):
     for i in range(start, all_count):
         if i >= start + count: break
         entry = all[i]
+        # id: unique dojo store identifier, allows to have empty number
+        entry["id"] = str(uuid.uuid4())
         items.append(entry)
 
     # make sure we have a label/name
@@ -211,7 +221,7 @@ def handle_get_list(environ, start_response, params):
         ('Content-Range', 'items %d-%d/%d' % (start, start+count, all_count))
     ]
     start_response('200 OK', headers)
-    return [json.dumps({"label": label, "identifier": "number", "numRows": all_count, "items": items})]
+    return [json.dumps({"label": label, "identifier": "id", "numRows": all_count, "items": items})]
 
 
 def handle_get_lists(environ, start_response, params):
