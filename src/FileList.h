@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -47,7 +47,8 @@ public:
 
   std::string getName();
 
-  bool getEntry(const std::string& rNumber, std::string* pName);
+  bool getEntryByNumber(const std::string& rNumber, std::string* pName);
+  bool getEntryByName(const std::string& rName);
   void addEntry(const std::string& rNumber, const std::string& rName);
   void removeEntry(const std::string& rNumber);
 

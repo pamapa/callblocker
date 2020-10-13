@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2016 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -61,6 +61,9 @@ public:
   static bool startsWith(const std::string& rStr, const char* pPrefix);
   static void trim(std::string* pStr);
   static std::string escapeSqString(const std::string& rStr);
+  static void replaceAll(std::string* pStr, const std::string& rFrom, const std::string& rTo);
+  // wildcard: *: zero or multiple, ?: single character
+  static bool matchWithWildcards(const std::string &rStr, const std::string& rWildcardPattern, bool caseSensitive = false);
 
   // phone number
   static void makeNumberE164(const struct SettingBase* pSettings, std::string* pNumber, bool* pValid);

@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -76,6 +76,15 @@ static void TestCase_string()
   str = "\t\n123\n\n\n";
   Utils::trim(&str);
   assert(str.compare("123") == 0);
+
+  str = "?This string?";
+  Utils::replaceAll(&str, "?", "!");
+  assert(str.compare("!This string!") == 0);
+
+  assert(Utils::matchWithWildcards("SPAM: yes", "SPAM: yes", false) == true);
+  assert(Utils::matchWithWildcards("SPAM: yes", "SPAM: no", false) == false);
+  assert(Utils::matchWithWildcards("SPAM: yes", "SPAM*", false) == true);
+  assert(Utils::matchWithWildcards("SPAM_", "SPAM?", false) == true);
 }
 
 static void TestCase_makeNumberInternational()

@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2017 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -24,6 +24,7 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <limits.h>
 #include <unistd.h>
 #include <errno.h>
@@ -265,6 +266,44 @@ std::string Utils::escapeSqString(const std::string& rStr) {
     escaped += rStr[i];
   }
   return escaped;
+}
+
+void Utils::replaceAll(std::string* pStr, const std::string& rFrom, const std::string& rTo) {
+  size_t startPos = 0;
+  while((startPos = pStr->find(rFrom, startPos)) != std::string::npos) {
+      pStr->replace(startPos, rFrom.length(), rTo);
+      startPos += rTo.length(); // Handles case where 'to' is a substring of 'from'
+  }
+}
+
+bool Utils::matchWithWildcards(const std::string& rStr, const std::string& rWildcardPattern, bool caseSensitive) {
+  // escape all regex special chars
+  std::string pattern = rWildcardPattern;
+  Utils::replaceAll(&pattern, "\\", "\\\\");
+  Utils::replaceAll(&pattern, "^", "\\^");
+  Utils::replaceAll(&pattern, ".", "\\.");
+  Utils::replaceAll(&pattern, "$", "\\$");
+  Utils::replaceAll(&pattern, "|", "\\|");
+  Utils::replaceAll(&pattern, "(", "\\(");
+  Utils::replaceAll(&pattern, ")", "\\)");
+  Utils::replaceAll(&pattern, "{", "\\{");
+  Utils::replaceAll(&pattern, "{", "\\}");
+  Utils::replaceAll(&pattern, "[", "\\[");
+  Utils::replaceAll(&pattern, "]", "\\]");
+  Utils::replaceAll(&pattern, "+", "\\+");
+  Utils::replaceAll(&pattern, "/", "\\/");
+  // convert chars '*?' to their regex equivalents
+  Utils::replaceAll(&pattern, "?", ".");
+  Utils::replaceAll(&pattern, "*", ".*");
+
+  bool ret = false;
+  try {
+    std::regex re(pattern, caseSensitive ? std::regex_constants::ECMAScript : std::regex_constants::ECMAScript | std::regex_constants::icase);
+    ret = regex_match(rStr, re);
+  } catch (std::regex_error& ex) {
+    // syntax error in the regular expression
+  }
+  return ret;
 }
 
 // returns phone number in E.164 format

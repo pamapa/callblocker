@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -118,9 +118,13 @@ std::string FileList::getName() {
   return m_name;
 }
 
-bool FileList::getEntry(const std::string& rNumber, std::string* pName) {
+bool FileList::getEntryByNumber(const std::string& rNumber, std::string* pName) {
   for (size_t i = 0; i < m_entries.size(); i++) {
     struct FileListEntry* entry = &m_entries[i];
+    if (entry->number.empty()) {
+      continue;
+    }
+
     const char* s = entry->number.c_str();
     if (strncmp(s, rNumber.c_str(), strlen(s)) == 0) {
       Logger::debug("FileList::getEntry(number='%s') matched with '%s'/'%s' in '%s'",
@@ -132,18 +136,39 @@ bool FileList::getEntry(const std::string& rNumber, std::string* pName) {
   return false;
 }
 
-void FileList::addEntry(const std::string& rNumber, const std::string& rCallerName) {
-  Logger::debug("FileList::addEntry(rNumber='%s', rCallerName='%s') to '%s'",
-    rNumber.c_str(), rCallerName.c_str(), m_filename.c_str());
+bool FileList::getEntryByName(const std::string& rName) {
+  for (size_t i = 0; i < m_entries.size(); i++) {
+    struct FileListEntry* entry = &m_entries[i];
+    if (!entry->number.empty()) {
+      continue;
+    }
 
-  if (getEntry(rNumber, NULL)) {
+    if (Utils::matchWithWildcards(rName, entry->name)) {
+      Logger::debug("FileList::getEntryByName(name='%s') matched with %s' in '%s'",
+        rName.c_str(), entry->name.c_str(), m_filename.c_str());
+      return true;
+    }
+  }
+  return false;
+}
+
+void FileList::addEntry(const std::string& rNumber, const std::string& rName) {
+  Logger::debug("FileList::addEntry(rNumber='%s', rName='%s') to '%s'",
+    rNumber.c_str(), rName.c_str(), m_filename.c_str());
+
+  if (!rName.empty() && getEntryByNumber(rNumber, NULL)) {
     Logger::warn("internal error, entry '%s' already part of list", rNumber.c_str());
+    return;
+  }
+
+  if (rName.empty() && getEntryByName(rName)) {
+    Logger::warn("internal error, entry '%s' already part of list", rName.c_str());
     return;
   }
 
   struct FileListEntry add;
   add.number = rNumber;
-  add.name = rCallerName;
+  add.name = rName;
   add.date_created = std::chrono::system_clock::now();
 
   m_entries.push_back(add);

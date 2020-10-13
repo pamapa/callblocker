@@ -158,6 +158,14 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
     onlineLookup(pSettings, rNumber, validNumber, &callerName);
   }
 
+  if (!onAllowlist && !onBlocklist && !callerName.empty()) {
+    // blocked by name?
+    if (m_pBlocklists->getEntryByName(callerName, &listName)) {
+      onBlocklist = true;
+      block = pSettings->blockMode == ALLOWLISTS_AND_BLOCKLISTS || pSettings->blockMode == BLOCKLISTS_ONLY;
+    }
+  }
+
   // Incoming call number='x' name='y' [invalid] [blocked] [allowlist='w'] [blocklist='b'] [score=s]
   std::ostringstream oss;
   oss << "Incoming call: number='" << rNumber << "'";
@@ -186,12 +194,12 @@ bool Block::isNumberBlocked(const struct SettingBase* pSettings, const std::stri
 
 bool Block::isAllowListed(const struct SettingBase* pSettings, const std::string& rNumber,
                           std::string* pListName, std::string* pCallerName) {
-  return m_pAllowlists->getEntry(rNumber, pListName, pCallerName);
+  return m_pAllowlists->getEntryByNumber(rNumber, pListName, pCallerName);
 }
 
 bool Block::isBlocklisted(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
                           std::string* pListName, std::string* pCallerName, std::string* pScore) {
-  if (m_pBlocklists->getEntry(rNumber, pListName, pCallerName)) {
+  if (m_pBlocklists->getEntryByNumber(rNumber, pListName, pCallerName)) {
     return true;
   }
 
@@ -208,7 +216,7 @@ void Block::onlineLookup(const struct SettingBase* pSettings, const std::string&
                          std::string* pCallerName) {
   if (pSettings->onlineCache) {
     // already in cache?
-    if (m_pCache->getEntry(CacheType::OnlineLookup, rNumber, pCallerName)) {
+    if (m_pCache->getEntryByNumber(CacheType::OnlineLookup, rNumber, pCallerName)) {
       Logger::debug("Block::onlineLookup: found entry '%s' in cache -> '%s'", rNumber.c_str(), pCallerName->c_str());
       return;
     }
@@ -234,7 +242,7 @@ bool Block::onlineCheck(const struct SettingBase* pSettings, const std::string& 
                         std::string* pListName, std::string* pCallerName, std::string* pScore) {
   if (pSettings->onlineCache) {
     // already in cache?
-    if (m_pCache->getEntry(CacheType::OnlineCheck, rNumber, pCallerName)) {
+    if (m_pCache->getEntryByNumber(CacheType::OnlineCheck, rNumber, pCallerName)) {
       Logger::debug("Block::onlineCheck: found entry '%s' in cache -> its spam", rNumber.c_str());
       *pListName = "cache";
       return true;

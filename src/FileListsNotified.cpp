@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -56,11 +56,25 @@ void FileListsNotified::run() {
   }
 }
 
-bool FileListsNotified::getEntry(const std::string& rNumber, std::string* pListName, std::string* pCallerName) {
+bool FileListsNotified::getEntryByNumber(const std::string& rNumber, std::string* pListName, std::string* pCallerName) {
   bool ret = false;
   pthread_mutex_lock(&m_mutexLock);
   for (size_t i = 0; i < m_lists.size(); i++) {
-    if (m_lists[i]->getEntry(rNumber, pCallerName)) {
+    if (m_lists[i]->getEntryByNumber(rNumber, pCallerName)) {
+      *pListName = m_lists[i]->getName();
+      ret = true;
+      break;
+    }
+  }
+  pthread_mutex_unlock(&m_mutexLock);
+  return ret;
+}
+
+bool FileListsNotified::getEntryByName(const std::string& rCallerName, std::string* pListName) {
+  bool ret = false;
+  pthread_mutex_lock(&m_mutexLock);
+  for (size_t i = 0; i < m_lists.size(); i++) {
+    if (m_lists[i]->getEntryByName(rCallerName)) {
       *pListName = m_lists[i]->getName();
       ret = true;
       break;

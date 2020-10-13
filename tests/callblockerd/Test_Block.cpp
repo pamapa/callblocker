@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -78,7 +78,7 @@ static void TestCase_logging_only(std::string etcPath)
   assert(block->isBlocked(&settingsBase, "+12025808292", "Mr. Spamer", &msg) == false);
   assert(msg.compare("Incoming call: number='+12025808292' name='Mr. Spamer'") == 0);
 
-  // test anonymous
+  // test anonymous number
   settingsBase.blockAnonymousCID = false;
   assert(block->isBlocked(&settingsBase, "anonymous", "", &msg) == false);
   assert(msg.compare("Incoming call: number='anonymous'") == 0);
@@ -86,7 +86,7 @@ static void TestCase_logging_only(std::string etcPath)
   assert(block->isBlocked(&settingsBase, "anonymous", "", &msg) == false);
   assert(msg.compare("Incoming call: number='anonymous'") == 0);
 
-  // test invalid: too small number
+  // test invalid number: too small number
   settingsBase.blockInvalidCID = false;
   assert(block->isBlocked(&settingsBase, "+4144333", "", &msg) == false);
   assert(msg.compare("Incoming call: number='+4144333' invalid") == 0);
@@ -94,13 +94,18 @@ static void TestCase_logging_only(std::string etcPath)
   assert(block->isBlocked(&settingsBase, "+4144333", "", &msg) == false);
   assert(msg.compare("Incoming call: number='+4144333' invalid") == 0);
 
-  // test invalid: too long number
+  // test invalid number: too long number
   settingsBase.blockInvalidCID = false;
   assert(block->isBlocked(&settingsBase, "+493456789012345678", "", &msg) == false);
   assert(msg.compare("Incoming call: number='+493456789012345678' invalid") == 0);
   settingsBase.blockInvalidCID = true;
   assert(block->isBlocked(&settingsBase, "+493456789012345678", "", &msg) == false);
   assert(msg.compare("Incoming call: number='+493456789012345678' invalid") == 0);
+
+  // test name with wildcard
+  settingsBase.blockInvalidCID = false;
+  assert(block->isBlocked(&settingsBase, "+41441112222", "SPAM: yes", &msg) == false);
+  assert(msg.compare("Incoming call: number='+41441112222' name='SPAM: yes' blocklist='main'") == 0);
 }
 
 static void TestCase_allowlists_only(std::string etcPath)
@@ -148,7 +153,7 @@ static void TestCase_allowlists_only(std::string etcPath)
   assert(block->isBlocked(&settingsBase, "+12025808292", "Mr. Spamer", &msg) == true);
   assert(msg.compare("Incoming call: number='+12025808292' name='Mr. Spamer' blocked") == 0);
 
-  // test anonymous
+  // test anonymous number
   settingsBase.blockAnonymousCID = false;
   assert(block->isBlocked(&settingsBase, "anonymous", "", &msg) == true);
   assert(msg.compare("Incoming call: number='anonymous' blocked") == 0);
@@ -156,7 +161,7 @@ static void TestCase_allowlists_only(std::string etcPath)
   assert(block->isBlocked(&settingsBase, "anonymous", "", &msg) == true);
   assert(msg.compare("Incoming call: number='anonymous' blocked") == 0);
 
-  // test invalid: too small number
+  // test invalid number: too small number
   settingsBase.blockInvalidCID = false;
   assert(block->isBlocked(&settingsBase, "+4144333", "", &msg) == true);
   assert(msg.compare("Incoming call: number='+4144333' blocked invalid") == 0);
@@ -164,13 +169,18 @@ static void TestCase_allowlists_only(std::string etcPath)
   assert(block->isBlocked(&settingsBase, "+4144333", "", &msg) == true);
   assert(msg.compare("Incoming call: number='+4144333' blocked invalid") == 0);
 
-  // test invalid: too long number
+  // test invalid number: too long number
   settingsBase.blockInvalidCID = false;
   assert(block->isBlocked(&settingsBase, "+493456789012345678", "", &msg) == true);
   assert(msg.compare("Incoming call: number='+493456789012345678' blocked invalid") == 0);
   settingsBase.blockInvalidCID = true;
   assert(block->isBlocked(&settingsBase, "+493456789012345678", "", &msg) == true);
   assert(msg.compare("Incoming call: number='+493456789012345678' blocked invalid") == 0);
+
+  // test name with wildcard
+  settingsBase.blockInvalidCID = false;
+  assert(block->isBlocked(&settingsBase, "+41441112222", "SPAM: yes", &msg) == false);
+  assert(msg.compare("Incoming call: number='+41441112222' name='SPAM: yes' blocklist='main'") == 0);
 }
 
 static void TestCase_allowlists_and_blocklists(std::string etcPath)
@@ -218,7 +228,7 @@ static void TestCase_allowlists_and_blocklists(std::string etcPath)
   assert(block->isBlocked(&settingsBase, "+12025808292", "Mr. Spamer", &msg) == false);
   assert(msg.compare("Incoming call: number='+12025808292' name='Mr. Spamer'") == 0);
 
-  // test anonymous
+  // test anonymous number
   settingsBase.blockAnonymousCID = false;
   assert(block->isBlocked(&settingsBase, "anonymous", "", &msg) == false);
   assert(msg.compare("Incoming call: number='anonymous'") == 0);
@@ -226,7 +236,7 @@ static void TestCase_allowlists_and_blocklists(std::string etcPath)
   assert(block->isBlocked(&settingsBase, "anonymous", "", &msg) == true);
   assert(msg.compare("Incoming call: number='anonymous' blocked") == 0);
 
-  // test invalid: too small number
+  // test invalid number: too small number
   settingsBase.blockInvalidCID = false;
   assert(block->isBlocked(&settingsBase, "+4144333", "", &msg) == false);
   assert(msg.compare("Incoming call: number='+4144333' invalid") == 0);
@@ -234,13 +244,18 @@ static void TestCase_allowlists_and_blocklists(std::string etcPath)
   assert(block->isBlocked(&settingsBase, "+4144333", "", &msg) == true);
   assert(msg.compare("Incoming call: number='+4144333' blocked invalid") == 0);
 
-  // test invalid: too long number
+  // test invalid number: too long number
   settingsBase.blockInvalidCID = false;
   assert(block->isBlocked(&settingsBase, "+493456789012345678", "", &msg) == false);
   assert(msg.compare("Incoming call: number='+493456789012345678' invalid") == 0);
   settingsBase.blockInvalidCID = true;
   assert(block->isBlocked(&settingsBase, "+493456789012345678", "", &msg) == true);
   assert(msg.compare("Incoming call: number='+493456789012345678' blocked invalid") == 0);
+
+  // test name with wildcard
+  settingsBase.blockInvalidCID = false;
+  assert(block->isBlocked(&settingsBase, "+41441112222", "SPAM: yes", &msg) == true);
+  assert(msg.compare("Incoming call: number='+41441112222' name='SPAM: yes' blocked blocklist='main'") == 0);
 }
 
 static void TestCase_blocklists_only(std::string etcPath)
@@ -288,7 +303,7 @@ static void TestCase_blocklists_only(std::string etcPath)
   assert(block->isBlocked(&settingsBase, "+12025808292", "Mr. Spamer", &msg) == false);
   assert(msg.compare("Incoming call: number='+12025808292' name='Mr. Spamer'") == 0);
 
-  // test anonymous
+  // test anonymous number
   settingsBase.blockAnonymousCID = false;
   assert(block->isBlocked(&settingsBase, "anonymous", "", &msg) == false);
   assert(msg.compare("Incoming call: number='anonymous'") == 0);
@@ -296,7 +311,7 @@ static void TestCase_blocklists_only(std::string etcPath)
   assert(block->isBlocked(&settingsBase, "anonymous", "", &msg) == true);
   assert(msg.compare("Incoming call: number='anonymous' blocked") == 0);
 
-  // test invalid: too short number
+  // test invalid number: too short number
   settingsBase.blockInvalidCID = false;
   assert(block->isBlocked(&settingsBase, "+4144333", "", &msg) == false);
   assert(msg.compare("Incoming call: number='+4144333' invalid") == 0);
@@ -304,13 +319,18 @@ static void TestCase_blocklists_only(std::string etcPath)
   assert(block->isBlocked(&settingsBase, "+4144333", "", &msg) == true);
   assert(msg.compare("Incoming call: number='+4144333' blocked invalid") == 0);
 
-  // test invalid: too long number
+  // test invalid number: too long number
   settingsBase.blockInvalidCID = false;
   assert(block->isBlocked(&settingsBase, "+493456789012345678", "", &msg) == false);
   assert(msg.compare("Incoming call: number='+493456789012345678' invalid") == 0);
   settingsBase.blockInvalidCID = true;
   assert(block->isBlocked(&settingsBase, "+493456789012345678", "", &msg) == true);
   assert(msg.compare("Incoming call: number='+493456789012345678' blocked invalid") == 0);
+
+  // test name with wildcard
+  settingsBase.blockInvalidCID = false;
+  assert(block->isBlocked(&settingsBase, "+41441112222", "SPAM: yes", &msg) == true);
+  assert(msg.compare("Incoming call: number='+41441112222' name='SPAM: yes' blocked blocklist='main'") == 0);
 }
 
 void Test_Block_Run(std::string etcPath)

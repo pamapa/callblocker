@@ -1,6 +1,6 @@
 /*
  callblocker - blocking unwanted calls from your home phone
- Copyright (C) 2015-2019 Patrick Ammann <pammann@gmx.net>
+ Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -100,19 +100,19 @@ void FileListsCache::run() {
   }
 }
 
+bool FileListsCache::getEntryByNumber(const CacheType type, const std::string& rNumber, std::string* pCallerName) {
+  bool ret;
+  pthread_mutex_lock(&m_mutexLock);
+  ret = m_lists[(size_t)type].list->getEntryByNumber(rNumber, pCallerName);
+  pthread_mutex_unlock(&m_mutexLock);
+  return ret;
+}
+
 void FileListsCache::addEntry(const CacheType type, const std::string& rNumber, const std::string& rCallerName) {
   pthread_mutex_lock(&m_mutexLock);
   m_lists[(size_t)type].list->addEntry(rNumber, rCallerName);
   m_lists[(size_t)type].saveNeeded = true;
   pthread_mutex_unlock(&m_mutexLock);
-}
-
-bool FileListsCache::getEntry(const CacheType type, const std::string& rNumber, std::string* pCallerName) {
-  bool ret;
-  pthread_mutex_lock(&m_mutexLock);
-  ret = m_lists[(size_t)type].list->getEntry(rNumber, pCallerName);
-  pthread_mutex_unlock(&m_mutexLock);
-  return ret;
 }
 
 void FileListsCache::load() {
