@@ -32,7 +32,7 @@ Supported in blocklists only.
 
 Fields          | Values       | Description
 --------------- | ------------ | ------------
-"name"          | `<string>`   | Wildcard matching name (? matches any single character and * matches any string including empty string, e.g. SPAM*).
+"name"          | `<string>`   | Wildcard matching name (? matches any single character and * matches any string including empty string). E.g. SPAM*.
 "number"        | ``           | Number must be empty.
 "date_created"  | `<date>`     | Date in UTC formatted like "%Y-%m-%d %H:%M:%S +0000"
 "date_modified" | `<date>`     | Date in UTC formatted like "%Y-%m-%d %H:%M:%S +0000"
