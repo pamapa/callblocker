@@ -33,7 +33,7 @@ FileListsNotified::FileListsNotified(const std::string& rPathname) : Notify(rPat
   Logger::debug("FileListsNotified::FileListsNotified(rPathname='%s')", rPathname.c_str());
   m_pathname = rPathname;
 
-  if (pthread_mutex_init(&m_mutexLock, NULL) != 0) {
+  if (pthread_mutex_init(&m_mutexLock, nullptr) != 0) {
     Logger::warn("pthread_mutex_init failed");
   }
 
@@ -59,9 +59,9 @@ void FileListsNotified::run() {
 bool FileListsNotified::getEntryByNumber(const std::string& rNumber, std::string* pListName, std::string* pCallerName) {
   bool ret = false;
   pthread_mutex_lock(&m_mutexLock);
-  for (size_t i = 0; i < m_lists.size(); i++) {
-    if (m_lists[i]->getEntryByNumber(rNumber, pCallerName)) {
-      *pListName = m_lists[i]->getName();
+  for (const auto& list : m_lists) {
+    if (list->getEntryByNumber(rNumber, pCallerName)) {
+      *pListName = list->getName();
       ret = true;
       break;
     }
@@ -73,9 +73,9 @@ bool FileListsNotified::getEntryByNumber(const std::string& rNumber, std::string
 bool FileListsNotified::getEntryByName(const std::string& rCallerName, std::string* pListName) {
   bool ret = false;
   pthread_mutex_lock(&m_mutexLock);
-  for (size_t i = 0; i < m_lists.size(); i++) {
-    if (m_lists[i]->getEntryByName(rCallerName)) {
-      *pListName = m_lists[i]->getName();
+  for (const auto& list : m_lists) {
+    if (list->getEntryByName(rCallerName)) {
+      *pListName = list->getName();
       ret = true;
       break;
     }
@@ -87,13 +87,13 @@ bool FileListsNotified::getEntryByName(const std::string& rCallerName, std::stri
 void FileListsNotified::load() {
   Logger::debug("FileListsNotified::load() of '%s'", m_pathname.c_str());
   DIR* dir = opendir(m_pathname.c_str());
-  if (dir == NULL) {
+  if (dir == nullptr) {
     Logger::warn("open directory %s failed", m_pathname.c_str());
     return;
   }
 
   struct dirent* entry = readdir(dir);
-  while (entry != NULL) {
+  while (entry != nullptr) {
     if ((entry->d_type & DT_DIR) == 0) {
       size_t len = strlen(entry->d_name);
       if (len >= 5 && strcmp(entry->d_name + len - 5, ".json") == 0) {
@@ -113,17 +113,16 @@ void FileListsNotified::load() {
 }
 
 void FileListsNotified::clear() {
-  for (size_t i = 0; i < m_lists.size(); i++) {
-    delete m_lists[i];
+  for (const auto& list : m_lists) {
+    delete list;
   }
   m_lists.clear();
 }
 
 void FileListsNotified::dump() {
   pthread_mutex_lock(&m_mutexLock);
-  for (size_t i = 0; i < m_lists.size(); i++) {
-    FileList* l = m_lists[i];
-    l->dump();
+  for (const auto& list : m_lists) {
+    list->dump();
   }
   pthread_mutex_unlock(&m_mutexLock);
 }

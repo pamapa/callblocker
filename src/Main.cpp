@@ -61,7 +61,7 @@ public:
     m_pSettings = new Settings(SYSCONFDIR "/" PACKAGE_NAME);
     m_pBlock = new Block(m_pSettings);
 
-    m_pSipPhone = NULL;
+    m_pSipPhone = nullptr;
     add();
   }
 
@@ -84,8 +84,8 @@ public:
         s_appReloadConfig = false;
       }
 
-      for (size_t i = 0; i < m_analogPhones.size(); i++) {
-        m_analogPhones[i]->run();
+      for (const auto& analogPhone : m_analogPhones) {
+        analogPhone->run();
       }
 
       (void)usleep(LOOP_WAIT_TIME_USEC);
@@ -95,42 +95,42 @@ public:
 private:
   void remove() {
     // Analog
-    for (size_t i = 0; i < m_analogPhones.size(); i++) {
-      delete m_analogPhones[i];
+    for (const auto& analogPhone : m_analogPhones) {
+      delete analogPhone;
     }
     m_analogPhones.clear();
 
     // SIP
-    for (size_t i = 0; i < m_sipAccounts.size(); i++) {
-      delete m_sipAccounts[i];
+    for (const auto& sipAccount : m_sipAccounts) {
+      delete sipAccount;
     }
     m_sipAccounts.clear();
-    if (m_pSipPhone != NULL) {
+    if (m_pSipPhone != nullptr) {
       delete m_pSipPhone;
-      m_pSipPhone = NULL;
+      m_pSipPhone = nullptr;
     }
   }
 
   void add() {
     // Analog
     std::vector<struct SettingAnalogPhone> analogPhones = m_pSettings->getAnalogPhones();
-    for (size_t i = 0; i < analogPhones.size(); i++) {
+    for (const auto& analogPhone : analogPhones) {
       AnalogPhone* tmp = new AnalogPhone(m_pBlock);
-      if (tmp->init(&analogPhones[i])) m_analogPhones.push_back(tmp);
+      if (tmp->init(&analogPhone)) m_analogPhones.push_back(tmp);
       else delete tmp;
     }
 
     // SIP
     std::vector<struct SettingSipAccount> accounts = m_pSettings->getSipAccounts();
-    for (size_t i = 0; i < accounts.size(); i++) {
-      if (m_pSipPhone == NULL) {
+    for (const auto& account : accounts) {
+      if (m_pSipPhone == nullptr) {
         m_pSipPhone = new SipPhone(m_pBlock);
         if (!m_pSipPhone->init()) {
           break;
         }
       }
       SipAccount* tmp = new SipAccount(m_pSipPhone);
-      if (tmp->add(&accounts[i])) m_sipAccounts.push_back(tmp);
+      if (tmp->add(&account)) m_sipAccounts.push_back(tmp);
       else delete tmp;
     }
   }

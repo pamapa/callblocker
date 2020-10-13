@@ -29,7 +29,7 @@ Phone::Phone(Block* pBlock) {
 
 Phone::~Phone() {
   Logger::debug("Phone::~Phone()");
-  m_pBlock = NULL;
+  m_pBlock = nullptr;
 }
 
 bool Phone::isBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const std::string& rName, std::string* pMsg) {

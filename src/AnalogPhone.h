@@ -42,7 +42,7 @@ private:
 public:
   AnalogPhone(Block* pBlock);
   virtual ~AnalogPhone();
-  bool init(struct SettingAnalogPhone* pSettings);
+  bool init(const struct SettingAnalogPhone* pSettings);
   void run();
 };
 

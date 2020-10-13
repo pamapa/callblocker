@@ -41,7 +41,7 @@ static void checkEntryByNumber(FileListsCache* pCache, const CacheType type,
 static void Test_Empty(std::string etcPath) {
   char tmpl[] = "/tmp/testcallblockerd.XXXXXX";
   char* tempPath = mkdtemp(tmpl);
-  assert(tempPath != NULL);  
+  assert(tempPath != nullptr);
   //printf("tempPath: %s\n", tempPath);
 
   // start empty
@@ -80,7 +80,7 @@ static void Test_WithAged(std::string etcPath) {
 
   char tmpl[] = "/tmp/testcallblockerd.XXXXXX";
   char* tempPath = mkdtemp(tmpl);
-  assert(tempPath != NULL);  
+  assert(tempPath != nullptr);
   //printf("tempPath: %s\n", tempPath);
   std::string cachePath = Utils::pathJoin(etcPath, "cache");
 

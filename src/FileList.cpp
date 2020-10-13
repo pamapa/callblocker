@@ -95,11 +95,11 @@ bool FileList::save() {
   out << "  \"name\": \"" << m_name << "\",\n";
   out << "  \"entries\": [\n"; 
   for (size_t i = 0; i < m_entries.size(); i++) {
-    struct FileListEntry* entry = &m_entries[i];
+    const auto& entry = m_entries[i];
     out << "      {\n";
-    out << "        \"number\": \"" << entry->number << "\",\n";
-    out << "        \"name\": \"" << entry->name << "\",\n";
-    out << "        \"date_created\": \"" << Utils::formatTime(entry->date_created) << "\"\n";
+    out << "        \"number\": \"" << entry.number << "\",\n";
+    out << "        \"name\": \"" << entry.name << "\",\n";
+    out << "        \"date_created\": \"" << Utils::formatTime(entry.date_created) << "\"\n";
     out << "      }";
     if (i + 1 < m_entries.size()) {
       out << ",\n";
@@ -119,17 +119,16 @@ std::string FileList::getName() {
 }
 
 bool FileList::getEntryByNumber(const std::string& rNumber, std::string* pName) {
-  for (size_t i = 0; i < m_entries.size(); i++) {
-    struct FileListEntry* entry = &m_entries[i];
-    if (entry->number.empty()) {
+  for (const auto& entry : m_entries) {
+    if (entry.number.empty()) {
       continue;
     }
 
-    const char* s = entry->number.c_str();
+    const char* s = entry.number.c_str();
     if (strncmp(s, rNumber.c_str(), strlen(s)) == 0) {
       Logger::debug("FileList::getEntry(number='%s') matched with '%s'/'%s' in '%s'",
-        rNumber.c_str(), s, entry->name.c_str(), m_filename.c_str());
-      if (pName != NULL) *pName = entry->name;
+        rNumber.c_str(), s, entry.name.c_str(), m_filename.c_str());
+      if (pName != nullptr) *pName = entry.name;
       return true;
     }
   }
@@ -137,15 +136,14 @@ bool FileList::getEntryByNumber(const std::string& rNumber, std::string* pName) 
 }
 
 bool FileList::getEntryByName(const std::string& rName) {
-  for (size_t i = 0; i < m_entries.size(); i++) {
-    struct FileListEntry* entry = &m_entries[i];
-    if (!entry->number.empty()) {
+  for (const auto& entry : m_entries) {
+    if (!entry.number.empty()) {
       continue;
     }
 
-    if (Utils::matchWithWildcards(rName, entry->name)) {
+    if (Utils::matchWithWildcards(rName, entry.name)) {
       Logger::debug("FileList::getEntryByName(name='%s') matched with %s' in '%s'",
-        rName.c_str(), entry->name.c_str(), m_filename.c_str());
+        rName.c_str(), entry.name.c_str(), m_filename.c_str());
       return true;
     }
   }
@@ -156,7 +154,7 @@ void FileList::addEntry(const std::string& rNumber, const std::string& rName) {
   Logger::debug("FileList::addEntry(rNumber='%s', rName='%s') to '%s'",
     rNumber.c_str(), rName.c_str(), m_filename.c_str());
 
-  if (!rName.empty() && getEntryByNumber(rNumber, NULL)) {
+  if (!rName.empty() && getEntryByNumber(rNumber, nullptr)) {
     Logger::warn("internal error, entry '%s' already part of list", rNumber.c_str());
     return;
   }
@@ -209,10 +207,8 @@ bool FileList::eraseAged(size_t maxDays) {
 
 void FileList::dump() {
   printf("Name='%s': [\n", m_name.c_str());
-  for (size_t i = 0; i < m_entries.size(); i++) {
-    struct FileListEntry* entry = &m_entries[i];
-    printf("  '%s', '%s', %s\n", entry->name.c_str(), entry->number.c_str(), Utils::formatTime(entry->date_created).c_str());
+  for (const auto& entry : m_entries) {
+    printf("  '%s', '%s', %s\n", entry.name.c_str(), entry.number.c_str(), Utils::formatTime(entry.date_created).c_str());
   }
   printf("]\n");
 }
-

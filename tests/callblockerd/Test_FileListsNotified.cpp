@@ -69,7 +69,7 @@ static void removeEntry(std::string filename, const std::string& rNumber) {
 static void Test_WithExistingOne(std::string etcPath) {
   char tmpl[] = "/tmp/testcallblockerd.XXXXXX";
   char* tempPath = mkdtemp(tmpl);
-  assert(tempPath != NULL);  
+  assert(tempPath != nullptr);
   //fprintf(stderr, "tempPath: %s\n", tempPath);
   std::string listPath = Utils::pathJoin(etcPath, "blocklists");
 

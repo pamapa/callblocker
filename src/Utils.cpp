@@ -118,7 +118,7 @@ bool Utils::loadJson(const std::string& filename, struct json_object** pRoot) {
 
 bool Utils::parseJson(const std::string& str, struct json_object** pRoot) {
   *pRoot = json_tokener_parse(str.c_str());
-  if (*pRoot == NULL) {
+  if (*pRoot == nullptr) {
     Logger::warn("Utils::parseJson(%s): could not parse", str.c_str());
     return false;
   }
@@ -202,14 +202,14 @@ bool Utils::executeCommand(const std::string& rCmd, std::string* pRes) {
   cmd += " " + rCmd;
 
   FILE* fp = popen(cmd.c_str(), "r");
-  if (fp == NULL) {
+  if (fp == nullptr) {
     Logger::warn("popen failed (%s)", strerror(errno));
     return false;
   }
 
   std::string res = "";
   char buf[128];
-  while (fgets(buf, sizeof(buf), fp) != NULL) {
+  while (fgets(buf, sizeof(buf), fp) != nullptr) {
     res += buf;
   }
   Utils::trim(&res);
@@ -259,7 +259,7 @@ std::string Utils::escapeSqString(const std::string& rStr) {
   std::size_t n = rStr.length();
   std::string escaped;
   escaped.reserve(n * 2); // pessimistic preallocation
-  for (std::size_t i = 0; i < n; ++i) {
+  for (size_t i = 0; i < n; ++i) {
     if (rStr[i] == '\\' || rStr[i] == '\'') {
       escaped += '\\';
     }
@@ -370,10 +370,12 @@ void Utils::makeNumberE164(const struct SettingBase* pSettings, std::string* pNu
     // Zone 9
     "+969", "+978", "+990", "+997", "+999"
   };
-  for (size_t i = 0; valid && i < sizeof(unassignedCountryCodes)/sizeof(unassignedCountryCodes[0]); i++) {
-    if (Utils::startsWith(number, unassignedCountryCodes[i])) {
-      valid = false;
-      break;
+  if (valid) {
+    for (const auto& unassignedCountryCode : unassignedCountryCodes) {
+      if (Utils::startsWith(number, unassignedCountryCode)) {
+        valid = false;
+        break;
+      }
     }
   }
 
@@ -423,7 +425,7 @@ bool Utils::parseTime(const std::string& rStr, std::chrono::system_clock::time_p
   // "2015-05-15 12:00:00 +0000"
 
   std::tm tm_tmp;
-  if (strptime(rStr.c_str(), "%Y-%m-%d %H:%M:%S %z", &tm_tmp) == NULL) {
+  if (strptime(rStr.c_str(), "%Y-%m-%d %H:%M:%S %z", &tm_tmp) == nullptr) {
     return false;
   }
   
@@ -443,7 +445,7 @@ bool Utils::resolveHostname(const std::string& rHostname, int ai_family, std::st
     return false;
   }
 
-  if (servinfo == NULL) {
+  if (servinfo == nullptr) {
     Logger::warn("no address found for: %s\n", rHostname.c_str());
     return false;
   }

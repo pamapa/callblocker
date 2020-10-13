@@ -54,7 +54,7 @@ AnalogPhone::~AnalogPhone() {
   Logger::debug("AnalogPhone::~AnalogPhone()...");
 }
 
-bool AnalogPhone::init(struct SettingAnalogPhone* pSettings) {
+bool AnalogPhone::init(const struct SettingAnalogPhone* pSettings) {
   Logger::debug("AnalogPhone::init(%s)...", Settings::toString(pSettings).c_str());
   m_settings = *pSettings; // struct copy
 

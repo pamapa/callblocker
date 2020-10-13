@@ -96,7 +96,7 @@ bool Settings::load() {
         continue;
       }
 
-      if (json_object_object_get_ex(entry, "device", NULL)) {
+      if (json_object_object_get_ex(entry, "device", nullptr)) {
         // Analog account
         struct SettingAnalogPhone analog;
         if (!getBase(entry, &analog.base)) {

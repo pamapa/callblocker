@@ -36,7 +36,7 @@ FileListsCache::FileListsCache(const std::string& rPathname) : Notify(rPathname,
   Logger::debug("FileListsCache::FileListsCache(rPathname='%s')", rPathname.c_str());
   m_pathname = rPathname;
 
-  if (pthread_mutex_init(&m_mutexLock, NULL) != 0) {
+  if (pthread_mutex_init(&m_mutexLock, nullptr) != 0) {
     Logger::warn("pthread_mutex_init failed");
   }
   
@@ -61,8 +61,8 @@ FileListsCache::FileListsCache(const std::string& rPathname) : Notify(rPathname,
 FileListsCache::~FileListsCache() {
   Logger::debug("FileListsCache::~FileListsCache() of '%s'", m_pathname.c_str());
   
-  for (size_t i = 0; i < sizeof(m_lists)/sizeof(m_lists[0]); i++) {
-    delete(m_lists[i].list);
+  for (const auto& l : m_lists) {
+    delete(l.list);
   }
 }
 
@@ -74,27 +74,26 @@ void FileListsCache::run() {
     doEraseAged = true;
   }
 
-  for (size_t i = 0; i < sizeof(m_lists)/sizeof(m_lists[0]); i++) {
+  for (auto& l : m_lists) {
     if (hasChanged()) {
-      Logger::info("reload %lu %s", i, m_pathname.c_str());
+      Logger::info("reload %s %s", l.list->getName().c_str(), m_pathname.c_str());
       load();
     }
 
-    if (doEraseAged)
-    {
+    if (doEraseAged) {
       pthread_mutex_lock(&m_mutexLock);
-      bool changed = m_lists[i].list->eraseAged(MAX_AGE_IN_DAYS);
-      m_lists[i].saveNeeded = changed;
+      bool changed = l.list->eraseAged(MAX_AGE_IN_DAYS);
+      l.saveNeeded = changed;
       pthread_mutex_unlock(&m_mutexLock);
     }
 
-    if (m_lists[i].saveNeeded) {
-      Logger::info("save %lu %s", i, m_pathname.c_str());
+    if (l.saveNeeded) {
+      Logger::info("save %s %s", l.list->getName().c_str(), m_pathname.c_str());
 
       pthread_mutex_lock(&m_mutexLock);
-      m_lists[i].list->save();
+      l.list->save();
       (void)hasChanged(); // avoid useless reload, because of above save
-      m_lists[i].saveNeeded = false;
+      l.saveNeeded = false;
       pthread_mutex_unlock(&m_mutexLock);
     }
   }
@@ -103,15 +102,17 @@ void FileListsCache::run() {
 bool FileListsCache::getEntryByNumber(const CacheType type, const std::string& rNumber, std::string* pCallerName) {
   bool ret;
   pthread_mutex_lock(&m_mutexLock);
-  ret = m_lists[(size_t)type].list->getEntryByNumber(rNumber, pCallerName);
+  auto& l = m_lists[(size_t)type];
+  ret = l.list->getEntryByNumber(rNumber, pCallerName);
   pthread_mutex_unlock(&m_mutexLock);
   return ret;
 }
 
 void FileListsCache::addEntry(const CacheType type, const std::string& rNumber, const std::string& rCallerName) {
   pthread_mutex_lock(&m_mutexLock);
-  m_lists[(size_t)type].list->addEntry(rNumber, rCallerName);
-  m_lists[(size_t)type].saveNeeded = true;
+  auto& l = m_lists[(size_t)type];
+  l.list->addEntry(rNumber, rCallerName);
+  l.saveNeeded = true;
   pthread_mutex_unlock(&m_mutexLock);
 }
 
@@ -119,19 +120,17 @@ void FileListsCache::load() {
   Logger::debug("FileListsCache::load() of '%s'", m_pathname.c_str());
 
   pthread_mutex_lock(&m_mutexLock);
-  for (size_t i = 0; i < sizeof(m_lists)/sizeof(m_lists[0]); i++) {
-    m_lists[i].list->load();
-    m_lists[i].saveNeeded = false;
+  for (auto& l : m_lists) {
+    l.list->load();
+    l.saveNeeded = false;
   }
   pthread_mutex_unlock(&m_mutexLock);
 }
 
 void FileListsCache::dump() {
   pthread_mutex_lock(&m_mutexLock);
-  for (size_t i = 0; i < sizeof(m_lists)/sizeof(m_lists[0]); i++) {
-    FileList* l = m_lists[i].list;
-    l->dump();
+  for (const auto& l : m_lists) {
+    l.list->dump();
   }
   pthread_mutex_unlock(&m_mutexLock);
 }
-

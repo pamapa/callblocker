@@ -39,13 +39,13 @@ SipAccount::SipAccount(SipPhone* pPhone) {
 
 SipAccount::~SipAccount() {
   Logger::debug("SipAccount::~SipAccount()");
-  m_pPhone = NULL;
+  m_pPhone = nullptr;
 
   if (m_accId == -1) {
     return;
   }
 
-  (void)pjsua_acc_set_user_data(m_accId, NULL);
+  (void)pjsua_acc_set_user_data(m_accId, nullptr);
 
   pj_status_t status = pjsua_acc_del(m_accId);
   m_accId = -1;
@@ -54,7 +54,7 @@ SipAccount::~SipAccount() {
   }
 }
 
-bool SipAccount::add(struct SettingSipAccount* pSettings) {
+bool SipAccount::add(const struct SettingSipAccount* pSettings) {
   Logger::debug("SipAccount::add(%s)", Settings::toString(pSettings).c_str());
   m_settings = *pSettings; // struct copy
 
@@ -117,7 +117,7 @@ bool SipAccount::add(struct SettingSipAccount* pSettings) {
 
 void SipAccount::onRegState2CB(pjsua_acc_id acc_id, pjsua_reg_info *info) {
   SipAccount* p = (SipAccount*)pjsua_acc_get_user_data(acc_id);
-  if (p == NULL) {
+  if (p == nullptr) {
     Logger::warn("onRegState2CB(acc_id=%d, ...) account not found", acc_id);
     return;
   }
@@ -133,7 +133,7 @@ void SipAccount::onRegState2(pjsua_reg_info *info) {
 
 void SipAccount::onIncomingCallCB(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata) {
   SipAccount* p = (SipAccount*)pjsua_acc_get_user_data(acc_id);
-  if (p == NULL) {
+  if (p == nullptr) {
     Logger::warn("onIncomingCallCB(acc_id=%d, call_id=%d) account not found", acc_id, call_id);
     return;
   }
@@ -186,13 +186,13 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
   pj_list_push_back(&msgData.hdr_list, hdr);
   // codes: http://de.wikipedia.org/wiki/SIP-Status-Codes
    // enum pjsip_status_code...
-  pjsua_call_hangup(call_id, PJSIP_SC_MOVED_TEMPORARILY, NULL, &msgData);
+  pjsua_call_hangup(call_id, PJSIP_SC_MOVED_TEMPORARILY, nullptr, &msgData);
   pj_pool_release(pool);
 #endif
 
   if (block) {
     // answer incoming calls with 200/OK, then we hangup in onCallState...
-    pj_status_t status = pjsua_call_answer(call_id, 200, NULL, NULL);
+    pj_status_t status = pjsua_call_answer(call_id, 200, nullptr, nullptr);
     if (status != PJ_SUCCESS) {
       Logger::warn("pjsua_call_answer() failed (%s)", Utils::getPjStatusAsString(status).c_str());
     }
@@ -201,7 +201,7 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
 
 void SipAccount::onCallStateCB(pjsua_call_id call_id, pjsip_event* e) {
   SipAccount* p = (SipAccount*)pjsua_call_get_user_data(call_id);
-  if (p == NULL) {
+  if (p == nullptr) {
     Logger::warn("onCallStateCB(call_id=%d) account not found", call_id);
     return;
   }
@@ -221,7 +221,7 @@ void SipAccount::onCallState(pjsua_call_id call_id, pjsip_event* e) {
   if (ci.state == PJSIP_INV_STATE_CONFIRMED) {
     Logger::debug("SipAccount::onCallState(call_id=%d): hangup", call_id);
     // code 0: pj takes care of hangup SIP status code
-    pj_status_t status = pjsua_call_hangup(call_id, 0, NULL, NULL);
+    pj_status_t status = pjsua_call_hangup(call_id, 0, nullptr, nullptr);
     if (status != PJ_SUCCESS) {
       Logger::warn("pjsua_call_hangup() failed (%s)", Utils::getPjStatusAsString(status).c_str());
     }
@@ -231,7 +231,7 @@ void SipAccount::onCallState(pjsua_call_id call_id, pjsip_event* e) {
 #if 0
 void SipAccount::onCallMediaStateCB(pjsua_call_id call_id) {
   SipAccount* p = (SipAccount*)pjsua_call_get_user_data(call_id);
-  if (p == NULL) {
+  if (p == nullptr) {
     Logger::warn("onCallMediaStateCB(%d) failed", call_id);
     return;
   }
@@ -254,7 +254,7 @@ void SipAccount::onCallMediaState(pjsua_call_id call_id) {
 bool SipAccount::getNumber(pj_str_t* uri, std::string* pDisplay, std::string* pNumber) {
   pj_pool_t* pool = pjsua_pool_create("", 128, 10);
   pjsip_name_addr* n = (pjsip_name_addr*)pjsip_parse_uri(pool, uri->ptr, uri->slen, PJSIP_PARSE_URI_AS_NAMEADDR);
-  if (n == NULL) {
+  if (n == nullptr) {
     Logger::warn("pjsip_parse_uri() failed for %s", pj_strbuf(uri));
     pj_pool_release(pool);
     return false;

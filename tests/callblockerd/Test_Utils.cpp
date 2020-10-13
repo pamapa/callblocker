@@ -99,8 +99,7 @@ static void TestCase_makeNumberInternational()
     std::string number;
     std::string expectedNumber;
     bool valid;
-  } tests[] =
-  {
+  } tests[] = {
     // CH
     { "+41", "+41791234567",        "+41791234567",        true  }, // already international (SIP phone case)
     { "+41", "0041791234567",       "+41791234567",        true  }, // already international (Analog phone case)
@@ -116,22 +115,21 @@ static void TestCase_makeNumberInternational()
     { "+1", "15403221123",          "+15403221123",        true  }  // already international (Analog phone case)
   };
 
-  for (size_t i = 0; i < sizeof(tests)/sizeof(tests[0]); i++)
-  {
-    settingsBase.countryCode = tests[i].countryCode;
-    std::string str = tests[i].number;
+  for (const auto& test : tests) {
+    settingsBase.countryCode = test.countryCode;
+    std::string str = test.number;
     bool valid;
     Utils::makeNumberE164(&settingsBase, &str, &valid);
-    if (str.compare(tests[i].expectedNumber) != 0)
+    if (str.compare(test.expectedNumber) != 0)
     {
-      printf("found '%s' expected '%s' for '%s'\n", str.c_str(), tests[i].expectedNumber.c_str(), tests[i].number.c_str());
+      printf("found '%s' expected '%s' for '%s'\n", str.c_str(), test.expectedNumber.c_str(), test.number.c_str());
     }
-    assert(str.compare(tests[i].expectedNumber) == 0);
-    if (valid != tests[i].valid)
+    assert(str.compare(test.expectedNumber) == 0);
+    if (valid != test.valid)
     {
-      printf("valid different than expected %d for '%s'\n", tests[i].valid, tests[i].number.c_str());
+      printf("valid different than expected %d for '%s'\n", test.valid, test.number.c_str());
     }
-    assert(valid == tests[i].valid);
+    assert(valid == test.valid);
   }
 }
 

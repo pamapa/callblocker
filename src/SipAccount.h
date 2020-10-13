@@ -35,7 +35,7 @@ private:
 public:
   SipAccount(SipPhone* pPhone);
   virtual ~SipAccount();
-  bool add(struct SettingSipAccount* pSettings);
+  bool add(const struct SettingSipAccount* pSettings);
 
   // callback -> class method call conversion
   static void onRegState2CB(pjsua_acc_id acc_id, pjsua_reg_info *info);

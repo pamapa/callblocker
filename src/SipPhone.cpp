@@ -35,7 +35,7 @@ static bool s_Initialized = false;
 SipPhone::SipPhone(Block* pBlock) : Phone(pBlock) {
   Logger::debug("SipPhone::SipPhone()");
 #if 0
-  m_mediaPortSilence = NULL;
+  m_mediaPortSilence = nullptr;
   m_mediaConfSilenceId = -1;
 #endif
 }
@@ -114,7 +114,7 @@ bool SipPhone::init_pjsua() {
   pjsua_transport_config udpcfg;
   pjsua_transport_config_default(&udpcfg);
 
-  status = pjsua_transport_create(PJSIP_TRANSPORT_UDP, &udpcfg, NULL);
+  status = pjsua_transport_create(PJSIP_TRANSPORT_UDP, &udpcfg, nullptr);
   if (status != PJ_SUCCESS) {
     Logger::error("pjsua_transport_create() failed (%s)", Utils::getPjStatusAsString(status).c_str());
     return false;
@@ -137,7 +137,7 @@ bool SipPhone::init_pjsua() {
   // log supported codecs
   std::string codecs = "";
   pjsua_codec_info c[32];
-  unsigned i, count = PJ_ARRAY_SIZE(c);
+  unsigned int i, count = PJ_ARRAY_SIZE(c);
   pjsua_enum_codecs(c, &count);
   for (i = 0; i < count; ++i) {
     std::string codec = std::string(c[i].codec_id.ptr, c[i].codec_id.slen);
@@ -147,7 +147,7 @@ bool SipPhone::init_pjsua() {
 
 #if 0
   m_Pool = pjsua_pool_create("SipPhone.cpp", 128, 128);
-  if (m_Pool == NULL) {
+  if (m_Pool == nullptr) {
     Logger::error("pjsua_pool_create() failed");
     return false;
   }
