@@ -19,109 +19,111 @@
 
 #include "Test.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
-#include <assert.h>
 
 #include "FileListsCache.h"
 #include "Logger.h"
 #include "Utils.h"
 
-
 static void checkEntryByNumber(FileListsCache* pCache, const CacheType type,
-                       const std::string& rNumber, bool exist, const std::string& rExpCallerName) {
-  //printf("checkEntry(rNumber='%s' exist=%d rExpCallerName='%s')\n", rNumber.c_str(), (int)exist, rExpCallerName.c_str());
-  std::string callerName;
-  assert(pCache->getEntryByNumber(type, rNumber, &callerName) == exist);
-  if (exist) {
-    assert(callerName == rExpCallerName);
-  }
+    const std::string& rNumber, bool exist, const std::string& rExpCallerName)
+{
+    //printf("checkEntry(rNumber='%s' exist=%d rExpCallerName='%s')\n", rNumber.c_str(), (int)exist, rExpCallerName.c_str());
+    std::string callerName;
+    assert(pCache->getEntryByNumber(type, rNumber, &callerName) == exist);
+    if (exist) {
+        assert(callerName == rExpCallerName);
+    }
 }
 
-static void Test_Empty(std::string etcPath) {
-  char tmpl[] = "/tmp/testcallblockerd.XXXXXX";
-  char* tempPath = mkdtemp(tmpl);
-  assert(tempPath != nullptr);
-  //printf("tempPath: %s\n", tempPath);
+static void Test_Empty(std::string etcPath)
+{
+    char tmpl[] = "/tmp/testcallblockerd.XXXXXX";
+    char* tempPath = mkdtemp(tmpl);
+    assert(tempPath != nullptr);
+    //printf("tempPath: %s\n", tempPath);
 
-  // start empty
-  FileListsCache* pCache = new FileListsCache(tempPath);
-  //pCache->dump();
+    // start empty
+    FileListsCache* pCache = new FileListsCache(tempPath);
+    //pCache->dump();
 
-  // OnlineLookup: append
-  pCache->addEntry(CacheType::OnlineLookup, "+22222221", "Entry Add 1");
-  pCache->addEntry(CacheType::OnlineLookup, "+22222222", "Entry Add 2");
-  //pCache->dump();
-  checkEntryByNumber(pCache, CacheType::OnlineLookup, "+22222221", true, "Entry Add 1");
-  checkEntryByNumber(pCache, CacheType::OnlineLookup, "+22222222", true, "Entry Add 2");
+    // OnlineLookup: append
+    pCache->addEntry(CacheType::OnlineLookup, "+22222221", "Entry Add 1");
+    pCache->addEntry(CacheType::OnlineLookup, "+22222222", "Entry Add 2");
+    //pCache->dump();
+    checkEntryByNumber(pCache, CacheType::OnlineLookup, "+22222221", true, "Entry Add 1");
+    checkEntryByNumber(pCache, CacheType::OnlineLookup, "+22222222", true, "Entry Add 2");
 
-  // OnlineLookup: append
-  pCache->addEntry(CacheType::OnlineCheck, "+33333331", "Check Add 1");
-  pCache->addEntry(CacheType::OnlineCheck, "+33333332", "Check Add 2");
-  //pCache->dump();
-  checkEntryByNumber(pCache, CacheType::OnlineCheck, "+33333331", true, "Check Add 1");
-  checkEntryByNumber(pCache, CacheType::OnlineCheck, "+33333332", true, "Check Add 2");
+    // OnlineLookup: append
+    pCache->addEntry(CacheType::OnlineCheck, "+33333331", "Check Add 1");
+    pCache->addEntry(CacheType::OnlineCheck, "+33333332", "Check Add 2");
+    //pCache->dump();
+    checkEntryByNumber(pCache, CacheType::OnlineCheck, "+33333331", true, "Check Add 1");
+    checkEntryByNumber(pCache, CacheType::OnlineCheck, "+33333332", true, "Check Add 2");
 
-  pCache->run();
-  //pCache->dump();
-  checkEntryByNumber(pCache, CacheType::OnlineLookup, "+22222221", true, "Entry Add 1");
-  checkEntryByNumber(pCache, CacheType::OnlineLookup, "+22222222", true, "Entry Add 2");
-  checkEntryByNumber(pCache, CacheType::OnlineCheck, "+33333331", true, "Check Add 1");
-  checkEntryByNumber(pCache, CacheType::OnlineCheck, "+33333332", true, "Check Add 2");
+    pCache->run();
+    //pCache->dump();
+    checkEntryByNumber(pCache, CacheType::OnlineLookup, "+22222221", true, "Entry Add 1");
+    checkEntryByNumber(pCache, CacheType::OnlineLookup, "+22222222", true, "Entry Add 2");
+    checkEntryByNumber(pCache, CacheType::OnlineCheck, "+33333331", true, "Check Add 1");
+    checkEntryByNumber(pCache, CacheType::OnlineCheck, "+33333332", true, "Check Add 2");
 
-  delete(pCache);
+    delete (pCache);
 
-  remove(Utils::pathJoin(tempPath, "onlinelookup.json").c_str());
-  remove(Utils::pathJoin(tempPath, "onlinecheck.json").c_str());
-  remove(tempPath);
+    remove(Utils::pathJoin(tempPath, "onlinelookup.json").c_str());
+    remove(Utils::pathJoin(tempPath, "onlinecheck.json").c_str());
+    remove(tempPath);
 }
 
-static void Test_WithAged(std::string etcPath) {
+static void Test_WithAged(std::string etcPath)
+{
 
-  char tmpl[] = "/tmp/testcallblockerd.XXXXXX";
-  char* tempPath = mkdtemp(tmpl);
-  assert(tempPath != nullptr);
-  //printf("tempPath: %s\n", tempPath);
-  std::string cachePath = Utils::pathJoin(etcPath, "cache");
+    char tmpl[] = "/tmp/testcallblockerd.XXXXXX";
+    char* tempPath = mkdtemp(tmpl);
+    assert(tempPath != nullptr);
+    //printf("tempPath: %s\n", tempPath);
+    std::string cachePath = Utils::pathJoin(etcPath, "cache");
 
-  // procondtion: already contains some old entries
-  assert(Utils::fileCopy(Utils::pathJoin(cachePath, "onlinelookup.json"), Utils::pathJoin(tempPath, "onlinelookup.json")));
-  assert(Utils::fileCopy(Utils::pathJoin(cachePath, "onlinecheck.json"), Utils::pathJoin(tempPath, "onlinecheck.json")));
+    // procondtion: already contains some old entries
+    assert(Utils::fileCopy(Utils::pathJoin(cachePath, "onlinelookup.json"), Utils::pathJoin(tempPath, "onlinelookup.json")));
+    assert(Utils::fileCopy(Utils::pathJoin(cachePath, "onlinecheck.json"), Utils::pathJoin(tempPath, "onlinecheck.json")));
 
-  FileListsCache* pCache = new FileListsCache(tempPath);
-  //pCache->dump();
-  checkEntryByNumber(pCache, CacheType::OnlineLookup, "+11111111", true, "Entry Get 1");
-  checkEntryByNumber(pCache, CacheType::OnlineLookup, "+11111112", true, "Entry Get 2");
+    FileListsCache* pCache = new FileListsCache(tempPath);
+    //pCache->dump();
+    checkEntryByNumber(pCache, CacheType::OnlineLookup, "+11111111", true, "Entry Get 1");
+    checkEntryByNumber(pCache, CacheType::OnlineLookup, "+11111112", true, "Entry Get 2");
 
-  // append
-  pCache->addEntry(CacheType::OnlineLookup, "+22222221", "Entry Add 1");
-  pCache->addEntry(CacheType::OnlineLookup, "+22222222", "Entry Add 2");
-  //pCache->dump();
-  checkEntryByNumber(pCache, CacheType::OnlineLookup, "+11111111", true, "Entry Get 1");
-  checkEntryByNumber(pCache, CacheType::OnlineLookup, "+11111112", true, "Entry Get 2");
-  checkEntryByNumber(pCache, CacheType::OnlineLookup, "+22222221", true, "Entry Add 1");
-  checkEntryByNumber(pCache, CacheType::OnlineLookup, "+22222222", true, "Entry Add 2");
+    // append
+    pCache->addEntry(CacheType::OnlineLookup, "+22222221", "Entry Add 1");
+    pCache->addEntry(CacheType::OnlineLookup, "+22222222", "Entry Add 2");
+    //pCache->dump();
+    checkEntryByNumber(pCache, CacheType::OnlineLookup, "+11111111", true, "Entry Get 1");
+    checkEntryByNumber(pCache, CacheType::OnlineLookup, "+11111112", true, "Entry Get 2");
+    checkEntryByNumber(pCache, CacheType::OnlineLookup, "+22222221", true, "Entry Add 1");
+    checkEntryByNumber(pCache, CacheType::OnlineLookup, "+22222222", true, "Entry Add 2");
 
-  // age
-  pCache->run();
-  //pCache->dump();
-  checkEntryByNumber(pCache, CacheType::OnlineLookup, "+11111111", false, "");
-  checkEntryByNumber(pCache, CacheType::OnlineLookup, "+11111112", false, "");
-  checkEntryByNumber(pCache, CacheType::OnlineLookup, "+22222221", true, "Entry Add 1");
-  checkEntryByNumber(pCache, CacheType::OnlineLookup, "+22222222", true, "Entry Add 2");
+    // age
+    pCache->run();
+    //pCache->dump();
+    checkEntryByNumber(pCache, CacheType::OnlineLookup, "+11111111", false, "");
+    checkEntryByNumber(pCache, CacheType::OnlineLookup, "+11111112", false, "");
+    checkEntryByNumber(pCache, CacheType::OnlineLookup, "+22222221", true, "Entry Add 1");
+    checkEntryByNumber(pCache, CacheType::OnlineLookup, "+22222222", true, "Entry Add 2");
 
-  delete(pCache);
+    delete (pCache);
 
-  remove(Utils::pathJoin(tempPath, "onlinelookup.json").c_str());
-  remove(Utils::pathJoin(tempPath, "onlinecheck.json").c_str());
-  remove(tempPath);
+    remove(Utils::pathJoin(tempPath, "onlinelookup.json").c_str());
+    remove(Utils::pathJoin(tempPath, "onlinecheck.json").c_str());
+    remove(tempPath);
 }
 
-void Test_FileListsCache_Run(std::string etcPath) {
-  printf("Test_FileListsCache_Run...\n");
-  Logger::setLogLevel(LogLevel::WARN);
+void Test_FileListsCache_Run(std::string etcPath)
+{
+    printf("Test_FileListsCache_Run...\n");
+    Logger::setLogLevel(LogLevel::WARN);
 
-  Test_Empty(etcPath);
-  Test_WithAged(etcPath);
+    Test_Empty(etcPath);
+    Test_WithAged(etcPath);
 }
-

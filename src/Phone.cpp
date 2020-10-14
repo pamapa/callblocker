@@ -21,18 +21,19 @@
 
 #include "Logger.h"
 
-
-Phone::Phone(Block* pBlock) {
-  Logger::debug("Phone::Phone()");
-  m_pBlock = pBlock;
+Phone::Phone(Block* pBlock)
+{
+    Logger::debug("Phone::Phone()");
+    m_pBlock = pBlock;
 }
 
-Phone::~Phone() {
-  Logger::debug("Phone::~Phone()");
-  m_pBlock = nullptr;
+Phone::~Phone()
+{
+    Logger::debug("Phone::~Phone()");
+    m_pBlock = nullptr;
 }
 
-bool Phone::isBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const std::string& rName, std::string* pMsg) {
-  return m_pBlock->isBlocked(pSettings, rNumber, rName, pMsg);
+bool Phone::isBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const std::string& rName, std::string* pMsg)
+{
+    return m_pBlock->isBlocked(pSettings, rNumber, rName, pMsg);
 }
-

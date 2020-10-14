@@ -20,44 +20,43 @@
 #ifndef FILELISTS_CACHE_H
 #define FILELISTS_CACHE_H
 
-#include <pthread.h>
 #include <chrono>
+#include <pthread.h>
 
 #include "FileList.h"
 #include "Notify.h"
 
-
 enum class CacheType {
-  OnlineLookup = 0,
-  OnlineCheck
+    OnlineLookup = 0,
+    OnlineCheck
 };
 
 struct CacheFileList {
-  FileList* list;
-  bool saveNeeded;
+    FileList* list;
+    bool saveNeeded;
 };
 
 class FileListsCache : public Notify {
 private:
-  pthread_mutex_t m_mutexLock;
-  std::string m_pathname;
-  
-  CacheFileList m_lists[2];
+    pthread_mutex_t m_mutexLock;
+    std::string m_pathname;
 
-  std::chrono::time_point<std::chrono::steady_clock> m_nextEraseAgedTime;
+    CacheFileList m_lists[2];
+
+    std::chrono::time_point<std::chrono::steady_clock> m_nextEraseAgedTime;
 
 public:
-  FileListsCache(const std::string& rPathname);
-  virtual ~FileListsCache();
-  void run();
-  
-  bool getEntryByNumber(const CacheType type, const std::string& rNumber, std::string* pCallerName);
-  void addEntry(const CacheType type, const std::string& rNumber, const std::string& rCallerName);
+    FileListsCache(const std::string& rPathname);
+    virtual ~FileListsCache();
+    void run();
 
-  void dump();
+    bool getEntryByNumber(const CacheType type, const std::string& rNumber, std::string* pCallerName);
+    void addEntry(const CacheType type, const std::string& rNumber, const std::string& rCallerName);
+
+    void dump();
 
 private:
-  void load();
+    void load();
 };
 
 #endif

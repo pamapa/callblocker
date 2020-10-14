@@ -22,29 +22,27 @@
 
 #include <string>
 
-#include "Phone.h"
 #include "Modem.h"
+#include "Phone.h"
 #include "TimerUtil.h"
-
 
 class AnalogPhone : public Phone {
 private:
-  struct SettingAnalogPhone m_settings;
+    struct SettingAnalogPhone m_settings;
 
-  Modem m_modem;
+    Modem m_modem;
 
-  TimerUtil m_ringTimer;
-  unsigned int m_numRings;
-  bool m_foundCID;
+    TimerUtil m_ringTimer;
+    unsigned int m_numRings;
+    bool m_foundCID;
 
-  TimerUtil m_hangupTimer;
+    TimerUtil m_hangupTimer;
 
 public:
-  AnalogPhone(Block* pBlock);
-  virtual ~AnalogPhone();
-  bool init(const struct SettingAnalogPhone* pSettings);
-  void run();
+    AnalogPhone(Block* pBlock);
+    virtual ~AnalogPhone();
+    bool init(const struct SettingAnalogPhone* pSettings);
+    void run();
 };
 
 #endif
-

@@ -23,33 +23,31 @@
 #include <stdarg.h>
 #include <string>
 
-
 enum class LogLevel {
-  ERROR = 3,
-  WARN,
-  NOTICE,
-  INFO,
-  DEBUG,
+    ERROR = 3,
+    WARN,
+    NOTICE,
+    INFO,
+    DEBUG,
 };
 
 class Logger {
 public:
-  static void start(bool useSyslog);
-  static void stop();
-  static LogLevel setLogLevel(LogLevel logLevel);
+    static void start(bool useSyslog);
+    static void stop();
+    static LogLevel setLogLevel(LogLevel logLevel);
 
-  static void error(const char* format, ...);
-  static void warn(const char* format, ...);
-  static void notice(const char* format, ...);
-  static void info(const char* format, ...);
-  static void debug(const char* format, ...);
+    static void error(const char* format, ...);
+    static void warn(const char* format, ...);
+    static void notice(const char* format, ...);
+    static void info(const char* format, ...);
+    static void debug(const char* format, ...);
 
 private:
-  static bool s_useSyslog;
-  static LogLevel s_logLevel;
+    static bool s_useSyslog;
+    static LogLevel s_logLevel;
 
-  static void message(LogLevel level, const char* format, va_list ap);
+    static void message(LogLevel level, const char* format, va_list ap);
 };
 
 #endif
-

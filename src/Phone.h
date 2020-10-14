@@ -25,18 +25,16 @@
 #include "Block.h"
 #include "Settings.h"
 
-
 class Phone {
 private:
-  Block* m_pBlock;
+    Block* m_pBlock;
 
 public:
-  Phone(Block* pBlock);
-  virtual ~Phone();
+    Phone(Block* pBlock);
+    virtual ~Phone();
 
-  // helper
-  bool isBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const std::string& rName, std::string* pMsg);
+    // helper
+    bool isBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const std::string& rName, std::string* pMsg);
 };
 
 #endif
-

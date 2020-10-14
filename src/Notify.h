@@ -20,20 +20,18 @@
 #ifndef NOTIFY_H
 #define NOTIFY_H
 
-#include <string>
 #include <stdint.h>
-
+#include <string>
 
 class Notify {
 private:
-  int m_FD;
-  int m_WD;
+    int m_FD;
+    int m_WD;
 
 public:
-  Notify(const std::string& rPathname, uint32_t mask);
-  virtual ~Notify();
-  virtual bool hasChanged();
+    Notify(const std::string& rPathname, uint32_t mask);
+    virtual ~Notify();
+    virtual bool hasChanged();
 };
 
 #endif
-

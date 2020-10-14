@@ -22,33 +22,31 @@
 
 #include <pjsua-lib/pjsua.h>
 
-#include "SipPhone.h"
 #include "Settings.h"
-
+#include "SipPhone.h"
 
 class SipAccount {
 private:
-  SipPhone* m_pPhone;
-  struct SettingSipAccount m_settings;
-  pjsua_acc_id m_accId;
+    SipPhone* m_pPhone;
+    struct SettingSipAccount m_settings;
+    pjsua_acc_id m_accId;
 
 public:
-  SipAccount(SipPhone* pPhone);
-  virtual ~SipAccount();
-  bool add(const struct SettingSipAccount* pSettings);
+    SipAccount(SipPhone* pPhone);
+    virtual ~SipAccount();
+    bool add(const struct SettingSipAccount* pSettings);
 
-  // callback -> class method call conversion
-  static void onRegState2CB(pjsua_acc_id acc_id, pjsua_reg_info *info);
-  static void onIncomingCallCB(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata);
-  static void onCallStateCB(pjsua_call_id call_id, pjsip_event* e);
-  //static void onCallMediaStateCB(pjsua_call_id call_id);
+    // callback -> class method call conversion
+    static void onRegState2CB(pjsua_acc_id acc_id, pjsua_reg_info* info);
+    static void onIncomingCallCB(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data* rdata);
+    static void onCallStateCB(pjsua_call_id call_id, pjsip_event* e);
+    //static void onCallMediaStateCB(pjsua_call_id call_id);
 private:
-  void onRegState2(pjsua_reg_info *info);
-  void onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata);
-  void onCallState(pjsua_call_id call_id, pjsip_event* e);
-  //void onCallMediaState(pjsua_call_id call_id);
-  bool getNumber(pj_str_t* uri_str, std::string* pDisplay, std::string* pNumber);
+    void onRegState2(pjsua_reg_info* info);
+    void onIncomingCall(pjsua_call_id call_id, pjsip_rx_data* rdata);
+    void onCallState(pjsua_call_id call_id, pjsip_event* e);
+    //void onCallMediaState(pjsua_call_id call_id);
+    bool getNumber(pj_str_t* uri_str, std::string* pDisplay, std::string* pNumber);
 };
 
 #endif
-

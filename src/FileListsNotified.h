@@ -20,33 +20,31 @@
 #ifndef FILELISTS_NOTIFIED_H
 #define FILELISTS_NOTIFIED_H
 
-#include <vector>
 #include <pthread.h>
+#include <vector>
 
 #include "FileList.h"
 #include "Notify.h"
 
-
 class FileListsNotified : public Notify {
 private:
-  pthread_mutex_t m_mutexLock;
-  std::string m_pathname;
-  std::vector<FileList*> m_lists;
+    pthread_mutex_t m_mutexLock;
+    std::string m_pathname;
+    std::vector<FileList*> m_lists;
 
 public:
-  FileListsNotified(const std::string& rDirname);
-  virtual ~FileListsNotified();
-  void run();
+    FileListsNotified(const std::string& rDirname);
+    virtual ~FileListsNotified();
+    void run();
 
-  bool getEntryByNumber(const std::string& rNumber, std::string* pListName, std::string* pCallerName);
-  bool getEntryByName(const std::string& rCallerName, std::string* pListName);
+    bool getEntryByNumber(const std::string& rNumber, std::string* pListName, std::string* pCallerName);
+    bool getEntryByName(const std::string& rCallerName, std::string* pListName);
 
-  void dump();
+    void dump();
 
 private:
-  void load();
-  void clear();
+    void load();
+    void clear();
 };
 
 #endif
-

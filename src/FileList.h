@@ -20,42 +20,40 @@
 #ifndef FILELIST_H
 #define FILELIST_H
 
-#include <string>
 #include <chrono>
+#include <string>
 #include <vector>
 
-
 struct FileListEntry {
-  std::string number;
-  std::string name;
-  std::chrono::system_clock::time_point date_created;
+    std::string number;
+    std::string name;
+    std::chrono::system_clock::time_point date_created;
 };
 
 class FileList {
 private:
-  std::string m_filename;
-  std::string m_name;
-  std::vector<FileListEntry> m_entries;
+    std::string m_filename;
+    std::string m_name;
+    std::vector<FileListEntry> m_entries;
 
 public:
-  FileList(const std::string& filename, const std::string& name);
-  FileList(const std::string& filename);
-  virtual ~FileList();
+    FileList(const std::string& filename, const std::string& name);
+    FileList(const std::string& filename);
+    virtual ~FileList();
 
-  bool load();
-  bool save();
+    bool load();
+    bool save();
 
-  std::string getName();
+    std::string getName();
 
-  bool getEntryByNumber(const std::string& rNumber, std::string* pName);
-  bool getEntryByName(const std::string& rName);
-  void addEntry(const std::string& rNumber, const std::string& rName);
-  void removeEntry(const std::string& rNumber);
+    bool getEntryByNumber(const std::string& rNumber, std::string* pName);
+    bool getEntryByName(const std::string& rName);
+    void addEntry(const std::string& rNumber, const std::string& rName);
+    void removeEntry(const std::string& rNumber);
 
-  bool eraseAged(size_t maxDays);
+    bool eraseAged(size_t maxDays);
 
-  void dump();
+    void dump();
 };
 
 #endif
-

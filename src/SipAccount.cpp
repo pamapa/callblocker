@@ -19,10 +19,10 @@
 
 #include "SipAccount.h" // API
 
-#include <string>
 #include <sstream>
-#include <unistd.h>
+#include <string>
 #include <sys/socket.h>
+#include <unistd.h>
 
 #include <pjsua-lib/pjsua.h>
 
@@ -30,128 +30,134 @@
 #include "Settings.h"
 #include "Utils.h"
 
-
-SipAccount::SipAccount(SipPhone* pPhone) {
-  Logger::debug("SipAccount::SipAccount()");
-  m_pPhone = pPhone;
-  m_accId = -1;
+SipAccount::SipAccount(SipPhone* pPhone)
+{
+    Logger::debug("SipAccount::SipAccount()");
+    m_pPhone = pPhone;
+    m_accId = -1;
 }
 
-SipAccount::~SipAccount() {
-  Logger::debug("SipAccount::~SipAccount()");
-  m_pPhone = nullptr;
+SipAccount::~SipAccount()
+{
+    Logger::debug("SipAccount::~SipAccount()");
+    m_pPhone = nullptr;
 
-  if (m_accId == -1) {
-    return;
-  }
-
-  (void)pjsua_acc_set_user_data(m_accId, nullptr);
-
-  pj_status_t status = pjsua_acc_del(m_accId);
-  m_accId = -1;
-  if (status != PJ_SUCCESS) {
-    Logger::warn("pjsua_acc_del() failed (%s)", Utils::getPjStatusAsString(status).c_str());
-  }
-}
-
-bool SipAccount::add(const struct SettingSipAccount* pSettings) {
-  Logger::debug("SipAccount::add(%s)", Settings::toString(pSettings).c_str());
-  m_settings = *pSettings; // struct copy
-
-  // prepare account configuration
-  pjsua_acc_config cfg;
-  pjsua_acc_config_default(&cfg);
-
-  std::string schema = "sip:";
-  if (m_settings.secure) {
-    schema = "sips:";
-  }
-
-  // login id
-  std::string id = schema + m_settings.username + "@" + m_settings.domain;
-
-  // connection uri
-  std::string reg_uri = schema + m_settings.domain;
-  if (m_settings.forceIPv4) {
-    std::string domain_ipv4;
-    if (!Utils::resolveHostname(m_settings.domain, AF_INET, &domain_ipv4)) {
-      Logger::error("resolving hostname %s to IPv4 address failed", m_settings.domain.c_str());
-      return false;
+    if (m_accId == -1) {
+        return;
     }
-    reg_uri = schema + domain_ipv4;
-  }
 
-  // create and define account
-  cfg.id = pj_str((char*)id.c_str());
-  cfg.reg_uri = pj_str((char*)reg_uri.c_str());
-  cfg.cred_count = 1;
-  cfg.cred_info[0].realm = pj_str((char*)m_settings.realm.c_str());
-  cfg.cred_info[0].scheme = pj_str((char*)"digest");
-  cfg.cred_info[0].username = pj_str((char*)m_settings.username.c_str());
-  cfg.cred_info[0].data_type = PJSIP_CRED_DATA_PLAIN_PASSWD;
-  cfg.cred_info[0].data = pj_str((char*)m_settings.password.c_str());
+    (void)pjsua_acc_set_user_data(m_accId, nullptr);
 
-  // outbound proxy
-  if (!m_settings.outboundProxy.empty()) {
-    cfg.reg_use_proxy = 3;
-    cfg.proxy_cnt = 1;
-    cfg.proxy[0] = pj_str((char*)m_settings.outboundProxy.c_str());
-  }
-
-  // add account
-  pj_status_t status = pjsua_acc_add(&cfg, PJ_TRUE, &m_accId);
-  if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_acc_add() failed (%s)", Utils::getPjStatusAsString(status).c_str());
-    return false;
-  }
-
-  status = pjsua_acc_set_user_data(m_accId, this);
-  if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_acc_set_user_data() failed (%s)", Utils::getPjStatusAsString(status).c_str());
-    return false;
-  }
-
-  Logger::debug("SipAccount::add(): added account with id='%s' and reg_uri='%s'", id.c_str(), reg_uri.c_str());
-  return true;
+    pj_status_t status = pjsua_acc_del(m_accId);
+    m_accId = -1;
+    if (status != PJ_SUCCESS) {
+        Logger::warn("pjsua_acc_del() failed (%s)", Utils::getPjStatusAsString(status).c_str());
+    }
 }
 
-void SipAccount::onRegState2CB(pjsua_acc_id acc_id, pjsua_reg_info *info) {
-  SipAccount* p = (SipAccount*)pjsua_acc_get_user_data(acc_id);
-  if (p == nullptr) {
-    Logger::warn("onRegState2CB(acc_id=%d, ...) account not found", acc_id);
-    return;
-  }
-  p->onRegState2(info);
+bool SipAccount::add(const struct SettingSipAccount* pSettings)
+{
+    Logger::debug("SipAccount::add(%s)", Settings::toString(pSettings).c_str());
+    m_settings = *pSettings; // struct copy
+
+    // prepare account configuration
+    pjsua_acc_config cfg;
+    pjsua_acc_config_default(&cfg);
+
+    std::string schema = "sip:";
+    if (m_settings.secure) {
+        schema = "sips:";
+    }
+
+    // login id
+    std::string id = schema + m_settings.username + "@" + m_settings.domain;
+
+    // connection uri
+    std::string reg_uri = schema + m_settings.domain;
+    if (m_settings.forceIPv4) {
+        std::string domain_ipv4;
+        if (!Utils::resolveHostname(m_settings.domain, AF_INET, &domain_ipv4)) {
+            Logger::error("resolving hostname %s to IPv4 address failed", m_settings.domain.c_str());
+            return false;
+        }
+        reg_uri = schema + domain_ipv4;
+    }
+
+    // create and define account
+    cfg.id = pj_str((char*)id.c_str());
+    cfg.reg_uri = pj_str((char*)reg_uri.c_str());
+    cfg.cred_count = 1;
+    cfg.cred_info[0].realm = pj_str((char*)m_settings.realm.c_str());
+    cfg.cred_info[0].scheme = pj_str((char*)"digest");
+    cfg.cred_info[0].username = pj_str((char*)m_settings.username.c_str());
+    cfg.cred_info[0].data_type = PJSIP_CRED_DATA_PLAIN_PASSWD;
+    cfg.cred_info[0].data = pj_str((char*)m_settings.password.c_str());
+
+    // outbound proxy
+    if (!m_settings.outboundProxy.empty()) {
+        cfg.reg_use_proxy = 3;
+        cfg.proxy_cnt = 1;
+        cfg.proxy[0] = pj_str((char*)m_settings.outboundProxy.c_str());
+    }
+
+    // add account
+    pj_status_t status = pjsua_acc_add(&cfg, PJ_TRUE, &m_accId);
+    if (status != PJ_SUCCESS) {
+        Logger::error("pjsua_acc_add() failed (%s)", Utils::getPjStatusAsString(status).c_str());
+        return false;
+    }
+
+    status = pjsua_acc_set_user_data(m_accId, this);
+    if (status != PJ_SUCCESS) {
+        Logger::error("pjsua_acc_set_user_data() failed (%s)", Utils::getPjStatusAsString(status).c_str());
+        return false;
+    }
+
+    Logger::debug("SipAccount::add(): added account with id='%s' and reg_uri='%s'", id.c_str(), reg_uri.c_str());
+    return true;
 }
 
-void SipAccount::onRegState2(pjsua_reg_info *info) {
-  if (info->cbparam->code != 200) {
-    Logger::warn("%s on domain '%s' with username '%s' failed (code=%d)", info->renew ? "registration" : "unregistration",
-                 m_settings.domain.c_str(), m_settings.username.c_str(), info->cbparam->code);
-  }
+void SipAccount::onRegState2CB(pjsua_acc_id acc_id, pjsua_reg_info* info)
+{
+    SipAccount* p = (SipAccount*)pjsua_acc_get_user_data(acc_id);
+    if (p == nullptr) {
+        Logger::warn("onRegState2CB(acc_id=%d, ...) account not found", acc_id);
+        return;
+    }
+    p->onRegState2(info);
 }
 
-void SipAccount::onIncomingCallCB(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata) {
-  SipAccount* p = (SipAccount*)pjsua_acc_get_user_data(acc_id);
-  if (p == nullptr) {
-    Logger::warn("onIncomingCallCB(acc_id=%d, call_id=%d) account not found", acc_id, call_id);
-    return;
-  }
-  p->onIncomingCall(call_id, rdata);
+void SipAccount::onRegState2(pjsua_reg_info* info)
+{
+    if (info->cbparam->code != 200) {
+        Logger::warn("%s on domain '%s' with username '%s' failed (code=%d)", info->renew ? "registration" : "unregistration",
+            m_settings.domain.c_str(), m_settings.username.c_str(), info->cbparam->code);
+    }
 }
 
-void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
-  Logger::debug("SipAccount::onIncomingCall(call_id=%d)", call_id);
-  PJ_UNUSED_ARG(rdata);
+void SipAccount::onIncomingCallCB(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data* rdata)
+{
+    SipAccount* p = (SipAccount*)pjsua_acc_get_user_data(acc_id);
+    if (p == nullptr) {
+        Logger::warn("onIncomingCallCB(acc_id=%d, call_id=%d) account not found", acc_id, call_id);
+        return;
+    }
+    p->onIncomingCall(call_id, rdata);
+}
 
-  pj_status_t status = pjsua_call_set_user_data(call_id, this);
-  if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_acc_set_user_data() failed (%s)", Utils::getPjStatusAsString(status).c_str());
-    return;
-  }
+void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data* rdata)
+{
+    Logger::debug("SipAccount::onIncomingCall(call_id=%d)", call_id);
+    PJ_UNUSED_ARG(rdata);
 
-  pjsua_call_info ci;
-  pjsua_call_get_info(call_id, &ci);
+    pj_status_t status = pjsua_call_set_user_data(call_id, this);
+    if (status != PJ_SUCCESS) {
+        Logger::error("pjsua_acc_set_user_data() failed (%s)", Utils::getPjStatusAsString(status).c_str());
+        return;
+    }
+
+    pjsua_call_info ci;
+    pjsua_call_get_info(call_id, &ci);
 
 #if 0
   Logger::debug("local_info %s", pj_strbuf(&ci.local_info));
@@ -161,15 +167,15 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
   Logger::debug("call_id %s", pj_strbuf(&ci.call_id));
 #endif
 
-  std::string display, number;
-  if (!getNumber(&ci.remote_info, &display, &number)) {
-    Logger::warn("invalid URI received '%s'", pj_strbuf(&ci.remote_info));
-    return;
-  }
+    std::string display, number;
+    if (!getNumber(&ci.remote_info, &display, &number)) {
+        Logger::warn("invalid URI received '%s'", pj_strbuf(&ci.remote_info));
+        return;
+    }
 
-  std::string msg;
-  bool block = m_pPhone->isBlocked(&m_settings.base, number, "", &msg);
-  Logger::notice(msg.c_str());
+    std::string msg;
+    bool block = m_pPhone->isBlocked(&m_settings.base, number, "", &msg);
+    Logger::notice(msg.c_str());
 
 #if 0
   // 302 redirect
@@ -190,42 +196,44 @@ void SipAccount::onIncomingCall(pjsua_call_id call_id, pjsip_rx_data *rdata) {
   pj_pool_release(pool);
 #endif
 
-  if (block) {
-    // answer incoming calls with 200/OK, then we hangup in onCallState...
-    pj_status_t status = pjsua_call_answer(call_id, 200, nullptr, nullptr);
-    if (status != PJ_SUCCESS) {
-      Logger::warn("pjsua_call_answer() failed (%s)", Utils::getPjStatusAsString(status).c_str());
+    if (block) {
+        // answer incoming calls with 200/OK, then we hangup in onCallState...
+        pj_status_t status = pjsua_call_answer(call_id, 200, nullptr, nullptr);
+        if (status != PJ_SUCCESS) {
+            Logger::warn("pjsua_call_answer() failed (%s)", Utils::getPjStatusAsString(status).c_str());
+        }
     }
-  }
 }
 
-void SipAccount::onCallStateCB(pjsua_call_id call_id, pjsip_event* e) {
-  SipAccount* p = (SipAccount*)pjsua_call_get_user_data(call_id);
-  if (p == nullptr) {
-    Logger::warn("onCallStateCB(call_id=%d) account not found", call_id);
-    return;
-  }
-  p->onCallState(call_id, e);
+void SipAccount::onCallStateCB(pjsua_call_id call_id, pjsip_event* e)
+{
+    SipAccount* p = (SipAccount*)pjsua_call_get_user_data(call_id);
+    if (p == nullptr) {
+        Logger::warn("onCallStateCB(call_id=%d) account not found", call_id);
+        return;
+    }
+    p->onCallState(call_id, e);
 }
 
-void SipAccount::onCallState(pjsua_call_id call_id, pjsip_event* e) {
-  PJ_UNUSED_ARG(e);
+void SipAccount::onCallState(pjsua_call_id call_id, pjsip_event* e)
+{
+    PJ_UNUSED_ARG(e);
 
-  pjsua_call_info ci;
-  pjsua_call_get_info(call_id, &ci);
+    pjsua_call_info ci;
+    pjsua_call_get_info(call_id, &ci);
 
-  // NOTE: if the number is blocked or not, we land here
-  std::string state = std::string(pj_strbuf(&ci.state_text), ci.state_text.slen);
-  Logger::debug("SipAccount::onCallState(call_id=%d): call state changed to %s", call_id, state.c_str());
+    // NOTE: if the number is blocked or not, we land here
+    std::string state = std::string(pj_strbuf(&ci.state_text), ci.state_text.slen);
+    Logger::debug("SipAccount::onCallState(call_id=%d): call state changed to %s", call_id, state.c_str());
 
-  if (ci.state == PJSIP_INV_STATE_CONFIRMED) {
-    Logger::debug("SipAccount::onCallState(call_id=%d): hangup", call_id);
-    // code 0: pj takes care of hangup SIP status code
-    pj_status_t status = pjsua_call_hangup(call_id, 0, nullptr, nullptr);
-    if (status != PJ_SUCCESS) {
-      Logger::warn("pjsua_call_hangup() failed (%s)", Utils::getPjStatusAsString(status).c_str());
+    if (ci.state == PJSIP_INV_STATE_CONFIRMED) {
+        Logger::debug("SipAccount::onCallState(call_id=%d): hangup", call_id);
+        // code 0: pj takes care of hangup SIP status code
+        pj_status_t status = pjsua_call_hangup(call_id, 0, nullptr, nullptr);
+        if (status != PJ_SUCCESS) {
+            Logger::warn("pjsua_call_hangup() failed (%s)", Utils::getPjStatusAsString(status).c_str());
+        }
     }
-  }
 }
 
 #if 0
@@ -251,26 +259,26 @@ void SipAccount::onCallMediaState(pjsua_call_id call_id) {
 }
 #endif
 
-bool SipAccount::getNumber(pj_str_t* uri, std::string* pDisplay, std::string* pNumber) {
-  pj_pool_t* pool = pjsua_pool_create("", 128, 10);
-  pjsip_name_addr* n = (pjsip_name_addr*)pjsip_parse_uri(pool, uri->ptr, uri->slen, PJSIP_PARSE_URI_AS_NAMEADDR);
-  if (n == nullptr) {
-    Logger::warn("pjsip_parse_uri() failed for %s", pj_strbuf(uri));
+bool SipAccount::getNumber(pj_str_t* uri, std::string* pDisplay, std::string* pNumber)
+{
+    pj_pool_t* pool = pjsua_pool_create("", 128, 10);
+    pjsip_name_addr* n = (pjsip_name_addr*)pjsip_parse_uri(pool, uri->ptr, uri->slen, PJSIP_PARSE_URI_AS_NAMEADDR);
+    if (n == nullptr) {
+        Logger::warn("pjsip_parse_uri() failed for %s", pj_strbuf(uri));
+        pj_pool_release(pool);
+        return false;
+    }
+    if (!PJSIP_URI_SCHEME_IS_SIP(n)) {
+        Logger::warn("pjsip_parse_uri() returned unknown schema for %s", pj_strbuf(uri));
+        pj_pool_release(pool);
+        return false;
+    }
+
+    *pDisplay = std::string(n->display.ptr, n->display.slen);
+
+    pjsip_sip_uri* sip = (pjsip_sip_uri*)pjsip_uri_get_uri(n);
+    *pNumber = std::string(sip->user.ptr, sip->user.slen);
+
     pj_pool_release(pool);
-    return false;
-  }
-  if (!PJSIP_URI_SCHEME_IS_SIP(n)) {
-    Logger::warn("pjsip_parse_uri() returned unknown schema for %s", pj_strbuf(uri));
-    pj_pool_release(pool);
-    return false;
-  }
-
-  *pDisplay = std::string(n->display.ptr, n->display.slen);
-
-  pjsip_sip_uri *sip = (pjsip_sip_uri*)pjsip_uri_get_uri(n);
-  *pNumber = std::string(sip->user.ptr, sip->user.slen);
-
-  pj_pool_release(pool);
-  return true;
+    return true;
 }
-

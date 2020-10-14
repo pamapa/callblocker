@@ -23,21 +23,19 @@
 #include <string>
 #include <termios.h>
 
-
 class Modem {
 private:
-  std::string m_name;
-  int m_FD;
-  struct termios m_origTermios;
+    std::string m_name;
+    int m_FD;
+    struct termios m_origTermios;
 
 public:
-  Modem();
-  virtual ~Modem();
+    Modem();
+    virtual ~Modem();
 
-  bool open(std::string name);
-  bool sendCommand(std::string cmd);
-  bool getData(std::string* data);
+    bool open(std::string name);
+    bool sendCommand(std::string cmd);
+    bool getData(std::string* data);
 };
 
 #endif
-

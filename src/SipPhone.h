@@ -26,7 +26,6 @@
 
 #include "Phone.h"
 
-
 class SipPhone : public Phone {
 private:
 #if 0
@@ -36,17 +35,16 @@ private:
 #endif
 
 public:
-  SipPhone(Block* pBlock);
-  virtual ~SipPhone();
-  bool init();
+    SipPhone(Block* pBlock);
+    virtual ~SipPhone();
+    bool init();
 
 #if 0
   pjsua_conf_port_id getMediaConfSilenceId() { return m_mediaConfSilenceId; }
 #endif
 private:
-  bool init_pjsua();
-  bool init_pjmedia();
+    bool init_pjsua();
+    bool init_pjmedia();
 };
 
 #endif
-

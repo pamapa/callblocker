@@ -17,40 +17,39 @@
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include <string>
-#include <stdio.h>
 #include <assert.h>
+#include <stdio.h>
+#include <string>
 
+#include "Logger.h"
 #include "Test.h"
 #include "Utils.h"
-#include "Logger.h"
 
+int main(int argc, char* argv[])
+{
+    printf("Executing unit_tests...\n");
 
-int main(int argc, char* argv[]) {
-  printf("Executing unit_tests...\n");
+    if (argc != 2) {
+        printf("USAGE: unit_tests <source root path>");
+        return 1;
+    }
 
-  if (argc != 2) {
-    printf("USAGE: unit_tests <source root path>");
-    return 1;
-  }
-
-  Logger::start(false);
+    Logger::start(false);
 
 #if 0
   assert(0);
 #endif
 
-  Logger::warn("SOURCE_ROOT: %s", argv[1]);
-  std::string etcPath = Utils::pathJoin(argv[1], "/tests/callblockerd/data/etc");
-  Logger::warn("etcPath: %s", etcPath.c_str());
+    Logger::warn("SOURCE_ROOT: %s", argv[1]);
+    std::string etcPath = Utils::pathJoin(argv[1], "/tests/callblockerd/data/etc");
+    Logger::warn("etcPath: %s", etcPath.c_str());
 
-  Test_Utils_Run();
-  Test_Block_Run(etcPath);
-  Test_FileListsCache_Run(etcPath);
-  Test_FileListsNotified_Run(etcPath);
+    Test_Utils_Run();
+    Test_Block_Run(etcPath);
+    Test_FileListsCache_Run(etcPath);
+    Test_FileListsNotified_Run(etcPath);
 
-  Logger::stop();
+    Logger::stop();
 
-  return 0; // success (asserts will abort before)
+    return 0; // success (asserts will abort before)
 }
-

@@ -20,45 +20,42 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
-#include <string>
 #include <json-c/json.h>
+#include <string>
 
-#include "FileListsNotified.h"
 #include "FileListsCache.h"
+#include "FileListsNotified.h"
 #include "Settings.h"
-
 
 #define BLOCK_ANONYMOUS_NUMBER_STR "anonymous"
 
-
 class Block {
 private:
-  Settings* m_pSettings;
-  FileListsNotified* m_pAllowlists;
-  FileListsNotified* m_pBlocklists;
-  FileListsCache* m_pCache;
+    Settings* m_pSettings;
+    FileListsNotified* m_pAllowlists;
+    FileListsNotified* m_pBlocklists;
+    FileListsCache* m_pCache;
 
 public:
-  Block(Settings* pSettings);
-  virtual ~Block();
-  void run();
-  bool isBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const std::string& rName, std::string* pMsg);
+    Block(Settings* pSettings);
+    virtual ~Block();
+    void run();
+    bool isBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const std::string& rName, std::string* pMsg);
 
 private:
-  bool isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg);
-  bool isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber, const std::string& rName, std::string* pMsg);
+    bool isAnonymousNumberBlocked(const struct SettingBase* pSettings, std::string* pMsg);
+    bool isNumberBlocked(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber, const std::string& rName, std::string* pMsg);
 
-  bool isAllowListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pName);
-  bool isBlocklisted(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
-                     std::string* pListName, std::string* pName, std::string* pScore);
+    bool isAllowListed(const struct SettingBase* pSettings, const std::string& rNumber, std::string* pListName, std::string* pName);
+    bool isBlocklisted(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
+        std::string* pListName, std::string* pName, std::string* pScore);
 
-  void onlineLookup(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
-                    std::string* pCallerName);
-  bool onlineCheck(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
-                   std::string* pListName, std::string* pCallerName, std::string* pScore);
-  bool executeScript(std::string prefix, std::string name, const std::string& rNumber, const bool validNumber,
-                     struct json_object** root);
+    void onlineLookup(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
+        std::string* pCallerName);
+    bool onlineCheck(const struct SettingBase* pSettings, const std::string& rNumber, const bool validNumber,
+        std::string* pListName, std::string* pCallerName, std::string* pScore);
+    bool executeScript(std::string prefix, std::string name, const std::string& rNumber, const bool validNumber,
+        struct json_object** root);
 };
 
 #endif
-

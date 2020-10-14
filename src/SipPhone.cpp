@@ -19,8 +19,8 @@
 
 #include "SipPhone.h" // API
 
-#include <string>
 #include <pjsua-lib/pjsua.h>
+#include <string>
 
 #include "Logger.h"
 #include "SipAccount.h"
@@ -31,19 +31,21 @@
 //  pjsua_media.c  ..Error initializing SRTP library: unsupported parameter [status=259801]
 static bool s_Initialized = false;
 
-
-SipPhone::SipPhone(Block* pBlock) : Phone(pBlock) {
-  Logger::debug("SipPhone::SipPhone()");
+SipPhone::SipPhone(Block* pBlock)
+    : Phone(pBlock)
+{
+    Logger::debug("SipPhone::SipPhone()");
 #if 0
   m_mediaPortSilence = nullptr;
   m_mediaConfSilenceId = -1;
 #endif
 }
 
-SipPhone::~SipPhone() {
-  Logger::debug("SipPhone::~SipPhone()");
+SipPhone::~SipPhone()
+{
+    Logger::debug("SipPhone::~SipPhone()");
 
-  pjsua_call_hangup_all();
+    pjsua_call_hangup_all();
 
 #if 0
   pjsua_conf_remove_port(m_mediaConfSilenceId);
@@ -57,93 +59,95 @@ SipPhone::~SipPhone() {
 #endif
 }
 
-bool SipPhone::init() {
-  Logger::debug("SipPhone::init()");
+bool SipPhone::init()
+{
+    Logger::debug("SipPhone::init()");
 
-  if (!s_Initialized)
-  {
-    if (!init_pjsua()) return false;
+    if (!s_Initialized) {
+        if (!init_pjsua())
+            return false;
 #if 0
     if (!init_pjmedia()) return false;
 #endif
-    s_Initialized = true;
-  }
+        s_Initialized = true;
+    }
 
-  return true;
+    return true;
 }
 
-bool SipPhone::init_pjsua() {
-  Logger::debug("SipPhone::init_pjsua()");
+bool SipPhone::init_pjsua()
+{
+    Logger::debug("SipPhone::init_pjsua()");
 
-  // create pjsua  
-  pj_status_t status = pjsua_create();
-  if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_create() failed (%s)", Utils::getPjStatusAsString(status).c_str());
-    return false;
-  }
+    // create pjsua
+    pj_status_t status = pjsua_create();
+    if (status != PJ_SUCCESS) {
+        Logger::error("pjsua_create() failed (%s)", Utils::getPjStatusAsString(status).c_str());
+        return false;
+    }
 
-  // configure pjsua
-  pjsua_config ua_cfg;
-  pjsua_config_default(&ua_cfg);
-  // enable just 1 simultaneous call 
-  ua_cfg.max_calls = 1; // TODO
-  // callback configuration
-  ua_cfg.cb.on_reg_state2 = &SipAccount::onRegState2CB;
-  ua_cfg.cb.on_call_state = &SipAccount::onCallStateCB;
-  ua_cfg.cb.on_incoming_call = &SipAccount::onIncomingCallCB;
-  //ua_cfg.cb.on_call_media_state = &SipAccount::onCallMediaStateCB;
+    // configure pjsua
+    pjsua_config ua_cfg;
+    pjsua_config_default(&ua_cfg);
+    // enable just 1 simultaneous call
+    ua_cfg.max_calls = 1; // TODO
+    // callback configuration
+    ua_cfg.cb.on_reg_state2 = &SipAccount::onRegState2CB;
+    ua_cfg.cb.on_call_state = &SipAccount::onCallStateCB;
+    ua_cfg.cb.on_incoming_call = &SipAccount::onIncomingCallCB;
+    //ua_cfg.cb.on_call_media_state = &SipAccount::onCallMediaStateCB;
 
-  // logging configuration
-  pjsua_logging_config log_cfg;    
-  pjsua_logging_config_default(&log_cfg);
-  log_cfg.level = pj_log_get_level();
+    // logging configuration
+    pjsua_logging_config log_cfg;
+    pjsua_logging_config_default(&log_cfg);
+    log_cfg.level = pj_log_get_level();
 
-  // media configuration
-  pjsua_media_config media_cfg;
-  pjsua_media_config_default(&media_cfg);
-  media_cfg.clock_rate = 8000; // TODO: default of 16000 seems not to work :-(
+    // media configuration
+    pjsua_media_config media_cfg;
+    pjsua_media_config_default(&media_cfg);
+    media_cfg.clock_rate = 8000; // TODO: default of 16000 seems not to work :-(
 
-  // initialize pjsua 
-  status = pjsua_init(&ua_cfg, &log_cfg, &media_cfg);
-  if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_init() failed (%s)", Utils::getPjStatusAsString(status).c_str());
-    return false;
-  }
+    // initialize pjsua
+    status = pjsua_init(&ua_cfg, &log_cfg, &media_cfg);
+    if (status != PJ_SUCCESS) {
+        Logger::error("pjsua_init() failed (%s)", Utils::getPjStatusAsString(status).c_str());
+        return false;
+    }
 
-  // add udp transport
-  pjsua_transport_config udpcfg;
-  pjsua_transport_config_default(&udpcfg);
+    // add udp transport
+    pjsua_transport_config udpcfg;
+    pjsua_transport_config_default(&udpcfg);
 
-  status = pjsua_transport_create(PJSIP_TRANSPORT_UDP, &udpcfg, nullptr);
-  if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_transport_create() failed (%s)", Utils::getPjStatusAsString(status).c_str());
-    return false;
-  }
+    status = pjsua_transport_create(PJSIP_TRANSPORT_UDP, &udpcfg, nullptr);
+    if (status != PJ_SUCCESS) {
+        Logger::error("pjsua_transport_create() failed (%s)", Utils::getPjStatusAsString(status).c_str());
+        return false;
+    }
 
-  // disable sound device - use null sound device
-  status = pjsua_set_null_snd_dev();
-  if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_set_null_snd_dev() failed (%s)", Utils::getPjStatusAsString(status).c_str());
-    return false;
-  }
+    // disable sound device - use null sound device
+    status = pjsua_set_null_snd_dev();
+    if (status != PJ_SUCCESS) {
+        Logger::error("pjsua_set_null_snd_dev() failed (%s)", Utils::getPjStatusAsString(status).c_str());
+        return false;
+    }
 
-  // initialization is done, start pjsua
-  status = pjsua_start();
-  if (status != PJ_SUCCESS) {
-    Logger::error("pjsua_start() failed (%s)", Utils::getPjStatusAsString(status).c_str());
-    return false;
-  }
+    // initialization is done, start pjsua
+    status = pjsua_start();
+    if (status != PJ_SUCCESS) {
+        Logger::error("pjsua_start() failed (%s)", Utils::getPjStatusAsString(status).c_str());
+        return false;
+    }
 
-  // log supported codecs
-  std::string codecs = "";
-  pjsua_codec_info c[32];
-  unsigned int i, count = PJ_ARRAY_SIZE(c);
-  pjsua_enum_codecs(c, &count);
-  for (i = 0; i < count; ++i) {
-    std::string codec = std::string(c[i].codec_id.ptr, c[i].codec_id.slen);
-    codecs += "'" + codec + "' ";
-  }
-  Logger::debug("List of supported codecs (count=%i): %s", count, codecs.c_str());
+    // log supported codecs
+    std::string codecs = "";
+    pjsua_codec_info c[32];
+    unsigned int i, count = PJ_ARRAY_SIZE(c);
+    pjsua_enum_codecs(c, &count);
+    for (i = 0; i < count; ++i) {
+        std::string codec = std::string(c[i].codec_id.ptr, c[i].codec_id.slen);
+        codecs += "'" + codec + "' ";
+    }
+    Logger::debug("List of supported codecs (count=%i): %s", count, codecs.c_str());
 
 #if 0
   m_Pool = pjsua_pool_create("SipPhone.cpp", 128, 128);
@@ -153,14 +157,14 @@ bool SipPhone::init_pjsua() {
   }
 #endif
 
-  return true;
+    return true;
 }
 
 #if 0
 bool SipPhone::init_pjmedia() {
   Logger::debug("SipPhone::init_pjmedia...");
-#define CLOCK_RATE        8000
-#define CHANNEL_COUNT     1
+#define CLOCK_RATE 8000
+#define CHANNEL_COUNT 1
 #define SAMPLES_PER_FRAME ((CLOCK_RATE * CHANNEL_COUNT * PJSUA_DEFAULT_AUDIO_FRAME_PTIME) / 1000)
 
   pj_status_t status = pjmedia_null_port_create(m_Pool, CLOCK_RATE, 1, SAMPLES_PER_FRAME, 16, &m_mediaPortSilence);
@@ -177,4 +181,3 @@ bool SipPhone::init_pjmedia() {
   return true;
 }
 #endif
-

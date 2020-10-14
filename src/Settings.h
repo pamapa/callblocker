@@ -20,86 +20,84 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
 
 #include "Notify.h"
 
 // forward declaration
 struct json_object; // avoids inclusion of <json-c/json.h>
 
-
 enum SettingBlockMode {
-  LOGGING_ONLY = 0,             // number is never blocked, only logged what it would do
-  ALLOWLISTS_ONLY,              // number is blocked, when NOT in a allowlists (blocklists not used at all)
-  ALLOWLISTS_AND_BLOCKLISTS,    // number is blocked, when in a blocklists and NOT in a allowlists
-  BLOCKLISTS_ONLY               // number is blocked, when in a blocklists (allowlists not used at all)
+    LOGGING_ONLY = 0, // number is never blocked, only logged what it would do
+    ALLOWLISTS_ONLY, // number is blocked, when NOT in a allowlists (blocklists not used at all)
+    ALLOWLISTS_AND_BLOCKLISTS, // number is blocked, when in a blocklists and NOT in a allowlists
+    BLOCKLISTS_ONLY // number is blocked, when in a blocklists (allowlists not used at all)
 };
 
 struct SettingBase {
-  std::string name;
-  std::string countryCode;
+    std::string name;
+    std::string countryCode;
 
-  enum SettingBlockMode blockMode;
-  bool blockAnonymousCID;
-  bool blockInvalidCID;
+    enum SettingBlockMode blockMode;
+    bool blockAnonymousCID;
+    bool blockInvalidCID;
 
-  std::string onlineCheck;
-  std::string onlineLookup;
-  bool onlineCache;
+    std::string onlineCheck;
+    std::string onlineLookup;
+    bool onlineCache;
 };
 
 struct SettingSipAccount {
-  struct SettingBase base;
-  std::string domain;
-  std::string username;
-  std::string password;
-  std::string realm;
-  std::string outboundProxy;
-  bool secure;
-  bool forceIPv4;
+    struct SettingBase base;
+    std::string domain;
+    std::string username;
+    std::string password;
+    std::string realm;
+    std::string outboundProxy;
+    bool secure;
+    bool forceIPv4;
 };
 
 struct SettingAnalogPhone {
-  struct SettingBase base;
-  std::string device;
+    struct SettingBase base;
+    std::string device;
 };
 
 struct SettingOnlineCredential {
-  std::string name;
-  std::map<std::string, std::string> data;
+    std::string name;
+    std::map<std::string, std::string> data;
 };
 
 class Settings : public Notify {
 private:
-  std::string m_basePathname; // default: /etc/callblocker
-  std::string m_filename;     // full filename for settings.json
-  std::vector<struct SettingSipAccount> m_sipAccounts;
-  std::vector<struct SettingAnalogPhone> m_analogPhones;
-  std::vector<struct SettingOnlineCredential> m_onlineCredentials;
+    std::string m_basePathname; // default: /etc/callblocker
+    std::string m_filename; // full filename for settings.json
+    std::vector<struct SettingSipAccount> m_sipAccounts;
+    std::vector<struct SettingAnalogPhone> m_analogPhones;
+    std::vector<struct SettingOnlineCredential> m_onlineCredentials;
 
 public:
-  Settings(const std::string& rPathname);
-  virtual ~Settings();
-  virtual bool hasChanged();
+    Settings(const std::string& rPathname);
+    virtual ~Settings();
+    virtual bool hasChanged();
 
-  std::string getBasePath();
+    std::string getBasePath();
 
-  std::vector<struct SettingSipAccount> getSipAccounts() { return m_sipAccounts; }
-  std::vector<struct SettingAnalogPhone> getAnalogPhones() { return m_analogPhones; }
-  std::vector<struct SettingOnlineCredential> getOnlineCredentials() { return m_onlineCredentials; }
-  
-  static std::string toString(const struct SettingBase* pBase);
-  static std::string toString(const struct SettingSipAccount* pSip);
-  static std::string toString(const struct SettingAnalogPhone* pAnalog);
+    std::vector<struct SettingSipAccount> getSipAccounts() { return m_sipAccounts; }
+    std::vector<struct SettingAnalogPhone> getAnalogPhones() { return m_analogPhones; }
+    std::vector<struct SettingOnlineCredential> getOnlineCredentials() { return m_onlineCredentials; }
+
+    static std::string toString(const struct SettingBase* pBase);
+    static std::string toString(const struct SettingSipAccount* pSip);
+    static std::string toString(const struct SettingAnalogPhone* pAnalog);
 
 private:
-  void clear();
-  bool load();
-  bool getBlockMode(struct json_object* objbase, enum SettingBlockMode* res);
-  bool getBase(struct json_object* objbase, struct SettingBase* res);
+    void clear();
+    bool load();
+    bool getBlockMode(struct json_object* objbase, enum SettingBlockMode* res);
+    bool getBase(struct json_object* objbase, struct SettingBase* res);
 };
 
 #endif
-

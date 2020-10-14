@@ -20,26 +20,23 @@
 #ifndef TIMER_UTIL_H
 #define TIMER_UTIL_H
 
-
 #include <sys/time.h>
-
 
 class TimerUtil {
 private:
-  bool m_active;
-  struct timeval elapseTime;
+    bool m_active;
+    struct timeval elapseTime;
 
 public:
-  TimerUtil();
+    TimerUtil();
 
-  void restart(time_t elapseSec);
-  void stop(void);
-  bool isActive();
-  bool hasElapsed();
+    void restart(time_t elapseSec);
+    void stop(void);
+    bool isActive();
+    bool hasElapsed();
 
 private:
-  static void getCurrent(struct timeval* res);
+    static void getCurrent(struct timeval* res);
 };
 
 #endif
-
