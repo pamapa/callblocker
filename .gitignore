@@ -1,6 +1,7 @@
 .idea
 .vscode
 *.o
+__pycache__
 
 build/
 debian/.debhelper/
@@ -12,9 +13,12 @@ obj-*-linux-gnu/
 
 src/callblockerd
 src/libcallblockerd.a
+
 usr/share/callblocker/*.pyc
-usr/var/www/callblocker/js/vendor/*
-usr/var/www/callblocker/js/yarn.lock
+usr/var/www/callblocker/dist/
+usr/var/www/callblocker/node_modules/
+
 test/callblockerd/unit_tests
+
 third-party/pjproject/pjproject-2.8.tar.bz2
 third-party/pjproject/pjproject-2.8
