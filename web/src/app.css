@@ -5,8 +5,7 @@ html, body {
   padding: 0;
   overflow: hidden;
 
-  font: 13px Helvetica,Myriad,Tahoma,Arial,clean,sans-serif;       
-  *font-size: 81.25%;
+  font: 14px Helvetica,Myriad,Tahoma,Arial,clean,sans-serif;
 }
 
 .allowlistRow .dojoxGridCell {
