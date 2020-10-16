@@ -61,7 +61,7 @@ module.exports = (env, argv) => {
       // dojo
       new DojoWebpackPlugin({
         loaderConfig: require("./src/loaderConfig"),
-        environment: { dojoRoot: "dist" },  // used at run time for non-packed resources (e.g. blank.gif)
+        environment: { dojoRoot: "" },  // used at run time for non-packed resources (e.g. blank.gif)
         buildEnvironment: { dojoRoot: "node_modules" }, // used at build time
         locales: ["en"],
         noConsole: true
