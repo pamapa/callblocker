@@ -1,4 +1,4 @@
-if get_option('web-interface-build')
+if get_option('web-interface') and get_option('web-interface-build')
   message('build web-interface...')
 
   path_src_web = join_paths(meson.source_root(), 'src-web')
