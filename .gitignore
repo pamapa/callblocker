@@ -14,9 +14,10 @@ obj-*-linux-gnu/
 src/callblockerd
 src/libcallblockerd.a
 
+src-web/dist/
+src-web/node_modules/
+
 usr/share/callblocker/*.pyc
-usr/var/www/callblocker/dist/
-usr/var/www/callblocker/node_modules/
 
 test/callblockerd/unit_tests
 

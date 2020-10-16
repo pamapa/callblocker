@@ -20,6 +20,9 @@
 const path = require("path");
 const webpack = require("webpack");
 
+// plugins
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const DojoWebpackPlugin = require("dojo-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
@@ -31,9 +34,7 @@ module.exports = (env, argv) => {
     entry: "src/bootstrap",
     output: {
       path: path.join(__dirname, "dist"),
-      publicPath: "dist/",
-      pathinfo: true,
-      filename: "bundle.js"
+      filename: "js/bundle.[hash].js"
     },
     module: {
       rules: [{
@@ -49,11 +50,19 @@ module.exports = (env, argv) => {
       }]
     },
     plugins: [
-      // JavaScript
+      new webpack.ProgressPlugin(),
+      new CleanWebpackPlugin(),
+
+      // inject js
+      new HtmlWebpackPlugin({
+        template: "index.html"
+      }),
+
+      // dojo
       new DojoWebpackPlugin({
         loaderConfig: require("./src/loaderConfig"),
-        environment: {dojoRoot: "dist"},  // used at run time for non-packed resources (e.g. blank.gif)
-        buildEnvironment: {dojoRoot: "node_modules"}, // used at build time
+        environment: { dojoRoot: "dist" },  // used at run time for non-packed resources (e.g. blank.gif)
+        buildEnvironment: { dojoRoot: "node_modules" }, // used at build time
         locales: ["en"],
         noConsole: true
       }),
