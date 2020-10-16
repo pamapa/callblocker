@@ -33,7 +33,7 @@ endif
 
 subdir('third-party/pjproject')
 subdir('src')
-subdir('src-web')
+subdir('web')
 subdir('usr/share')
 subdir('usr/var/www')
 subdir('etc/callblocker')

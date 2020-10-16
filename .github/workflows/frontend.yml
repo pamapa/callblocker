@@ -22,12 +22,12 @@ jobs:
         CI: true
 
     - name: Install dependencies
-      working-directory: src-web
+      working-directory: web
       run: |
         npm install
 
     - name: Build
-      working-directory: src-web
+      working-directory: web
       run: |
         npm run build
 
@@ -35,4 +35,4 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: dist
-        path: src-web/dist
+        path: web/dist
