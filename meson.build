@@ -11,7 +11,6 @@ path_sysconfdir = join_paths(path_prefix, get_option('sysconfdir'))
 path_datadir = join_paths(path_prefix, get_option('datadir'))
 path_localstatedir = join_paths(path_prefix, get_option('localstatedir'))
 
-add_global_arguments('-std=c++11', language : 'cpp')
 add_global_arguments('-DPACKAGE_NAME="@0@"'.format(meson.project_name()), language: 'cpp')
 add_global_arguments('-DVERSION="@0@"'.format(meson.project_version()), language: 'cpp')
 add_global_arguments('-DSYSCONFDIR="@0@"'.format(path_sysconfdir), language: 'cpp')
