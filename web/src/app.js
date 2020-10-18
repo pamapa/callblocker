@@ -210,7 +210,8 @@ require([
                     load : saveCompleteCallback,
                     error : saveFailedCallback
                 });
-            } return store;
+            };
+            return store;
         }
 
         function createPhone()
@@ -836,7 +837,8 @@ require([
                 importAddressbookUploader.domNode,
                 domConstruct.create("br"),
                 grid.domNode
-            ] if (url_param === "dirname=blocklists")
+            ];
+            if (url_param === "dirname=blocklists")
             {
                 ret.splice(2, 0, addNewByNameButton.domNode);
             }
