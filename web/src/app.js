@@ -480,10 +480,10 @@ require([
             });
 
             /*
-    grid.layout.setColumnVisibility(7, false);
-    grid.layout.setColumnVisibility(8, false);
-    grid.layout.setColumnVisibility(9, false);
-*/
+            grid.layout.setColumnVisibility(7, false);
+            grid.layout.setColumnVisibility(8, false);
+            grid.layout.setColumnVisibility(9, false);
+            */
             return [ addNewPhoneButton.domNode, domConstruct.create("br"), grid.domNode ]
         }
 
@@ -723,10 +723,10 @@ require([
                 style : "height:97%; width:100%;"
             });
             /*dojo.connect(grid, "onKeyPress", function(evt) {
-      if(evt.keyCode === dojo.keys.DELETE) { 
-        console.log('delete!'); 
-      }
-    });*/
+                if(evt.keyCode === dojo.keys.DELETE) { 
+                    console.log('delete!'); 
+                }
+            });*/
 
             var listsStore = createListStore(api_base.concat("/get_lists?", url_param));
             var listSelect = new dijit.form.Select({
