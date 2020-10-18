@@ -1,11 +1,11 @@
 html, body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 
-  font: 14px Helvetica,Myriad,Tahoma,Arial,clean,sans-serif;
+    font: 14px Helvetica,Myriad,Tahoma,Arial,clean,sans-serif;
 }
 
 .allowlistRow .dojoxGridCell {
@@ -20,4 +20,3 @@ html, body {
 .warnRow .dojoxGridCell {
     background-color: #FFFF66;
 }
-
