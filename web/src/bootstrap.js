@@ -29,10 +29,9 @@ define([
     "css!dijit/themes/soria/soria.css",
     "css!dojox/grid/resources/soriaGrid.css",
     "css!src/app.css"
-],
-    function(ready, parser) {
-        ready(function() {
-            parser.parse();
-        });
-        return {};
+], function(ready, parser) {
+    ready(function() {
+        parser.parse();
     });
+    return {};
+});
