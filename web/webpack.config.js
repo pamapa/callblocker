@@ -37,17 +37,17 @@ module.exports = (env, argv) => {
       filename: "js/bundle.[hash].js"
     },
     module: {
-      rules: [{
-        test: /\.(png)|(gif)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
+      rules: [
+        {
+          test: /\.(png|jpe?g|gif)$/i,
+          use: [{
+            loader: "url-loader",
+            /*options: {
               limit: 100000
-            }
-          }
-        ]
-      }]
+            }*/
+          }]
+        }
+      ]
     },
     plugins: [
       new webpack.ProgressPlugin(),
@@ -67,14 +67,14 @@ module.exports = (env, argv) => {
         noConsole: true
       }),
 
-      // Copy non-packed resources needed by the app to the release directory
+      // copy non-packed resources needed by the app to the release directory
       new CopyWebpackPlugin([{
         context: "node_modules",
         from: "dojo/resources/blank.gif",
         to: "dojo/resources"
       }]),
 
-      // For plugins registered after the dojo-webpack-plugin, data.request has been normalized and
+      // for plugins registered after the dojo-webpack-plugin, data.request has been normalized and
       // resolved to an absMid and loader-config maps and aliases have been applied
       new webpack.NormalModuleReplacementPlugin(/^dojox\/gfx\/renderer!/, "dojox/gfx/canvas"),
       new webpack.NormalModuleReplacementPlugin(
