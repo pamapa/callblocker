@@ -3,9 +3,9 @@
 # https://github.com/asterisk/asterisk/blob/master/third-party/pjproject/Makefile.rules
 #
 
-TARBALL_FILE="pjproject-2.8.tar.bz2"
+TARBALL_FILE="2.8.tar.gz"
 TARBALL_MD5="$TARBALL_FILE.md5"
-PACKAGE_URL="https://www.pjsip.org/release/2.8/$TARBALL_FILE"
+PACKAGE_URL="https://github.com/pjsip/pjproject/archive/$TARBALL_FILE"
 UNPACK_DIR="pjproject-2.8"
 
 # download
@@ -23,7 +23,7 @@ fi
 
 # extract
 if [ ! -d "$UNPACK_DIR" ]; then
-  tar xfj $TARBALL_FILE
+  tar xf $TARBALL_FILE
 fi
 
 # configuration
