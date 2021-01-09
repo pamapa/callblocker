@@ -19,7 +19,7 @@ sudo apt-get install --no-install-recommends -y \
   ninja-build meson \
   g++ gcc \
   libjson-c-dev libphonenumber-dev uuid-dev libssl-dev \
-  python3 python3-bs4 python3-lxml python3-ldif3 python3-vobject \
+  python3 python3-bs4 python3-lxml python3-ldap python3-vobject \
   python3-pip python3-setuptools
 sudo pip3 install meson==0.50.1
 
