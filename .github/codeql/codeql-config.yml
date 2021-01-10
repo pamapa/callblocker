@@ -1,4 +1,4 @@
-name: "Gerbera CodeQL config"
+name: "CodeQL config"
 
 queries:
   - uses: security-and-quality
