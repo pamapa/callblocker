@@ -82,9 +82,9 @@ class ImportCSV(ImportBase):
             csv_file = open(filename, "rt")
             csv_reader = FindEncodingDictReader(csv_file, delimiter=delimiter, encoding=next_encoding)
             try:
-                for line in enumerate(csv_reader):
+                for _ in enumerate(csv_reader):
                     # Do nothing, just reading the whole file
-                    encoding_index = encoding_index
+                    pass
             except:
                 csv_reader = None
             csv_file.close()
