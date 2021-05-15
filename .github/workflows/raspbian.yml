@@ -7,6 +7,9 @@ on:
       - 'releases/**'
     tags:
       - v*
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
@@ -17,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        debian-version: [buster]
+        debian-version: [bullseye]
 
     container:
       image: debian:${{ matrix.debian-version }}-slim
@@ -39,7 +42,6 @@ jobs:
           ninja-build meson \
           g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf \
           libjson-c-dev:armhf libphonenumber-dev:armhf uuid-dev:armhf libssl-dev:armhf
-        pip3 install "meson>=0.50.1"
         meson -v
 
     - name: Install build dependencies for web-interface
@@ -48,14 +50,6 @@ jobs:
         apt-get update
         apt-get install --no-install-recommends -y \
           nodejs
-
-#    - name: Build pjproject
-#      run: |
-#        cd third-party/pjproject
-#        export CONFIG_SITE=/etc/dpkg-cross/cross-config.armhf
-#        export CROSS_COMPILE=arm-linux-gnueabihf-
-#        export PJPROJECT_CONFIGURE_OPTS="--host=arm-linux-gnueabihf --target=arm7hlf-unknown-linux-gnueabihf"
-#        ./prepare.sh
 
     - name: Build package
       run: |
