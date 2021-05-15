@@ -7,6 +7,9 @@ on:
       - 'releases/**'
     tags:
       - v*
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
@@ -18,7 +21,7 @@ jobs:
     strategy:
       matrix:
         arch: [amd64]
-        ubuntu-version: [18.04]
+        ubuntu-version: [20.04]
 
     container:
       image: ${{ matrix.arch }}/ubuntu:${{ matrix.ubuntu-version }}
@@ -39,7 +42,6 @@ jobs:
           python3-pip python3-setuptools python3-wheel \
           g++ gcc \
           libjson-c-dev libphonenumber-dev uuid-dev libssl-dev
-        pip3 install "meson>=0.50.1"
         meson -v
 
     - name: Install build dependencies for web-interface
