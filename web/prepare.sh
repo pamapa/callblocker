@@ -3,5 +3,9 @@
 npm install
 npm run build
 
+# clean
 rm -f ../usr/var/www/callblocker/js/*
-cp -r dist/* ../usr/var/www/callblocker/
+rm -f ../usr/var/www/callblocker/index.html
+
+# copy to layout
+\cp -r ./dist/* ../usr/var/www/callblocker/
