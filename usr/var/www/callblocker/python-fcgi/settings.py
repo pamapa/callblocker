@@ -1,5 +1,5 @@
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2021 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -242,7 +242,9 @@ def handle_get_lists(environ, start_response, params):
             return ['Not Found']
 
         merge_name = os.path.basename(post.getvalue('merge'))
-        tmp_name = os.path.join("/tmp", post['uploadedfile'].filename)
+        tmp_name = os.path.normpath(os.path.join("/tmp", post['uploadedfile'].filename))
+        if not tmp_name.startswith("/tmp"):
+            raise SecurityException()
         tmp_file = post['uploadedfile'].file
         #print("POST tmp_name=%s\n" % tmp_name, file=sys.stderr)
 
