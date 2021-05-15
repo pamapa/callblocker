@@ -109,10 +109,10 @@ When using the web interface:
 ```
 drwxr-xr-x root     root     /usr/var/www/callblocker                      # web interface
 -rw-r--r-- root     root     /usr/var/www/callblocker/index.html           # start page
-drwxr-xr-x root     root     /usr/var/www/callblocker/dist                 # javascript
--rw-r--r-- root     root     /usr/var/www/callblocker/dist/bundle.js       # - webpack
--rw-r--r-- root     root     /usr/var/www/callblocker/dist/1.bundle.js     # - webpack
--rw-r--r-- root     root     /usr/var/www/callblocker/dist/dojo/resources/blank.gif
+drwxr-xr-x root     root     /usr/var/www/callblocker/js                   # javascript
+-rw-r--r-- root     root     /usr/var/www/callblocker/js/bundle.js         # - webpack
+-rw-r--r-- root     root     /usr/var/www/callblocker/js/1.bundle.js       # - webpack
+-rw-r--r-- root     root     /usr/var/www/callblocker/js/dojo/resources/blank.gif
 drwxr-xr-x root     root     /usr/var/www/callblocker/python-fcgi          # web backend
 -rwxr-xr-x root     root     /usr/var/www/callblocker/python-fcgi/api.py
 -rw-r--r-- root     root     /usr/var/www/callblocker/python-fcgi/config.py
