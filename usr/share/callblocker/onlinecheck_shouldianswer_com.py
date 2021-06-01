@@ -31,7 +31,7 @@ class OnlineCheckShouldIAnswerCom(OnlineBase):
 
     def handle_number(self, args, number):
         scoreMapper = {'unknown':-1, 'positive':0, 'neutral':1, 'negative':2}
-        score = 0 # = no spam
+        score = -1 # = no spam
         name = ""
         
         url = "https://www.shouldianswer.com/search?" + urllib.parse.urlencode({"q": number})
@@ -51,7 +51,8 @@ class OnlineCheckShouldIAnswerCom(OnlineBase):
                     continue
                 score = scoreMapper.get(c)
             
-            name = mainInfo.findAll("span")[0].text.strip()
+            if score >= 0:
+                name = mainInfo.findAll("span")[0].text.strip()
 
         spam = False if score < args.spamscore else True
         return self.onlinecheck_2_result(spam, score, name)
