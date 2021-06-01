@@ -33,7 +33,7 @@ class OnlineCheckTellowsDE(OnlineBase):
             site = "www.phonespamfilter.com"
             number = number[2:]
         elif args.number.startswith("+33"):  # France
-            site = "fr.phonespamfilter.com"
+            site = "www.phonespamfilter.fr"
             number = number[3:]
         elif args.number.startswith("+44"):  # United Kingdom
             site = "www.phonespamfilter.co.uk"
