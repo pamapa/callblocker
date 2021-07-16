@@ -29,14 +29,14 @@ if get_option('pjproject-build')
 endif
 
 inc_pj = include_directories(
-  'pjproject-2.8/pjlib/include',
-  'pjproject-2.8/pjlib-util/include',
-  'pjproject-2.8/pjsip/include',
-  'pjproject-2.8/pjmedia/include',
-  'pjproject-2.8/pjnath/include'
+  'pjproject-2.11/pjlib/include',
+  'pjproject-2.11/pjlib-util/include',
+  'pjproject-2.11/pjsip/include',
+  'pjproject-2.11/pjmedia/include',
+  'pjproject-2.11/pjnath/include'
 )
 
-pj_path = join_paths(meson.source_root(), 'third-party/pjproject/pjproject-2.8')
+pj_path = join_paths(meson.source_root(), 'third-party/pjproject/pjproject-2.11')
 
 dep_pjproject = declare_dependency(
   include_directories: inc_pj,
