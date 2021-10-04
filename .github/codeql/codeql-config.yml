@@ -5,4 +5,5 @@ queries:
 
 # Ignore third-party
 paths-ignore:
-  - third-party/**
+  - third-party/pjproject
+
