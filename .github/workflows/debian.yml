@@ -46,7 +46,7 @@ jobs:
 
     - name: Install build dependencies for web-interface
       run: |
-        wget -qO- https://deb.nodesource.com/setup_12.x | bash -
+        wget -qO- https://deb.nodesource.com/setup_16.x | bash -
         apt-get update
         apt-get install --no-install-recommends -y \
           nodejs
