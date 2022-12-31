@@ -12,16 +12,16 @@
   },
   "devDependencies": {
     "clean-webpack-plugin": "~3.0.0",
-    "copy-webpack-plugin": "~5.1.2",
+    "copy-webpack-plugin": "~11.0.0",
     "css-loader": "~5.2.4",
-    "dojo-webpack-plugin": "~2.8.19",
-    "html-webpack-plugin": "~4.5.2",
+    "dojo-webpack-plugin": "~3.0.4",
+    "html-webpack-plugin": "~5.5.0",
     "less": "~4.1.1",
     "less-loader": "~7.3.0",
     "style-loader": "~2.0.0",
     "terser-webpack-plugin": "~4.2.3",
     "url-loader": "~4.1.1",
-    "webpack": "~4.46.0",
+    "webpack": "~5.75.0",
     "webpack-cli": "~4.7.0"
   },
   "scripts": {
