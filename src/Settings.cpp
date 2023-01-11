@@ -101,7 +101,7 @@ bool Settings::load()
     // Phones
     struct json_object* phones;
     if (json_object_object_get_ex(root, "phones", &phones)) {
-        for (int i = 0; i < json_object_array_length(phones); i++) {
+        for (size_t i = 0; i < json_object_array_length(phones); i++) {
             struct json_object* entry = json_object_array_get_idx(phones, i);
             bool enabled;
             if (!Utils::getObject(entry, "enabled", true, m_filename, &enabled, false) || !enabled) {
@@ -149,7 +149,7 @@ bool Settings::load()
     // credentials
     struct json_object* onlineCredentials;
     if (json_object_object_get_ex(root, "online_credentials", &onlineCredentials)) {
-        for (int i = 0; i < json_object_array_length(onlineCredentials); i++) {
+        for (size_t i = 0; i < json_object_array_length(onlineCredentials); i++) {
             struct json_object* entry = json_object_array_get_idx(onlineCredentials, i);
 
             struct SettingOnlineCredential cred;

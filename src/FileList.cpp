@@ -65,7 +65,7 @@ bool FileList::load()
 
     struct json_object* entries;
     if (json_object_object_get_ex(root, "entries", &entries)) {
-        for (int i = 0; i < json_object_array_length(entries); i++) {
+        for (size_t i = 0; i < json_object_array_length(entries); i++) {
             struct json_object* entry = json_object_array_get_idx(entries, i);
 
             struct FileListEntry add;
