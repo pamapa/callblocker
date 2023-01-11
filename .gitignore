@@ -21,5 +21,10 @@ usr/share/callblocker/*.pyc
 
 test/callblockerd/unit_tests
 
-third-party/pjproject/pjproject-2.8.tar.bz2
-third-party/pjproject/pjproject-2.8
+third-party/pjproject/*.tar.gz
+third-party/pjproject/pjproject-*
+
+# generated during build
+usr/var/www/callblocker/dojo/
+usr/var/www/callblocker/index.html
+usr/var/www/callblocker/js/
