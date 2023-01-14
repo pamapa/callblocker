@@ -38,7 +38,7 @@ class OnlineLookupDasOertlicheDE(OnlineBase):
 
         caller_names = []
         addresses = soup.findAll("div", {"class": "addressblock"})
-        if not addresses:
+        if len(addresses) == 0:
             self.log.error("addressblock not found")
         for address in addresses:
             div_name = address.find("div", {"class": "name"})
