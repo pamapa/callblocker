@@ -29,7 +29,7 @@ class OnlineLookupDasOertlicheDE(OnlineBase):
         return ["+49"]
 
     def handle_number(self, args, number):
-        url = "http://www.dasoertliche.de/?form_name=search_inv&" + urllib.parse.urlencode({"ph": number})
+        url = "https://www.dasoertliche.de/rueckwaertssuche/?" + urllib.parse.urlencode({"ph": number})
         content = self.http_get(url)
 
         #self.log.debug(content)
@@ -37,15 +37,16 @@ class OnlineLookupDasOertlicheDE(OnlineBase):
         #self.log.debug(soup)
 
         caller_names = []
-        entries = soup.findAll("div", {"class": "hit"})
-        for entry in entries:
-            #self.log.debug(entry)
-            eintrag_name = entry.find("h2")
-            if not eintrag_name:
-                self.log.error("article without h2 found")
+        addresses = soup.findAll("div", {"class": "addressblock"})
+        if not addresses:
+            self.log.error("addressblock not found")
+        for address in addresses:
+            div_name = address.find("div", {"class": "name"})
+            if not div_name:
+                self.log.error("name not found")
                 continue
 
-            name = eintrag_name.span.contents[0]
+            name = div_name.h1.contents[0]
             name = name.strip()
             caller_names.append(name)
 
