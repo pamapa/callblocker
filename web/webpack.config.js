@@ -27,14 +27,15 @@ const DojoWebpackPlugin = require("dojo-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
-module.exports = (env, argv) => {
-  const isDevMode = !!(env||{}).dev;
+module.exports = env => {
+  const devmode = !!(env||{}).dev;
+  console.log("devmode = " + devmode);
   return {
     context: __dirname,
     entry: "src/bootstrap",
     output: {
       path: path.join(__dirname, "dist"),
-      filename: "js/bundle.[hash].js"
+      filename: "js/bundle.[fullhash].js"
     },
     module: {
       rules: [
@@ -68,11 +69,13 @@ module.exports = (env, argv) => {
       }),
 
       // copy non-packed resources needed by the app to the release directory
-      new CopyWebpackPlugin([{
-        context: "node_modules",
-        from: "dojo/resources/blank.gif",
-        to: "dojo/resources"
-      }]),
+      new CopyWebpackPlugin({
+        patterns: [{
+	  context: "node_modules",
+	  from: "dojo/resources/blank.gif",
+	  to: "dojo/resources"
+        }]
+      }),
 
       // for plugins registered after the dojo-webpack-plugin, data.request has been normalized and
       // resolved to an absMid and loader-config maps and aliases have been applied
@@ -86,26 +89,21 @@ module.exports = (env, argv) => {
     resolveLoader: {
       modules: ["node_modules"]
     },
-    mode: isDevMode ? 'development' : 'production',
+    mode: devmode ? 'development' : 'production',
     optimization: {
-      namedModules: false,
+      moduleIds: 'natural',
       splitChunks: false,
-      minimizer: isDevMode ? [] : [
-        new TerserPlugin({
-          cache: true,
-          parallel: true,
-          sourceMap: false,
-          terserOptions: {
-            compress: true,
-            mangle: true,
-            output: {
-              comments: false
-            }
-          }
-        })
-      ],
+      minimize: !devmode,
+      minimizer: devmode ? [] : [new TerserPlugin({
+      terserOptions: {
+        format: {
+          comments: false,
+        },
+      },
+      extractComments: false,
+      })]
     },
     performance: { hints: false },
-    devtool: "#source-map"
+    devtool: "hidden-source-map"
   };
 };
