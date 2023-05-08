@@ -21,7 +21,7 @@ dep_json = dependency('json-c')
 dep_phonenumber = cpp.find_library('phonenumber')
 deps_for_pjproject = [
   cpp.find_library('pthread'),
-  cpp.find_library('libuuid'),
+  cpp.find_library('uuid'),
   dependency('openssl')
 ]
 
