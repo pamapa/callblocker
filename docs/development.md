@@ -25,7 +25,7 @@ sudo apt-get install --no-install-recommends -y \
 sudo pip3 install meson==0.50.1
 
 # for web-interface (not needed in case of -Dweb-interface=false)
-wget -qO- https://deb.nodesource.com/setup_14.x | bash -
+wget -qO- https://deb.nodesource.com/setup_18.x | bash -
 sudo apt-get update
 sudo apt-get install -y nodejs
 ```

@@ -81,18 +81,19 @@ Prepare lighttpd, for additional information
 see [here](http://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_ModFastCGI):
 ```bash
 sudo pip3 install flipflop
+sudo lighty-enable-mod fastcgi
 sudo vi /etc/lighttpd/lighttpd.conf
 ```
-- in the upper part you find the section 'server.modules='. Please add the module "mod_fastcgi" to it.
 - make server.document-root point to "/usr/var/www/callblocker"
 - at the end of this file add this code:
 ```section
-   fastcgi.server              = (
-        ".py" => (
-                "callblocker-fcgi" => (
-                        "bin-path" => "/usr/var/www/callblocker/python-fcgi/api.py",
-                        "socket" => "/var/run/lighttpd/fastcgi.python.socket")
-        )
+   fastcgi.server = (
+     ".py" => (
+       "callblocker-fcgi" => (
+         "bin-path" => "/usr/var/www/callblocker/python-fcgi/api.py",
+         "socket" => "/var/run/lighttpd/fastcgi.python.socket"
+       )
+     )
    )
 ```
 - make sure the lighttpd daemon has write access to the callblocker settings
