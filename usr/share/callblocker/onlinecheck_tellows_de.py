@@ -31,7 +31,7 @@ class OnlineCheckTellowsDE(OnlineBase):
         number = "00" + number[1:]
         url = "https://www.tellows.de/basic/num/%s?xml=1&partner=%s&apikey=%s" % (number, args.username, args.password)
         content = self.http_get(url)
-        soup = BeautifulSoup(content, "lxml")
+        soup = BeautifulSoup(content, "xml")
         self.log.debug(soup)
 
         score = 5  # = neutral score
