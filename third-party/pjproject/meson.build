@@ -28,7 +28,7 @@ if get_option('pjproject-build')
   endif
 endif
 
-unpack_dir_pj = 'pjproject-2.13'
+unpack_dir_pj = 'pjproject-2.14.1'
 inc_pj = include_directories(
   '@0@/pjlib/include'.format(unpack_dir_pj),
   '@0@/pjlib-util/include'.format(unpack_dir_pj),
