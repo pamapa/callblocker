@@ -46,7 +46,7 @@ class BlocklistKTippCH(BlocklistBase):
     def _fetch_page(self, page_nr):
         # print("fetch_page: " + str(page_nr))
         url = "https://www.ktipp.ch/service/warnlisten/detail/warnliste/unerwuenschte-oder-laestige-telefonanrufe/"
-        url += "?tx_updkonsuminfo_konsuminfofe[%40widget_0][currentPage]=" + str(page_nr)
+        url += "page/" + str(page_nr)
         ret = self.http_get(url)
         # print("%s\n%s\n%s" % ("-"*80, ret, "-"*80))
         return ret
