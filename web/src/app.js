@@ -45,7 +45,7 @@ require([
     "dijit/layout/LayoutContainer",
     "dijit/layout/BorderContainer",
 ], function(ConfirmDialog, domConstruct) { // workaround
-    var appVersion = "v0.15.5";
+    var appVersion = "v0.15.6";
     var api_base = "python-fcgi/api.py";
 
     function dateFormatter(dateStr)

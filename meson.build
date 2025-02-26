@@ -1,6 +1,6 @@
 project(
   'callblocker', 'cpp',
-  version: '0.15.5',
+  version: '0.15.6',
   license: 'GPL-2.0',
   meson_version: '>= 0.50.0'
 )
