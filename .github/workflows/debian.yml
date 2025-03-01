@@ -29,7 +29,7 @@ jobs:
         DEBIAN_FRONTEND: noninteractive
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Install build dependencies for Linux daemon 'callblockerd'
       run: |
@@ -58,8 +58,7 @@ jobs:
         cp ../callblocker_* artifacts
 
     - name: Archive Debian package artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: debian_${{ matrix.debian-version }}
         path: artifacts
-

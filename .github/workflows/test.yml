@@ -20,7 +20,7 @@ jobs:
         DEBIAN_FRONTEND: noninteractive
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Install build dependencies for tests
       run: |
@@ -39,4 +39,3 @@ jobs:
         meson -Dweb-interface=false build
         cd build
         ninja test
-
