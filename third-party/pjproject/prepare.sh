@@ -47,6 +47,7 @@ PJPROJECT_CONFIGURE_OPTS+=" --prefix=/opt/pjproject \
   --disable-ffmpeg \
   --disable-openh264 \
   --disable-libwebrtc \
+  --disable-upnp \
   --without-external-pa \
   --without-external-srtp \
   --enable-ssl"
