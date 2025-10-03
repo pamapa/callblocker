@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         arch: [amd64]
-        debian-version: [bullseye]
+        debian-version: [trixie]
 
     container:
       image: ${{ matrix.arch }}/debian:${{ matrix.debian-version }}-slim
@@ -26,7 +26,7 @@ jobs:
       run: |
         apt-get update
         apt-get install --no-install-recommends -y \
-          dpkg-dev pkg-config \
+          dpkg-dev pkgconf \
           ca-certificates wget \
           ninja-build meson \
           python3-pip python3-setuptools python3-wheel \

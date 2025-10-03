@@ -20,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        debian-version: [bullseye]
+        debian-version: [trixie]
 
     container:
       image: debian:${{ matrix.debian-version }}-slim
@@ -37,7 +37,7 @@ jobs:
         apt-get install --no-install-recommends -y \
           debhelper build-essential crossbuild-essential-armhf \
           ca-certificates wget \
-          dpkg-dev pkg-config \
+          dpkg-dev pkgconf:armhf \
           python3-pip python3-setuptools \
           ninja-build meson \
           g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf \
@@ -46,7 +46,7 @@ jobs:
 
     - name: Install build dependencies for web-interface
       run: |
-        wget -qO- https://deb.nodesource.com/setup_16.x | bash -
+        wget -qO- https://deb.nodesource.com/setup_22.x | bash -
         apt-get update
         apt-get install --no-install-recommends -y \
           nodejs

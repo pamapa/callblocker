@@ -4,9 +4,8 @@ Priority: optional
 Build-Depends:
  debhelper (>= 11),
  meson (>= 0.45),
- pkg-config,
  dpkg-dev,
- pkg-config,
+ pkgconf,
  ninja-build,
  g++,
  libjson-c-dev,
