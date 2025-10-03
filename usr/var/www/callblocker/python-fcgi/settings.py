@@ -19,7 +19,7 @@
 import os, sys, json, uuid
 import subprocess
 import cgi
-from datetime import datetime, timezone
+from datetime import datetime
 
 import config
 

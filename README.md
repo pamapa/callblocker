@@ -74,13 +74,13 @@ explain howto make it work with lighttpd, its also possible to configure it via 
 
 Additional Debian packages are required:
 ```bash
-sudo apt-get install lighttpd python3-systemd python3-setuptools python3-wheel
+sudo apt-get install lighttpd python3-legacy-cgi python3-systemd python3-setuptools python3-wheel
 ```
 
 Prepare lighttpd, for additional information
 see [here](http://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_ModFastCGI):
 ```bash
-sudo pip3 install flipflop
+sudo pip3 install flipflop --break-system-packages
 sudo lighty-enable-mod fastcgi
 sudo vi /etc/lighttpd/lighttpd.conf
 ```
