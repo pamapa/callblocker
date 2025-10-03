@@ -20,7 +20,6 @@
 
 import os
 import argparse
-import socket
 import flask
 import urllib.parse
 
@@ -79,4 +78,3 @@ if __name__ == "__main__":
   args = parser.parse_args()
 
   app.run(host="0.0.0.0", port=5000, debug=args.debug)
-
