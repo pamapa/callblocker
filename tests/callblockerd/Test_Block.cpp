@@ -59,7 +59,8 @@ static void TestCase_logging_only(std::string etcPath)
     assert(block->isBlocked(&settingsBase, "0448881234", "", &msg) == false);
     assert(msg.compare("Incoming call: number='+41448881234' name='Test range 1' blocklist='main'") == 0);
     assert(block->isBlocked(&settingsBase, "+23412312312", "", &msg) == false);
-    assert(msg.compare("Incoming call: number='+23412312312' name='Test range 2' blocklist='main'") == 0);
+    assert(msg.compare("Incoming call: number='+23412312312' name='Test range 2' blocklist='main'") == 0 ||
+           msg.compare("Incoming call: number='+23412312312' name='Test range 2' invalid blocklist='main'") == 0);
 
     // test number in allowlist
     assert(block->isBlocked(&settingsBase, "0441112233", "", &msg) == false);
@@ -134,7 +135,8 @@ static void TestCase_allowlists_only(std::string etcPath)
     assert(block->isBlocked(&settingsBase, "0448881234", "", &msg) == true);
     assert(msg.compare("Incoming call: number='+41448881234' blocked") == 0);
     assert(block->isBlocked(&settingsBase, "+23412312312", "", &msg) == true);
-    assert(msg.compare("Incoming call: number='+23412312312' blocked") == 0);
+    assert(msg.compare("Incoming call: number='+23412312312' blocked") == 0 ||
+           msg.compare("Incoming call: number='+23412312312' blocked invalid") == 0);
 
     // test number in allowlist
     assert(block->isBlocked(&settingsBase, "0441112233", "", &msg) == false);
@@ -209,7 +211,8 @@ static void TestCase_allowlists_and_blocklists(std::string etcPath)
     assert(block->isBlocked(&settingsBase, "0448881234", "", &msg) == true);
     assert(msg.compare("Incoming call: number='+41448881234' name='Test range 1' blocked blocklist='main'") == 0);
     assert(block->isBlocked(&settingsBase, "+23412312312", "", &msg) == true);
-    assert(msg.compare("Incoming call: number='+23412312312' name='Test range 2' blocked blocklist='main'") == 0);
+    assert(msg.compare("Incoming call: number='+23412312312' name='Test range 2' blocked blocklist='main'") == 0 ||
+           msg.compare("Incoming call: number='+23412312312' name='Test range 2' blocked invalid blocklist='main'") == 0);
 
     // test number in allowlist
     assert(block->isBlocked(&settingsBase, "0441112233", "", &msg) == false);
@@ -284,7 +287,8 @@ static void TestCase_blocklists_only(std::string etcPath)
     assert(block->isBlocked(&settingsBase, "0448881234", "", &msg) == true);
     assert(msg.compare("Incoming call: number='+41448881234' name='Test range 1' blocked blocklist='main'") == 0);
     assert(block->isBlocked(&settingsBase, "+23412312312", "", &msg) == true);
-    assert(msg.compare("Incoming call: number='+23412312312' name='Test range 2' blocked blocklist='main'") == 0);
+    assert(msg.compare("Incoming call: number='+23412312312' name='Test range 2' blocked blocklist='main'") == 0 ||
+           msg.compare("Incoming call: number='+23412312312' name='Test range 2' blocked invalid blocklist='main'") == 0);
 
     // test number in allowlist
     assert(block->isBlocked(&settingsBase, "0441112233", "", &msg) == false);

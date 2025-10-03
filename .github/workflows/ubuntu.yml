@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         arch: [amd64]
-        ubuntu-version: [20.04]
+        ubuntu-version: [24.04]
 
     container:
       image: ${{ matrix.arch }}/ubuntu:${{ matrix.ubuntu-version }}
@@ -36,7 +36,7 @@ jobs:
         apt-get update
         apt-get install --no-install-recommends -y \
           debhelper build-essential \
-          dpkg-dev pkg-config \
+          dpkg-dev pkgconf \
           ca-certificates wget \
           ninja-build meson \
           python3-pip python3-setuptools python3-wheel \
@@ -46,7 +46,7 @@ jobs:
 
     - name: Install build dependencies for web-interface
       run: |
-        wget -qO- https://deb.nodesource.com/setup_16.x | bash -
+        wget -qO- https://deb.nodesource.com/setup_22.x | bash -
         apt-get update
         apt-get install --no-install-recommends -y \
           nodejs

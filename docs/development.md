@@ -14,18 +14,16 @@ cd callblocker
 ```bash
 sudo apt-get install --no-install-recommends -y \
   debhelper build-essential git \
-  dpkg-dev pkg-config \
+  dpkg-dev pkgconf \
   ca-certificates wget \
   ninja-build meson \
   g++ gcc \
   libjson-c-dev libphonenumber-dev uuid-dev libssl-dev \
   python3 python3-bs4 python3-lxml python3-ldap python3-vobject \
   python3-pip python3-setuptools
-# iff debian version < bullseye
-sudo pip3 install meson==0.50.1
 
 # for web-interface (not needed in case of -Dweb-interface=false)
-wget -qO- https://deb.nodesource.com/setup_18.x | bash -
+wget -qO- https://deb.nodesource.com/setup_22.x | bash -
 sudo apt-get update
 sudo apt-get install -y nodejs
 ```
