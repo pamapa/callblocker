@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2025 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,7 +20,7 @@
 
 import os, sys, re
 from bs4 import BeautifulSoup
-from datetime import datetime
+import datetime
 from collections import OrderedDict
 
 from blocklist_base import BlocklistBase
@@ -39,7 +39,7 @@ class BlocklistKTippCH(BlocklistBase):
         s = s.replace("&amp", "&")
         s = s.replace("  ", " ")
         s = s.strip()
-        if s.startswith("Firma: "): s = s[7:]
+        if s.startswith("Firma:"): s = s[7:]
         # self.log.debug("_extract_name() data:'%s' -> '%s'" % (data, s))
         return s
 
@@ -55,8 +55,8 @@ class BlocklistKTippCH(BlocklistBase):
         ret = []
         # self.log.debug("parse_page...")
         content = soup.find("div", id="warnlisteContent")
-        number_list = content.findAll("article")
-        now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
+        number_list = content.find_all("article")
+        now = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M:%S +0000")
         for e in number_list:
             number = self._extract_number(e.find("h3").get_text())
             e.h3.decompose()  # remove h3
@@ -83,7 +83,7 @@ class BlocklistKTippCH(BlocklistBase):
 
         # find last page
         tmp = soup.find("div", id="warnlisteContent")
-        tmp = tmp.findAll("li")[-2]
+        tmp = tmp.find_all("li")[-2]
         a = tmp.find("a", href=True)
         last_page = int(a.string)
         self.log.debug("last_page: %d" % last_page)
