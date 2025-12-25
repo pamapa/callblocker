@@ -1,5 +1,5 @@
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2025 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,7 +16,8 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-import sys, argparse
+import sys
+import argparse
 import logging
 import urllib.request
 import json
@@ -32,13 +33,13 @@ class BlocklistBase(object):
         self.log = logging.getLogger()
         self.log.setLevel(logging.WARN)
 
-    def get_parser(self, description):
+    def get_parser(self, description: str):
         parser = argparse.ArgumentParser(description=description)
         parser.add_argument("--output", help="output path", default=".")
         parser.add_argument('--debug', action='store_true')
         return parser
 
-    def http_get(self, url):
+    def http_get(self, url: str):
         self.log.debug("http_get: '%s'" % url)
         headers = {"User-Agent": "Mozilla/5.0"}
         req = urllib.request.Request(url, headers=headers)
@@ -47,7 +48,7 @@ class BlocklistBase(object):
         ret = ret.decode("utf-8", "ignore")
         return str(ret)
 
-    def minimize_name(self, name):
+    def minimize_name(self, name: str):
         if len(name) <= NAME_MAX_LENGTH:
             return name
         return name[0:NAME_MAX_LENGTH - 3] + "..."
@@ -105,10 +106,10 @@ class BlocklistBase(object):
         return uniq
 
     # must be implemented in the inherited class
-    def get_result(self, args, last_update):
+    def get_result(self, args, last_update: str):
         return {}
 
-    def run(self, args, json_filename):
+    def run(self, args, json_filename: str):
         if args.debug: self.log.setLevel(logging.DEBUG)
 
         last_update = ""

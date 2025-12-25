@@ -28,7 +28,7 @@ class OnlineLookupDasSchnelleAT(OnlineBase):
     def supported_country_codes(self):
         return ["+43"]
 
-    def handle_number(self, args, number):
+    def handle_number(self, args, number: str):
         number = "0" + number[3:]  # make number local
         url = "https://www.dasschnelle.at/ergebnisse?" + urllib.parse.urlencode({"what": number}) + "&distance=0"
         content = self.http_get(url, allowed_codes=[410])

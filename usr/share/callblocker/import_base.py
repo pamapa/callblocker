@@ -1,5 +1,5 @@
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2025 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,7 +16,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-import os, sys, argparse
+import os
+import sys
+import argparse
 import logging
 from collections import OrderedDict
 import json
@@ -29,7 +31,7 @@ class ImportBase(object):
         self.log = logging.getLogger()
         self.log.setLevel(logging.WARN)
 
-    def get_parser(self, description):
+    def get_parser(self, description: str):
         parser = argparse.ArgumentParser(description=description)
         parser.add_argument('--debug', action='store_true')
         parser.add_argument("--input", help="input file", required=True)
@@ -40,7 +42,7 @@ class ImportBase(object):
     # remove duplicates
     # remove too small numbers -> dangerous
     # make sure numbers are in international format (e.g. +41AAAABBBBBB)
-    def cleanup_entries(self, arr, country_code):
+    def cleanup_entries(self, arr, country_code: str):
         self.log.debug("cleanup_entries (num=%s)" % len(arr))
         seen = set()
         uniq = []

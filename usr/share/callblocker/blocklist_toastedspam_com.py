@@ -18,7 +18,8 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-import os, re
+import os
+import re
 from bs4 import BeautifulSoup
 from collections import OrderedDict
 import datetime
@@ -28,11 +29,11 @@ from blocklist_base import BlocklistBase
 
 class BlocklistKToastedSpamCOM(BlocklistBase):
 
-    def _extract_number(self, data):
+    def _extract_number(self, data: str):
         n = re.sub(r"[^0-9\+]", "", data)
         return n
 
-    def _extract_numbers(self, data):
+    def _extract_numbers(self, data: str):
         ret = []
         #print "data:" + data
 
@@ -53,14 +54,14 @@ class BlocklistKToastedSpamCOM(BlocklistBase):
         self.log.debug("_extract_numbers() data:'%s' -> %s" % (data, ret))
         return ret
 
-    def _extract_name(self, data):
+    def _extract_name(self, data: str):
         s = data
         if s.startswith("- "): s = s[2:]
         s = s.replace("  ", " ")
         s = s.strip()
         return self.minimize_name(s)
 
-    def _parse_page(self, content):
+    def _parse_page(self, content: str):
         ret = []
         soup = BeautifulSoup(content, "lxml")
         #self.log.debug(soup)
@@ -73,7 +74,7 @@ class BlocklistKToastedSpamCOM(BlocklistBase):
                 ret.append({"number": n, "name": name, "date_created": now, "date_modified": now})
         return ret
 
-    def get_result(self, args, last_update):
+    def get_result(self, args, last_update: str):
         content = self.http_get("http://www.toastedspam.com/phonelist.cgi")
 
         entries = self._parse_page(content)

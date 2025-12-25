@@ -18,7 +18,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-import os, sys, re
+import os
+import sys
+import re
 from bs4 import BeautifulSoup
 import datetime
 from collections import OrderedDict
@@ -28,11 +30,11 @@ from blocklist_base import BlocklistBase
 
 class BlocklistKTippCH(BlocklistBase):
 
-    def _extract_number(self, data):
+    def _extract_number(self, data: str):
         n = re.sub(r"[^0-9\+]","", data)
         return n
 
-    def _extract_name(self, data):
+    def _extract_name(self, data: str):
         s = data
         s = s.replace("\n", "").replace("\r", "")
         s = re.sub(r'<[^>]*>', " ", s) # remove tags
@@ -43,7 +45,7 @@ class BlocklistKTippCH(BlocklistBase):
         # self.log.debug("_extract_name() data:'%s' -> '%s'" % (data, s))
         return s
 
-    def _fetch_page(self, page_nr):
+    def _fetch_page(self, page_nr: int):
         # print("fetch_page: " + str(page_nr))
         url = "https://www.ktipp.ch/service/warnlisten/detail/warnliste/unerwuenschte-oder-laestige-telefonanrufe/"
         url += "page/" + str(page_nr)
@@ -66,7 +68,7 @@ class BlocklistKTippCH(BlocklistBase):
         # self.log.debug("parse_page done")
         return ret
 
-    def _parse_pages(self, last_update):
+    def _parse_pages(self, last_update: str):
         ret = []
 
         content = self._fetch_page(1)
@@ -96,7 +98,7 @@ class BlocklistKTippCH(BlocklistBase):
             # print("entries: %d" % len(ret))
         return ret, current_update
 
-    def get_result(self, args, last_update):
+    def get_result(self, args, last_update: str):
         entries, current_update = self._parse_pages(last_update)
         entries = self.cleanup_entries(entries, country_code="+41")
 

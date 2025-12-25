@@ -54,8 +54,8 @@ class FindEncodingDictReader:
 
 
 class ImportCSV(ImportBase):
-    def _find_delimiter(self, filname):
-        with open(filname, 'r') as f:
+    def _find_delimiter(self, filename: str):
+        with open(filename, 'r') as f:
             line = f.readline()
             semi_cnt = line.count(";")
             comma_cnt = line.count(",")
@@ -65,7 +65,7 @@ class ImportCSV(ImportBase):
             return delimiter
 
     # Finding the correct encoding for the file
-    def _find_encoding(self, filename, delimiter):
+    def _find_encoding(self, filename: str, delimiter: str):
         self.log.debug("Detecting encoding of the CSV file...")
 
         all_encoding = [
@@ -93,11 +93,11 @@ class ImportCSV(ImportBase):
         self.log.debug("Correct encoding is %s" % next_encoding)
         return next_encoding
 
-    def _extract_number(self, data):
+    def _extract_number(self, data: str):
         n = re.sub(r"[^0-9\+]","", data)
         return n
 
-    def _get_entity_person(self, fields):
+    def _get_entity_person(self, fields: list[str]):
         name = ""
         # first name
         for field_name in fields:
@@ -119,7 +119,7 @@ class ImportCSV(ImportBase):
             name = "%s / score:%s" % (fields["Anruftyp"], fields["Score"])
         return name.strip()
 
-    def _parse_csv(self, filename, delimiter, encoding):
+    def _parse_csv(self, filename: str, delimiter: str, encoding: str):
         csv_file = open(filename, "rt")
         csv_reader = FindEncodingDictReader(csv_file, delimiter=delimiter, encoding=encoding)
 

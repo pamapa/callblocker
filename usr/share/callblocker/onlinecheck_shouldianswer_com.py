@@ -27,9 +27,21 @@ from online_base import OnlineBase
 
 class OnlineCheckShouldIAnswerCom(OnlineBase):
     def supported_country_codes(self):
-        return ["+1", "+7", "+27", "+31", "+32", "+33", "+34", "+36", "+39", "+41", "+43", "+44", "+45", "+46", "+47", "+48", "+49", "+51", "+52", "+54", "+55", "+56", "+57", "+58", "+61", "+62", "+64", "+81", "+82", "+86", "+91", "+225", "+234", "+243", "+254", "+258", "+351", "+358", "+420", "+421", "+852"]
+        return [
+            "+1", "+7", "+27",
+            "+31", "+32", "+33", "+34", "+36", "+39",
+            "+41", "+43", "+44", "+45", "+46", "+47", "+48", "+49",
+            "+51", "+52", "+54", "+55", "+56", "+57", "+58",
+            "+61", "+62", "+64",
+            "+81", "+82", "+86",
+            "+91",
+            "+225", "+234", "+243", "+254", "+258",
+            "+351", "+358",
+            "+420", "+421",
+            "+852"
+        ]
 
-    def handle_number(self, args, number):
+    def handle_number(self, args, number: str):
         scoreMapper = {'unknown':-1, 'positive':0, 'neutral':1, 'negative':2}
         score = -1 # = no spam
         name = ""
@@ -56,6 +68,7 @@ class OnlineCheckShouldIAnswerCom(OnlineBase):
 
         spam = False if score < args.spamscore else True
         return self.onlinecheck_2_result(spam, score, name)
+
 
 #
 # main

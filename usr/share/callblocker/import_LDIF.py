@@ -32,7 +32,7 @@ class ParseRecords(LDIFParser):
         self.date = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M:%S +0000")
         self.entries = []
 
-    def _extract_number(self, data):
+    def _extract_number(self, data: str):
         n = re.sub(r"[^0-9\+]", "", data)
         return n
 
@@ -78,6 +78,7 @@ class ImportLDIF(ImportBase):
         return parser.entries
 
 
+#
 # main
 #
 if __name__ == "__main__":

@@ -28,7 +28,7 @@ class OnlineLookupDasOertlicheDE(OnlineBase):
     def supported_country_codes(self):
         return ["+49"]
 
-    def handle_number(self, args, number):
+    def handle_number(self, args, number: str):
         url = "https://www.dasoertliche.de/rueckwaertssuche/?" + urllib.parse.urlencode({"ph": number})
         content = self.http_get(url)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2025 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@ from import_base import ImportBase
 
 
 class ImportVCF(ImportBase):
-    def _extract_number(self, data):
+    def _extract_number(self, data: str):
         n = re.sub(r"[^0-9\+]", "", data)
         return n
 
@@ -34,7 +34,7 @@ class ImportVCF(ImportBase):
         fn = card.fn.value if card.fn else ""
         return fn
 
-    def _parse_vcard(self, filename):
+    def _parse_vcard(self, filename: str):
         with open(filename, "r") as f:
             data = f.read()
             f.close()
@@ -63,6 +63,7 @@ class ImportVCF(ImportBase):
         return entries
 
 
+#
 # main
 #
 if __name__ == "__main__":

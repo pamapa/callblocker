@@ -16,7 +16,8 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-import sys, argparse
+import sys
+import argparse
 import logging
 import urllib.request
 import json
@@ -30,13 +31,13 @@ class OnlineBase(object):
         self.log = logging.getLogger()
         self.log.setLevel(logging.WARN)
 
-    def get_parser(self, description):
+    def get_parser(self, description: str):
         parser = argparse.ArgumentParser(description=description)
         parser.add_argument("--number", help="phone number to be checked", required=True)
         parser.add_argument('--debug', action="store_true")
         return parser
 
-    def http_get(self, url, add_headers={}, allowed_codes=[]):
+    def http_get(self, url: str, add_headers={}, allowed_codes=[]):
         self.log.debug("http_get('%s',%s,%s)" % (url, add_headers, allowed_codes))
         try:
             request = urllib.request.Request(url, headers=add_headers)
@@ -57,13 +58,13 @@ class OnlineBase(object):
     def supported_country_codes(self):
         return []
 
-    def onlinelookup_2_result(self, caller_name):
+    def onlinelookup_2_result(self, caller_name: str):
         result = {
             "name": caller_name
         }
         return result
 
-    def onlinecheck_2_result(self, spam, score, caller_name=""):
+    def onlinecheck_2_result(self, spam: bool, score: int, caller_name=""):
         result = {
             "spam": spam,
             "score": score,

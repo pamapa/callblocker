@@ -21,11 +21,12 @@
 from bs4 import BeautifulSoup
 from online_base import OnlineBase
 
+
 class OnlineCheckNomorobo(OnlineBase):
     def supported_country_codes(self):
         return ["+1"]
 
-    def handle_number(self, args, number):
+    def handle_number(self, args, number: str):
         number = '{}-{}-{}'.format(number[2:5], number[5:8], number[8:]) # make number local for US
         url = "https://www.nomorobo.com/lookup/%s" % number
         headers={}
@@ -53,6 +54,7 @@ class OnlineCheckNomorobo(OnlineBase):
 
         spam = False if score < args.spamscore else True
         return self.onlinecheck_2_result(spam, score, caller_name)
+
 
 #
 # main

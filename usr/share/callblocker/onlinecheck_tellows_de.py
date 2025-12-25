@@ -27,7 +27,7 @@ class OnlineCheckTellowsDE(OnlineBase):
     def supported_country_codes(self):
         return ["+"]
 
-    def handle_number(self, args, number):
+    def handle_number(self, args, number: str):
         number = "00" + number[1:]
         url = "https://www.tellows.de/basic/num/%s?xml=1&partner=%s&apikey=%s" % (number, args.username, args.password)
         content = self.http_get(url)

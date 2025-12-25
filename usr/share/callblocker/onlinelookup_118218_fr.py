@@ -27,7 +27,7 @@ class OnlineLookup118218FR(OnlineBase):
     def supported_country_codes(self):
         return ["+33"]
 
-    def handle_number(self, args, number):
+    def handle_number(self, args, number: str):
         number = "0" + number[3:] # make number local
         url = "https://annuaire.118712.fr/?s=%s" % number
         content = self.http_get(url)

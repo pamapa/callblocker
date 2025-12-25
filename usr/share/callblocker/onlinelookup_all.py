@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2025 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,7 +18,8 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-import os, sys
+import os
+import sys
 import logging
 
 from online_base import OnlineBase
@@ -34,7 +35,7 @@ if __name__ == "__main__":
 
     if args.debug: base.log.setLevel(logging.DEBUG)
     
-    all = []
+    all: list[OnlineBase] = []
 
     # dynamic use all "onlinelookup_x.py" modules
     path = os.path.dirname(os.path.realpath(__file__))
@@ -60,7 +61,7 @@ if __name__ == "__main__":
                 except TypeError: pass
         except: pass
         if not found:
-            base.log.warn("failed to load/use %s" % module_name)
+            base.log.warning("failed to load/use %s" % module_name)
     
     # lookup
     for m in all:

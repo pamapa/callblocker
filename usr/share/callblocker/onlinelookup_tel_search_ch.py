@@ -28,7 +28,7 @@ class OnlineLookupTelSearchCH(OnlineBase):
     def supported_country_codes(self):
         return ["+41"]
 
-    def handle_number(self, args, number):
+    def handle_number(self, args, number: str):
         url = "https://tel.search.ch/api/?" + urllib.parse.urlencode({"was": number})
         content = self.http_get(url)
         soup = BeautifulSoup(content, "xml")
