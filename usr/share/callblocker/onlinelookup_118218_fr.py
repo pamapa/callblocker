@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2025 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -37,7 +37,7 @@ class OnlineLookup118218FR(OnlineBase):
         #self.log.debug(soup)
 
         caller_names = []
-        entries = soup.findAll("article")
+        entries = soup.find_all("article")
         for entry in entries:
             #self.log.debug(entry)
             title = entry.find("h2", {"class": "titre"})

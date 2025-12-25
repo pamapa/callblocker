@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2025 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -52,7 +52,7 @@ class OnlineCheckShouldIAnswerCom(OnlineBase):
                 score = scoreMapper.get(c)
             
             if score >= 0:
-                name = mainInfo.findAll("span")[0].text.strip()
+                name = mainInfo.find_all("span")[0].text.strip()
 
         spam = False if score < args.spamscore else True
         return self.onlinecheck_2_result(spam, score, name)

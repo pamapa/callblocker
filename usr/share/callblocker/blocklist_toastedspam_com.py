@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2025 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@
 import os, re
 from bs4 import BeautifulSoup
 from collections import OrderedDict
-from datetime import datetime
+import datetime
 
 from blocklist_base import BlocklistBase
 
@@ -64,8 +64,8 @@ class BlocklistKToastedSpamCOM(BlocklistBase):
         ret = []
         soup = BeautifulSoup(content, "lxml")
         #self.log.debug(soup)
-        number_list = soup.findAll("b")
-        now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
+        number_list = soup.find_all("b")
+        now = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M:%S +0000")
         for e in number_list:
             numbers = self._extract_numbers(e.contents[0].strip())
             name = self._extract_name(e.nextSibling.strip())

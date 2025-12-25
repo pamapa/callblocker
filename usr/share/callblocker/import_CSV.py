@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2025 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,7 +20,7 @@
 
 import re
 import csv
-from datetime import datetime
+import datetime
 
 from import_base import ImportBase
 
@@ -123,7 +123,7 @@ class ImportCSV(ImportBase):
         csv_file = open(filename, "rt")
         csv_reader = FindEncodingDictReader(csv_file, delimiter=delimiter, encoding=encoding)
 
-        date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
+        date = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M:%S +0000")
         #self.log.debug(date)
 
         # "Home Phone" and "Work Phone"

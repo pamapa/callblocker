@@ -19,7 +19,7 @@
 import os, sys, json, uuid
 import subprocess
 import cgi
-from datetime import datetime
+import datetime
 
 import config
 
@@ -244,7 +244,7 @@ def handle_get_lists(environ, start_response, params):
         merge_name = os.path.basename(post.getvalue('merge'))
         tmp_name = os.path.normpath(os.path.join("/tmp", post['uploadedfile'].filename))
         if not tmp_name.startswith("/tmp"):
-            raise SecurityException()
+            raise PermissionError()
         tmp_file = post['uploadedfile'].file
         #print("POST tmp_name=%s\n" % tmp_name, file=sys.stderr)
 

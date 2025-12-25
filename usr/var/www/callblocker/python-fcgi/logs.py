@@ -17,7 +17,7 @@
 #
 
 import json, re
-from datetime import datetime, timezone
+import datetime
 from systemd import journal
 
 
@@ -54,7 +54,7 @@ def handle_journal(environ, start_response, params):
         if len(entry) == 0: break
         date = entry["__REALTIME_TIMESTAMP"]
         # patch: we need tzinfo
-        tz_local = datetime.now(timezone.utc).astimezone().tzinfo
+        tz_local = datetime.datetime.now(datetime.UTC).astimezone().tzinfo
         date = date.replace(tzinfo=tz_local)
 
         tmp = {
@@ -113,7 +113,7 @@ def handle_callerlog(environ, start_response, params):
         if obj:
             date = entry["__REALTIME_TIMESTAMP"]
             # patch: we need tzinfo
-            tz_local = datetime.now(timezone.utc).astimezone().tzinfo
+            tz_local = datetime.datetime.now(datetime.UTC).astimezone().tzinfo
             date = date.replace(tzinfo=tz_local)
 
             tmp = {

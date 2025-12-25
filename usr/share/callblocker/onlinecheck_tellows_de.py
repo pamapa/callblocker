@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2025 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -35,12 +35,12 @@ class OnlineCheckTellowsDE(OnlineBase):
         self.log.debug(soup)
 
         score = 5  # = neutral score
-        score_list = soup.findAll("score")
+        score_list = soup.find_all("score")
         if len(score_list) > 0:
             score = int(score_list[0].contents[0])
 
         caller_name = ""
-        caller_types = soup.findAll("callertypes")
+        caller_types = soup.find_all("callertypes")
         if len(caller_types) > 0 and len(caller_types[0].caller.contents) > 0:
             caller_name = caller_types[0].caller.contents[0].contents[0]
 

@@ -20,7 +20,7 @@
 
 import re
 import vobject
-from datetime import datetime
+import datetime
 
 from import_base import ImportBase
 
@@ -40,7 +40,7 @@ class ImportVCF(ImportBase):
             f.close()
 
         entries = []
-        now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S +0000")
+        now = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M:%S +0000")
         for card in list(vobject.readComponents(data)):
             c = card.contents
             name = self._get_entity_person(card)
