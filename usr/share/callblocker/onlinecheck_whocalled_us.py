@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2025 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-import sys, re
+import re
 import urllib.parse
 
 from online_base import OnlineBase
@@ -28,7 +28,7 @@ class OnlineCheckWhoCalledUS(OnlineBase):
     def supported_country_codes(self):
         return ["+1"]
 
-    def handle_number(self, args, number):
+    def handle_number(self, args, number: str):
         url = "https://whocalled.us/do?action=getScore&" + urllib.parse.urlencode({"phoneNumber": number})
         headers = {}
         if args.username and args.password:

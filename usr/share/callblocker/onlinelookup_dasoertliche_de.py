@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2025 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -28,7 +28,7 @@ class OnlineLookupDasOertlicheDE(OnlineBase):
     def supported_country_codes(self):
         return ["+49"]
 
-    def handle_number(self, args, number):
+    def handle_number(self, args, number: str):
         url = "https://www.dasoertliche.de/rueckwaertssuche/?" + urllib.parse.urlencode({"ph": number})
         content = self.http_get(url)
 
@@ -37,7 +37,7 @@ class OnlineLookupDasOertlicheDE(OnlineBase):
         #self.log.debug(soup)
 
         caller_names = []
-        addresses = soup.findAll("div", {"class": "addressblock"})
+        addresses = soup.find_all("div", {"class": "addressblock"})
         if len(addresses) == 0:
             self.log.error("addressblock not found")
         for address in addresses:

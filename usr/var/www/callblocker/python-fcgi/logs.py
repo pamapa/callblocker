@@ -1,5 +1,5 @@
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2025 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,8 +16,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-import json, re
-from datetime import datetime, timezone
+import json
+import re
+import datetime
 from systemd import journal
 
 
@@ -54,7 +55,7 @@ def handle_journal(environ, start_response, params):
         if len(entry) == 0: break
         date = entry["__REALTIME_TIMESTAMP"]
         # patch: we need tzinfo
-        tz_local = datetime.now(timezone.utc).astimezone().tzinfo
+        tz_local = datetime.datetime.now(datetime.UTC).astimezone().tzinfo
         date = date.replace(tzinfo=tz_local)
 
         tmp = {
@@ -113,7 +114,7 @@ def handle_callerlog(environ, start_response, params):
         if obj:
             date = entry["__REALTIME_TIMESTAMP"]
             # patch: we need tzinfo
-            tz_local = datetime.now(timezone.utc).astimezone().tzinfo
+            tz_local = datetime.datetime.now(datetime.UTC).astimezone().tzinfo
             date = date.replace(tzinfo=tz_local)
 
             tmp = {

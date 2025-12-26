@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # callblocker - blocking unwanted calls from your home phone
-# Copyright (C) 2015-2020 Patrick Ammann <pammann@gmx.net>
+# Copyright (C) 2015-2025 Patrick Ammann <pammann@gmx.net>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,15 +18,15 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-import sys
 from bs4 import BeautifulSoup
 from online_base import OnlineBase
+
 
 class OnlineCheckNomorobo(OnlineBase):
     def supported_country_codes(self):
         return ["+1"]
 
-    def handle_number(self, args, number):
+    def handle_number(self, args, number: str):
         number = '{}-{}-{}'.format(number[2:5], number[5:8], number[8:]) # make number local for US
         url = "https://www.nomorobo.com/lookup/%s" % number
         headers={}
@@ -36,7 +36,7 @@ class OnlineCheckNomorobo(OnlineBase):
         self.log.debug(soup)
 
         score = 0  # = no spam
-        positions = soup.findAll(class_="profile-position")
+        positions = soup.find_all(class_="profile-position")
         if len(positions) > 0:
             position = positions[0].get_text()
             if position.upper().find("DO NOT ANSWER") > -1:
@@ -45,7 +45,7 @@ class OnlineCheckNomorobo(OnlineBase):
                 score = 1 # = might be spam (caller is "Political", "Charity", or "Debt Collector")
 
         caller_name = ""
-        titles = soup.findAll(class_="profile-title")
+        titles = soup.find_all(class_="profile-title")
         if len(titles) > 0:
             caller_name = titles[0].get_text()
             caller_name = caller_name.replace("\n", "").strip(" ")
@@ -54,6 +54,7 @@ class OnlineCheckNomorobo(OnlineBase):
 
         spam = False if score < args.spamscore else True
         return self.onlinecheck_2_result(spam, score, caller_name)
+
 
 #
 # main
