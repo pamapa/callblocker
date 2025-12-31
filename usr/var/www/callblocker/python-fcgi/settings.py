@@ -43,9 +43,9 @@ def _load_settings():
 # fix wrong padded dates (came from old app.js/date2UTCString: e.g. 2015-4-9 10:14:3 +0000)
 def _fix_date_string(date_str):
     try:
-        date = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S %z")
+        date = datetime.datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S %z")
     except:
-       date = datetime.now()
+       date = datetime.datetime.now()
     return date.strftime("%Y-%m-%d %H:%M:%S %z")
 
 
