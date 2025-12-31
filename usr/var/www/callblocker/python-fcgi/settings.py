@@ -247,7 +247,8 @@ def handle_get_lists(environ, start_response, params):
         merge_name = os.path.basename(post.getvalue('merge'))
         tmp_name = os.path.normpath(os.path.join("/tmp", post['uploadedfile'].filename))
         if not tmp_name.startswith("/tmp"):
-            raise PermissionError()
+            start_response('400 BAD REQUEST', [('Content-Type', 'text/plain')])
+            return ['Invalid uploaded file name']
         tmp_file = post['uploadedfile'].file
         #print("POST tmp_name=%s\n" % tmp_name, file=sys.stderr)
 
@@ -259,6 +260,9 @@ def handle_get_lists(environ, start_response, params):
             cmd = [os.path.join(config.CALLBLOCKER_DATADIR, "import_LDIF.py")]
         elif extention == ".vcf":
             cmd = [os.path.join(config.CALLBLOCKER_DATADIR, "import_VCF.py")]
+        else:
+            start_response('400 BAD REQUEST', [('Content-Type', 'text/plain')])
+            return ['Unsupported file type']
         #print("cmd=%s\n" % cmd, file=sys.stderr)
 
         def get_contry_code():
