@@ -68,8 +68,11 @@ def journal():
 @app.route("/", defaults={"filename": "index.html"})
 @app.route("/<path:filename>")
 def index(filename):
-  path = os.path.join("..", filename)
-  return flask.send_file(path)
+  base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+  requested_path = os.path.normpath(os.path.join(base_path, filename))
+  if not requested_path.startswith(base_path + os.sep):
+    flask.abort(404)
+  return flask.send_file(requested_path)
 
 
 if __name__ == "__main__":
