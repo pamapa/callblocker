@@ -1,9 +1,12 @@
 # similar as here: https://github.com/endlessm/systemd/blob/master/meson.build
 # on armhf: 'armv7l-unknown-linux-gnueabihf' or 'armv6l-unknown-linux-gnueabihf'
-# on amd64: 'x86_64-unknown-linux-gnu'
+# on amd64: 'x86_64-pc-linux-gnu'
 dpkg_architecture = find_program('dpkg-architecture')
 deb_host_gnu_system = run_command(dpkg_architecture, '-qDEB_HOST_GNU_SYSTEM').stdout().strip()
-pj_target_name = host_machine.cpu() + '-unknown-' + deb_host_gnu_system
+pj_target_name = host_machine.cpu() + '-pc-' + deb_host_gnu_system
+if meson.is_cross_build()
+  pj_target_name = 'arm-unknown-' + deb_host_gnu_system
+endif
 
 if get_option('pjproject-build')
   message('pjproject: download and build locally...')
@@ -12,7 +15,7 @@ if get_option('pjproject-build')
   if meson.is_cross_build()
     message('pjproject: cross build for @0@'.format(pj_target_name))
     if host_machine.cpu_family() == 'arm'
-      env_pj.set('PJPROJECT_CONFIGURE_OPTS', '--host=arm-linux-gnueabihf --target=@0@'.format(pj_target_name))
+      env_pj.set('PJPROJECT_CONFIGURE_OPTS', '--host=arm-linux-gnueabihf')
       env_pj.set('CROSS_COMPILE', 'arm-linux-gnueabihf-')
     else
       error('cross build to this cpu family not supported')
@@ -28,7 +31,7 @@ if get_option('pjproject-build')
   endif
 endif
 
-unpack_dir_pj = 'pjproject-2.15.1'
+unpack_dir_pj = 'pjproject-2.17'
 inc_pj = include_directories(
   '@0@/pjlib/include'.format(unpack_dir_pj),
   '@0@/pjlib-util/include'.format(unpack_dir_pj),

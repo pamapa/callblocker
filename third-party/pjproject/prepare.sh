@@ -3,10 +3,10 @@
 # https://github.com/asterisk/asterisk/blob/master/third-party/pjproject/Makefile.rules
 #
 
-TARBALL_FILE="2.15.1.tar.gz"
+TARBALL_FILE="2.17.tar.gz"
 TARBALL_MD5="$TARBALL_FILE.md5"
 PACKAGE_URL="https://github.com/pjsip/pjproject/archive/refs/tags/$TARBALL_FILE"
-UNPACK_DIR="pjproject-2.15.1"
+UNPACK_DIR="pjproject-2.17"
 
 # download
 if [ ! -f "$TARBALL_FILE" ]; then
@@ -57,4 +57,4 @@ PJPROJECT_CONFIGURE_OPTS+=" --enable-epoll"
 # build
 cd $UNPACK_DIR
 ./configure $PJPROJECT_CONFIGURE_OPTS
-make all
+make lib
