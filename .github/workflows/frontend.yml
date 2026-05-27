@@ -12,10 +12,10 @@ jobs:
         node-version: [24.x]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node-version }}
       env:
@@ -32,7 +32,7 @@ jobs:
         npm run build
 
     - name: Archive webpack/bundle artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: dist
         path: web/dist
